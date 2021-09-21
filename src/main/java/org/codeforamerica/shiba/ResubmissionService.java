@@ -89,7 +89,7 @@ public class ResubmissionService {
         applicationRepository.updateStatus(id, document, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
-        log.error("Failed to resubmit application %s via email".formatted(id));
+        log.error("Failed to resubmit application %s via email".formatted(id), e);
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));

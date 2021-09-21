@@ -6,11 +6,11 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.mnit.MnitCountyInformation;
@@ -76,36 +76,30 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     Application application = getApplicationFromEvent(event);
     ApplicationData applicationData = application.getApplicationData();
 
-    EmailParser.parse(applicationData)
-        .ifPresent(email -> {
-          String applicationId = application.getId();
-          SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
-              .decide(applicationData);
-          CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider
-              .decide(applicationData);
-          List<Document> docs = DocumentListParser.parse(applicationData);
-          List<ApplicationFile> pdfs = docs.stream()
-              .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT))
-              .collect(Collectors.toList());
-          if (applicationData.getPagesData().safeGetPageInputValue("contactInfo", "phoneOrEmail").contains("EMAIL")) {
-            emailClient.sendShortConfirmationEmail(applicationData, email, applicationId,
-                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
-            // send next steps email
-            emailClient.sendNextStepsEmail(applicationData, email, applicationId,
-                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+    EmailParser.parse(applicationData).ifPresent(email -> {
+      String applicationId = application.getId();
+      SnapExpeditedEligibility snapExpeditedEligibility =
+          snapExpeditedEligibilityDecider.decide(applicationData);
+      CcapExpeditedEligibility ccapExpeditedEligibility =
+          ccapExpeditedEligibilityDecider.decide(applicationData);
+      List<Document> docs = DocumentListParser.parse(applicationData);
+      List<ApplicationFile> pdfs = docs.stream()
+          .map(doc -> pdfGenerator.generate(applicationId, doc, CLIENT)).toList();
 
-            // TODO schedule(?) docs email for 24 hours in the future by marking doc_upload_email_status as in_progress
+      if (ContactInfoParser.optedIntoEmailCommunications(applicationData)) {
+        emailClient.sendShortConfirmationEmail(applicationData, email, applicationId,
+            new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+            snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+        emailClient.sendNextStepsEmail(applicationData, email, applicationId,
+            new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+            snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+      } else {
+        emailClient.sendConfirmationEmail(applicationData, email, applicationId,
+            new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
+            snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+      }
 
-
-          } else {
-            emailClient.sendConfirmationEmail(applicationData, email, applicationId,
-                new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
-          }
-
-        });
+    });
   }
 
   @Async

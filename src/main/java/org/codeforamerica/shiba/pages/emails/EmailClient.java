@@ -52,6 +52,8 @@ public interface EmailClient {
   void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application);
 
+  void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody);
+
   void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
       List<ApplicationFile> attachments);
 

@@ -240,6 +240,12 @@ public class MailGunEmailClient implements EmailClient {
   }
 
   @Override
+  public void sendEmail(String subject, String senderEmail, String recipientEmail,
+      String emailBody) {
+    sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody, emptyList(), false);
+  }
+
+  @Override
   public void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
       List<ApplicationFile> attachments) {
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody,

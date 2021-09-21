@@ -80,7 +80,7 @@ public class EmailContentCreator {
     return wrapHtml(content + warning);
   }
 
-  public String createDocumentRecommendationEmail(ApplicationData applicationData,
+  public String createDocRecommendationEmail(ApplicationData applicationData,
       Locale locale) { // TODO Locale is part of applicationData
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     String content = "";

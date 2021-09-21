@@ -79,6 +79,9 @@ public class ApplicationRepository {
     parameters.put("sentiment",
         Optional.ofNullable(application.getSentiment()).map(Sentiment::name).orElse(null));
     parameters.put("feedback", application.getFeedback());
+    parameters.put("docUploadEmailStatus",
+        Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
+            .orElse(null));
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     namedParameterJdbcTemplate.update("UPDATE applications SET " +
@@ -88,11 +91,12 @@ public class ApplicationRepository {
         "time_to_complete = :timeToComplete, " +
         "sentiment = :sentiment, " +
         "feedback = :feedback, " +
+        "doc_upload_email_status = :docUploadEmailStatus," +
         "flow = :flow WHERE id = :id", parameters);
     namedParameterJdbcTemplate.update(
-        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow) "
+        "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow, doc_upload_email_status) "
             +
-            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow) "
+            "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
             +
             "ON CONFLICT DO NOTHING", parameters);
     setUpdatedAtTime(application.getId());
@@ -279,20 +283,13 @@ public class ApplicationRepository {
         "UPDATE applications SET doc_upload_email_status = :status WHERE id = :id", parameters);
   }
 
-  // Returns a list of applications that
-  //   - were submitted between 48 and 12 hours ago
-  //   - do not have any uploaded docs
-  //   - have not yet been sent a doc upload email
-  //   - Are not laterdocs applications
-  public List<Application> getApplicationsThatNeedDocumentEmails() {
-    List<Application> result = jdbcTemplate.query(
-        "SELECT * FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at >= ? AND completed_at <= ?",
+  public List<Application> getApplicationsSubmittedBetweenTimestamps(Timestamp start,
+      Timestamp end) {
+    return jdbcTemplate.query(
+        "SELECT * FROM applications WHERE completed_at >= ? AND completed_at <= ?",
         applicationRowMapper(),
-        Timestamp.from(Instant.now().minus(Duration.ofHours(48))),
-        Timestamp.from(Instant.now().minus(Duration.ofHours(12))));
-    List<Application> applicationsWithoutUploadedDocs = result.stream()
-        .filter(a -> a.getApplicationData().getUploadedDocs().isEmpty()).toList();
-    return applicationsWithoutUploadedDocs;
+        start,
+        end);
   }
 
   private List<String> getCCAPSubmissionsToResubmit() {
