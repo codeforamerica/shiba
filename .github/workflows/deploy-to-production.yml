@@ -68,3 +68,39 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Deploy to prod steps:
+  # 1. find latest git release
+  # 2. Login to openshift prod
+  # 3. Import image tagged with the git release tag from non-prod to prod
+  # 4. Rollout updated image
+  mnitdeploy:
+    name: deploy to MNIT prod
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch Latest Release
+      id: fetch-latest-release
+      uses: thebritican/fetch-latest-release@v2.0.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}        
+    - name: Authenticate and set context for prod
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_PROD }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN_PROD }}
+        namespace: ${{ secrets.OPENSHIFT_NAMESPACE_PROD }}
+    - name: import and deploy to prod
+      run: |
+        oc import-image mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} --from=${{ secrets.OPENSHIFT_IMAGE_LOCATION }}/mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} -n ${{ secrets.OPENSHIFT_NAMESPACE_PROD }}
+        oc patch dc mn-benefits-prod -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-prod"]}}]}}'
+        oc rollout latest dc/mn-benefits-prod
+    - name: Announce on Slack
+      if: ${{ always() }}
+      uses: innocarpe/actions-slack@v1
+      with:
+        status: ${{ job.status }}
+        success_text: 'Deploy to MNIT production succeeded :smile: <!subteam^S0209RR14KB> <@U01DU77UREG> <@U019GSLR63H>'
+        failure_text: 'Deploy to MNIT production failed :frowning:'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
