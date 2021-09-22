@@ -81,3 +81,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  mnitdeploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: deploy to MNIT staging
+    runs-on: ubuntu-latest
+    steps:
+    - name: Authenticate and set context for non-prod
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_NON_PROD }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
+        namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
+    - name: update and run build
+      run: |
+        oc start-build mn-benefits --follow
+    - name: Announce on Slack
+      if: ${{ always() }}
+      uses: innocarpe/actions-slack@v1
+      with:
+        status: ${{ job.status }}
+        success_text: 'Deploy to MNIT staging succeeded :smile:'
+        failure_text: 'Deploy to MNIT staging failed :frowning:'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
