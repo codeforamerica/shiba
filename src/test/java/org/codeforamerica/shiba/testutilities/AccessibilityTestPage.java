@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.testutilities;
 
+import com.deque.html.axecore.axeargs.AxeRunOptions;
 import com.deque.html.axecore.results.Results;
 import com.deque.html.axecore.results.Rule;
 import com.deque.html.axecore.selenium.AxeBuilder;
@@ -35,16 +36,15 @@ public class AccessibilityTestPage extends Page {
   }
 
   public void testAccessibility() {
-    AxeBuilder builder = new AxeBuilder();
-    builder.setOptions("""
-        {   "resultTypes": ["violations"],
-            "iframes": false,
-            "runOnly": { 
-                "type": "tag", 
-                "values": ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"]
-            } 
-        }
-        """);
+    AxeRunOptions options = new AxeRunOptions();
+    options.setResultTypes(List.of("violations"));
+    options.setIFrames(false);
+
+    AxeBuilder builder = new AxeBuilder()
+        .withOptions(options)
+        .disableIframeTesting()
+        .withTags(List.of("wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "section508"));
+
     Results results = builder.analyze(driver);
     List<Rule> violations = results.getViolations();
     violations.forEach(rule -> rule.setUrl(getTitle()));
