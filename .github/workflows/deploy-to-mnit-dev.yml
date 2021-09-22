@@ -24,26 +24,20 @@ jobs:
     name: deploy stable
     runs-on: ubuntu-latest
     steps:
+    - name: Fetch Latest Release
+      id: fetch-latest-release
+      uses: thebritican/fetch-latest-release@v2.0.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Authenticate and set context
       uses: redhat-actions/oc-login@v1
       with:
-        # URL to your OpenShift cluster.
-        # Refer to Step 2.
         openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_NON_PROD }}
-
-        # Authentication Token. Can use username and password instead.
-        # Refer to Step 3.
         openshift_token: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
-
-        # Disables SSL cert checking. Use this if you don't have the certificate authority data.
-        #insecure_skip_tls_verify: true
-        # This method is more secure, if the certificate from Step 4 is available.
-        #certificate_authority_data: ${{ secrets.CA_DATA }}
-
-        # Optional - this sets your Kubernetes context's current namespace after logging in.
         namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
     - name: start build
       run: |
-        oc start-build mn-benefits-stable
+        oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}'
+        oc start-build mn-benefits-release --follow
     
     
