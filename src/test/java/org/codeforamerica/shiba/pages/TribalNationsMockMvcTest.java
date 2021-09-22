@@ -80,7 +80,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      "Red Lake,Hennepin,false"
+      "Red Lake,Hennepin,false",
+      "Shakopee Mdewakanton,Hennepin,false"
   })
   void shouldGetBootedFromTheFlow(String nationName, String county, String livingInNationBoundary)
       throws Exception {
