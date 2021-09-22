@@ -7,6 +7,10 @@ conditionDefinitions:
     pageName: addHouseholdMembers
     input: addHouseholdMembers
     value: "false"
+  - &isUrbanTribalNationMember?
+    pageName: selectTheTribe
+    input: selectedTribe
+    matcher: IS_URBAN_TRIBAL_NATION_MEMBER
   - &doesNotLiveAlone?
     logicalOperator: OR
     conditions:
@@ -3241,7 +3245,7 @@ workflow:
   tribalNationMember:
     pageConfiguration: *tribalNationMember
     nextPages:
-      - pageName: nationsBoundary
+      - pageName: selectTheTribe
         condition:
           pageName: tribalNationMember
           input: isTribalNationMember
@@ -3250,53 +3254,55 @@ workflow:
     skipCondition: *livesAlone?
     datasources:
       - pageName: addHouseholdMembers
-  nationsBoundary:
-    pageConfiguration: *nationsBoundary
-    nextPages:
-      - pageName: selectTheTribe
-        condition:
-          pageName: nationsBoundary
-          input: livingInNationBoundary
-          value: "true"
-      - pageName: introIncome
-    skipCondition:
-      logicalOperator: OR
-      conditions:
-        - *livesAlone?
-        - pageName: tribalNationMember
-          input: isTribalNationMember
-          value: NO
-    datasources:
-      - pageName: addHouseholdMembers
   selectTheTribe:
     pageConfiguration: *selectTheTribe
+    nextPages:
+      - pageName: nationsBoundary
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+  nationsBoundary:
+    pageConfiguration: *nationsBoundary
     nextPages:
       - pageName: applyForTribalTANF
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Bois Forte
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Fond Du Lac
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Grand Portage
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Leech Lake
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Mille Lacs
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Red Lake
+            - logicalOperator: AND
+              conditions:
+                - *isUrbanTribalNationMember?
+                - pageName: identifyCounty
+                  input: county
+                  matcher: IS_URBAN_TRIBAL_NATION_COUNTY
+            - logicalOperator: AND
+              conditions:
+                - pageName: selectTheTribe
+                  input: selectedTribe
+                  value: Mille Lacs Band of Ojibwe
+                - pageName: identifyCounty
+                  input: county
+                  matcher: IS_MILLE_LACS_RURAL_COUNTY
+      - pageName: introIncome
+        condition:
+          pageName: nationsBoundary
+          input: livingInNationBoundary
+          value: "false"
       - pageName: applyForMFIP
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - logicalOperator: OR
+          conditions:
+            - *livesAlone?
+            - pageName: tribalNationMember
+              input: isTribalNationMember
+              value: NO
+        - *isUrbanTribalNationMember?
     datasources:
-      - pageName: choosePrograms
       - pageName: addHouseholdMembers
+      - pageName: selectTheTribe
+      - pageName: tribalNationMember
+      - pageName: identifyCounty
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
