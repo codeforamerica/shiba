@@ -20,7 +20,7 @@ jobs:
       env:
         webhook_url: ${{ secrets.MNIT_DEV_WEBHOOK_URL }}
         webhook_secret: ${{ secrets.MNIT_DEV_WEBHOOK_SECRET }}
-        
+
   # Deploy to demo steps:
   # 1. find latest git release (note, need to merge into the release action. Release tag will come from the release command)
   # 2. Login to openshift non-prod
@@ -49,7 +49,7 @@ jobs:
         oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}'
         oc patch bc mn-benefits-release -p '{"spec":{"output":{"to":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}'
         oc start-build mn-benefits-release --follow
-        oc patch dc mn-benefits-atst -p '{"spec":{"triggers":{"imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}}'
+        oc patch dc mn-benefits-atst -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-atst"]}}]}}'
         oc rollout latest dc/mn-benefits-atst
         
   # Deploy to prod steps:
@@ -75,7 +75,8 @@ jobs:
     - name: import and deploy to prod
       run: |
         oc import-image mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} --from=${{ secrets.OPENSHIFT_IMAGE_LOCATION }}/mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} -n ${{ secrets.OPENSHIFT_NAMESPACE_PROD }}
-        oc patch dc mn-benefits-prod -p '{"spec":{"triggers":{"imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}}'
-        oc rollout latest dc/mn-benefits-prod  
+        oc patch dc mn-benefits-prod -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-prod"]}}]}}'
+        oc rollout latest dc/mn-benefits-prod
     
-    
+    strategy:
+      max-parallel: 1
