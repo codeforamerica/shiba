@@ -95,7 +95,8 @@ public class EmailContentCreator {
     if (documentRecommendations.size() > 0) {
       final StringBuilder builder = new StringBuilder();
       documentRecommendations.forEach(docRec -> {
-        String listElement = "<li>" + docRec.title + ": " + docRec.explanation + "</li>";
+        String listElement =
+            "<li><strong>" + docRec.title + ":</strong> " + docRec.explanation + "</li>";
         builder.append(listElement);
       });
       return lms.getMessage(documentRecommendationMessageKey, List.of(builder.toString()));

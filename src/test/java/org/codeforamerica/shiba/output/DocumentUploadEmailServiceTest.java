@@ -67,7 +67,7 @@ class DocumentUploadEmailServiceTest {
         eq("[Action Required] Upload Documents To Your MNBenefits Application"),
         eq("sender@email.org"),
         eq(CLIENT_EMAIL),
-        eq("<html><body>Remember to upload documents on <a href=\"https://www.mnbenefits.org/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.org</a> to support your MN Benefits application. You can use your phone to take or upload pictures, or use your computer to upload documents.<br>If you have them, you should upload the following documents:<br><ul><li>Proof of Income: A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li></ul>If you have already uploaded these documents, you can ignore this reminder.</body></html>"));
+        eq("<html><body>Remember to upload documents on <a href=\"https://www.mnbenefits.org/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.org</a> to support your MN Benefits application. You can use your phone to take or upload pictures, or use your computer to upload documents.<br>If you have them, you should upload the following documents:<br><ul><li><strong>Proof of Income:</strong> A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li></ul>If you have already uploaded these documents, you can ignore this reminder.</body></html>"));
   }
 
   private void assertEmailDidNotSend(Application appThatIsTooOld) {
