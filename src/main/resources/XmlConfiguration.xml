@@ -331,7 +331,7 @@
         <ns4:Representative>
             <ns4:Name>{{AUTHORIZED_REP_NAME}}</ns4:Name>
             <ns4:MailingAddress>{{AUTHORIZED_REP_ADDRESS}}</ns4:MailingAddress>
-            <ns4:Phone>{{AUTHORIZED_REP_PHONE_NUMBER</ns4:Phone>
+        <ns4:Phone>{{AUTHORIZED_REP_PHONE_NUMBER}}</ns4:Phone>
         </ns4:Representative>
         <ns4:HouseholdExpenseInfo>
             <ns4:LIHEAPInd>{{RECEIVED_LIHEAP}}</ns4:LIHEAPInd>

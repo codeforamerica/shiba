@@ -8,6 +8,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 public class OneToManyApplicationInputsMapperTest {
@@ -21,6 +22,7 @@ public class OneToManyApplicationInputsMapperTest {
         .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap",
             List.of("NO_UNEARNED_INCOME_CCAP_SELECTED"))
         .withPageData("homeExpenses", "homeExpenses", List.of("NONE_OF_THE_ABOVE"))
+        .withPageData("utilityPayments", "payUtilities", List.of("NONE_OF_THE_ABOVE"))
         .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
@@ -28,48 +30,31 @@ public class OneToManyApplicationInputsMapperTest {
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("unearnedIncome", "SOCIAL_SECURITY", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "SSI", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "VETERANS_BENEFITS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "UNEMPLOYMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "WORKERS_COMPENSATION", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "RETIREMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "CHILD_OR_SPOUSAL_SUPPORT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "TRIBAL_PAYMENTS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "BENEFITS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "INSURANCE_PAYMENTS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "CONTRACT_FOR_DEED", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "TRUST_MONEY", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "HEALTH_CARE_REIMBURSEMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "RENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "MORTGAGE", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "ASSOCIATION_FEES", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "ROOM_AND_BOARD", List.of("false"),
-            ENUMERATED_SINGLE_VALUE)
+        createApplicationInput("unearnedIncome", "SOCIAL_SECURITY", "false"),
+        createApplicationInput("unearnedIncome", "SSI", "false"),
+        createApplicationInput("unearnedIncome", "VETERANS_BENEFITS", "false"),
+        createApplicationInput("unearnedIncome", "UNEMPLOYMENT", "false"),
+        createApplicationInput("unearnedIncome", "WORKERS_COMPENSATION", "false"),
+        createApplicationInput("unearnedIncome", "RETIREMENT", "false"),
+        createApplicationInput("unearnedIncome", "CHILD_OR_SPOUSAL_SUPPORT", "false"),
+        createApplicationInput("unearnedIncome", "TRIBAL_PAYMENTS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "BENEFITS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "INSURANCE_PAYMENTS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "CONTRACT_FOR_DEED", "false"),
+        createApplicationInput("unearnedIncomeCcap", "TRUST_MONEY", "false"),
+        createApplicationInput("unearnedIncomeCcap", "HEALTH_CARE_REIMBURSEMENT", "false"),
+        createApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", "false"),
+        createApplicationInput("homeExpenses", "RENT", "false"),
+        createApplicationInput("homeExpenses", "MORTGAGE", "false"),
+        createApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", "false"),
+        createApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", "false"),
+        createApplicationInput("homeExpenses", "ASSOCIATION_FEES", "false"),
+        createApplicationInput("homeExpenses", "ROOM_AND_BOARD", "false"),
+        createApplicationInput("utilityPayments", "PHONE", "false"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false")
     );
   }
 
@@ -82,6 +67,7 @@ public class OneToManyApplicationInputsMapperTest {
             List.of("INSURANCE_PAYMENTS", "TRUST_MONEY"))
         .withPageData("homeExpenses", "homeExpenses",
             List.of("REAL_ESTATE_TAXES", "ASSOCIATION_FEES"))
+        .withPageData("utilityPayments", "payForUtilities", List.of("HEATING", "PHONE"))
         .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
@@ -89,48 +75,31 @@ public class OneToManyApplicationInputsMapperTest {
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("unearnedIncome", "SOCIAL_SECURITY", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "SSI", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "VETERANS_BENEFITS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "UNEMPLOYMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "WORKERS_COMPENSATION", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "RETIREMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "CHILD_OR_SPOUSAL_SUPPORT", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncome", "TRIBAL_PAYMENTS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "BENEFITS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "INSURANCE_PAYMENTS", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "CONTRACT_FOR_DEED", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "TRUST_MONEY", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "HEALTH_CARE_REIMBURSEMENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "RENT", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "MORTGAGE", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", List.of("false"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "ASSOCIATION_FEES", List.of("true"),
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("homeExpenses", "ROOM_AND_BOARD", List.of("false"),
-            ENUMERATED_SINGLE_VALUE)
+        createApplicationInput("unearnedIncome", "SOCIAL_SECURITY", "true"),
+        createApplicationInput("unearnedIncome", "SSI", "true"),
+        createApplicationInput("unearnedIncome", "VETERANS_BENEFITS", "false"),
+        createApplicationInput("unearnedIncome", "UNEMPLOYMENT", "false"),
+        createApplicationInput("unearnedIncome", "WORKERS_COMPENSATION", "false"),
+        createApplicationInput("unearnedIncome", "RETIREMENT", "false"),
+        createApplicationInput("unearnedIncome", "CHILD_OR_SPOUSAL_SUPPORT", "true"),
+        createApplicationInput("unearnedIncome", "TRIBAL_PAYMENTS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "BENEFITS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "INSURANCE_PAYMENTS", "true"),
+        createApplicationInput("unearnedIncomeCcap", "CONTRACT_FOR_DEED", "false"),
+        createApplicationInput("unearnedIncomeCcap", "TRUST_MONEY", "true"),
+        createApplicationInput("unearnedIncomeCcap", "HEALTH_CARE_REIMBURSEMENT", "false"),
+        createApplicationInput("unearnedIncomeCcap", "INTEREST_DIVIDENDS", "false"),
+        createApplicationInput("unearnedIncomeCcap", "OTHER_SOURCES", "false"),
+        createApplicationInput("homeExpenses", "RENT", "false"),
+        createApplicationInput("homeExpenses", "MORTGAGE", "false"),
+        createApplicationInput("homeExpenses", "HOMEOWNERS_INSURANCE", "false"),
+        createApplicationInput("homeExpenses", "REAL_ESTATE_TAXES", "true"),
+        createApplicationInput("homeExpenses", "ASSOCIATION_FEES", "true"),
+        createApplicationInput("homeExpenses", "ROOM_AND_BOARD", "false"),
+        createApplicationInput("utilityPayments", "PHONE", "true"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false")
     );
   }
 
@@ -142,5 +111,11 @@ public class OneToManyApplicationInputsMapperTest {
         .build(), null, null, null);
 
     assertThat(result).isEmpty();
+  }
+
+  @NotNull
+  private ApplicationInput createApplicationInput(String groupName, String name, String value) {
+    return new ApplicationInput(groupName, name, List.of(value),
+        ENUMERATED_SINGLE_VALUE);
   }
 }
