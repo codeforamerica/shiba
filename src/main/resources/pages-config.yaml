@@ -3278,7 +3278,7 @@ workflow:
               value: Leech Lake
             - pageName: selectTheTribe
               input: selectedTribe
-              value: Mille Lacs
+              value: Mille Lacs Band of Ojibwe
             - pageName: selectTheTribe
               input: selectedTribe
               value: Red Lake
@@ -3286,13 +3286,25 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - *livesAlone?
-        - pageName: tribalNationMember
-          input: isTribalNationMember
-          value: NO
+        - logicalOperator: OR
+          conditions:
+            - *livesAlone?
+            - pageName: tribalNationMember
+              input: isTribalNationMember
+              value: NO
+        - logicalOperator: AND
+          conditions:
+            - pageName: identifyCounty
+              input: county
+              matcher: IS_URBAN_TRIBAL_NATION_COUNTY
+            - pageName: selectTheTribe
+              input: selectedTribe
+              matcher: IS_URBAN_TRIBAL_NATION_CLIENT
     datasources:
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
+      - pageName: tribalNationMember
+      - pageName: identifyCounty
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
