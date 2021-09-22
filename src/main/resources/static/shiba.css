@@ -1482,3 +1482,17 @@ legend.form-question {
     clear: left;
   }
 }
+
+@media screen and (-ms-high-contrast: white-on-black) {
+  .radio-button input[type='radio']:checked:before {
+    background-color: white;
+    -ms-high-contrast-adjust: none;
+  }
+}
+
+@media screen and (-ms-high-contrast: black-on-white) {
+  .radio-button input[type='radio']:checked:before {
+    background-color: black;
+    -ms-high-contrast-adjust: none;
+  }
+}
