@@ -8,7 +8,7 @@ spring:
         cachecontrol:
           max-age: 2h
 client:
-  keystore: src/main/resources/shiba-production.jks
+  keystore: src/main/resources/shiba-keystore-production-2021.jks
   truststore: src/main/resources/shiba-truststore-production.jks
 
 mnit-esb:
