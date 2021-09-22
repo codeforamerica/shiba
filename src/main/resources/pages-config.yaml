@@ -7,6 +7,10 @@ conditionDefinitions:
     pageName: addHouseholdMembers
     input: addHouseholdMembers
     value: "false"
+  - &isUrbanTribalNationMember?
+    pageName: selectTheTribe
+    input: selectedTribe
+    matcher: IS_URBAN_TRIBAL_NATION_MEMBER
   - &doesNotLiveAlone?
     logicalOperator: OR
     conditions:
@@ -3266,9 +3270,7 @@ workflow:
           conditions:
             - logicalOperator: AND
               conditions:
-                - pageName: selectTheTribe
-                  input: selectedTribe
-                  matcher: IS_URBAN_TRIBAL_NATION_MEMBER
+                - *isUrbanTribalNationMember?
                 - pageName: identifyCounty
                   input: county
                   matcher: IS_URBAN_TRIBAL_NATION_COUNTY
@@ -3295,11 +3297,7 @@ workflow:
             - pageName: tribalNationMember
               input: isTribalNationMember
               value: NO
-        - logicalOperator: AND
-          conditions:
-            - pageName: selectTheTribe
-              input: selectedTribe
-              matcher: IS_URBAN_TRIBAL_NATION_MEMBER
+        - *isUrbanTribalNationMember?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
