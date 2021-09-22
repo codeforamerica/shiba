@@ -293,7 +293,7 @@ pageDefinitions:
   - &choosePrograms
     name: choosePrograms
     pageTitle: choose-programs.title
-    headerKey: choose-programs.what-do-you-need-help-with-today
+    headerKey: choose-programs.what-type-of-assistance-would-you-like-to-apply-for
     headerHelpMessageKey: general.check-all-that-apply
     contextFragment: chooseProgramsContextFragment
     inputs:
@@ -757,7 +757,7 @@ pageDefinitions:
       - name: programs
         type: CHECKBOX
         promptMessage:
-          promptMessageKey: household-member-info.what-do-they-need-help-with
+          promptMessageKey: household-member-info.what-type-of-assistance-would-they-like-to-apply-for
         helpMessageKey: general.check-all-that-apply
         followUpValues:
           - SNAP
