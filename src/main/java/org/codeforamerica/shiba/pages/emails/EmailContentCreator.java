@@ -27,7 +27,6 @@ public class EmailContentCreator {
   private final static String CLIENT_BODY = "email.client-body";
   private final static String ADDITIONAL_SUPPORT = "email.you-may-be-able-to-receive-more-support";
   private final static String IF_YOU_WANT_AN_UPDATE = "email.if-you-want-an-update-call-your-county";
-  private final static String CLIENT_WARNING = "email.warning";
   private final static String CONFIRMATION_EMAIL_DOC_RECS = "email.confirmation-email-doc-recs";
   private final static String DOCUMENT_RECOMMENDATION_EMAIL = "email.document-recommendation-email";
   private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
@@ -76,19 +75,17 @@ public class EmailContentCreator {
     }
 
     content = addDemoMessage(content, lms);
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return wrapHtml(content);
   }
 
   public String createDocRecommendationEmail(ApplicationData applicationData) {
     Locale locale = applicationData.getLocale();
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    String content = "";
+    String content;
     content = getDocumentRecommendations(applicationData, locale, lms,
         DOCUMENT_RECOMMENDATION_EMAIL);
     content = addDemoMessage(content, lms);
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return wrapHtml(content);
   }
 
   private String getDocumentRecommendations(ApplicationData applicationData, Locale locale,
@@ -113,8 +110,7 @@ public class EmailContentCreator {
         List.of(confirmationId, "", lms.getMessage(IF_YOU_WANT_AN_UPDATE)));
 
     content = addDemoMessage(content, lms);
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return wrapHtml(content);
   }
 
   public String createNextStepsEmail(List<String> programs,
@@ -134,8 +130,7 @@ public class EmailContentCreator {
 
     content = addDemoMessage(content, lms);
 
-    String warning = lms.getMessage(CLIENT_WARNING);
-    return wrapHtml(content + warning);
+    return wrapHtml(content);
   }
 
   public String createClientLaterDocsConfirmationEmailBody(Locale locale) {
