@@ -1616,10 +1616,11 @@ pageDefinitions:
   - &disability
     name: disability
     pageTitle: disability.title
+    contextFragment: disabilityContextFragment
     headerKey:
-      defaultValue: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-prevents
+      defaultValue: disability.does-anyone-in-your-household-have-a-physical-or-mental-disability-that-limits
       conditionalValues:
-        - value: disability.do-you-have-a-physical-or-mental-disability-that-prevents-you-from-working
+        - value: disability.do-you-have-a-physical-or-mental-disability-that-limits
           condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
