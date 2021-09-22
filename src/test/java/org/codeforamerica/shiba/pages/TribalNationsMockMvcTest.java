@@ -28,23 +28,90 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Grand Portage,Hennepin",
       "Leech Lake,Hennepin",
       "Mille Lacs Band of Ojibwe,Hennepin",
-      "White Earth,Hennepin",
+//      "White Earth,Hennepin",
       "Bois Forte,Anoka",
       "Fond Du Lac,Anoka",
       "Grand Portage,Anoka",
       "Leech Lake,Anoka",
       "Mille Lacs Band of Ojibwe,Anoka",
-      "White Earth,Ramsey",
+//      "White Earth,Anoka",
       "Bois Forte,Ramsey",
       "Fond Du Lac,Ramsey",
       "Grand Portage,Ramsey",
       "Leech Lake,Ramsey",
       "Mille Lacs Band of Ojibwe,Ramsey",
-      "White Earth,Ramsey",
+//      "White Earth,Ramsey",
+      "Mille Lacs Band of Ojibwe,Ramsey",
+      "Mille Lacs Band of Ojibwe,Aitkin",
+      "Mille Lacs Band of Ojibwe,Benton",
+      "Mille Lacs Band of Ojibwe,Crow Wing",
+      "Mille Lacs Band of Ojibwe,Morrison",
+      "Mille Lacs Band of Ojibwe,Mille Lacs",
+      "Mille Lacs Band of Ojibwe,Pine"
   })
-  void shouldSkipNationBoundariesPageCorrectly(String nationName, String county) throws Exception {
+  void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
+      throws Exception {
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
     postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForTribalTANF");
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Bois Forte,Olmsted",
+      "Fond Du Lac,Olmsted",
+      "Grand Portage,Olmsted",
+      "Leech Lake,Olmsted",
+      "Mille Lacs Band of Ojibwe,Olmsted",
+      "White Earth,Olmsted",
+      "Bois Forte,Aitkin",
+      "Fond Du Lac,Benton",
+      "Grand Portage,Crow Wing",
+      "Leech Lake,Morrison",
+      "White Earth,Mille Lacs",
+      "Bois Forte,Pine"
+  })
+  void shouldSkipNationBoundariesPageAndRouteToMfip(String nationName, String county)
+      throws Exception {
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForMFIP");
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Red Lake,Hennepin,false"
+  })
+  void shouldGetBootedFromTheFlow(String nationName, String county, String livingInNationBoundary)
+      throws Exception {
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "nationsBoundary");
+    postExpectingRedirect("nationsBoundary",
+        "livingInNationBoundary",
+        livingInNationBoundary,
+        "introIncome");
+  }
+
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Prairie Island,Hennepin,true"
+  })
+  void fullTribalNationFlowMFIP(String nationName, String county, String livingInNationBoundary)
+      throws Exception {
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "nationsBoundary");
+    postExpectingRedirect("nationsBoundary",
+        "livingInNationBoundary",
+        livingInNationBoundary,
+        "applyForMFIP");
   }
 }

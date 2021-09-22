@@ -3264,24 +3264,27 @@ workflow:
         condition:
           logicalOperator: OR
           conditions:
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Bois Forte
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Fond Du Lac
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Grand Portage
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Leech Lake
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Mille Lacs Band of Ojibwe
-            - pageName: selectTheTribe
-              input: selectedTribe
-              value: Red Lake
+            - logicalOperator: AND
+              conditions:
+                - pageName: selectTheTribe
+                  input: selectedTribe
+                  matcher: IS_URBAN_TRIBAL_NATION_MEMBER
+                - pageName: identifyCounty
+                  input: county
+                  matcher: IS_URBAN_TRIBAL_NATION_COUNTY
+            - logicalOperator: AND
+              conditions:
+                - pageName: selectTheTribe
+                  input: selectedTribe
+                  value: Mille Lacs Band of Ojibwe
+                - pageName: identifyCounty
+                  input: county
+                  matcher: IS_MILLE_LACS_RURAL_COUNTY
+      - pageName: introIncome
+        condition:
+          pageName: nationsBoundary
+          input: livingInNationBoundary
+          value: "false"
       - pageName: applyForMFIP
     skipCondition:
       logicalOperator: OR
@@ -3294,12 +3297,9 @@ workflow:
               value: NO
         - logicalOperator: AND
           conditions:
-            - pageName: identifyCounty
-              input: county
-              matcher: IS_URBAN_TRIBAL_NATION_COUNTY
             - pageName: selectTheTribe
               input: selectedTribe
-              matcher: IS_URBAN_TRIBAL_NATION_CLIENT
+              matcher: IS_URBAN_TRIBAL_NATION_MEMBER
     datasources:
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
