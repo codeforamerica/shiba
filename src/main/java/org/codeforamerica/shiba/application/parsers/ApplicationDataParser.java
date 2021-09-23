@@ -116,7 +116,7 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.HOME_EXPENSES,
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
-        new ParsingCoordinate("utilityPayments", "utilityPayments"));
+        new ParsingCoordinate("utilityPayments", "payForUtilities"));
 
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));

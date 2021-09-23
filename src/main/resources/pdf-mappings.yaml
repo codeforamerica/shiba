@@ -66,23 +66,15 @@ mappings:
   liquidAssets:
     liquidAssets: EXPEDITED_QUESTION_2
   utilityPayments:
-    payForUtilities:
-      HEATING: HEAT
-      COOLING: AIR_CONDITIONING
-      ELECTRICITY: ELECTRICITY
-      PHONE: PHONE
-      GARBAGE_REMOVAL: GARBAGE_REMOVAL
-      COOKING_FUEL: COOKING_FUEL
-    noExpeditedUtilitiesSelected:
-      NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
+    HEATING: HEAT
+    COOLING: AIR_CONDITIONING
+    ELECTRICITY: ELECTRICITY
+    PHONE: PHONE
+    GARBAGE_REMOVAL: GARBAGE_REMOVAL
+    COOKING_FUEL: COOKING_FUEL
+    noExpeditedUtilitiesSelected: NO_EXPEDITED_UTILITIES_SELECTED
     heatingOrCoolingSelection: HEATING_COOLING_SELECTION
-    noHeatingOrCoolingSelection: HEATING_COOLING_SELECTION
     waterOrSewerSelection: WATER_SEWER_SELECTION
-    noWaterOrsewerSelection: WATER_SEWER_SELECTION
-    noElectricitySelection: ELECTRICITY
-    noGarbageRemovalSelection: GARBAGE_REMOVAL
-    noCookingFuelSelection: COOKING_FUEL
-    noPhoneSelection: PHONE
   migrantFarmWorker:
     migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
   signThisApplication:

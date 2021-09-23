@@ -66,14 +66,10 @@ xml:
         PHONE: PHONE
         COOKING_FUEL: COOKING_FUEL
         GARBAGE_REMOVAL: GARBAGE_REMOVAL
-      noExpeditedUtilitiesSelected:
-        NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
-      heatingOrCooling:
-        HEATING_OR_COOLING: HEATING_OR_COOLING
-      waterOrSewer:
-        WATER_OR_SEWER: WATER_OR_SEWER
-      phoneCellPhone:
-        PHONE_CELL_PHONE: PHONE_CELL_PHONE
+      NO_EXPEDITED_UTILITIES_SELECTED: NO_EXPEDITED_UTILITIES_SELECTED
+      heatingOrCooling: HEATING_OR_COOLING
+      waterOrSewer: WATER_OR_SEWER
+      phoneCellPhone: PHONE_CELL_PHONE
     migrantFarmWorker:
       migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
     pregnant:

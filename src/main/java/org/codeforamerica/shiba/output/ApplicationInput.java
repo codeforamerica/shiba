@@ -28,30 +28,18 @@ public class ApplicationInput {
 
   public ApplicationInput(String groupName, String name, @NotNull List<String> value,
       ApplicationInputType type) {
-    this.groupName = groupName;
-    this.name = name;
-    this.value = value;
-    this.type = type;
-    this.iteration = null;
+    this(groupName, name, value, type, null);
   }
 
   // Make an application input with only a single value
   public ApplicationInput(String groupName, String name, String value, ApplicationInputType type) {
-    this.groupName = groupName;
-    this.name = name;
-    this.value = value == null ? emptyList() : List.of(value);
-    this.type = type;
-    this.iteration = null;
+    this(groupName, name, value, type, null);
   }
 
   // Make an application input for an iteration with only a single value
   public ApplicationInput(String groupName, String name, String value, ApplicationInputType type,
       Integer iteration) {
-    this.groupName = groupName;
-    this.name = name;
-    this.value = value == null ? emptyList() : List.of(value);
-    this.type = type;
-    this.iteration = iteration;
+    this(groupName, name, value == null ? emptyList() : List.of(value), type, iteration);
   }
 
   public List<String> getPdfName(Map<String, List<String>> pdfFieldMap) {

@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_EXPENSES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME_CCAP;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UTILITY_PAYMENTS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
 
@@ -34,7 +35,11 @@ public class OneToManyApplicationInputsMapper implements ApplicationInputsMapper
   private static final List<String> HOME_EXPENSES_OPTIONS = List.of("RENT", "MORTGAGE",
       "HOMEOWNERS_INSURANCE", "REAL_ESTATE_TAXES", "ASSOCIATION_FEES", "ROOM_AND_BOARD");
 
+  private static final List<String> UTILITY_PAYMENTS_OPTIONS = List.of("ELECTRICITY", "PHONE",
+      "GARBAGE_REMOVAL", "COOKING_FUEL");
+
   @Override
+
   public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     return map(application.getApplicationData().getPagesData());
@@ -51,6 +56,9 @@ public class OneToManyApplicationInputsMapper implements ApplicationInputsMapper
 
     addApplicationInputs(pagesData, "homeExpenses", results, HOME_EXPENSES,
         HOME_EXPENSES_OPTIONS);
+
+    addApplicationInputs(pagesData, "utilityPayments", results, UTILITY_PAYMENTS,
+        UTILITY_PAYMENTS_OPTIONS);
 
     return results;
   }
