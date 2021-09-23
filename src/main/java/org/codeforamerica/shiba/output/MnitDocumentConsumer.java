@@ -16,8 +16,8 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.RoutingDestinationService;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -29,20 +29,20 @@ public class MnitDocumentConsumer {
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
-  private final RoutingDestinationService routingDestinationService;
+  private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
-      RoutingDestinationService routingDestinationService,
+      RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
-    this.routingDestinationService = routingDestinationService;
+    this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
   }
 
@@ -88,7 +88,7 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
-    RoutingDestination routingDestination = routingDestinationService
+    RoutingDestination routingDestination = routingDecisionService
         .getRoutingDestination(application.getApplicationData(), document);
 
     if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {

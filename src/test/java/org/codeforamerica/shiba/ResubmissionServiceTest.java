@@ -28,8 +28,8 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.RoutingDestinationService;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ class ResubmissionServiceTest {
   @Mock
   private DocumentRepository documentRepository;
   @Mock
-  private RoutingDestinationService routingDestinationService;
+  private RoutingDecisionService routingDecisionService;
   private ResubmissionService resubmissionService;
   private RoutingDestination routingDestination;
 
@@ -74,9 +74,9 @@ class ResubmissionServiceTest {
         Anoka, MnitCountyInformation.builder().email(ANOKA_EMAIL).build()
     ));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
-        pdfGenerator, routingDestinationService);
+        pdfGenerator, routingDecisionService);
     routingDestination = new RoutingDestination(Olmsted.displayName(), null);
-    when(routingDestinationService.getRoutingDestination(any(), any())).thenReturn(
+    when(routingDecisionService.getRoutingDestination(any(), any())).thenReturn(
         routingDestination);
   }
 

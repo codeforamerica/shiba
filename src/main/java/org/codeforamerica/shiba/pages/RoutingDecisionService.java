@@ -22,11 +22,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 // The tests for this class live in MnitDocumentConsumerTest
-public class RoutingDestinationService {
+public class RoutingDecisionService {
 
   private final CountyParser countyParser;
 
-  public RoutingDestinationService(CountyParser countyParser) {
+  public RoutingDecisionService(CountyParser countyParser) {
     this.countyParser = countyParser;
   }
 

@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -94,7 +94,7 @@ public class PageController {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final NextStepsContentService nextStepsContentService;
   private final DocRecommendationMessageService docRecommendationMessageService;
-  private final RoutingDestinationService routingDestinationService;
+  private final RoutingDecisionService routingDecisionService;
   private final DocumentRepository documentRepository;
 
   public PageController(
@@ -113,7 +113,7 @@ public class PageController {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       NextStepsContentService nextStepsContentService,
       DocRecommendationMessageService docRecommendationMessageService,
-      RoutingDestinationService routingDestinationService,
+      RoutingDecisionService routingDecisionService,
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository) {
     this.applicationData = applicationData;
@@ -131,7 +131,7 @@ public class PageController {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.nextStepsContentService = nextStepsContentService;
     this.docRecommendationMessageService = docRecommendationMessageService;
-    this.routingDestinationService = routingDestinationService;
+    this.routingDecisionService = routingDecisionService;
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
   }
@@ -366,7 +366,7 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
       RoutingDestination routingDestination = DocumentListParser.parse(applicationData).stream()
-          .map(doc -> routingDestinationService.getRoutingDestination(applicationData, doc))
+          .map(doc -> routingDecisionService.getRoutingDestination(applicationData, doc))
           .reduce(new RoutingDestination(), (acc, element) -> {
             if (element.getTribalNation() != null) {
               acc.setTribalNation(element.getTribalNation());
