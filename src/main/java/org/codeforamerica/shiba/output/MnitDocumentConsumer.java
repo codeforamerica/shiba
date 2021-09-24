@@ -19,20 +19,16 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-<<<<<<< Upstream, based on branch 'mnit-filenet-feature' of git@github.com:codeforamerica/shiba
 import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
-=======
+import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
->>>>>>> e67f964 Counties and tribal nations have common ancestor (#442)
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-<<<<<<< Upstream, based on branch 'mnit-filenet-feature' of git@github.com:codeforamerica/shiba
 import org.codeforamerica.shiba.pages.RoutingDestinationService;
 import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-=======
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
->>>>>>> e67f964 Counties and tribal nations have common ancestor (#442)
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +46,7 @@ public class MnitDocumentConsumer {
   private final FeatureFlagConfiguration featureFlags;
   private final HashMap<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyMap;
+  private final FeatureFlagConfiguration featureFlagConfiguration;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
 	  MnitFilenetWebServiceClient mnitFilenetClient,
@@ -64,17 +61,19 @@ public class MnitDocumentConsumer {
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
       HashMap<String, TribalNationRoutingDestination> tribalNations,
-      CountyMap<CountyRoutingDestination> countyMap) {
+      CountyMap<CountyRoutingDestination> countyMap,
+      FeatureFlagConfiguration featurFlagConfiguration) {
     this.mnitClient = mnitClient;
+    this.mnitFilenetClient = mnitFilenetClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
     this.featureFlags = featureFlags;
-
     this.tribalNations = tribalNations;
     this.countyMap = countyMap;
+    this.featureFlagConfiguration = featurFlagConfiguration;
   }
 
   public void processCafAndCcap(Application application) {
@@ -154,6 +153,17 @@ public class MnitDocumentConsumer {
     routingDestinations.forEach(rd -> {
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     });
+    
+    if (featureFlagConfiguration.get("filenet").isOff()) {
+	    routingDestinations.forEach(rd -> {
+	      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+	    });
+    } else {
+	    routingDestinations.forEach(rd -> {
+		  mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
+		});
+    	
+    }
   }
 
   class SendPDFRunnable implements Runnable {

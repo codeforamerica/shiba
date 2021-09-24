@@ -13,6 +13,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.webservices.client.WebServiceTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,21 @@ public class MnitEsbWebServiceTemplateConfiguration {
       @Value("${mnit-esb.jaxb-context-path}") String jaxbContextPath,
       @Value("${mnit-esb.url}") String url,
       @Value("${mnit-esb.timeout-seconds}") long timeoutSeconds )
+      @Value("${mnit-esb.timeout-seconds}") long timeoutSeconds,
+      @Value("${mnit-filenet.username}") String filenetUsername,
+      @Value("${mnit-filenet.password}") String filenetPassword,
+      @Value("${mnit-filenet.jaxb-context-path}") String filenetJaxbContextPath,
+      @Value("${mnit-filenet.url}") String filenetUrl,
+      @Value("${mnit-filenet.timeout-seconds}") long filenetTimeoutSeconds,
+      @Value("${feature-flag.filenet}") FeatureFlag filenetFeatureFlag)
       throws KeyManagementException, NoSuchAlgorithmException {
+	if (filenetFeatureFlag.isOn()) {
+		username = filenetUsername; 
+	    password = filenetPassword;
+	    jaxbContextPath = filenetJaxbContextPath;
+	    url = filenetUrl;
+	    timeoutSeconds = filenetTimeoutSeconds;
+	}
     Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
     jaxb2Marshaller.setContextPath(jaxbContextPath);
     String auth = username + ":" + password;
