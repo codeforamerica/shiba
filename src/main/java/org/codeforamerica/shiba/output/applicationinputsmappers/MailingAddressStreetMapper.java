@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_CITY;

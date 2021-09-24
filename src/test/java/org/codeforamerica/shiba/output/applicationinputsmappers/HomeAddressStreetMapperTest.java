@@ -6,7 +6,6 @@ import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.caf.HomeAddressStreetMapper;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
