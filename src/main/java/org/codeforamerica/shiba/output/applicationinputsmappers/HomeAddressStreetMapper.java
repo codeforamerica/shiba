@@ -1,4 +1,4 @@
-package org.codeforamerica.shiba.output.caf;
+package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static java.lang.Boolean.parseBoolean;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_APARTMENT_NUMBER;
@@ -21,8 +21,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
-import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
