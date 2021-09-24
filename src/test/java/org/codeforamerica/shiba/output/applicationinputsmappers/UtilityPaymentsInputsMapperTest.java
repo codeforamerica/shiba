@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.testutilities.TestUtils.createApplicationInput;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
@@ -26,16 +26,17 @@ public class UtilityPaymentsInputsMapperTest {
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("utilityPayments", "noExpeditedUtilitiesSelected", "true",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
-            "NO_EXPEDITED_UTILITIES_SELECTED", ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "heatingOrCoolingSelection", "NEITHER_SELECTED",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "waterOrSewer", "WATER_OR_SEWER",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "waterOrSewerSelection", "ONE_SELECTED",
-            ENUMERATED_SINGLE_VALUE
+        createApplicationInput("utilityPayments", "PHONE", "false"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false"),
+        
+        createApplicationInput("utilityPayments", "noExpeditedUtilitiesSelected", "true"),
+        createApplicationInput("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
+            "NO_EXPEDITED_UTILITIES_SELECTED"),
+        createApplicationInput("utilityPayments", "heatingOrCoolingSelection", "NEITHER_SELECTED"),
+        createApplicationInput("utilityPayments", "waterOrSewer", "WATER_OR_SEWER"),
+        createApplicationInput("utilityPayments", "waterOrSewerSelection", "ONE_SELECTED"
         )
     );
   }
@@ -52,13 +53,64 @@ public class UtilityPaymentsInputsMapperTest {
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("utilityPayments", "heatingOrCoolingSelection", "ONE_SELECTED",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "waterOrSewerSelection", "NEITHER_SELECTED",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "heatingOrCooling", "HEATING_OR_COOLING",
-            ENUMERATED_SINGLE_VALUE),
-        new ApplicationInput("utilityPayments", "HEATING", "true", ENUMERATED_SINGLE_VALUE));
+        createApplicationInput("utilityPayments", "PHONE", "false"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false"),
+
+        createApplicationInput("utilityPayments", "heatingOrCoolingSelection", "ONE_SELECTED"),
+        createApplicationInput("utilityPayments", "waterOrSewerSelection", "NEITHER_SELECTED"),
+        createApplicationInput("utilityPayments", "heatingOrCooling", "HEATING_OR_COOLING"),
+        createApplicationInput("utilityPayments", "HEATING", "true")
+    );
+  }
+
+  @Test
+  public void shouldMapNoneOfTheAboveToNoForYesNoOptions() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("utilityPayments", "payUtilities", List.of("NONE_OF_THE_ABOVE"))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("utilityPayments", "PHONE", "false"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false"),
+
+        createApplicationInput("utilityPayments", "noExpeditedUtilitiesSelected", "true"),
+        createApplicationInput("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
+            "NO_EXPEDITED_UTILITIES_SELECTED"),
+        createApplicationInput("utilityPayments", "heatingOrCoolingSelection", "NEITHER_SELECTED"),
+        createApplicationInput("utilityPayments", "waterOrSewerSelection", "NEITHER_SELECTED")
+    );
+  }
+
+  @Test
+  public void shouldMapYesToSelectedOptions() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("utilityPayments", "payForUtilities", List.of("HEATING", "PHONE"))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("utilityPayments", "PHONE", "true"),
+        createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
+        createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
+        createApplicationInput("utilityPayments", "COOKING_FUEL", "false"),
+
+        createApplicationInput("utilityPayments", "HEATING", "true"),
+        createApplicationInput("utilityPayments", "heatingOrCoolingSelection", "ONE_SELECTED"),
+        createApplicationInput("utilityPayments", "heatingOrCooling", "HEATING_OR_COOLING"),
+        createApplicationInput("utilityPayments", "waterOrSewerSelection", "NEITHER_SELECTED"),
+        createApplicationInput("utilityPayments", "phoneCellPhone", "PHONE_CELL_PHONE")
+    );
   }
 
   @Test

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.testutilities;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.configurations.SecurityConfiguration.ADMIN_EMAILS;
+import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +12,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.jetbrains.annotations.NotNull;
 
 public class TestUtils {
 
@@ -56,5 +60,11 @@ public class TestUtils {
     applicationData.setUploadedDocs(new ArrayList<>());
     applicationData.setFlow(FlowType.UNDETERMINED);
     applicationData.setSubmitted(false);
+  }
+
+  @NotNull
+  public static ApplicationInput createApplicationInput(String groupName, String name,
+      String value) {
+    return new ApplicationInput(groupName, name, List.of(value), ENUMERATED_SINGLE_VALUE);
   }
 }
