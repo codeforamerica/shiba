@@ -14,7 +14,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.mnit.MnitCountyInformation;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -28,7 +28,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 class FileNameGeneratorTest {
 
-  CountyMap<MnitCountyInformation> countyMap = new CountyMap<>();
+  CountyMap<RoutingDestination> countyMap = new CountyMap<>();
 
   FileNameGenerator fileNameGenerator = new FileNameGenerator(countyMap);
 
@@ -42,7 +42,7 @@ class FileNameGeneratorTest {
     chooseProgramsData.put("programs", InputData.builder().value(emptyList()).build());
     pagesData.put("choosePrograms", chooseProgramsData);
     applicationData.setPagesData(pagesData);
-    countyMap.setDefaultValue(MnitCountyInformation.builder()
+    countyMap.setDefaultValue(RoutingDestination.builder()
         .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
         .email("defaultEmail")
@@ -82,7 +82,7 @@ class FileNameGeneratorTest {
     String countyNPI = "someNPI";
     County county = Hennepin;
     countyMap.getCounties()
-        .put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        .put(county, RoutingDestination.builder().dhsProviderId(countyNPI).build());
     Application application = defaultApplicationBuilder.county(county).build();
 
     String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
@@ -144,7 +144,7 @@ class FileNameGeneratorTest {
     String countyNPI = "someNPI";
     County county = Hennepin;
     countyMap.getCounties()
-        .put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        .put(county, RoutingDestination.builder().dhsProviderId(countyNPI).build());
 
     String applicationId = "someId";
 
@@ -172,7 +172,7 @@ class FileNameGeneratorTest {
     String countyNPI = "someNPI";
     County county = Hennepin;
     countyMap.getCounties()
-        .put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        .put(county, RoutingDestination.builder().dhsProviderId(countyNPI).build());
 
     String applicationId = "someId";
 
@@ -203,7 +203,7 @@ class FileNameGeneratorTest {
     String countyNPI = "someNPI";
     County county = Hennepin;
     countyMap.getCounties()
-        .put(county, MnitCountyInformation.builder().dhsProviderId(countyNPI).build());
+        .put(county, RoutingDestination.builder().dhsProviderId(countyNPI).build());
     String applicationId = "someId";
 
     Application application = defaultApplicationBuilder
@@ -235,9 +235,9 @@ class FileNameGeneratorTest {
     String olmstedCountyNPI = "olmstedNPI";
     County olmstedCounty = County.Olmsted;
     countyMap.getCounties().put(hennepinCounty,
-        MnitCountyInformation.builder().dhsProviderId(hennepinCountyNPI).build());
+        RoutingDestination.builder().dhsProviderId(hennepinCountyNPI).build());
     countyMap.getCounties().put(olmstedCounty,
-        MnitCountyInformation.builder().dhsProviderId(olmstedCountyNPI).build());
+        RoutingDestination.builder().dhsProviderId(olmstedCountyNPI).build());
     String applicationId = "someId";
 
     Application hennepinApplication = defaultApplicationBuilder

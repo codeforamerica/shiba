@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.OldRoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -365,9 +365,9 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
-      RoutingDestination routingDestination = DocumentListParser.parse(applicationData).stream()
+      OldRoutingDestination oldRoutingDestination = DocumentListParser.parse(applicationData).stream()
           .map(doc -> routingDecisionService.getRoutingDestination(applicationData, doc))
-          .reduce(new RoutingDestination(), (acc, element) -> {
+          .reduce(new OldRoutingDestination(), (acc, element) -> {
             if (element.getTribalNation() != null) {
               acc.setTribalNation(element.getTribalNation());
             }
@@ -376,8 +376,8 @@ public class PageController {
             }
             return acc;
           });
-      model.put("routedTribalNation", routingDestination.getTribalNation());
-      model.put("routedCounty", application.getCounty() == County.Other ? County.Hennepin.displayName() : routingDestination.getCounty());
+      model.put("routedTribalNation", oldRoutingDestination.getTribalNation());
+      model.put("routedCounty", application.getCounty() == County.Other ? County.Hennepin.displayName() : oldRoutingDestination.getCounty());
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

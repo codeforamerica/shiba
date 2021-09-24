@@ -15,28 +15,28 @@ public class CountyMapConfiguration {
   @Bean
   @Profile({"default", "test"})
   @ConfigurationProperties(prefix = "other")
-  CountyMap<MnitCountyInformation> localMapping() {
+  CountyMap<RoutingDestination> localMapping() {
     return new CountyMap<>();
   }
 
   @Bean
   @Profile("demo")
   @ConfigurationProperties(prefix = "demo")
-  CountyMap<MnitCountyInformation> demoMapping() {
+  CountyMap<RoutingDestination> demoMapping() {
     return new CountyMap<>();
   }
 
   @Bean
   @Profile("staging")
   @ConfigurationProperties(prefix = "staging")
-  CountyMap<MnitCountyInformation> stagingMapping() {
+  CountyMap<RoutingDestination> stagingMapping() {
     return new CountyMap<>();
   }
 
   @Bean
   @Profile("production")
   @ConfigurationProperties(prefix = "production")
-  CountyMap<MnitCountyInformation> productionMapping() {
+  CountyMap<RoutingDestination> productionMapping() {
     return new CountyMap<>();
   }
 }

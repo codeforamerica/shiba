@@ -11,10 +11,14 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -25,16 +29,19 @@ import org.springframework.stereotype.Service;
 public class RoutingDecisionService {
 
   private final CountyParser countyParser;
+  private final ArrayList<TribalNation> tribalNations;
 
-  public RoutingDecisionService(CountyParser countyParser) {
+  public RoutingDecisionService(CountyParser countyParser,
+      ArrayList<TribalNation> tribalNations) {
     this.countyParser = countyParser;
+    this.tribalNations = tribalNations;
   }
 
-  public RoutingDestination getRoutingDestination(ApplicationData applicationData,
+  public OldRoutingDestination getRoutingDestination(ApplicationData applicationData,
       Document document) {
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
-    RoutingDestination result = new RoutingDestination();
+    OldRoutingDestination result = new OldRoutingDestination();
 
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     if (shouldSendToMilleLacs) {
@@ -67,7 +74,7 @@ public class RoutingDecisionService {
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class RoutingDestination {
+  public static class OldRoutingDestination {
 
     private String county;
     private String tribalNation;

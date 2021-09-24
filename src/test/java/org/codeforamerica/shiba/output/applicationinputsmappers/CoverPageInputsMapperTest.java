@@ -13,7 +13,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.mnit.MnitCountyInformation;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Document;
@@ -43,7 +43,7 @@ class CoverPageInputsMapperTest {
   @BeforeEach
   public void setUp() throws IOException {
     countyInstructionsMapping = new CountyMap<>();
-    CountyMap<MnitCountyInformation> countyInformationMapping = new CountyMap<>();
+    CountyMap<RoutingDestination> countyInformationMapping = new CountyMap<>();
     pagesDataBuilder = new PagesDataBuilder();
     staticMessageSource = new StaticMessageSource();
     pagesData = new PagesData();
@@ -55,7 +55,7 @@ class CoverPageInputsMapperTest {
     countyInstructionsMapping.getCounties().put(County.Other, Map.of(
         Recipient.CLIENT, "county-to-instructions.default-client",
         Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
-    countyInformationMapping.setDefaultValue(MnitCountyInformation.builder()
+    countyInformationMapping.setDefaultValue(RoutingDestination.builder()
         .dhsProviderId("someDhsProviderId")
         .email("someEmail")
         .phoneNumber("555-123-4567")

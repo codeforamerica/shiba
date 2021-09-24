@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MnitCountyInformation {
+public class RoutingDestination {
 
   private String folderId;
   private String dhsProviderId;

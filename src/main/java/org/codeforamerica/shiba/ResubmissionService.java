@@ -13,12 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.mnit.MnitCountyInformation;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.OldRoutingDestination;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
@@ -31,13 +31,13 @@ public class ResubmissionService {
 
   private final ApplicationRepository applicationRepository;
   private final EmailClient emailClient;
-  private final CountyMap<MnitCountyInformation> countyMap;
+  private final CountyMap<RoutingDestination> countyMap;
   private final PdfGenerator pdfGenerator;
   private final RoutingDecisionService routingDecisionService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
-      EmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
+      EmailClient emailClient, CountyMap<RoutingDestination> countyMap,
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService) {
     this.applicationRepository = applicationRepository;
@@ -63,7 +63,7 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      RoutingDestination destination = routingDecisionService.getRoutingDestination(
+      OldRoutingDestination destination = routingDecisionService.getRoutingDestination(
           application.getApplicationData(), document);
       List<String> recipientEmails = new ArrayList<>();
 

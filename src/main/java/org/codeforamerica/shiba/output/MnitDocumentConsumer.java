@@ -17,7 +17,7 @@ import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.OldRoutingDestination;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -88,14 +88,14 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
-    RoutingDestination routingDestination = routingDecisionService
+    OldRoutingDestination oldRoutingDestination = routingDecisionService
         .getRoutingDestination(application.getApplicationData(), document);
 
-    if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
+    if (MilleLacsBand.displayName().equals(oldRoutingDestination.getTribalNation())) {
       mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
     }
 
-    if (routingDestination.getCounty() != null) {
+    if (oldRoutingDestination.getCounty() != null) {
       mnitClient.send(file, application.getCounty(), application.getId(), document,
           application.getFlow());
     }

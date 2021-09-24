@@ -1,8 +1,13 @@
 package org.codeforamerica.shiba;
 
 import java.util.Set;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 
-public class TribalNation {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TribalNation extends RoutingDestination {
 
   public static final String BOIS_FORTE = "Bois Forte";
   public static final String FOND_DU_LAC = "Fond Du Lac";
@@ -23,4 +28,6 @@ public class TribalNation {
   public static boolean isServicedByMilleLacs(String tribeName) {
     return tribeName != null && MILLE_LACS_SERVICED_TRIBES.contains(tribeName);
   }
+
+  private String name;
 }
