@@ -93,6 +93,7 @@ public class AbstractShibaMockMvcTest {
     when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfiguration.get("filenet")).thenReturn(FeatureFlag.OFF);
   }
 
   @AfterEach

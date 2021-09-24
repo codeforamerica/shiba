@@ -14,10 +14,12 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDestinationService;
 import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -26,24 +28,30 @@ import org.springframework.stereotype.Component;
 public class MnitDocumentConsumer {
 
   private final MnitEsbWebServiceClient mnitClient;
+  private final MnitFilenetWebServiceClient mnitFilenetClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
   private final RoutingDestinationService routingDestinationService;
   private final ApplicationRepository applicationRepository;
+  private final FeatureFlagConfiguration featureFlags;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
+	  MnitFilenetWebServiceClient mnitFilenetClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDestinationService routingDestinationService,
-      ApplicationRepository applicationRepository) {
-    this.mnitClient = mnitClient;
+      ApplicationRepository applicationRepository,
+      FeatureFlagConfiguration featureFlags) {
+	this.mnitClient = mnitClient;
+    this.mnitFilenetClient = mnitFilenetClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDestinationService = routingDestinationService;
     this.applicationRepository = applicationRepository;
+    this.featureFlags = featureFlags;
   }
 
   public void processCafAndCcap(Application application) {
@@ -91,13 +99,22 @@ public class MnitDocumentConsumer {
     RoutingDestination routingDestination = routingDestinationService
         .getRoutingDestination(application.getApplicationData(), document);
 
-    if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
-      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-    }
-
-    if (routingDestination.getCounty() != null) {
-      mnitClient.send(file, application.getCounty(), application.getId(), document,
-          application.getFlow());
+    if (featureFlags.get("filenet").isOn()) {
+        if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
+            mnitFilenetClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
+          }
+          if (routingDestination.getCounty() != null) {
+            mnitFilenetClient.send(file, application.getCounty(), application.getId(), document,
+                application.getFlow());
+          }
+    } else {
+        if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
+            mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
+          }
+          if (routingDestination.getCounty() != null) {
+            mnitClient.send(file, application.getCounty(), application.getId(), document,
+                application.getFlow());
+          }
     }
   }
 }
