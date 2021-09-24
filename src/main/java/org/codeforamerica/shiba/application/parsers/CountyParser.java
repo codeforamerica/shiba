@@ -4,7 +4,7 @@ import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.GENERAL_DELIVERY_CITY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IS_HOMELESS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.NO_PERMANENT_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -68,7 +68,8 @@ public class CountyParser {
   }
 
   private boolean shouldUseMailingAddress(ApplicationData applicationData) {
-    boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(), IS_HOMELESS))
+    boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(),
+        NO_PERMANENT_ADDRESS))
         .map(Boolean::parseBoolean)
         .orElse(false);
     boolean useDifferentAddress = ofNullable(
@@ -79,7 +80,8 @@ public class CountyParser {
   }
 
   private boolean shouldUseGeneralDeliveryCityToCountyMap(ApplicationData applicationData) {
-    boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(), IS_HOMELESS))
+    boolean isHomeless = ofNullable(getFirstValue(applicationData.getPagesData(),
+        NO_PERMANENT_ADDRESS))
         .map(Boolean::parseBoolean)
         .orElse(false);
 
