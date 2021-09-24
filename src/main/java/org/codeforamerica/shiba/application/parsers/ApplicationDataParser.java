@@ -75,6 +75,8 @@ public class ApplicationDataParser {
         .put(Field.ENRICHED_HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "enrichedZipCode"));
     coordinatesMap.put(Field.ENRICHED_HOME_APARTMENT_NUMBER,
         new ParsingCoordinate("homeAddress", "enrichedApartmentNumber"));
+    coordinatesMap.put(Field.USE_ENRICHED_HOME_ADDRESS,
+        new ParsingCoordinate("homeAddressValidation", "useEnrichedAddress"));
 
     coordinatesMap.put(Field.GENERAL_DELIVERY_CITY,
         new ParsingCoordinate("cityForGeneralDelivery", "whatIsTheCity"));
@@ -86,7 +88,8 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.APPLYING_FOR_TRIBAL_TANF,
         new ParsingCoordinate("applyForTribalTANF", "applyForTribalTANF"));
 
-    coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
+    coordinatesMap.put(Field.NO_PERMANENT_ADDRESS,
+        new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
         new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
@@ -211,8 +214,9 @@ public class ApplicationDataParser {
     ENRICHED_HOME_STATE,
     ENRICHED_HOME_ZIPCODE,
     ENRICHED_HOME_APARTMENT_NUMBER,
+    USE_ENRICHED_HOME_ADDRESS,
 
-    IS_HOMELESS,
+    NO_PERMANENT_ADDRESS,
     SAME_MAILING_ADDRESS,
 
     GENERAL_DELIVERY_CITY,

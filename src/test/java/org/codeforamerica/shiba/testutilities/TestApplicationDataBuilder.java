@@ -59,7 +59,7 @@ public class TestApplicationDataBuilder {
     return this;
   }
 
-  public TestApplicationDataBuilder isHomeless() {
+  public TestApplicationDataBuilder noPermamentAddress() {
     PageData homeAddress = new PageData();
     homeAddress.put("isHomeless", InputData.builder().value(List.of("true")).build());
     applicationData.getPagesData().put("homeAddress", homeAddress);
