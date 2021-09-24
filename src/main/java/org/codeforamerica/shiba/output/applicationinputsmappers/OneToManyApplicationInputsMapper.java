@@ -6,7 +6,6 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SI
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
@@ -27,21 +26,16 @@ public abstract class OneToManyApplicationInputsMapper implements ApplicationInp
 
   protected List<ApplicationInput> map(PagesData pagesData) {
     var params = getParams();
-    return addApplicationInputs(params, pagesData);
+    return createApplicationInputs(params, pagesData);
   }
 
-  protected List<ApplicationInput> addApplicationInputs(OneToManyParams params,
+  private List<ApplicationInput> createApplicationInputs(OneToManyParams params,
       PagesData pagesData) {
-    return addApplicationInputs(pagesData, params.getPageName(), params.getField(),
-        params.getYesNoOptions());
-  }
-
-  private List<ApplicationInput> addApplicationInputs(PagesData pagesData, String pageName,
-      Field field, List<String> options) {
+    String pageName = params.getPageName();
     List<ApplicationInput> results = new ArrayList<>();
     if (pagesData.containsKey(pageName)) {
-      List<String> selectedValues = getValues(pagesData, field);
-      options.stream()
+      List<String> selectedValues = getValues(pagesData, params.getField());
+      params.getYesNoOptions().stream()
           .map(option -> new ApplicationInput(pageName,
               option,
               String.valueOf(selectedValues.contains(option)),
