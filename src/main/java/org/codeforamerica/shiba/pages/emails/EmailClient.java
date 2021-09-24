@@ -38,11 +38,6 @@ public interface EmailClient {
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
-  void sendCaseWorkerEmail(String recipientEmail,
-      String recipientName,
-      String confirmationId,
-      ApplicationFile applicationFile);
-
   void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
 
   void sendHennepinDocUploadsEmails(Application application);

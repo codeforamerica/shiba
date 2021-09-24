@@ -199,35 +199,6 @@ class MailGunEmailClientTest {
   }
 
   @Test
-  void sendsEmailToTheCaseWorker() {
-    String recipientEmail = "someRecipient";
-    String emailContent = "content";
-    String recipientName = "test recipient";
-    when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
-
-    wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-
-    String fileContent = "someContent";
-    String fileName = "someFileName";
-    mailGunEmailClient.sendCaseWorkerEmail(
-        recipientEmail,
-        recipientName,
-        "appId",
-        new ApplicationFile(fileContent.getBytes(), fileName)
-    );
-
-    wireMockServer.verify(postToMailgun()
-        .withBasicAuth(credentials)
-        .withRequestBody(notMatching(".*name=\"cc\".*"))
-        .withRequestBodyPart(requestBodyPart("from", senderEmail))
-        .withRequestBodyPart(requestBodyPart("to", recipientEmail))
-        .withRequestBodyPart(
-            requestBodyPart("subject", "MNBenefits.org Application for " + recipientName))
-        .withRequestBodyPart(requestBodyPart("html", emailContent))
-        .withRequestBodyPart(attachment(String.format("filename=\"%s\"", fileName), fileContent)));
-  }
-
-  @Test
   void sendsHennepinDocUploadsEmail() {
     wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
     var applicationData = new ApplicationData();
@@ -411,41 +382,6 @@ class MailGunEmailClientTest {
             "MN Benefits Application " + applicationId + " Resubmission"))
         .withRequestBodyPart(attachment("filename=\"" + fileName + "\"", fileContent));
     wireMockServer.verify(expectedEmailRequest);
-  }
-
-  @Test
-  void shouldCCSenderEmail_whenSendingCaseworkerEmail_ifCCFlagIsTrue() {
-    String recipientEmail = "someRecipient";
-    String emailContent = "content";
-    String recipientName = "test recipient";
-    when(emailContentCreator.createCaseworkerHTML()).thenReturn(emailContent);
-
-    mailGunEmailClient = new MailGunEmailClient(
-        senderEmail,
-        "", "", "", "http://localhost:" + port,
-        mailGunApiKey,
-        emailContentCreator,
-        true,
-        pdfGenerator,
-        activeProfile,
-        applicationRepository,
-        messageSource);
-
-    wireMockServer.stubFor(post(anyUrl())
-        .willReturn(aResponse().withStatus(200)));
-
-    String fileContent = "someContent";
-    String fileName = "someFileName";
-    mailGunEmailClient.sendCaseWorkerEmail(
-        recipientEmail,
-        recipientName,
-        "appId",
-        new ApplicationFile(fileContent.getBytes(), fileName)
-    );
-
-    wireMockServer.verify(postToMailgun()
-        .withBasicAuth(credentials)
-        .withRequestBodyPart(requestBodyPart("cc", senderEmail)));
   }
 
   private MultipartValuePattern requestBodyPart(String name, String expectedBody) {

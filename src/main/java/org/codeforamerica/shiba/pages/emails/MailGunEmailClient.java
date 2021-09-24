@@ -140,22 +140,6 @@ public class MailGunEmailClient implements EmailClient {
   }
 
   @Override
-  public void sendCaseWorkerEmail(String recipientEmail,
-      String recipientName,
-      String applicationId,
-      ApplicationFile applicationFile) {
-    String subject = "MNBenefits.org Application for " + recipientName;
-    String emailBody = emailContentCreator.createCaseworkerHTML();
-    List<String> emailsToCC = new ArrayList<>();
-    if (shouldCC) {
-      emailsToCC.add(senderEmail);
-    }
-    sendEmail(subject, senderEmail, recipientEmail, emailsToCC, emailBody,
-        List.of(applicationFile), false);
-    log.info("Caseworker email sent for " + applicationFile.getFileName());
-  }
-
-  @Override
   public void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale) {
     var emailBody = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale);
     sendEmailFromFormData("Caseworker CAF downloaded", securityEmail, auditEmail, emailBody);
