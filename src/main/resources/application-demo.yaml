@@ -27,3 +27,5 @@ feature-flag:
   county-wadena: on
   county-waseca: on
   county-wright: on
+
+demo-banner: true
