@@ -51,6 +51,16 @@ mnit-esb:
   multiplier: 2
   max-delay: 10800000 # 3 hours
   timeout-seconds: 300
+mnit-filenet:
+  username: ${MNIT-FILENET_USERNAME}
+  password: ${MNIT-FILENET_PASSWORD}
+  url:  https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
+  jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
+  max-attempts: 4
+  delay: 5400000 # 1.5 hours
+  multiplier: 2
+  max-delay: 10800000 # 3 hours
+  timeout-seconds: 300
 
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
@@ -65,6 +75,7 @@ mail-gun:
 
 feature-flag:
   certain-pops: on
+  filenet: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on

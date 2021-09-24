@@ -63,6 +63,45 @@ task genJaxb {
     }
 }
 
+task genJaxbFilenet {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxbFilenet"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "src/main/resources/FileNetService.wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema,
+                    package: "org.codeforamerica.shiba.filenetwsdl") {
+                arg(value: "-wsdl")
+                arg(value: "-extension")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
+                    debugLevel: "lines,vars,source",
+                    includeantruntime: false,
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+
 dependencyManagement {
     imports {
         mavenBom("org.springframework.session:spring-session-bom:2021.0.3")
@@ -78,6 +117,13 @@ dependencies {
             replacedBy("com.sun.mail:jakarta.mail", "Use jakarta instead of apache")
         }
     }
+
+    implementation(files(genJaxbFilenet.classesDir).builtBy(genJaxbFilenet))
+    jaxb(
+            'org.glassfish.jaxb:jaxb-runtime',
+            'org.glassfish.jaxb:jaxb-xjc',
+            'org.glassfish.jaxb:jaxb-jxc'
+    )
 
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -154,6 +200,7 @@ dependencies {
 compileJava {
     dependsOn(generateGitProperties)
     dependsOn(genJaxb)
+    dependsOn(genJaxbFilenet)
     inputs.files(processResources)
 }
 

@@ -16,6 +16,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Component;
 public class MnitDocumentConsumer {
 
   private final MnitEsbWebServiceClient mnitClient;
+  private final MnitFilenetWebServiceClient mnitFilenetClient;
   private final EmailClient emailClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
@@ -45,15 +47,17 @@ public class MnitDocumentConsumer {
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+      FeatureFlagConfiguration featureFlagConfiguration,
+      MnitFilenetWebServiceClient mnitFilenetClient) {
     this.mnitClient = mnitClient;
+    this.mnitFilenetClient = mnitFilenetClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
-    this.emailClient = emailClient;
     this.featureFlagConfiguration = featureFlagConfiguration;
+    this.emailClient = emailClient;
   }
 
   public void processCafAndCcap(Application application) {
@@ -149,7 +153,12 @@ public class MnitDocumentConsumer {
         documentName,
         rd.getName(),
         application.getId()));
-    mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+    if (featureFlagConfiguration.get("filenet").isOff()) {
+      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+    } else {
+      mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
+    }
+
   }
 
   class SendPDFRunnable implements Runnable {

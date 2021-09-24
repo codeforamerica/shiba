@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
@@ -25,11 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.esbwsdl.CmisContentStreamType;
-import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
-import org.codeforamerica.shiba.esbwsdl.CmisProperty;
-import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
-import org.codeforamerica.shiba.esbwsdl.CreateDocument;
+import org.codeforamerica.shiba.filenetwsdl.CmisContentStreamType;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertiesType;
+import org.codeforamerica.shiba.filenetwsdl.CmisProperty;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyBoolean;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyId;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyString;
+import org.codeforamerica.shiba.filenetwsdl.CreateDocument;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
@@ -46,9 +49,9 @@ import org.springframework.ws.soap.saaj.SaajSoapMessage;
 
 @Component
 @Slf4j
-public class MnitEsbWebServiceClient {
+public class MnitFilenetWebServiceClient {
 
-  private final WebServiceTemplate webServiceTemplate;
+  private final WebServiceTemplate filenetWebServiceTemplate;
   private final Clock clock;
   private final String username;
   private final String password;
@@ -56,14 +59,14 @@ public class MnitEsbWebServiceClient {
   private final ApplicationRepository applicationRepository;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public MnitEsbWebServiceClient(
-      @Qualifier("webServiceTemplate") WebServiceTemplate webServiceTemplate,
+  public MnitFilenetWebServiceClient(
+      @Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
-      @Value("${mnit-esb.username}") String username,
-      @Value("${mnit-esb.password}") String password,
+      @Value("${mnit-filenet.username}") String username,
+      @Value("${mnit-filenet.password}") String password,
       CountyMap<CountyRoutingDestination> countyMap,
       ApplicationRepository applicationRepository) {
-    this.webServiceTemplate = webServiceTemplate;
+    this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
@@ -73,28 +76,26 @@ public class MnitEsbWebServiceClient {
 
   @Retryable(
       value = {Exception.class},
-      maxAttemptsExpression = "#{${mnit-esb.max-attempts}}",
+      maxAttemptsExpression = "#{${mnit-filenet.max-attempts}}",
       backoff = @Backoff(
-          delayExpression = "#{${mnit-esb.delay}}",
-          multiplierExpression = "#{${mnit-esb.multiplier}}",
-          maxDelayExpression = "#{${mnit-esb.max-delay}}"
+          delayExpression = "#{${mnit-filenet.delay}}",
+          multiplierExpression = "#{${mnit-filenet.multiplier}}",
+          maxDelayExpression = "#{${mnit-filenet.max-delay}}"
       ),
       listeners = {"esbRetryListener"}
   )
   public void send(ApplicationFile applicationFile, RoutingDestination routingDestination,
-      String applicationNumber, Document applicationDocument, FlowType flowType) {
-    MDC.put("applicationId", applicationNumber);
+      String applicationNumber,
+      Document applicationDocument, FlowType flowType) {
     MDC.put("applicationFile", applicationFile.getFileName());
     CreateDocument createDocument = new CreateDocument();
-    createDocument.setFolderId("workspace://SpacesStore/" + routingDestination.getFolderId());
-    createDocument.setRepositoryId("<Unknown");
-    createDocument.setTypeId("document");
+    createDocument.setRepositoryId("Programs");
     setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
         applicationDocument,
         flowType, createDocument);
     setContentStreamOnDocument(applicationFile, createDocument);
 
-    webServiceTemplate.marshalSendAndReceive(createDocument, message -> {
+    filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
       SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
       try {
         SOAPHeader soapHeader = soapMessage.getSOAPHeader();
@@ -127,10 +128,10 @@ public class MnitEsbWebServiceClient {
             flowType);
       }
     });
+
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
   }
 
-  // Recover method has to have the same arguments at the retryable
   @Recover
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
@@ -139,12 +140,75 @@ public class MnitEsbWebServiceClient {
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
 
+
+  private void setPropertiesOnDocument(ApplicationFile applicationFile,
+      RoutingDestination routingDestination, String applicationNumber,
+      Document applicationDocument, FlowType flowType,
+      CreateDocument createDocument) {
+    CmisPropertiesType properties = new CmisPropertiesType();
+    List<CmisProperty> propertiesList = properties.getProperty();
+
+    CmisPropertyBoolean read = createCmisPropertyBoolean("Read", false);
+    CmisPropertyString originalFileName = createCmisPropertyString("OriginalFileName",
+        applicationFile.getFileName());
+    CmisPropertyString cmisName = createCmisPropertyString("cmis:name",
+        applicationFile.getFileName());
+    CmisPropertyString fileType = createCmisPropertyString("FileType", "Misc");
+    CmisPropertyString npi = createCmisPropertyString("NPI", routingDestination.getDhsProviderId());
+    CmisPropertyString mnitsMailboxTransactionType = createCmisPropertyString(
+        "MNITSMailboxTransactionType", "OLA");
+    CmisPropertyString description = createCmisPropertyString("Description",
+        generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
+            flowType));
+    CmisPropertyString source = createCmisPropertyString("Source", "MNITS");
+    CmisPropertyString flow = createCmisPropertyString("Flow", "Inbound");
+    CmisPropertyId cmisObjectTypeId = createCmisPropertyId("cmis:objectTypeId", "MNITSMailbox");
+
+    propertiesList
+        .addAll(
+            List.of(read, originalFileName, cmisName, fileType, npi, mnitsMailboxTransactionType,
+                source, flow, cmisObjectTypeId, description));
+    createDocument.setProperties(properties);
+  }
+
   @NotNull
-  private CmisPropertyString createCmisPropertyString(String property, String value) {
-    CmisPropertyString fileNameProperty = new CmisPropertyString();
-    fileNameProperty.setName(property);
-    fileNameProperty.setValue(value);
-    return fileNameProperty;
+  private CmisPropertyString createCmisPropertyString(String propertyDefinitionId,
+      String propertyValue) {
+    CmisPropertyString stringProperty = new CmisPropertyString();
+    stringProperty.setPropertyDefinitionId(propertyDefinitionId);
+    stringProperty.getValue().add(propertyValue);
+    return stringProperty;
+  }
+
+  @NotNull
+  private CmisPropertyBoolean createCmisPropertyBoolean(String propertyDefinitionId,
+      Boolean propertyValue) {
+    CmisPropertyBoolean booleanProperty = new CmisPropertyBoolean();
+    booleanProperty.setPropertyDefinitionId(propertyDefinitionId);
+    booleanProperty.getValue().add(propertyValue);
+    return booleanProperty;
+  }
+
+  @NotNull
+  private CmisPropertyId createCmisPropertyId(String propertyDefinitionId, String propertyValue) {
+    CmisPropertyId idProperty = new CmisPropertyId();
+    idProperty.setPropertyDefinitionId(propertyDefinitionId);
+    idProperty.getValue().add(propertyValue);
+    return idProperty;
+  }
+
+  private void setContentStreamOnDocument(ApplicationFile applicationFile,
+      CreateDocument createDocument) {
+    CmisContentStreamType contentStream = new CmisContentStreamType();
+    contentStream.setLength(BigInteger.ZERO);
+    contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
+        MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
+    QName contentStreamQName = new QName(
+        "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd",
+        "cmisContentStreamType", "cmism");
+    JAXBElement<CmisContentStreamType> jaxbContentStream = new JAXBElement<CmisContentStreamType>(
+        contentStreamQName, CmisContentStreamType.class, contentStream);
+    createDocument.setContentStream(jaxbContentStream);
   }
 
   @NotNull
@@ -170,33 +234,5 @@ public class MnitEsbWebServiceClient {
       }
     }
     return docDescription;
-  }
-
-  private void setPropertiesOnDocument(ApplicationFile applicationFile,
-      RoutingDestination routingDestination,
-      String applicationNumber, Document applicationDocument, FlowType flowType,
-      CreateDocument createDocument) {
-    CmisPropertiesType properties = new CmisPropertiesType();
-    List<CmisProperty> propertyUris = properties.getPropertyUriOrPropertyIdOrPropertyString();
-    CmisPropertyString fileNameProperty = createCmisPropertyString("Name",
-        applicationFile.getFileName());
-    CmisPropertyString subject = createCmisPropertyString("subject", "MN Benefits Application");
-    CmisPropertyString description = createCmisPropertyString("description",
-        generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
-            flowType));
-    CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId",
-        routingDestination.getDhsProviderId());
-    propertyUris
-        .addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
-    createDocument.setProperties(properties);
-  }
-
-  private void setContentStreamOnDocument(ApplicationFile applicationFile,
-      CreateDocument createDocument) {
-    CmisContentStreamType contentStream = new CmisContentStreamType();
-    contentStream.setLength(BigInteger.ZERO);
-    contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
-        MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
-    createDocument.setContentStream(contentStream);
   }
 }
