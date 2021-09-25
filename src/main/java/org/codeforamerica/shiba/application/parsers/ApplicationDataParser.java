@@ -120,7 +120,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
         new ParsingCoordinate("utilityPayments", "payForUtilities"));
-
+    coordinatesMap.put(Field.REGISTER_TO_VOTE,
+        new ParsingCoordinate("registerToVote", "registerToVote"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
@@ -241,6 +242,8 @@ public class ApplicationDataParser {
     UNEARNED_INCOME_CCAP,
     HOME_EXPENSES,
     UTILITY_PAYMENTS,
+
+    REGISTER_TO_VOTE,
 
     PERSONAL_INFO_DOB,
     PERSONAL_INFO_FIRST_NAME(""),
