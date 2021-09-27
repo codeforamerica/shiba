@@ -1,15 +1,27 @@
 package org.codeforamerica.shiba.pages;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.codeforamerica.shiba.TribalNation;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
+
+  @Autowired
+  RoutingDecisionService routingDecisionService;
 
   @BeforeEach
   protected void setUp() throws Exception {
@@ -51,9 +63,40 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   })
   void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
       throws Exception {
+    getToPersonalInfoScreen("EA");
+    fillOutPersonalInfo();
+    fillOutContactInfo();
+    fillOutHomeAddress();
+    addAddressInGivenCounty(county);
+
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
     postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForTribalTANF");
+
+    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestination(
+        applicationData, CAF).getRoutingDestinations();
+    List<String> routingDestinationNames = routingDestinations.stream()
+        .filter(rd -> rd instanceof TribalNation).map(tn -> ((TribalNation) tn).getName()).toList();
+    assertThat(routingDestinationNames).contains("Mille Lacs Band of Ojibwe");
+  }
+
+  private void addAddressInGivenCounty(String county) throws Exception {
+    when(locationClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "City", "CA", "03104", "", county))
+    );
+    postExpectingSuccess("mailingAddress", Map.of(
+        "streetAddress", List.of("someStreetAddress"),
+        "apartmentNumber", List.of("someApartmentNumber"),
+        "city", List.of("someCity"),
+        "zipCode", List.of("12345"),
+        "state", List.of("IL"),
+        "sameMailingAddress", List.of()
+    ));
+    postExpectingNextPageElementText("verifyMailingAddress",
+        "useEnrichedAddress",
+        "true",
+        "mailingAddress-address_street",
+        "smarty street");
   }
 
   @ParameterizedTest

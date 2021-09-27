@@ -1,7 +1,11 @@
 package org.codeforamerica.shiba.mnit;
 
 import static org.codeforamerica.shiba.TribalNation.BOIS_FORTE;
+import static org.codeforamerica.shiba.TribalNation.FOND_DU_LAC;
+import static org.codeforamerica.shiba.TribalNation.GRAND_PORTAGE;
+import static org.codeforamerica.shiba.TribalNation.LEECH_LAKE;
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNation.WHITE_EARTH;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +30,22 @@ public class TribalNationConfiguration {
         "help+dev@mnbenefits.org",
         "320-532-7407",
         true));
+    result.put(FOND_DU_LAC, new TribalNation(
+        FOND_DU_LAC,
+        true
+    ));
+    result.put(GRAND_PORTAGE, new TribalNation(
+        GRAND_PORTAGE,
+        true
+    ));
+    result.put(LEECH_LAKE, new TribalNation(
+        LEECH_LAKE,
+        true
+    ));
+    result.put(WHITE_EARTH, new TribalNation(
+        WHITE_EARTH,
+        true
+    ));
     result.put(BOIS_FORTE, new TribalNation(
         BOIS_FORTE,
         true
