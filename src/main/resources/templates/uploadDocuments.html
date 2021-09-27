@@ -143,7 +143,7 @@
     function showNumberOfAddedFiles() {
         var numberOfAddedFiles = myDropZone.files.length;
         var numberOfAddedFilesDiv = document.getElementById("number-of-uploaded-files");
-        var numberOfUploadsString = numberOfAddedFiles > 1 ? `${numberOfAddedFiles} files added` : `${numberOfAddedFiles} file added`;
+        var numberOfUploadsString = numberOfAddedFiles !== 1 ? `${numberOfAddedFiles} files added` : `${numberOfAddedFiles} file added`;
         numberOfAddedFilesDiv.innerHTML = numberOfUploadsString;
     }
 
@@ -239,11 +239,10 @@
 
                 isUploadComplete = false;
 
-                $('#submit-my-documents').removeClass('hidden');
-
                 if (!file.type.includes("image")) {
                     setDefaultThumbnail(file);
                 }
+                $('#submit-my-documents').removeClass('hidden');
                 showNumberOfAddedFiles();
                 prependAddedFile();
                 updateUploadBoxLayout();
@@ -315,12 +314,26 @@
         },
         error: function (file, errorMessage, xhr) {
             if (xhr && xhr.response && xhr.response === "A password protected PDF was uploaded.") {
-                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-password-protected}]]
+                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-password-protected}]];
             } else if (xhr && xhr.response && xhr.response === "An XFA formatted PDF was uploaded.") {
-                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-in-an-old-format}]]
+                file.previewElement.getElementsByClassName("text--error")[0].innerText = [[#{upload-documents.this-pdf-is-in-an-old-format}]];
+
             } else {
                 file.previewElement.getElementsByClassName("text--error")[0].innerText = errorMessage.error ? errorMessage.error : errorMessage;
             }
+
+            for( var i = 0; i < myDropZone.files.length; i++){
+                if ( myDropZone.files[i] === file) {
+                    myDropZone.files.splice(i, 1);
+                }
+            }
+
+            if (myDropZone.files.length === 0) {
+                $('#submit-my-documents').addClass('hidden');
+            }
+
+            showNumberOfAddedFiles();
+
             file.previewElement.classList.add("form-group--error");
 
             var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
