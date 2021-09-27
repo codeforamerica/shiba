@@ -26,25 +26,3 @@ derived-values:
             - pageName: choosePrograms
               input: programs
               value: CCAP
-  - groupName: energyAssistanceGroup
-    fieldName: energyAssistanceInput
-    values:
-      - type: ENUMERATED_SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.ReferenceDerivedValueConfiguration
-          pageName: energyAssistanceMoreThan20
-          inputName: energyAssistanceMoreThan20
-        condition:
-          logicalOperator: OR
-          conditions:
-            - pageName: energyAssistance
-              input: energyAssistance
-              value: "true"
-      - type: ENUMERATED_SINGLE_VALUE
-        value: !!org.codeforamerica.shiba.output.LiteralDerivedValueConfiguration
-          literal: "false"
-        condition:
-          logicalOperator: OR
-          conditions:
-            - pageName: energyAssistance
-              input: energyAssistance
-              value: "false"

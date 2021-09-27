@@ -120,6 +120,10 @@ public class ApplicationDataParser {
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
         new ParsingCoordinate("utilityPayments", "payForUtilities"));
+    coordinatesMap.put(Field.RECEIVES_ENERGY_ASSISTANCE,
+        new ParsingCoordinate("energyAssistance", "energyAssistance"));
+    coordinatesMap.put(Field.ENERGY_ASSISTANCE_OVER_20,
+        new ParsingCoordinate("energyAssistanceMoreThan20", "energyAssistanceMoreThan20"));
     coordinatesMap.put(Field.REGISTER_TO_VOTE,
         new ParsingCoordinate("registerToVote", "registerToVote"));
     coordinatesMap
@@ -242,6 +246,9 @@ public class ApplicationDataParser {
     UNEARNED_INCOME_CCAP,
     HOME_EXPENSES,
     UTILITY_PAYMENTS,
+
+    RECEIVES_ENERGY_ASSISTANCE,
+    ENERGY_ASSISTANCE_OVER_20,
 
     REGISTER_TO_VOTE,
 
