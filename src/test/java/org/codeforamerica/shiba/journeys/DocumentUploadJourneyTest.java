@@ -24,6 +24,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     assertThat(driver.findElementsByClassName("text--error").get(0).getText())
         .contains(
             "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains("0 files added");
     testPage.clickLink("remove");
 
     uploadPasswordProtectedPdf();
@@ -31,6 +32,8 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     assertThat(driver.findElementsByClassName("text--error").get(0).getText())
         .contains(
             "This PDF is password protected. Try removing the password or uploading a screenshot instead.");
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains("0 files added");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class")).contains("hidden");
     testPage.clickLink("remove");
 
     doThrow(new InterruptedException())
