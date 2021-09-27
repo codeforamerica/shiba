@@ -3,7 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'com.github.jk1.dependency-license-report' version '2.0'
-//    id 'com.gorylenko.gradle-git-properties' version '2.3.1'
+    id 'com.gorylenko.gradle-git-properties' version '2.3.1'
 }
 
 group = 'org.codeforamerica'
@@ -68,7 +68,7 @@ dependencyManagement {
         mavenBom 'org.springframework.session:spring-session-bom:2021.0.2'
     }
 }
-//
+
 dependencies {
     modules {
         module('javax.activation:activation') {
@@ -155,7 +155,7 @@ dependencies {
 }
 
 compileJava {
-//    dependsOn(generateGitProperties)
+    dependsOn(generateGitProperties)
     dependsOn(genJaxb)
     inputs.files(processResources)
 }

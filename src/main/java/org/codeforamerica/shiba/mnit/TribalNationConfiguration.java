@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.mnit;
 
+import static org.codeforamerica.shiba.TribalNation.BOIS_FORTE;
 import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
 
 import java.util.HashMap;
@@ -12,10 +13,10 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 //@ConfigurationProperties(prefix = "tribalnations") // TODO remove if we don't use
 //@PropertySource(value = "classpath:tribal-nation-mapping.yaml", factory = YamlPropertySourceFactory.class)
-public class TribalNationConfiguration extends HashMap<String, TribalNation> {
+public class TribalNationConfiguration {
 
   @Bean
-  @Profile({"default", "test"})
+  @Profile({"test", "default"})
   public Map<String, TribalNation> localTribalNations() {
     Map<String, TribalNation> result = new HashMap<>();
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
@@ -25,12 +26,16 @@ public class TribalNationConfiguration extends HashMap<String, TribalNation> {
         "help+dev@mnbenefits.org",
         "320-532-7407",
         true));
+    result.put(BOIS_FORTE, new TribalNation(
+        BOIS_FORTE,
+        true
+    ));
     return result;
   }
 
   @Bean
   @Profile("production")
-  public Map<String, TribalNation> tribalNations() {
+  public Map<String, TribalNation> prodTribalNations() {
     Map<String, TribalNation> result = new HashMap<>();
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
         MILLE_LACS_BAND_OF_OJIBWE, // TODO annoying but maybe the less bad option

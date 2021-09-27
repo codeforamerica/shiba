@@ -39,4 +39,13 @@ public class TribalNation extends RoutingDestination {
     this.isServicedByMilleLacs = isServicedByMilleLacs;
     this.name = name;
   }
+
+  public TribalNation(
+      String name,
+      boolean isServicedByMilleLacs
+  ) {
+    super();
+    this.isServicedByMilleLacs = isServicedByMilleLacs;
+    this.name = name;
+  }
 }

@@ -11,8 +11,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,10 +29,10 @@ import org.springframework.stereotype.Service;
 public class RoutingDecisionService {
 
   private final CountyParser countyParser;
-  private final HashMap<String, TribalNation> tribalNations;
+  private final Map<String, TribalNation> tribalNations;
 
   public RoutingDecisionService(CountyParser countyParser,
-      HashMap<String, TribalNation> tribalNations) {
+      Map<String, TribalNation> tribalNations) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
   }
@@ -65,9 +65,9 @@ public class RoutingDecisionService {
         getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
-    TribalNation selectedTribe = tribalNations.get(selectedTribeName);
-
-    return selectedTribe.isServicedByMilleLacs()
+    return selectedTribeName != null
+        && tribalNations.get(selectedTribeName) != null
+        && tribalNations.get(selectedTribeName).isServicedByMilleLacs()
         && (applyingForTribalTanf || programs.contains(EA))
         && !Document.CCAP.equals(document);
   }

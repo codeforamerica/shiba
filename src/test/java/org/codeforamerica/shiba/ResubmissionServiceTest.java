@@ -76,7 +76,7 @@ class ResubmissionServiceTest {
         MilleLacsBand, RoutingDestination.builder().email(MILLE_LACS_BAND_EMAIL).build(),
         Anoka, RoutingDestination.builder().email(ANOKA_EMAIL).build()
     ));
-    tribalNations = new TribalNationConfiguration().tribalNations();
+    tribalNations = new TribalNationConfiguration().localTribalNations();
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
         pdfGenerator, routingDecisionService);
     countyAndRoutingDestinations = new CountyAndRoutingDestinations(Olmsted.displayName(),

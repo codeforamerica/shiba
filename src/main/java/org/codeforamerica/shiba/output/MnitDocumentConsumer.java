@@ -111,10 +111,8 @@ public class MnitDocumentConsumer {
     // todo why did this matter
 
     if (countyAndRoutingDestinations.getCounty() != null) {
-      RoutingDestination routingDestination = new RoutingDestination();
-      routingDestination.setDhsProviderId(
-          countyMap.get(application.getCounty()).getDhsProviderId());
-      routingDestination.setFolderId(countyMap.get(application.getCounty()).getFolderId());
+      RoutingDestination routingDestination = countyMap.get(application.getCounty());
+
       mnitClient.send(file, routingDestination, application.getId(), document,
           application.getFlow());
     }
