@@ -25,9 +25,18 @@ public class TribalNation extends RoutingDestination {
       Set.of(BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, WHITE_EARTH,
           MILLE_LACS_BAND_OF_OJIBWE);
 
-  public static boolean isServicedByMilleLacs(String tribeName) {
-    return tribeName != null && MILLE_LACS_SERVICED_TRIBES.contains(tribeName);
-  }
-
   private String name;
+  private boolean isServicedByMilleLacs;
+
+  public TribalNation(
+      String name,
+      String folderId,
+      String dhsProviderId,
+      String email,
+      String phoneNumber,
+      boolean isServicedByMilleLacs) {
+    super(folderId, dhsProviderId, email, phoneNumber);
+    this.isServicedByMilleLacs = isServicedByMilleLacs;
+    this.name = name;
+  }
 }

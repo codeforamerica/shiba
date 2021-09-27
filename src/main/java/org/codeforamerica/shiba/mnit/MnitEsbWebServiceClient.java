@@ -22,7 +22,6 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -80,14 +79,16 @@ public class MnitEsbWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void send(ApplicationFile applicationFile, County county, String applicationNumber,
+  public void send(ApplicationFile applicationFile, RoutingDestination routingDestination,
+      String applicationNumber,
       Document applicationDocument, FlowType flowType) {
     MDC.put("applicationFile", applicationFile.getFileName());
     CreateDocument createDocument = new CreateDocument();
-    createDocument.setFolderId("workspace://SpacesStore/" + countyMap.get(county).getFolderId());
+    createDocument.setFolderId("workspace://SpacesStore/" + routingDestination.getFolderId());
     createDocument.setRepositoryId("<Unknown");
     createDocument.setTypeId("document");
-    setPropertiesOnDocument(applicationFile, county, applicationNumber, applicationDocument,
+    setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
+        applicationDocument,
         flowType, createDocument);
     setContentStreamOnDocument(applicationFile, createDocument);
 
@@ -119,7 +120,8 @@ public class MnitEsbWebServiceClient {
             "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
         passwordElement.setTextContent(password);
       } catch (SOAPException e) {
-        logErrorToSentry(e, applicationFile, county, applicationNumber, applicationDocument,
+        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
+            applicationDocument,
             flowType);
       }
     });
@@ -127,7 +129,8 @@ public class MnitEsbWebServiceClient {
   }
 
   @Recover
-  public void logErrorToSentry(Exception e, ApplicationFile applicationFile, County county,
+  public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
+      RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
@@ -166,7 +169,8 @@ public class MnitEsbWebServiceClient {
     return docDescription;
   }
 
-  private void setPropertiesOnDocument(ApplicationFile applicationFile, County county,
+  private void setPropertiesOnDocument(ApplicationFile applicationFile,
+      RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType,
       CreateDocument createDocument) {
     CmisPropertiesType properties = new CmisPropertiesType();
@@ -178,7 +182,7 @@ public class MnitEsbWebServiceClient {
         generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
             flowType));
     CmisPropertyString dhsProviderId = createCmisPropertyString("dhsProviderId",
-        countyMap.get(county).getDhsProviderId());
+        routingDestination.getDhsProviderId());
     propertyUris
         .addAll(List.of(fileNameProperty, subject, description, description, dhsProviderId));
     createDocument.setProperties(properties);

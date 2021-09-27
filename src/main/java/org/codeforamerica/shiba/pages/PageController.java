@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -33,9 +35,9 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.OldRoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -365,19 +367,32 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
-      OldRoutingDestination oldRoutingDestination = DocumentListParser.parse(applicationData).stream()
-          .map(doc -> routingDecisionService.getRoutingDestination(applicationData, doc))
-          .reduce(new OldRoutingDestination(), (acc, element) -> {
-            if (element.getTribalNation() != null) {
-              acc.setTribalNation(element.getTribalNation());
-            }
-            if (element.getCounty() != null) {
-              acc.setCounty(element.getCounty());
-            }
-            return acc;
-          });
-      model.put("routedTribalNation", oldRoutingDestination.getTribalNation());
-      model.put("routedCounty", application.getCounty() == County.Other ? County.Hennepin.displayName() : oldRoutingDestination.getCounty());
+
+      Optional<RoutingDestination> maybeTribalNation = DocumentListParser.parse(applicationData)
+          .stream()
+          .flatMap(doc -> routingDecisionService.getRoutingDestination(applicationData, doc)
+              .getRoutingDestinations().stream())
+          .filter(rd -> rd instanceof TribalNation)
+          .findFirst();
+      String tribalNationName = null;
+      if (maybeTribalNation.isPresent()) {
+        tribalNationName = ((TribalNation) maybeTribalNation.get()).getName();
+      }
+
+      Optional<String> maybeCounty = DocumentListParser.parse(applicationData).stream()
+          .map(
+              doc -> routingDecisionService.getRoutingDestination(applicationData, doc).getCounty())
+          .findFirst();
+      String county = null;
+      if (maybeCounty.isPresent()) {
+        county = maybeCounty.get();
+      }
+
+      // TODO this needs to handle multiple tribal nations
+      model.put("routedTribalNation", tribalNationName);
+      model.put("routedCounty",
+          application.getCounty() == County.Other ? County.Hennepin.displayName()
+              : county);
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {

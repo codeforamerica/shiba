@@ -1,23 +1,26 @@
 package org.codeforamerica.shiba.output;
 
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.OldRoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -31,19 +34,26 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
+  private final HashMap<String, TribalNation> tribalNations;
+  private final CountyMap<RoutingDestination> countyMap;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      ApplicationRepository applicationRepository) {
+      ApplicationRepository applicationRepository,
+      HashMap<String, TribalNation> tribalNations,
+      CountyMap<RoutingDestination> countyMap) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
+
+    this.tribalNations = tribalNations;
+    this.countyMap = countyMap;
   }
 
   public void processCafAndCcap(Application application) {
@@ -88,15 +98,24 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
-    OldRoutingDestination oldRoutingDestination = routingDecisionService
+    CountyAndRoutingDestinations countyAndRoutingDestinations = routingDecisionService
         .getRoutingDestination(application.getApplicationData(), document);
 
-    if (MilleLacsBand.displayName().equals(oldRoutingDestination.getTribalNation())) {
-      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-    }
+    countyAndRoutingDestinations.getRoutingDestinations().forEach(rd -> {
+      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+    });
 
-    if (oldRoutingDestination.getCounty() != null) {
-      mnitClient.send(file, application.getCounty(), application.getId(), document,
+//    if (MilleLacsBand.displayName().equals(countyAndRoutingDestinations.getTribalNation())) {
+//      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
+//    }
+    // todo why did this matter
+
+    if (countyAndRoutingDestinations.getCounty() != null) {
+      RoutingDestination routingDestination = new RoutingDestination();
+      routingDestination.setDhsProviderId(
+          countyMap.get(application.getCounty()).getDhsProviderId());
+      routingDestination.setFolderId(countyMap.get(application.getCounty()).getFolderId());
+      mnitClient.send(file, routingDestination, application.getId(), document,
           application.getFlow());
     }
   }
