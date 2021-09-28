@@ -6,98 +6,89 @@ import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.caf.HomeAddressStreetMapper;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.junit.jupiter.api.BeforeEach;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class HomeAddressStreetMapperTest {
 
   private final HomeAddressStreetMapper mapper = new HomeAddressStreetMapper();
-  private final PageData homeAddressData = new PageData();
-  private final PageData verifyHomeAddressData = new PageData();
-  private final ApplicationData applicationData = new ApplicationData();
-  private final Application application = Application.builder().applicationData(applicationData)
-      .build();
-
-  @BeforeEach
-  void setUp() {
-    PagesData pagesData = new PagesData();
-    pagesData.put("homeAddress", homeAddressData);
-    pagesData.put("homeAddressValidation", verifyHomeAddressData);
-    applicationData.setPagesData(pagesData);
-  }
+  private final Application application = Application.builder().build();
 
   @Test
   void shouldSayNotPermanentWhenClientDoesNotHaveAPermanentAddress() {
-    homeAddressData.put("streetAddress", InputData.builder().value(List.of("")).build());
-    homeAddressData.put("isHomeless", InputData.builder().value(List.of("true")).build());
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .noPermamentAddress()
+        .withPageData("homeAddress", "streetAddress", List.of(""))
+        .build();
+    application.setApplicationData(applicationData);
 
     List<ApplicationInput> map = mapper.map(application, null, null, null);
 
-    assertThat(map).contains(new ApplicationInput("homeAddress",
-        "streetAddressWithPermanentAddress",
-        List.of("No permanent address"),
-        ApplicationInputType.SINGLE_VALUE));
+    assertThat(map).containsOnly(
+        createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
+            "No permanent address"),
+        createHomeAddressApplicationInput("selectedZipCode", ""),
+        createHomeAddressApplicationInput("selectedCity", ""),
+        createHomeAddressApplicationInput("selectedState", "MN"),
+        createHomeAddressApplicationInput("selectedApartmentNumber", "")
+    );
   }
 
   @Test
-  void shouldIncludePermanentAddressWhen_clientProvidedAddress_andStateTheAddressIsPermanent() {
-    homeAddressData.put("isHomeless", InputData.builder().value(List.of()).build());
-    String streetAddress = "street address";
-    homeAddressData.put("streetAddress", InputData.builder().value(List.of(streetAddress)).build());
-    verifyHomeAddressData
-        .put("useEnrichedAddress", InputData.builder().value(List.of("false")).build());
+  void shouldUseClientInputAddress() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHomeAddress()
+        .withEnrichedHomeAddress()
+        .withPageData("homeAddress", "isHomeless", List.of())
+        .withPageData("homeAddressValidation", "useEnrichedAddress", List.of("false"))
+        .build();
+    application.setApplicationData(applicationData);
 
     List<ApplicationInput> map = mapper.map(application, null, null, null);
 
-    assertThat(map).contains(new ApplicationInput("homeAddress",
-        "streetAddressWithPermanentAddress",
-        List.of(streetAddress),
-        ApplicationInputType.SINGLE_VALUE));
+    assertThat(map).containsOnly(
+        createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
+            "street"),
+        createHomeAddressApplicationInput("selectedZipCode", "02103"),
+        createHomeAddressApplicationInput("selectedCity", "city"),
+        createHomeAddressApplicationInput("selectedState", "CA"),
+        createHomeAddressApplicationInput("selectedApartmentNumber", "ste 123")
+    );
   }
 
   @Test
-  void shouldIncludePermanentAddressWhen_clientProvidedAddress_andStateTheAddressIsPermanent_usingEnrichedStreetAddress() {
-    homeAddressData.put("isHomeless", InputData.builder().value(List.of()).build());
-    String streetAddress = "enrichedStreetAddress";
-    homeAddressData
-        .put("streetAddress", InputData.builder().value(List.of("originalStreetAddress")).build());
-    homeAddressData
-        .put("enrichedStreetAddress", InputData.builder().value(List.of(streetAddress)).build());
-    verifyHomeAddressData
-        .put("useEnrichedAddress", InputData.builder().value(List.of("true")).build());
+  void shouldUseEnrichedAddress() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHomeAddress()
+        .withEnrichedHomeAddress()
+        .withPageData("homeAddress", "isHomeless", List.of())
+        .withPageData("homeAddressValidation", "useEnrichedAddress", List.of("true"))
+        .build();
+    application.setApplicationData(applicationData);
 
     List<ApplicationInput> map = mapper.map(application, null, null, null);
 
-    assertThat(map).contains(new ApplicationInput("homeAddress",
-        "streetAddressWithPermanentAddress",
-        List.of(streetAddress),
-        ApplicationInputType.SINGLE_VALUE));
-  }
-
-  @Test
-  void shouldIncludeNoPermanentAddressWhen_clientDoNotProvideAddress() {
-    homeAddressData.put("streetAddress", InputData.builder().value(List.of("")).build());
-    homeAddressData.put("isHomeless", InputData.builder().value(List.of("true")).build());
-
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
-
-    assertThat(map).contains(new ApplicationInput("homeAddress",
-        "streetAddressWithPermanentAddress",
-        List.of("No permanent address"),
-        ApplicationInputType.SINGLE_VALUE));
+    assertThat(map).containsOnly(
+        createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
+            "smarty street"),
+        createHomeAddressApplicationInput("selectedZipCode", "02103-9999"),
+        createHomeAddressApplicationInput("selectedCity", "smarty city"),
+        createHomeAddressApplicationInput("selectedState", "CA"),
+        createHomeAddressApplicationInput("selectedApartmentNumber", "apt 123")
+    );
   }
 
   @Test
   void shouldNotIncludeApplicationInputs_whenThereIsNoHomeAddress() {
-    applicationData.setPagesData(new PagesData());
+    application.setApplicationData(new ApplicationData());
 
     List<ApplicationInput> map = mapper.map(application, null, null, null);
 
     assertThat(map).isEmpty();
+  }
+
+  private ApplicationInput createHomeAddressApplicationInput(String name, String value) {
+    return new ApplicationInput("homeAddress", name, value, ApplicationInputType.SINGLE_VALUE);
   }
 }

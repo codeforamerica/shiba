@@ -8,7 +8,6 @@ spring:
         cachecontrol:
           max-age: 10m
 feature-flag:
-  submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: off
   county-anoka: on
@@ -27,3 +26,5 @@ feature-flag:
   county-wadena: on
   county-waseca: on
   county-wright: on
+
+demo-banner: true

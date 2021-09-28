@@ -21,7 +21,6 @@ mail-gun:
 
 feature-flag:
   send-download-alert: on
-  submit-via-email: off
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   county-anoka: on

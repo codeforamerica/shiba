@@ -4,7 +4,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
@@ -23,7 +22,10 @@ import org.springframework.stereotype.Component;
  * to write "Yes".
  */
 @Component
-public class UtilityPaymentsInputsMapper implements ApplicationInputsMapper {
+public class UtilityPaymentsInputsMapper extends OneToManyApplicationInputsMapper {
+
+  private static final List<String> UTILITY_PAYMENTS_OPTIONS = List.of("ELECTRICITY", "PHONE",
+      "GARBAGE_REMOVAL", "COOKING_FUEL");
 
   private static final List<String> EXPEDITED_UTILITY_PAYMENTS = List.of("HEATING", "COOLING",
       "ELECTRICITY", "PHONE");
@@ -36,13 +38,18 @@ public class UtilityPaymentsInputsMapper implements ApplicationInputsMapper {
     return map(application.getApplicationData().getPagesData());
   }
 
-  private List<ApplicationInput> map(PagesData pagesData) {
+  @Override
+  protected OneToManyParams getParams() {
+    return new OneToManyParams("utilityPayments", UTILITY_PAYMENTS, UTILITY_PAYMENTS_OPTIONS);
+  }
+
+  protected List<ApplicationInput> map(PagesData pagesData) {
     // Question was unanswered
     if (pagesData.get("utilityPayments") == null) {
       return Collections.emptyList();
     }
 
-    List<ApplicationInput> results = new ArrayList<>();
+    List<ApplicationInput> results = super.map(pagesData);
 
     List<String> utilityPayments = getValues(pagesData, UTILITY_PAYMENTS);
 

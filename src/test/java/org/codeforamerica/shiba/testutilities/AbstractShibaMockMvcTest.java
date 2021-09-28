@@ -90,7 +90,6 @@ public class AbstractShibaMockMvcTest {
     );
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
-    when(featureFlagConfiguration.get("submit-via-email")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
   }
@@ -564,7 +563,7 @@ public class AbstractShibaMockMvcTest {
   @NotNull
   private String followRedirectsForPageName(String currentPageName) throws Exception {
     var nextPage = "/pages/" + currentPageName + "/navigation";
-    while (nextPage.contains("/navigation")) {
+    while (Objects.requireNonNull(nextPage).contains("/navigation")) {
       // follow redirects
       nextPage = mockMvc.perform(get(nextPage).session(session))
           .andExpect(status().is3xxRedirection()).andReturn()
@@ -576,7 +575,7 @@ public class AbstractShibaMockMvcTest {
 
   private String followRedirectsForUrl(String currentPageUrl) throws Exception {
     var nextPage = currentPageUrl;
-    while (nextPage.contains("/navigation")) {
+    while (Objects.requireNonNull(nextPage).contains("/navigation")) {
       // follow redirects
       nextPage = mockMvc.perform(get(nextPage).session(session))
           .andExpect(status().is3xxRedirection()).andReturn()

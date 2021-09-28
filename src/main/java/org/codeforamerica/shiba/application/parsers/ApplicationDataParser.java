@@ -75,6 +75,8 @@ public class ApplicationDataParser {
         .put(Field.ENRICHED_HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "enrichedZipCode"));
     coordinatesMap.put(Field.ENRICHED_HOME_APARTMENT_NUMBER,
         new ParsingCoordinate("homeAddress", "enrichedApartmentNumber"));
+    coordinatesMap.put(Field.USE_ENRICHED_HOME_ADDRESS,
+        new ParsingCoordinate("homeAddressValidation", "useEnrichedAddress"));
 
     coordinatesMap.put(Field.GENERAL_DELIVERY_CITY,
         new ParsingCoordinate("cityForGeneralDelivery", "whatIsTheCity"));
@@ -86,7 +88,8 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.APPLYING_FOR_TRIBAL_TANF,
         new ParsingCoordinate("applyForTribalTANF", "applyForTribalTANF"));
 
-    coordinatesMap.put(Field.IS_HOMELESS, new ParsingCoordinate("homeAddress", "isHomeless"));
+    coordinatesMap.put(Field.NO_PERMANENT_ADDRESS,
+        new ParsingCoordinate("homeAddress", "isHomeless"));
     coordinatesMap.put(Field.SAME_MAILING_ADDRESS,
         new ParsingCoordinate("mailingAddress", "sameMailingAddress"));
 
@@ -108,6 +111,14 @@ public class ApplicationDataParser {
         .put(Field.HOUSEHOLD_PROGRAMS, new ParsingCoordinate("householdMemberInfo", "programs"));
     coordinatesMap.put(Field.PREPARING_MEALS_TOGETHER,
         new ParsingCoordinate("preparingMealsTogether", "isPreparingMealsTogether"));
+    coordinatesMap.put(Field.IS_GOING_TO_SCHOOL,
+        new ParsingCoordinate("goingToSchool", "goingToSchool"));
+    coordinatesMap.put(Field.WHO_IS_GOING_TO_SCHOOL,
+        new ParsingCoordinate("whoIsGoingToSchool", "whoIsGoingToSchool"));
+    coordinatesMap.put(Field.IS_LOOKING_FOR_JOB,
+        new ParsingCoordinate("jobSearch", "currentlyLookingForJob"));
+    coordinatesMap.put(Field.WHO_IS_LOOKING_FOR_A_JOB,
+        new ParsingCoordinate("whoIsLookingForAJob", "whoIsLookingForAJob"));
 
     coordinatesMap.put(Field.UNEARNED_INCOME,
         new ParsingCoordinate("unearnedIncome", "unearnedIncome"));
@@ -117,7 +128,12 @@ public class ApplicationDataParser {
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
         new ParsingCoordinate("utilityPayments", "payForUtilities"));
-
+    coordinatesMap.put(Field.RECEIVES_ENERGY_ASSISTANCE,
+        new ParsingCoordinate("energyAssistance", "energyAssistance"));
+    coordinatesMap.put(Field.ENERGY_ASSISTANCE_OVER_20,
+        new ParsingCoordinate("energyAssistanceMoreThan20", "energyAssistanceMoreThan20"));
+    coordinatesMap.put(Field.REGISTER_TO_VOTE,
+        new ParsingCoordinate("registerToVote", "registerToVote"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
@@ -211,8 +227,9 @@ public class ApplicationDataParser {
     ENRICHED_HOME_STATE,
     ENRICHED_HOME_ZIPCODE,
     ENRICHED_HOME_APARTMENT_NUMBER,
+    USE_ENRICHED_HOME_ADDRESS,
 
-    IS_HOMELESS,
+    NO_PERMANENT_ADDRESS,
     SAME_MAILING_ADDRESS,
 
     GENERAL_DELIVERY_CITY,
@@ -232,11 +249,20 @@ public class ApplicationDataParser {
     APPLICANT_PROGRAMS,
     HOUSEHOLD_PROGRAMS,
     PREPARING_MEALS_TOGETHER,
+    IS_GOING_TO_SCHOOL,
+    WHO_IS_GOING_TO_SCHOOL,
+    IS_LOOKING_FOR_JOB,
+    WHO_IS_LOOKING_FOR_A_JOB,
 
     UNEARNED_INCOME,
     UNEARNED_INCOME_CCAP,
     HOME_EXPENSES,
     UTILITY_PAYMENTS,
+
+    RECEIVES_ENERGY_ASSISTANCE,
+    ENERGY_ASSISTANCE_OVER_20,
+
+    REGISTER_TO_VOTE,
 
     PERSONAL_INFO_DOB,
     PERSONAL_INFO_FIRST_NAME(""),

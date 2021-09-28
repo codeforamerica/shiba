@@ -98,26 +98,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
             new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
             snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
       }
-
     });
-  }
-
-  @Async
-  @EventListener
-  public void sendCaseWorkerEmail(ApplicationSubmittedEvent event) {
-    if (featureFlags.get("submit-via-email").isOff()) {
-      return;
-    }
-
-    Application application = getApplicationFromEvent(event);
-
-    PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
-    String applicationId = application.getId();
-    ApplicationFile pdf = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
-
-    String fullName = String.join(" ", personalInfo.get("firstName").getValue(0),
-        personalInfo.get("lastName").getValue(0));
-    emailClient.sendCaseWorkerEmail(countyMap.get(application.getCounty()).getEmail(), fullName,
-        applicationId, pdf);
   }
 }

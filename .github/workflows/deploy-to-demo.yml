@@ -12,6 +12,8 @@ jobs:
   draft-release:
     name: Draft a new release
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: release-${{ steps.create-tagname.outputs.TAG_NAME }}
     steps:
       - name: Create tag name
         id: create-tagname
@@ -103,11 +105,6 @@ jobs:
     needs: draft-release
     runs-on: ubuntu-latest
     steps:
-    - name: Fetch Latest Release
-      id: fetch-latest-release
-      uses: thebritican/fetch-latest-release@v2.0.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Authenticate and set context for non-prod
       uses: redhat-actions/oc-login@v1
       with:
@@ -116,10 +113,10 @@ jobs:
         namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
     - name: update and run build
       run: |
-        oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}'
-        oc patch bc mn-benefits-release -p '{"spec":{"output":{"to":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}}}}'
+        oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ github.event.inputs.branch }}"}}}}'
+        oc patch bc mn-benefits-release -p '{"spec":{"output":{"to":{"name":"mn-benefits:${{ needs.draft-release.outputs.tag_name }}"}}}}'
         oc start-build mn-benefits-release --follow
-        oc patch dc mn-benefits-atst -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-atst"]}}]}}'
+        oc patch dc mn-benefits-atst -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ needs.draft-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-atst"]}}]}}'
         oc rollout latest dc/mn-benefits-atst
     - name: Announce on Slack
       if: ${{ always() }}

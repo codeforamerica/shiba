@@ -63,7 +63,6 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
-  submit-via-email: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   county-anoka: on
@@ -105,3 +104,5 @@ pagesConfig: pages-config.yaml
 resubmission:
   interval:
     milliseconds: 43200000 # 12 hours
+
+demo-banner: false

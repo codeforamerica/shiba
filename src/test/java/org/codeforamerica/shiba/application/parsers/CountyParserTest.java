@@ -97,7 +97,7 @@ class CountyParserTest {
   @Test
   void shouldParseCountyForGeneralDelivery() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .isHomeless()
+        .noPermamentAddress()
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", List.of("Byron"))
         .build();
     assertThat(countyParser.parse(applicationData)).isEqualTo(County.Olmsted);
