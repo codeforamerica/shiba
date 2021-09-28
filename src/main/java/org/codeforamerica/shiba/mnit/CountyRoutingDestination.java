@@ -22,6 +22,6 @@ public class CountyRoutingDestination extends RoutingDestination {
 
   @Override
   public String getName() {
-    return county.displayName() + " County"; //TODO handle Spanish
+    return county.displayName();
   }
 }

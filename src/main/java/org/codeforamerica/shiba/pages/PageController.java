@@ -35,6 +35,7 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
@@ -370,7 +371,8 @@ public class PageController {
 
       Optional<RoutingDestination> optionalTribalNation = DocumentListParser.parse(applicationData)
           .stream()
-          .flatMap(doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+          .flatMap(
+              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
           .filter(rd -> rd instanceof TribalNation)
           .findFirst();
       String tribalNationName = null;
@@ -378,20 +380,21 @@ public class PageController {
         tribalNationName = optionalTribalNation.get().getName();
       }
 
-      Optional<RoutingDestination> optionalCounty = DocumentListParser.parse(applicationData).stream()
+      Optional<RoutingDestination> optionalCounty = DocumentListParser.parse(applicationData)
+          .stream()
           .flatMap(
               doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
-          .filter(rd -> !(rd instanceof TribalNation))
+          .filter(rd -> rd instanceof CountyRoutingDestination)
           .findFirst();
       String county = null;
       if (optionalCounty.isPresent()) {
         county = optionalCounty.get().getName();
       }
 
+      // TODO need a test for different combinations of tribal nations and counties
       model.put("routedTribalNation", tribalNationName);
       model.put("routedCounty",
-          application.getCounty() == County.Other ? County.Hennepin.displayName()
-              : county);
+          application.getCounty() == County.Other ? County.Hennepin.displayName() : county);
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
