@@ -195,7 +195,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         .map(RoutingDestination::getName)
         .toList();
     assertThat(routingDestinationNames)
-        .containsExactly(tribalNationName, county + " County"); //TODO do we want this
+        .containsExactly(tribalNationName, county);
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
@@ -220,8 +220,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "city", List.of("originalCity"),
         "zipCode", List.of("54321"),
         "state", List.of("MN"),
-        "sameMailingAddress", List.of("false")
-        // todo what if this is empty? that's the real world behavior
+        "sameMailingAddress", List.of()
     ));
     postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
