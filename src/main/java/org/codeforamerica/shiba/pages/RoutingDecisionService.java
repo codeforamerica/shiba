@@ -51,7 +51,8 @@ public class RoutingDecisionService {
     if (!shouldSendToMilleLacs
         || programs.contains(SNAP) || programs.contains(CASH)
         || programs.contains(GRH) || programs.contains(CCAP)) {
-      result.setCounty(countyParser.parseCountyInput(applicationData));
+      String county = countyParser.parseCountyInput(applicationData);
+      result.setCounty(county);
     }
 
     return result;

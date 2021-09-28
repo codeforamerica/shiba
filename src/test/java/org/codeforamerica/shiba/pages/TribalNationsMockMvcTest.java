@@ -1,6 +1,10 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.Program.CCAP;
+import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.GRH;
+import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -10,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.codeforamerica.shiba.TribalNation;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Autowired
-  RoutingDecisionService routingDecisionService;
+  private RoutingDecisionService routingDecisionService;
 
   @BeforeEach
   protected void setUp() throws Exception {
@@ -31,6 +35,25 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
     addHouseholdMembers();
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Lower Sioux,Otter Tail",
+      "Prairie Island,Otter Tail",
+      "Red Lake,Otter Tail",
+      "Shakopee Mdewakanton,Otter Tail",
+      "Upper Sioux,Otter Tail"
+  })
+  void routingForNationsThatAreNotServicedByMilleLacs(String nationName, String county)
+      throws Exception {
+    getToPersonalInfoScreen(EA);
+    addAddressInGivenCounty(county);
+    CountyAndRoutingDestinations countyAndRoutingDestinations =
+        routingDecisionService.getRoutingDestination(applicationData, CAF);
+
+    assertThat(countyAndRoutingDestinations.getCounty()).isEqualTo(county);
+    assertThat(countyAndRoutingDestinations.getRoutingDestinations()).isEmpty();
   }
 
   @ParameterizedTest
@@ -63,40 +86,18 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   })
   void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
       throws Exception {
-    getToPersonalInfoScreen("EA");
-    fillOutPersonalInfo();
-    fillOutContactInfo();
-    fillOutHomeAddress();
+    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
 
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
-    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForTribalTANF");
-
-    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestination(
-        applicationData, CAF).getRoutingDestinations();
-    List<String> routingDestinationNames = routingDestinations.stream()
-        .filter(rd -> rd instanceof TribalNation).map(tn -> ((TribalNation) tn).getName()).toList();
-    assertThat(routingDestinationNames).contains("Mille Lacs Band of Ojibwe");
-  }
-
-  private void addAddressInGivenCounty(String county) throws Exception {
-    when(locationClient.validateAddress(any())).thenReturn(
-        Optional.of(new Address("smarty street", "City", "CA", "03104", "", county))
-    );
-    postExpectingSuccess("mailingAddress", Map.of(
-        "streetAddress", List.of("someStreetAddress"),
-        "apartmentNumber", List.of("someApartmentNumber"),
-        "city", List.of("someCity"),
-        "zipCode", List.of("12345"),
-        "state", List.of("IL"),
-        "sameMailingAddress", List.of()
-    ));
-    postExpectingNextPageElementText("verifyMailingAddress",
-        "useEnrichedAddress",
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
         "true",
-        "mailingAddress-address_street",
-        "smarty street");
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe",
+        "selectedTribe",
+        nationName,
+        "applyForTribalTANF");
+    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
   }
 
   @ParameterizedTest
@@ -140,7 +141,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "introIncome");
   }
 
-
   @ParameterizedTest
   @CsvSource(value = {
       "Prairie Island,Hennepin,true"
@@ -157,5 +157,60 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "livingInNationBoundary",
         livingInNationBoundary,
         "applyForMFIP");
+  }
+
+  private void assertCountyAndTribalNationRoutingAreCorrect(String county,
+      String tribalNationName) {
+    CountyAndRoutingDestinations countyAndRoutingDestinations =
+        routingDecisionService.getRoutingDestination(applicationData, CAF);
+    List<String> routingDestinationNames = countyAndRoutingDestinations.getRoutingDestinations()
+        .stream()
+        .filter(rd -> rd instanceof TribalNation)
+        .map(tn -> ((TribalNation) tn).getName())
+        .toList();
+    assertThat(routingDestinationNames).contains(tribalNationName);
+    assertThat(countyAndRoutingDestinations.getCounty()).isEqualTo(county);
+  }
+
+  private void addAddressInGivenCounty(String county) throws Exception {
+    fillOutPersonalInfo();
+    fillOutContactInfo();
+
+    when(locationClient.validateAddress(any()))
+        .thenReturn(Optional.of(new Address(
+            "testStreet",
+            "testCity",
+            "someState",
+            "testZipCode",
+            "someApt",
+            county)));
+    postExpectingSuccess("homeAddress", Map.of(
+        "streetAddress", List.of("originalStreetAddress"),
+        "apartmentNumber", List.of("originalApt"),
+        "city", List.of("originalCity"),
+        "zipCode", List.of("54321"),
+        "state", List.of("MN"),
+        "sameMailingAddress", List.of("false")
+        // todo what if this is empty? that's the real world behavior
+    ));
+    postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
+
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    when(locationClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "City", "CA", "03104", "", county))
+    );
+    postExpectingSuccess("mailingAddress", Map.of(
+        "streetAddress", List.of("someStreetAddress"),
+        "apartmentNumber", List.of("someApartmentNumber"),
+        "city", List.of("someCity"),
+        "zipCode", List.of("12345"),
+        "state", List.of("IL"),
+        "sameMailingAddress", List.of()
+    ));
+    postExpectingNextPageElementText("verifyMailingAddress",
+        "useEnrichedAddress",
+        "true",
+        "mailingAddress-address_street",
+        "smarty street");
   }
 }

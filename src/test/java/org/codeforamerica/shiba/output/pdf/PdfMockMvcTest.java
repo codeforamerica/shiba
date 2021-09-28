@@ -341,6 +341,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "zipCode", List.of("54321"),
           "state", List.of("MN"),
           "sameMailingAddress", List.of("false")
+          // todo what if this is empty? that's the real world behavior
       ));
 
       postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
