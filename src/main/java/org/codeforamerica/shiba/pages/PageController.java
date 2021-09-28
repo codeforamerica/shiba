@@ -369,10 +369,12 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
-      Optional<RoutingDestination> optionalTribalNation = DocumentListParser.parse(applicationData)
+      List<RoutingDestination> routingDestinations = DocumentListParser
+          .parse(applicationData)
           .stream()
-          .flatMap(
-              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+          .flatMap(doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+          .toList();
+      Optional<RoutingDestination> optionalTribalNation = routingDestinations.stream()
           .filter(rd -> rd instanceof TribalNation)
           .findFirst();
       String tribalNationName = null;
@@ -380,10 +382,7 @@ public class PageController {
         tribalNationName = optionalTribalNation.get().getName();
       }
 
-      Optional<RoutingDestination> optionalCounty = DocumentListParser.parse(applicationData)
-          .stream()
-          .flatMap(
-              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+      Optional<RoutingDestination> optionalCounty = routingDestinations.stream()
           .filter(rd -> rd instanceof CountyRoutingDestination)
           .findFirst();
       String county = null;
