@@ -1,7 +1,0 @@
-tribalnations: #TODO remove if we don't use
-  Mille Lacs Band of Ojibwe:
-    email: help+dev@mnbenefits.org
-    folderId: ae7d7c7f-6503-46ea-92a7-4a813da9fb02
-    dhsProviderId: A602658300
-    phoneNumber: 320-532-7407
-    isServicedByMilleLacs: true

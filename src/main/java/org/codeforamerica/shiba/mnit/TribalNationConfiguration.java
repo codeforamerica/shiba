@@ -10,41 +10,67 @@ import static org.codeforamerica.shiba.TribalNation.WHITE_EARTH;
 import java.util.HashMap;
 import java.util.Map;
 import org.codeforamerica.shiba.TribalNation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-//@ConfigurationProperties(prefix = "tribalnations") // TODO remove if we don't use
-//@PropertySource(value = "classpath:tribal-nation-mapping.yaml", factory = YamlPropertySourceFactory.class)
 public class TribalNationConfiguration {
-// staging
-  // MilleLacsBand:
-//      phoneNumber: 320-532-7407
-//      email: help+staging@mnbenefits.org
-//      folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
-//      dhsProviderId: A602658300
-
-  // demo
-  //MilleLacsBand:
-  //      email: help+staging@mnbenefits.org
-  //      folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
-  //      dhsProviderId: A602658300
-  //      phoneNumber: 320-532-7407
-
-  // prod
-  //  MilleLacsBand:
-  //      folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
-  //      dhsProviderId: A602658300
-  //      phoneNumber: 320-532-7407
-  // todo where is the email?
 
   @Bean
   @Profile({"test", "default"})
   public Map<String, TribalNation> localTribalNations() {
+    return getDefaultTribalNations();
+  }
+
+  @Bean
+  @Profile({"staging"})
+  public Map<String, TribalNation> stagingTribalNations() {
+    Map<String, TribalNation> result = getDefaultTribalNations();
+    result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
+        MILLE_LACS_BAND_OF_OJIBWE,
+        "ccef8f5a-efe1-4ecf-93e2-3b853bea82e6",
+        "A602658300",
+        "help+staging@mnbenefits.org",
+        "320-532-7407",
+        true));
+    return result;
+  }
+
+  @Bean
+  @Profile("demo")
+  public Map<String, TribalNation> demoTribalNations() {
+    Map<String, TribalNation> result = getDefaultTribalNations();
+    result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
+        MILLE_LACS_BAND_OF_OJIBWE,
+        "accef8f5a-efe1-4ecf-93e2-3b853bea82e6",
+        "A602658300",
+        "help+staging@mnbenefits.org",
+        "320-532-7407",
+        true));
+    return result;
+  }
+
+  @Bean
+  @Profile("production")
+  public Map<String, TribalNation> prodTribalNations() {
     Map<String, TribalNation> result = new HashMap<>();
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
-        MILLE_LACS_BAND_OF_OJIBWE, // TODO annoying but maybe the less bad option
+        MILLE_LACS_BAND_OF_OJIBWE,
+        "f30bf89e-f3ab-4c74-8e38-af7ada922719",
+        "A602658300",
+        "candace.benjamin@millelacsband.com",
+        "320-532-7407",
+        true));
+    return result;
+  }
+
+  @NotNull
+  private Map<String, TribalNation> getDefaultTribalNations() {
+    Map<String, TribalNation> result = new HashMap<>();
+    result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
+        MILLE_LACS_BAND_OF_OJIBWE,
         "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
         "A602658300",
         "help+dev@mnbenefits.org",
@@ -70,20 +96,6 @@ public class TribalNationConfiguration {
         BOIS_FORTE,
         true
     ));
-    return result;
-  }
-
-  @Bean
-  @Profile("production")
-  public Map<String, TribalNation> prodTribalNations() {
-    Map<String, TribalNation> result = new HashMap<>();
-    result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNation(
-        MILLE_LACS_BAND_OF_OJIBWE, // TODO annoying but maybe the less bad option
-        "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
-        "A602658300",
-        "help+dev@mnbenefits.org",
-        "320-532-7407",
-        true));
     return result;
   }
 }

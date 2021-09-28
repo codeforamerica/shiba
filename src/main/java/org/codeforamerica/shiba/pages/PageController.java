@@ -388,7 +388,6 @@ public class PageController {
         county = optionalCounty.get().getName();
       }
 
-      // TODO this needs to handle multiple tribal nations
       model.put("routedTribalNation", tribalNationName);
       model.put("routedCounty",
           application.getCounty() == County.Other ? County.Hennepin.displayName()
