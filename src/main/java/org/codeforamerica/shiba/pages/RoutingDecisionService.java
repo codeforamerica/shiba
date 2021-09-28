@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -30,29 +29,32 @@ public class RoutingDecisionService {
 
   private final CountyParser countyParser;
   private final Map<String, TribalNation> tribalNations;
+  private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
 
   public RoutingDecisionService(CountyParser countyParser,
-      Map<String, TribalNation> tribalNations) {
+      Map<String, TribalNation> tribalNations,
+      CountyMap<CountyRoutingDestination> countyRoutingDestinations) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
+    this.countyRoutingDestinations = countyRoutingDestinations;
   }
 
-  public CountyAndRoutingDestinations getRoutingDestination(ApplicationData applicationData,
+  public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
       Document document) {
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
-    CountyAndRoutingDestinations result = new CountyAndRoutingDestinations();
+    List<RoutingDestination> result = new ArrayList<>();
 
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     if (shouldSendToMilleLacs) {
-      result.routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+      result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
     }
 
     // Send to county for all other programs
     if (!shouldSendToMilleLacs
         || programs.contains(SNAP) || programs.contains(CASH)
         || programs.contains(GRH) || programs.contains(CCAP)) {
-      String county = countyParser.parseCountyInput(applicationData);
-      result.setCounty(county);
+      CountyRoutingDestination county = countyRoutingDestinations.get(countyParser.parse(applicationData));
+      result.add(county);
     }
 
     return result;
@@ -71,15 +73,5 @@ public class RoutingDecisionService {
         && tribalNations.get(selectedTribeName).isServicedByMilleLacs()
         && (applyingForTribalTanf || programs.contains(EA))
         && !Document.CCAP.equals(document);
-  }
-
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class CountyAndRoutingDestinations { // TODO remove county and then remove this entirely
-
-    private String county;
-    //    private String tribalNation;
-    private List<RoutingDestination> routingDestinations = new ArrayList<>();
   }
 }

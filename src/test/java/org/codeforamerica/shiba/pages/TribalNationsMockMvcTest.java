@@ -61,7 +61,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForMFIP");
 
     CountyAndRoutingDestinations countyAndRoutingDestinations =
-        routingDecisionService.getRoutingDestination(applicationData, CAF);
+        routingDecisionService.getRoutingDestinations(applicationData, CAF);
 
     assertThat(countyAndRoutingDestinations.getCounty()).isEqualTo(county);
     assertThat(countyAndRoutingDestinations.getRoutingDestinations()).isEmpty();
@@ -173,7 +173,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   private void assertCountyAndTribalNationRoutingAreCorrect(String county,
       String tribalNationName) {
     CountyAndRoutingDestinations countyAndRoutingDestinations =
-        routingDecisionService.getRoutingDestination(applicationData, CAF);
+        routingDecisionService.getRoutingDestinations(applicationData, CAF);
     List<String> routingDestinationNames = countyAndRoutingDestinations.getRoutingDestinations()
         .stream()
         .filter(rd -> rd instanceof TribalNation)

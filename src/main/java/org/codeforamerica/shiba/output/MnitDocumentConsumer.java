@@ -20,7 +20,6 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -98,23 +97,11 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
-    CountyAndRoutingDestinations countyAndRoutingDestinations = routingDecisionService
-        .getRoutingDestination(application.getApplicationData(), document);
+    List<RoutingDestination> routingDestinations = routingDecisionService
+        .getRoutingDestinations(application.getApplicationData(), document);
 
-    countyAndRoutingDestinations.getRoutingDestinations().forEach(rd -> {
+    routingDestinations.forEach(rd -> {
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     });
-
-//    if (MilleLacsBand.displayName().equals(countyAndRoutingDestinations.getTribalNation())) {
-//      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-//    }
-    // todo why did this matter
-
-    if (countyAndRoutingDestinations.getCounty() != null) {
-      RoutingDestination routingDestination = countyMap.get(application.getCounty());
-
-      mnitClient.send(file, routingDestination, application.getId(), document,
-          application.getFlow());
-    }
   }
 }

@@ -1,173 +1,237 @@
 counties: &defaultCounties
   Aitkin:
+    county: Aitkin
     phoneNumber: 218-927-7200
   Anoka:
+    county: Anoka
     email: help+dev@mnbenefits.org
     phoneNumber: 763-422-7200
     folderId: 05042a59-cb59-4b52-8bd1-8dd73e4e7e3f
     dhsProviderId: 1023250115
   Becker:
+    county: Becker
     phoneNumber: 218-847-5628
   Beltrami:
+    county: Beltrami
     phoneNumber: 218-333-8300
   Benton:
+    county: Benton
     phoneNumber: 320-968-5087
   BigStone:
+    county: BigStone
     phoneNumber: 320-839-2555
   BlueEarth:
+    county: BlueEarth
     phoneNumber: 507-304-4335
   Brown:
+    county: Brown
     phoneNumber: 507-354-8246
   Carlton:
+    county: Carlton
     phoneNumber: 218-879-4583
   Carver:
+    county: Carver
     email: help+dev@mnbenefits.org
     phoneNumber: 952-361-1660
     folderId: f2002ee6-5201-432c-970e-fc152569dc10
     dhsProviderId: A000010800
   Cass:
+    county: Cass
     phoneNumber: 218-547-1340
   Chippewa:
+    county: Chippewa
     phoneNumber: 320-269-6401
   Chisago:
+    county: Chisago
     phoneNumber: 651-213-5640
   Clay:
+    county: Clay
     email: help+dev@mnbenefits.org
     phoneNumber: 218-299-5200
     folderId: a4a01aa6-2d9b-4510-9bbf-dc4c00442060
     dhsProviderId: A000014100
   Clearwater:
+    county: Clearwater
     phoneNumber: 218-694-6164
   Cook:
+    county: Cook
     email: help+dev@mnbenefits.org
     phoneNumber: 218-387-3620
     folderId: 057f1c2f-3a40-4e53-a208-ecfbe9a0022e
     dhsProviderId: A000016700
   Cottonwood:
+    county: Cottonwood
     phoneNumber: 507-831-1891
   CrowWing:
+    county: CrowWing
     phoneNumber: 218-824-1250
   Dakota:
+    county: Dakota
     phoneNumber: 651-554-5611
   Dodge:
+    county: Dodge
     email: help+dev@mnbenefits.org
     phoneNumber: 507-431-5600
     folderId: aceeedc9-f094-4fa3-9665-8313674b61d0
     dhsProviderId: A000020500
   Douglas:
+    county: Douglas
     phoneNumber: 320-762-2302
   Faribault:
+    county: Faribault
     phoneNumber: 507-526-3265
   Fillmore:
+    county: Fillmore
     phoneNumber: 507-765-2175
   Freeborn:
+    county: Freeborn
     phoneNumber: 507-377-5400
   Goodhue:
+    county: Goodhue
     phoneNumber: 651-385-320
   Grant:
+    county: Grant
     phoneNumber: 218-685-8200
   Hennepin:
+    county: Hennepin
     email: help+dev@mnbenefits.org
     phoneNumber: 612-596-1300
     folderId: 5195b061-9bdc-4d31-9840-90a99902d329
     dhsProviderId: A000027200
   Houston:
+    county: Houston
     phoneNumber: 507-725-5811
   Hubbard:
+    county: Hubbard
     phoneNumber: 218-732-1451
   Isanti:
+    county: Isanti
     phoneNumber: 763-689-1711
   Itasca:
+    county: Itasca
     phoneNumber: 218-327-2941
   Jackson:
+    county: Jackson
     phoneNumber: 507-847-4000
   Kanabec:
+    county: Kanabec
     phoneNumber: 320-679-6350
   Kandiyohi:
+    county: Kandiyohi
     phoneNumber: 320-231-7800
   Kittson:
+    county: Kittson
     phoneNumber: 218-843-2689
   Koochiching:
+    county: Koochiching
     phoneNumber: 218-283-7000
   LacQuiParle:
+    county: LacQuiParle
     phoneNumber: 320-598-7594
   Lake:
+    county: Lake
     phoneNumber: 218-834-8400
   LakeOfTheWoods:
+    county: LakeOfTheWoods
     phoneNumber: 218-634-2642
   LeSueur:
+    county: LeSueur
     phoneNumber: 507-357-8288
   Lincoln:
+    county: Lincoln
     phoneNumber: 507-694-1452
   Lyon:
+    county: Lyon
     phoneNumber: 507-537-6747
   McLeod:
+    county: McLeod
     phoneNumber: 320-864-3144
   Mahnomen:
+    county: Mahnomen
     phoneNumber: 218-935-2568
   Marshall:
+    county: Marshall
     phoneNumber: 218-745-5124
   Martin:
+    county: Martin
     phoneNumber: 507-238-4757
   Meeker:
+    county: Meeker
     phoneNumber: 320-693-5300
   MilleLacs:
+    county: Millelacs
     phoneNumber: 320-983-8208
-  MilleLacsBand:
-    email: help+dev@mnbenefits.org
-    folderId: ae7d7c7f-6503-46ea-92a7-4a813da9fb02
-    dhsProviderId: A602658300
-    phoneNumber: 320-532-7407
   Morrison:
+    county: Morrison
     email: help+dev@mnbenefits.org
     phoneNumber: 320-631-3599
     folderId: d0408807-e6a0-48d6-9829-2b78ceb94654
     dhsProviderId: 1255406286
   Mower:
+    county: Mower
     phoneNumber: 507-437-9700
   Murray:
+    county: Murray
     phoneNumber: 507-836-6144
   Nicollet:
+    county: Nicollet
     phoneNumber: 507-934-8559
   Nobles:
+    county: Nobles
     phoneNumber: 507-295-5213
   Norman:
+    county: Norman
     phoneNumber: 218-784-5400
   Olmsted:
+    county: Olmsted
     email: help+dev@mnbenefits.org
     phoneNumber: 507-328-6500
     folderId: 6875aa2f-8852-426f-a618-d394b9a32be5
     dhsProviderId: A000055800
   OtterTail:
+    county: OtterTail
     email: help+dev@mnbenefits.org
     phoneNumber: 218-998-8281
     folderId: 4ceb43cf-e67a-4edb-9ff8-6ddff1911ff9
     dhsProviderId: A000056600
   Pennington:
+    county: Pennington
     phoneNumber: 218-681-2880
   Pine:
+    county: Pine
     phoneNumber: 320-591-1570
   Pipestone:
+    county: Pipestone
     phoneNumber: 507-825-6720
   Polk:
+    county: Polk
     phoneNumber: 218-281-3127
   Pope:
+    county: Pope
     phoneNumber: 320-634-7755
   Ramsey:
+    county: Ramsey
     phoneNumber: 651-266-4444
   RedLake:
+    county: RedLake
     phoneNumber: 218-253-4131
   Redwood:
+    county: Redwood
     phoneNumber: 507-637-4050
   Renville:
+    county: Renville
     phoneNumber: 320-523-2202
   Rice:
+    county: Rice
     phoneNumber: 507-332-6115
   Rock:
+    county: Rock
     phoneNumber: 507-283-5070
   Roseau:
+    county: Roseau
     phoneNumber: 218-463-2411
   Scott:
+    county: Scott
     phoneNumber: 952-496-8686
   Sherburne:
     email: help+dev@mnbenefits.org

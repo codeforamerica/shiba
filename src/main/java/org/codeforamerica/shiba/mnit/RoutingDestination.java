@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoutingDestination {
+public abstract class RoutingDestination {
 
   private String folderId;
   private String dhsProviderId;
   private String email;
   private String phoneNumber;
-  // TODO add name when we convert county
+
+  public abstract String getName();
 }

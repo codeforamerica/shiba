@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -18,7 +17,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
@@ -63,15 +61,11 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      CountyAndRoutingDestinations countyAndRoutingDestination = routingDecisionService.getRoutingDestination(
+      List<RoutingDestination> routingDestination = routingDecisionService.getRoutingDestinations(
           application.getApplicationData(), document);
       List<String> recipientEmails = new ArrayList<>();
 
-      if (countyAndRoutingDestination.getCounty() != null) {
-        recipientEmails.add(countyMap.get(application.getCounty()).getEmail());
-      }
-
-      countyAndRoutingDestination.getRoutingDestinations().forEach(rd -> {
+      routingDestination.forEach(rd -> {
         recipientEmails.add(rd.getEmail());
       });
 

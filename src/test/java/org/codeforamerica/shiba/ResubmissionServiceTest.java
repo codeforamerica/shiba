@@ -81,7 +81,7 @@ class ResubmissionServiceTest {
         pdfGenerator, routingDecisionService);
     countyAndRoutingDestinations = new CountyAndRoutingDestinations(Olmsted.displayName(),
         new ArrayList<>());
-    when(routingDecisionService.getRoutingDestination(any(), any())).thenReturn(
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
         countyAndRoutingDestinations);
   }
 

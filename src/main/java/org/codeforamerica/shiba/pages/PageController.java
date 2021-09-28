@@ -368,24 +368,24 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
-      Optional<RoutingDestination> maybeTribalNation = DocumentListParser.parse(applicationData)
+      Optional<RoutingDestination> optionalTribalNation = DocumentListParser.parse(applicationData)
           .stream()
-          .flatMap(doc -> routingDecisionService.getRoutingDestination(applicationData, doc)
-              .getRoutingDestinations().stream())
+          .flatMap(doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
           .filter(rd -> rd instanceof TribalNation)
           .findFirst();
       String tribalNationName = null;
-      if (maybeTribalNation.isPresent()) {
-        tribalNationName = ((TribalNation) maybeTribalNation.get()).getName();
+      if (optionalTribalNation.isPresent()) {
+        tribalNationName = optionalTribalNation.get().getName();
       }
 
-      Optional<String> maybeCounty = DocumentListParser.parse(applicationData).stream()
-          .map(
-              doc -> routingDecisionService.getRoutingDestination(applicationData, doc).getCounty())
+      Optional<RoutingDestination> optionalCounty = DocumentListParser.parse(applicationData).stream()
+          .flatMap(
+              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+          .filter(rd -> !(rd instanceof TribalNation))
           .findFirst();
       String county = null;
-      if (maybeCounty.isPresent()) {
-        county = maybeCounty.get();
+      if (optionalCounty.isPresent()) {
+        county = optionalCounty.get().getName();
       }
 
       // TODO this needs to handle multiple tribal nations
