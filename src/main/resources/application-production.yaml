@@ -20,6 +20,7 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
+  landing-redirect-to-gov: off
   send-download-alert: on
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on

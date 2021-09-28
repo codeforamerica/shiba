@@ -2,81 +2,88 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body class="locale-en" id="landing-page">
-<div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab">
-        <div class="grid">
-            <div class="grid__item width-one-half">
-                <div class="spacing-above-35">
-                    <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
-                </div>
-                <h1 class="spacing-below-35" th:text="#{landing.header}"></h1>
-                <p class="text-25 spacing-below-35" th:text="#{landing.subheader}"></p>
-                <a class="button button--primary spacing-below-0" th:href="'/pages/'+${pageName}+'/navigation'">
-                    <span th:text="#{landing.apply-now}"></span>
-                    <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
-                </a>
-                <div class="spacing-above-25 spacing-below-0">
-	                <a  href="#later-docs-upload">
-	                    <span th:text="#{landing.alread-applied}"></span>
-	                </a>
-                </div>
-            </div>
-            <div class="grid__item width-one-half">
-                <img src="/images/minnesota-splash.png" alt="Minnesota Benefits Splash" class="splash">
-            </div>
+<div class="page-wrapper"
+     th:with="redirectToGovSite=${featureFlags.get('landing-redirect-to-gov') != null && featureFlags.get('landing-redirect-to-gov').isOn()},
+     applyLink=${redirectToGovSite ? 'https://mnbenefits.mn.gov/pages/identifyCountyBeforeApplying' : '/pages/'+pageName+'/navigation'},
+     uploadDocsLink=${redirectToGovSite ? 'https://mnbenefits.mn.gov/pages/identifyCounty' : '/pages/identifyCounty'}">
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab">
+    <div class="grid">
+      <div class="grid__item width-one-half">
+        <div class="spacing-above-35">
+          <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
         </div>
-    </section>
-    <section class="slab slab--minnesota-sky-blue">
-        <div class="grid">
-            <h1 class="h2 spacing-below-60 text--centered" th:text="#{landing.apply-to-these-programs}"></h1>
-            <div class="grid__item width-five-twelfths">
-                <div class="grid__item spacing-below-35">
-                    <h2 class="h3 spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h2>
-                    <p class="form-card__body-text"
-                       th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
-                </div>
-                <div class="grid__item spacing-below-35">
-                    <h2 class="h3 spacing-below-10" th:text="#{landing.cash-programs}"></h2>
-                    <p class="form-card__body-text"
-                       th:text="#{landing.cash-assistance-helps-people-meet-their-basic-needs-until-they-are-able}"></p>
-                    <ul class="text--small list--bulleted">
-                        <li th:text="#{landing.diversionary-work-program-DWP}"></li>
-                        <li th:text="#{landing.general-assistance}"></li>
-                        <li th:text="#{landing.mn-family-investment-program-mfip}"></li>
-                        <li th:text="#{landing.mn-supplemental-aid-msa}"></li>
-                        <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="grid__item width-five-twelfths shift-one-twelfth">
-                <div class="grid__item spacing-below-35">
-                    <h2 class="h3 spacing-below-10" th:text="#{landing.emergency-assistance}"></h2>
-                    <p class="form-card__body-text"
-                       th:text="#{landing.emergency-assistance-provides-something-to-people-this-is-a-description}"></p>
-                </div>
-                <div class="grid__item spacing-below-35">
-                    <h2 class="h3 spacing-below-10" th:text="#{landing.housing-support}"></h2>
-                    <p class="form-card__body-text"
-                       th:text="#{landing.the-housing-support-program}"></p>
-                </div>
-                <div class="grid__item spacing-below-35">
-                    <h2 class="h3 spacing-below-10" th:text="#{landing.child-care-assistance}"></h2>
-                    <p class="form-card__body-text"
-                       th:text="#{landing.child-care-assistance-provides-financial-assistance-to-help-families}"></p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id= "later-docs-upload" class="slab text--centered">
-		<div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
-		<h1 class="max-width-446 h2 spacing-below-25 margin-left-right-auto" th:text="#{landing.submit-documents-to-county}"></h1>
-		<p class="max-width-500 margin-left-right-auto" th:text="#{landing.submit-documents-for-counties}" />
-        <a class="button spacing-below-0" th:href="'/pages/identifyCounty'">
-            <span th:text="#{landing.upload-documents}"></span>
+        <h1 class="spacing-below-35" th:text="#{landing.header}"></h1>
+        <p class="text-25 spacing-below-35" th:text="#{landing.subheader}"></p>
+        <a class="button button--primary spacing-below-0"
+           th:href="${applyLink}">
+          <span th:text="#{landing.apply-now}"></span>
+          <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
         </a>
-    </section>
+        <div class="spacing-above-25 spacing-below-0">
+          <a href="#later-docs-upload">
+            <span th:text="#{landing.alread-applied}"></span>
+          </a>
+        </div>
+      </div>
+      <div class="grid__item width-one-half">
+        <img src="/images/minnesota-splash.png" alt="Minnesota Benefits Splash" class="splash">
+      </div>
+    </div>
+  </section>
+  <section class="slab slab--minnesota-sky-blue">
+    <div class="grid">
+      <h1 class="h2 spacing-below-60 text--centered"
+          th:text="#{landing.apply-to-these-programs}"></h1>
+      <div class="grid__item width-five-twelfths">
+        <div class="grid__item spacing-below-35">
+          <h2 class="h3 spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h2>
+          <p class="form-card__body-text"
+             th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
+        </div>
+        <div class="grid__item spacing-below-35">
+          <h2 class="h3 spacing-below-10" th:text="#{landing.cash-programs}"></h2>
+          <p class="form-card__body-text"
+             th:text="#{landing.cash-assistance-helps-people-meet-their-basic-needs-until-they-are-able}"></p>
+          <ul class="text--small list--bulleted">
+            <li th:text="#{landing.diversionary-work-program-DWP}"></li>
+            <li th:text="#{landing.general-assistance}"></li>
+            <li th:text="#{landing.mn-family-investment-program-mfip}"></li>
+            <li th:text="#{landing.mn-supplemental-aid-msa}"></li>
+            <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid__item width-five-twelfths shift-one-twelfth">
+        <div class="grid__item spacing-below-35">
+          <h2 class="h3 spacing-below-10" th:text="#{landing.emergency-assistance}"></h2>
+          <p class="form-card__body-text"
+             th:text="#{landing.emergency-assistance-provides-something-to-people-this-is-a-description}"></p>
+        </div>
+        <div class="grid__item spacing-below-35">
+          <h2 class="h3 spacing-below-10" th:text="#{landing.housing-support}"></h2>
+          <p class="form-card__body-text"
+             th:text="#{landing.the-housing-support-program}"></p>
+        </div>
+        <div class="grid__item spacing-below-35">
+          <h2 class="h3 spacing-below-10" th:text="#{landing.child-care-assistance}"></h2>
+          <p class="form-card__body-text"
+             th:text="#{landing.child-care-assistance-provides-financial-assistance-to-help-families}"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="later-docs-upload" class="slab text--centered">
+    <div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
+    <h1 class="max-width-446 h2 spacing-below-25 margin-left-right-auto"
+        th:text="#{landing.submit-documents-to-county}"></h1>
+    <p class="max-width-500 margin-left-right-auto"
+       th:text="#{landing.submit-documents-for-counties}"/>
+    <a class="button spacing-below-0" th:href="${uploadDocsLink}">
+      <span th:text="#{landing.upload-documents}"></span>
+    </a>
+  </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>
