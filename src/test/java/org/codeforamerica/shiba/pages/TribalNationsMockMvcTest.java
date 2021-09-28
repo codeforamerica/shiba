@@ -49,6 +49,17 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       throws Exception {
     getToPersonalInfoScreen(EA);
     addAddressInGivenCounty(county);
+
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "nationsBoundary");
+    postExpectingRedirect("nationsBoundary",
+        "livingInNationBoundary",
+        "true",
+        "applyForMFIP");
+
     CountyAndRoutingDestinations countyAndRoutingDestinations =
         routingDecisionService.getRoutingDestination(applicationData, CAF);
 
