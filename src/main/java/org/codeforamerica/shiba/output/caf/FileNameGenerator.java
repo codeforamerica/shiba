@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +26,10 @@ public class FileNameGenerator {
       "F", Set.of("SNAP"),
       "C", Set.of("CCAP")
   );
-  private final CountyMap<RoutingDestination> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public FileNameGenerator(CountyMap<RoutingDestination> countyMap) {
+  public FileNameGenerator(CountyMap<CountyRoutingDestination> countyMap) {
     this.countyMap = countyMap;
   }
 

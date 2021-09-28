@@ -24,6 +24,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -31,7 +32,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,9 +48,10 @@ class ResubmissionServiceTest {
   private final String APP_ID = "myappid";
   private final String DEFAULT_EMAIL = "olmsted@example.com";
   private final String ANOKA_EMAIL = "anoka@example.com";
+  private final String OLMSTED_EMAIL = "olmsted@example.com";
   private final String MILLE_LACS_BAND_EMAIL = "help+dev@mnbenefits.org";
 
-  private final CountyMap<RoutingDestination> countyMap = new CountyMap<>();
+  private final CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
   @Mock
   private ApplicationRepository applicationRepository;
   @Mock
@@ -63,26 +64,26 @@ class ResubmissionServiceTest {
   private RoutingDecisionService routingDecisionService;
   private Map<String, TribalNation> tribalNations;
   private ResubmissionService resubmissionService;
-  private CountyAndRoutingDestinations countyAndRoutingDestinations;
+  private List<RoutingDestination> routingDestinations;
 
   @BeforeEach
   void setUp() {
-    countyMap.setDefaultValue(RoutingDestination.builder()
+    countyMap.setDefaultValue(CountyRoutingDestination.builder()
         .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
         .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
     countyMap.setCounties(Map.of(
-        MilleLacsBand, RoutingDestination.builder().email(MILLE_LACS_BAND_EMAIL).build(),
-        Anoka, RoutingDestination.builder().email(ANOKA_EMAIL).build()
+        MilleLacsBand, CountyRoutingDestination.builder().email(MILLE_LACS_BAND_EMAIL).build(),
+        Anoka, CountyRoutingDestination.builder().email(ANOKA_EMAIL).build()
     ));
     tribalNations = new TribalNationConfiguration().localTribalNations();
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
         pdfGenerator, routingDecisionService);
-    countyAndRoutingDestinations = new CountyAndRoutingDestinations(Olmsted.displayName(),
-        new ArrayList<>());
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
-        countyAndRoutingDestinations);
+
+    routingDestinations = new ArrayList<>();
+    routingDestinations.add(CountyRoutingDestination.builder().email(OLMSTED_EMAIL).build());
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
   }
 
   @Test
@@ -111,9 +112,8 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    countyAndRoutingDestinations.setCounty(null);
-    countyAndRoutingDestinations.getRoutingDestinations()
-        .add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+    routingDestinations.remove(0);
+    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
 
     resubmissionService.resubmitFailedApplications();
 
@@ -134,9 +134,9 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    countyAndRoutingDestinations.setCounty(Anoka.displayName());
-    countyAndRoutingDestinations.getRoutingDestinations()
-        .add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+    routingDestinations.remove(0);
+    routingDestinations.add(countyMap.get(Anoka));
+    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
 
     resubmissionService.resubmitFailedApplications();
 
@@ -157,9 +157,9 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    countyAndRoutingDestinations.setCounty(Anoka.displayName());
-    countyAndRoutingDestinations.getRoutingDestinations()
-        .add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+    routingDestinations.remove(0);
+    routingDestinations.add(countyMap.get(Anoka));
+    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
 
     doThrow(new RuntimeException()).when(emailClient)
         .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,

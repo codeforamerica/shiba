@@ -20,7 +20,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -55,7 +55,7 @@ class ApplicationSubmittedListenerTest {
   CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = mock(
       CcapExpeditedEligibilityDecider.class);
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-  CountyMap<RoutingDestination> countyMap = new CountyMap<>();
+  CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
   FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
   MonitoringService monitoringService = mock(MonitoringService.class);
   ApplicationSubmittedListener applicationSubmittedListener;
@@ -342,7 +342,7 @@ class ApplicationSubmittedListenerTest {
         County recipientCounty = Hennepin;
         String email = "someEmail";
         countyMap.getCounties()
-            .put(recipientCounty, RoutingDestination.builder().email(email).build());
+            .put(recipientCounty, CountyRoutingDestination.builder().email(email).build());
         Application application = Application.builder()
             .id(appIdFromDb)
             .completedAt(ZonedDateTime.now())

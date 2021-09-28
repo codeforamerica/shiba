@@ -18,6 +18,26 @@ import org.springframework.context.annotation.Profile;
 //@ConfigurationProperties(prefix = "tribalnations") // TODO remove if we don't use
 //@PropertySource(value = "classpath:tribal-nation-mapping.yaml", factory = YamlPropertySourceFactory.class)
 public class TribalNationConfiguration {
+// staging
+  // MilleLacsBand:
+//      phoneNumber: 320-532-7407
+//      email: help+staging@mnbenefits.org
+//      folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
+//      dhsProviderId: A602658300
+
+  // demo
+  //MilleLacsBand:
+  //      email: help+staging@mnbenefits.org
+  //      folderId: ccef8f5a-efe1-4ecf-93e2-3b853bea82e6
+  //      dhsProviderId: A602658300
+  //      phoneNumber: 320-532-7407
+
+  // prod
+  //  MilleLacsBand:
+  //      folderId: f30bf89e-f3ab-4c74-8e38-af7ada922719
+  //      dhsProviderId: A602658300
+  //      phoneNumber: 320-532-7407
+  // todo where is the email?
 
   @Bean
   @Profile({"test", "default"})

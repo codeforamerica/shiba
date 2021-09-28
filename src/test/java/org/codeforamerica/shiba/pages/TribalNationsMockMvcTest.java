@@ -13,23 +13,37 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNation;
-import org.codeforamerica.shiba.pages.RoutingDecisionService.CountyAndRoutingDestinations;
+import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Autowired
   private RoutingDecisionService routingDecisionService;
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+  @Autowired
+  private CountyMap<CountyRoutingDestination> countyMap;
+  @Autowired
+  private Map<String, TribalNation> tribalNations;
+  @MockBean
+  private CountyParser countyParser;
 
   @BeforeEach
   protected void setUp() throws Exception {
     super.setUp();
+    when(countyParser.parse(any())).thenReturn(County.Hennepin);
+    when(countyParser.parseCountyInput(any())).thenReturn(County.Hennepin.name());
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
@@ -60,11 +74,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "true",
         "applyForMFIP");
 
-    CountyAndRoutingDestinations countyAndRoutingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, CAF);
+    assertThat(routingDecisionService.getRoutingDestinations(applicationData, CAF))
+        .containsExactly(countyMap.get(County.valueFor(county)));
 
-    assertThat(countyAndRoutingDestinations.getCounty()).isEqualTo(county);
-    assertThat(countyAndRoutingDestinations.getRoutingDestinations()).isEmpty();
   }
 
   @ParameterizedTest
@@ -97,7 +109,13 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   })
   void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
       throws Exception {
-    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
+    goThroughShortTribalTanfFlow(nationName, county);
+    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
+  }
+
+
+  private void goThroughShortTribalTanfFlow(String nationName, String county) throws Exception {
+      getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
 
     postExpectingRedirect("tribalNationMember",
@@ -108,7 +126,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "selectedTribe",
         nationName,
         "applyForTribalTANF");
-    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
   }
 
   @ParameterizedTest
@@ -172,18 +189,20 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   private void assertCountyAndTribalNationRoutingAreCorrect(String county,
       String tribalNationName) {
-    CountyAndRoutingDestinations countyAndRoutingDestinations =
+    List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(applicationData, CAF);
-    List<String> routingDestinationNames = countyAndRoutingDestinations.getRoutingDestinations()
-        .stream()
-        .filter(rd -> rd instanceof TribalNation)
-        .map(tn -> ((TribalNation) tn).getName())
+    List<String> routingDestinationNames = routingDestinations.stream()
+        .map(RoutingDestination::getName)
         .toList();
-    assertThat(routingDestinationNames).contains(tribalNationName);
-    assertThat(countyAndRoutingDestinations.getCounty()).isEqualTo(county);
+    assertThat(routingDestinationNames)
+        .containsExactly(tribalNationName, county + " County"); //TODO do we want this
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
+    String countyNameWithoutSpaces = county.replace(" ", "");
+    County value = County.valueOf(countyNameWithoutSpaces);
+    when(countyParser.parse(any())).thenReturn(value);
+    when(countyParser.parseCountyInput(any())).thenReturn(county);
     fillOutPersonalInfo();
     fillOutContactInfo();
 

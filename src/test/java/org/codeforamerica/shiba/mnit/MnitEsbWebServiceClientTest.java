@@ -81,11 +81,11 @@ class MnitEsbWebServiceClientTest {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
-    olmsted = new RoutingDestination();
+    olmsted = new CountyRoutingDestination();
     olmsted.setDhsProviderId("A000055800");
     olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 
-    hennepin = new RoutingDestination();
+    hennepin = new CountyRoutingDestination();
     hennepin.setDhsProviderId("A000027200");
     hennepin.setFolderId("5195b061-9bdc-4d31-9840-90a99902d329");
   }
@@ -117,7 +117,7 @@ class MnitEsbWebServiceClientTest {
                     Base64.getEncoder().encodeToString(fileContent.getBytes())))
         .andRespond(withSoapEnvelope(successResponse));
 
-    RoutingDestination routingDestination = new RoutingDestination();
+    RoutingDestination routingDestination = new CountyRoutingDestination();
     routingDestination.setDhsProviderId("A000055800");
     routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 

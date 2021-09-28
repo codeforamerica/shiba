@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -29,13 +30,13 @@ public class ResubmissionService {
 
   private final ApplicationRepository applicationRepository;
   private final EmailClient emailClient;
-  private final CountyMap<RoutingDestination> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
   private final PdfGenerator pdfGenerator;
   private final RoutingDecisionService routingDecisionService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
-      EmailClient emailClient, CountyMap<RoutingDestination> countyMap,
+      EmailClient emailClient, CountyMap<CountyRoutingDestination> countyMap,
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService) {
     this.applicationRepository = applicationRepository;
@@ -61,11 +62,11 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      List<RoutingDestination> routingDestination = routingDecisionService.getRoutingDestinations(
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
           application.getApplicationData(), document);
       List<String> recipientEmails = new ArrayList<>();
 
-      routingDestination.forEach(rd -> {
+      routingDestinations.forEach(rd -> {
         recipientEmails.add(rd.getEmail());
       });
 

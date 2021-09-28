@@ -7,7 +7,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 class GeneralDeliveryAddressEnrichmentTest {
 
-  private final CountyMap<RoutingDestination> countyZipCodeMap = new CountyMap<>();
+  private final CountyMap<CountyRoutingDestination> countyZipCodeMap = new CountyMap<>();
   private final CityInfoConfiguration cityInfoConfiguration = new CityInfoConfiguration();
 
   private final GeneralDeliveryAddressEnrichment generalDeliveryAddressEnrichment = new GeneralDeliveryAddressEnrichment(
@@ -24,7 +24,7 @@ class GeneralDeliveryAddressEnrichmentTest {
   @Test
   void shouldMapCityInfoForKnownCounty() {
     countyZipCodeMap.getCounties()
-        .put(County.OtterTail, new RoutingDestination(null, null, null, "123-4567"));
+        .put(County.OtterTail, new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567"));
     cityInfoConfiguration.getCityToZipAndCountyMapping().put("Battle Lake",
         Map.of("displayName", "Battle Lake", "zipcode", "56515", "county", "OtterTail"));
     ApplicationData applicationData = new TestApplicationDataBuilder()

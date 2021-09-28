@@ -40,8 +40,8 @@ import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -71,7 +71,7 @@ import org.springframework.test.context.ContextConfiguration;
 class MnitDocumentConsumerTest {
 
   @Autowired
-  private CountyMap<RoutingDestination> countyMap;
+  private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
   private Map<String, TribalNation> tribalNations;
   @MockBean
@@ -107,6 +107,8 @@ class MnitDocumentConsumerTest {
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
         .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build();
 
     ZonedDateTime completedAt = ZonedDateTime.of(
@@ -159,6 +161,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -182,6 +185,9 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -205,6 +211,9 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -235,6 +244,9 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -250,6 +262,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -268,6 +281,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);

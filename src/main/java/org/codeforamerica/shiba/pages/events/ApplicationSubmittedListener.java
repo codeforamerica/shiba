@@ -13,7 +13,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -38,7 +38,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
-  private final CountyMap<RoutingDestination> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
   private final FeatureFlagConfiguration featureFlags;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -48,7 +48,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
-      CountyMap<RoutingDestination> countyMap,
+      CountyMap<CountyRoutingDestination> countyMap,
       FeatureFlagConfiguration featureFlagConfiguration,
       MonitoringService monitoringService) {
     super(applicationRepository, monitoringService);

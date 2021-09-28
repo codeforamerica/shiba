@@ -15,6 +15,7 @@ import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -34,7 +35,7 @@ public class MnitDocumentConsumer {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
   private final HashMap<String, TribalNation> tribalNations;
-  private final CountyMap<RoutingDestination> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
@@ -43,7 +44,7 @@ public class MnitDocumentConsumer {
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
       HashMap<String, TribalNation> tribalNations,
-      CountyMap<RoutingDestination> countyMap) {
+      CountyMap<CountyRoutingDestination> countyMap) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;

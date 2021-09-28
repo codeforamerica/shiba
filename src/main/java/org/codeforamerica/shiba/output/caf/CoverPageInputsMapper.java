@@ -21,7 +21,7 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
@@ -43,12 +43,12 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   private static final Map<String, String> UTM_SOURCE_MAPPING = Map
       .of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
   private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
-  private final CountyMap<RoutingDestination> countyInformationMapping;
+  private final CountyMap<CountyRoutingDestination> countyInformationMapping;
   private final MessageSource messageSource;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
-      CountyMap<RoutingDestination> countyInformationMapping,
+      CountyMap<CountyRoutingDestination> countyInformationMapping,
       MessageSource messageSource) {
     this.countyInstructionsMapping = countyInstructionsMapping;
     this.countyInformationMapping = countyInformationMapping;

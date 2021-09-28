@@ -8,7 +8,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
   private final CityInfoConfiguration cityInfoConfiguration;
-  private final CountyMap<RoutingDestination> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public GeneralDeliveryAddressEnrichment(CityInfoConfiguration cityInfoConfiguration,
-      CountyMap<RoutingDestination> countyMap) {
+      CountyMap<CountyRoutingDestination> countyMap) {
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.countyMap = countyMap;
   }
