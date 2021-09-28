@@ -113,7 +113,7 @@ jobs:
         namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
     - name: update and run build
       run: |
-        oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ needs.draft-release.outputs.tag_name }}"}}}}'
+        oc patch bc mn-benefits-release -p '{"spec":{"source":{"git":{"ref":"${{ github.event.inputs.branch }}"}}}}'
         oc patch bc mn-benefits-release -p '{"spec":{"output":{"to":{"name":"mn-benefits:${{ needs.draft-release.outputs.tag_name }}"}}}}'
         oc start-build mn-benefits-release --follow
         oc patch dc mn-benefits-atst -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ needs.draft-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-atst"]}}]}}'
