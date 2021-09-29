@@ -1,23 +1,26 @@
 package org.codeforamerica.shiba.output;
 
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.RoutingDestinationService;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -29,21 +32,28 @@ public class MnitDocumentConsumer {
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
-  private final RoutingDestinationService routingDestinationService;
+  private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
+  private final HashMap<String, TribalNationRoutingDestination> tribalNations;
+  private final CountyMap<CountyRoutingDestination> countyMap;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
-      RoutingDestinationService routingDestinationService,
-      ApplicationRepository applicationRepository) {
+      RoutingDecisionService routingDecisionService,
+      ApplicationRepository applicationRepository,
+      HashMap<String, TribalNationRoutingDestination> tribalNations,
+      CountyMap<CountyRoutingDestination> countyMap) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
-    this.routingDestinationService = routingDestinationService;
+    this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
+
+    this.tribalNations = tribalNations;
+    this.countyMap = countyMap;
   }
 
   public void processCafAndCcap(Application application) {
@@ -88,16 +98,11 @@ public class MnitDocumentConsumer {
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
-    RoutingDestination routingDestination = routingDestinationService
-        .getRoutingDestination(application.getApplicationData(), document);
+    List<RoutingDestination> routingDestinations = routingDecisionService
+        .getRoutingDestinations(application.getApplicationData(), document);
 
-    if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
-      mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-    }
-
-    if (routingDestination.getCounty() != null) {
-      mnitClient.send(file, application.getCounty(), application.getId(), document,
-          application.getFlow());
-    }
+    routingDestinations.forEach(rd -> {
+      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+    });
   }
 }

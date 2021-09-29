@@ -340,7 +340,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "city", List.of("originalCity"),
           "zipCode", List.of("54321"),
           "state", List.of("MN"),
-          "sameMailingAddress", List.of("false")
+          "sameMailingAddress", List.of()
       ));
 
       postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
