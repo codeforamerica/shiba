@@ -5,11 +5,13 @@ import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
 import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,12 +21,15 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -112,6 +117,45 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"Becker", "Mahnomen", "Clearwater"})
+  void routeApplicationsToWhiteEarthOnly(String county) throws Exception {
+
+    // Filling out the app
+    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
+    addAddressInGivenCounty(county);
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
+
+    List<RoutingDestination> cafRoutingDestinations =
+        routingDecisionService.getRoutingDestinations(applicationData, CAF);
+    List<String> cafRoutingDestinationNames = getRoutingDestinationNames(cafRoutingDestinations);
+    assertThat(cafRoutingDestinationNames).containsExactly(WHITE_EARTH);
+
+    List<RoutingDestination> ccapRoutingDestinations =
+        routingDecisionService.getRoutingDestinations(applicationData, Document.CCAP);
+    List<String> ccapRoutingDestinationNames = getRoutingDestinationNames(ccapRoutingDestinations);
+    assertThat(ccapRoutingDestinationNames).containsExactly(WHITE_EARTH);
+
+    List<RoutingDestination> uploadedDocumentRoutingDestinations =
+        routingDecisionService.getRoutingDestinations(applicationData, Document.UPLOADED_DOC);
+    List<String> uploadedDocRoutingDestinationNames = getRoutingDestinationNames(
+        uploadedDocumentRoutingDestinations);
+    assertThat(uploadedDocRoutingDestinationNames).containsExactly(WHITE_EARTH);
+  }
+
+  @NotNull
+  private List<String> getRoutingDestinationNames(List<RoutingDestination> routingDestinations) {
+    List<String> cafRoutingDestinationNames = new ArrayList<>();
+    for (RoutingDestination cafRoutingDestination : routingDestinations) {
+      String name = cafRoutingDestination.getName();
+      cafRoutingDestinationNames.add(name);
+    }
+    return cafRoutingDestinationNames;
+  }
+
+
   private void goThroughShortTribalTanfFlow(String nationName, String county) throws Exception {
     getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
@@ -124,6 +168,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "selectedTribe",
         nationName,
         "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF",
+        "applyForTribalTANF",
+        "true",
+        "tribalTANFConfirmation");
   }
 
   @ParameterizedTest
