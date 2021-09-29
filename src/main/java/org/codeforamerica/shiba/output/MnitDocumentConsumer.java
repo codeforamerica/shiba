@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.output;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -76,24 +78,35 @@ public class MnitDocumentConsumer {
   }
 
   public void processCafAndCcap(Application application) {
-    monitoringService.setApplicationId(application.getId());
-    // Send the CAF and CCAP as PDFs
+    String id = application.getId();
+    monitoringService.setApplicationId(id);
+
+    List<Thread> threads = new ArrayList<>();
+
+    // Generate the CAF and CCAP PDFs to send in parallel so that one document isn't waiting on the
+    // other to finish sending. pdfGenerator may not be thread-safe
     DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
-      try {
-        String id = application.getId();
-        applicationRepository.updateStatus(id, documentType, SENDING);
-        ApplicationFile applicationFile = pdfGenerator
-            .generate(application.getId(), documentType, CASEWORKER);
-        sendApplication(application, documentType, applicationFile);
-      } catch (Exception e) {
-        String id = application.getId();
-        applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
-        log.error("Failed to send with error, ", e);
-      }
-    });
+          threads.add(new Thread(new SendPDFRunnable(
+              documentType,
+              pdfGenerator.generate(id, documentType, CASEWORKER),
+              application)));
+        }
+    );
+
+    // Send the CAF and CCAP as PDFs in parallel
+    threads.forEach(Thread::start);
 
     // Send the CAF as XML
-    sendApplication(application, CAF, xmlGenerator.generate(application.getId(), CAF, CASEWORKER));
+    sendApplication(application, CAF, xmlGenerator.generate(id, CAF, CASEWORKER));
+
+    // Wait for everything to finish before returning
+    threads.forEach(t -> {
+      try {
+        t.join();
+      } catch (InterruptedException e) {
+        log.error("Thread interrupted", e);
+      }
+    });
   }
 
   public void processUploadedDocuments(Application application) {
@@ -106,14 +119,15 @@ public class MnitDocumentConsumer {
           application, coverPage);
       if (fileToSend != null && fileToSend.getFileBytes().length > 0) {
         log.info("Now sending: " + fileToSend.getFileName() + " original filename: "
-            + uploadedDocument.getFilename());
+                 + uploadedDocument.getFilename());
         sendApplication(application, UPLOADED_DOC, fileToSend);
         log.info("Finished sending document " + fileToSend.getFileName());
       } else {
         log.error("Skipped uploading file " + uploadedDocument.getFilename()
-            + " because it was empty. This should only happen in a dev environment.");
+                  + " because it was empty. This should only happen in a dev environment.");
       }
     }
+    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
   private void sendApplication(Application application, Document document, ApplicationFile file) {
@@ -140,5 +154,30 @@ public class MnitDocumentConsumer {
     routingDestinations.forEach(rd -> {
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     });
+  }
+
+  class SendPDFRunnable implements Runnable {
+
+    private final Document documentType;
+    private final ApplicationFile applicationFile;
+    private final Application application;
+
+    public SendPDFRunnable(Document documentType, ApplicationFile applicationFile,
+        Application application) {
+      this.documentType = documentType;
+      this.applicationFile = applicationFile;
+      this.application = application;
+    }
+
+    @Override
+    public void run() {
+      try {
+        applicationRepository.updateStatus(application.getId(), documentType, SENDING);
+        sendApplication(application, documentType, applicationFile);
+      } catch (Exception e) {
+        applicationRepository.updateStatus(application.getId(), documentType, DELIVERY_FAILED);
+        log.error("Failed to send with error, ", e);
+      }
+    }
   }
 }
