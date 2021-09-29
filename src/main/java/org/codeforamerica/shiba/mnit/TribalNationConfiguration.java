@@ -1,11 +1,6 @@
 package org.codeforamerica.shiba.mnit;
 
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.BOIS_FORTE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.FOND_DU_LAC;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.GRAND_PORTAGE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.LEECH_LAKE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +26,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "ccef8f5a-efe1-4ecf-93e2-3b853bea82e6",
-        "A602658300",
+        "A000048500",
         "help+staging@mnbenefits.org",
         "320-532-7407",
         true));
@@ -45,7 +40,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "accef8f5a-efe1-4ecf-93e2-3b853bea82e6",
-        "A602658300",
+        "A000048500",
         "help+staging@mnbenefits.org",
         "320-532-7407",
         true));
@@ -59,7 +54,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "f30bf89e-f3ab-4c74-8e38-af7ada922719",
-        "A602658300",
+        "A000048500",
         "candace.benjamin@millelacsband.com",
         "320-532-7407",
         true));
@@ -72,7 +67,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
-        "A602658300",
+        "A000048500",
         "help+dev@mnbenefits.org",
         "320-532-7407",
         true));
