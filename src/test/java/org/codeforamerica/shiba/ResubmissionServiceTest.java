@@ -2,7 +2,6 @@ package org.codeforamerica.shiba;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -74,7 +73,6 @@ class ResubmissionServiceTest {
         .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
     countyMap.setCounties(Map.of(
-        MilleLacsBand, CountyRoutingDestination.builder().email(MILLE_LACS_BAND_EMAIL).build(),
         Anoka, CountyRoutingDestination.builder().email(ANOKA_EMAIL).build()
     ));
     tribalNations = new TribalNationConfiguration().localTribalNations();
