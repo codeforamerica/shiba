@@ -2,8 +2,8 @@ package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNation.UPPER_SIOUX;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.TribalNation;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
@@ -73,7 +73,7 @@ class MnitDocumentConsumerTest {
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
-  private Map<String, TribalNation> tribalNations;
+  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private MnitEsbWebServiceClient mnitClient;
   @MockBean

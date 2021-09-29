@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.TribalNation;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
+public class TribalNationsMockMvcTestRoutingDestination extends AbstractShibaMockMvcTest {
 
   @Autowired
   private RoutingDecisionService routingDecisionService;
@@ -35,7 +35,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
-  private Map<String, TribalNation> tribalNations;
+  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private CountyParser countyParser;
 

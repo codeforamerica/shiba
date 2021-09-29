@@ -7,7 +7,7 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TribalNation extends RoutingDestination {
+public class TribalNationRoutingDestination extends RoutingDestination {
 
   // Serviced by Mille Lacs Band of Ojibwe
   public static final String BOIS_FORTE = "Bois Forte";
@@ -31,7 +31,7 @@ public class TribalNation extends RoutingDestination {
   private String name;
   private boolean isServicedByMilleLacs;
 
-  public TribalNation(
+  public TribalNationRoutingDestination(
       String name,
       String folderId,
       String dhsProviderId,
@@ -43,7 +43,7 @@ public class TribalNation extends RoutingDestination {
     this.name = name;
   }
 
-  public TribalNation(
+  public TribalNationRoutingDestination(
       String name,
       boolean isServicedByMilleLacs
   ) {

@@ -9,12 +9,12 @@ import static org.codeforamerica.shiba.County.MilleLacs;
 import static org.codeforamerica.shiba.County.Morrison;
 import static org.codeforamerica.shiba.County.Pine;
 import static org.codeforamerica.shiba.County.Ramsey;
-import static org.codeforamerica.shiba.TribalNation.BOIS_FORTE;
-import static org.codeforamerica.shiba.TribalNation.FOND_DU_LAC;
-import static org.codeforamerica.shiba.TribalNation.GRAND_PORTAGE;
-import static org.codeforamerica.shiba.TribalNation.LEECH_LAKE;
-import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNation.WHITE_EARTH;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.BOIS_FORTE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.FOND_DU_LAC;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.GRAND_PORTAGE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.LEECH_LAKE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 
 import java.util.List;
 import java.util.function.BiFunction;

@@ -11,7 +11,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.TribalNation;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
@@ -34,7 +34,7 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
-  private final HashMap<String, TribalNation> tribalNations;
+  private final HashMap<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyMap;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
@@ -43,7 +43,7 @@ public class MnitDocumentConsumer {
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
-      HashMap<String, TribalNation> tribalNations,
+      HashMap<String, TribalNationRoutingDestination> tribalNations,
       CountyMap<CountyRoutingDestination> countyMap) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;

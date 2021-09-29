@@ -14,5 +14,5 @@ public abstract class RoutingDestination {
   private String email;
   private String phoneNumber;
 
-  public abstract String getName(); // <--- what is your name??
+  public abstract String getName();
 }

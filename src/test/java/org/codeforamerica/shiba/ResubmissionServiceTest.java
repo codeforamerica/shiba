@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.TribalNation.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
@@ -62,7 +62,7 @@ class ResubmissionServiceTest {
   private DocumentRepository documentRepository;
   @Mock
   private RoutingDecisionService routingDecisionService;
-  private Map<String, TribalNation> tribalNations;
+  private Map<String, TribalNationRoutingDestination> tribalNations;
   private ResubmissionService resubmissionService;
   private List<RoutingDestination> routingDestinations;
 
