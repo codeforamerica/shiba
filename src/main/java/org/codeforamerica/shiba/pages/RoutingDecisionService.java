@@ -4,8 +4,7 @@ import static org.codeforamerica.shiba.County.Becker;
 import static org.codeforamerica.shiba.County.Clearwater;
 import static org.codeforamerica.shiba.County.Mahnomen;
 import static org.codeforamerica.shiba.Program.*;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -22,12 +21,15 @@ import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
 // The tests for this class live in MnitDocumentConsumerTest
 public class RoutingDecisionService {
 
+  private final List<String> TRIBES_WE_SERVICE = List.of(MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH,
+      BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE);
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
@@ -40,37 +42,56 @@ public class RoutingDecisionService {
     this.countyRoutingDestinations = countyRoutingDestinations;
   }
 
-  // GOAL: this method needs to return white earth
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
       Document document) {
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
     County county = countyParser.parse(applicationData);
-    List<RoutingDestination> result = new ArrayList<>();
 
+    String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
+    if (tribeName != null && TRIBES_WE_SERVICE.contains(tribeName)) {
+      // Route members of Tribal Nations we service
+      return switch (tribeName) {
+        case WHITE_EARTH -> getDestinationsForWhiteEarth(applicationData, document, programs,
+            county);
+        case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> getDestinationsForMilleLacs(
+            programs, applicationData, document, county);
+        default -> List.of(countyRoutingDestinations.get(county)); // not a situation now??
+      };
+    }
+
+    // By default, just send to county
+    return List.of(countyRoutingDestinations.get(county));
+  }
+
+  @NotNull
+  private List<RoutingDestination> getDestinationsForWhiteEarth(ApplicationData applicationData,
+      Document document, Set<String> programs, County county) {
     boolean shouldSendToWhiteEarth = shouldSendToWhiteEarth(applicationData, county);
     if (shouldSendToWhiteEarth) {
-      result.add(tribalNations.get(WHITE_EARTH));
+      return List.of(tribalNations.get(WHITE_EARTH));
+    } else {
+      return getDestinationsForMilleLacs(programs, applicationData, document, county);
     }
+  }
 
-    boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document, county);
-    if (shouldSendToMilleLacs) {
+  private List<RoutingDestination> getDestinationsForMilleLacs(Set<String> programs,
+      ApplicationData applicationData, Document document, County county) {
+    List<RoutingDestination> result = new ArrayList<>();
+    if (shouldSendToMilleLacs(applicationData, document, county)) {
       result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
     }
-
     if (shouldSendToCounty(programs, applicationData, document, county)) {
       result.add(countyRoutingDestinations.get(county));
     }
-
     return result;
   }
 
   private boolean shouldSendToCounty(Set<String> programs,
       ApplicationData applicationData, Document document, County county) {
-    boolean shouldSendToWhiteEarth = shouldSendToWhiteEarth(applicationData, county);
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document, county);
-    return !shouldSendToWhiteEarth && (!shouldSendToMilleLacs
+    return !shouldSendToMilleLacs
         || programs.contains(SNAP) || programs.contains(CASH)
-        || programs.contains(GRH) || programs.contains(CCAP));
+        || programs.contains(GRH) || programs.contains(CCAP);
   }
 
   private boolean shouldSendToWhiteEarth(ApplicationData applicationData, County county) {
