@@ -107,7 +107,7 @@ dependencyManagement {
         mavenBom 'org.springframework.session:spring-session-bom:2021.0.2'
     }
 }
-//
+
 dependencies {
     modules {
         module('javax.activation:activation') {

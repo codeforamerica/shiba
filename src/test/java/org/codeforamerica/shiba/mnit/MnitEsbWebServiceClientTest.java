@@ -20,7 +20,6 @@ import java.util.Base64;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -76,11 +75,21 @@ class MnitEsbWebServiceClientTest {
   @MockBean
   private ApplicationRepository applicationRepository;
 
+  private RoutingDestination olmsted;
+  private RoutingDestination hennepin;
+
   @BeforeEach
   void setUp() {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
+    olmsted = new CountyRoutingDestination();
+    olmsted.setDhsProviderId("A000055800");
+    olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
+    hennepin = new CountyRoutingDestination();
+    hennepin.setDhsProviderId("A000027200");
+    hennepin.setFolderId("5195b061-9bdc-4d31-9840-90a99902d329");
   }
 
   @Test
@@ -110,9 +119,13 @@ class MnitEsbWebServiceClientTest {
                     Base64.getEncoder().encodeToString(fileContent.getBytes())))
         .andRespond(withSoapEnvelope(successResponse));
 
+    RoutingDestination routingDestination = new CountyRoutingDestination();
+    routingDestination.setDhsProviderId("A000055800");
+    routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
     mnitEsbWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
-        County.Olmsted, "someId", Document.CAF, FlowType.FULL
+        routingDestination, "someId", Document.CAF, FlowType.FULL
     );
 
     verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
@@ -130,7 +143,7 @@ class MnitEsbWebServiceClientTest {
         .andRespond(withSoapEnvelope(successResponse));
 
     mnitEsbWebServiceClient
-        .send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted,
+        .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
             Document.CAF, any());
 
@@ -159,7 +172,7 @@ class MnitEsbWebServiceClientTest {
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
     mnitEsbWebServiceClient
-        .send(applicationFile, County.Olmsted, "someId", Document.CAF, any());
+        .send(applicationFile, olmsted, "someId", Document.CAF, any());
 
     mockWebServiceServer.verify();
   }
@@ -201,7 +214,7 @@ class MnitEsbWebServiceClientTest {
 
     mnitEsbWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
-        "someFileName"), County.Hennepin, "someId", Document.CAF, FlowType.FULL);
+        "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
   }

@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -13,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.mnit.MnitCountyInformation;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.RoutingDestinationService;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
@@ -31,20 +30,20 @@ public class ResubmissionService {
 
   private final ApplicationRepository applicationRepository;
   private final EmailClient emailClient;
-  private final CountyMap<MnitCountyInformation> countyMap;
+  private final CountyMap<CountyRoutingDestination> countyMap;
   private final PdfGenerator pdfGenerator;
-  private final RoutingDestinationService routingDestinationService;
+  private final RoutingDecisionService routingDecisionService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
-      EmailClient emailClient, CountyMap<MnitCountyInformation> countyMap,
+      EmailClient emailClient, CountyMap<CountyRoutingDestination> countyMap,
       PdfGenerator pdfGenerator,
-      RoutingDestinationService routingDestinationService) {
+      RoutingDecisionService routingDecisionService) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.countyMap = countyMap;
     this.pdfGenerator = pdfGenerator;
-    this.routingDestinationService = routingDestinationService;
+    this.routingDecisionService = routingDecisionService;
   }
 
   @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
@@ -63,18 +62,13 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Resubmitting " + document.name() + "(s) for application id " + id);
       Application application = applicationRepository.find(id);
-      RoutingDestination destination = routingDestinationService.getRoutingDestination(
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
           application.getApplicationData(), document);
       List<String> recipientEmails = new ArrayList<>();
 
-      if (destination.getCounty() != null) {
-        recipientEmails.add(countyMap.get(application.getCounty()).getEmail());
-      }
-
-      if (destination.getTribalNation() != null &&
-          MilleLacsBand.displayName().equals(destination.getTribalNation())) {
-        recipientEmails.add(countyMap.get(MilleLacsBand).getEmail());
-      }
+      routingDestinations.forEach(rd -> {
+        recipientEmails.add(rd.getEmail());
+      });
 
       log.info("Attempting to resubmit %s(s) for application id %s to emails %s".formatted(
           document.name(), id, recipientEmails));

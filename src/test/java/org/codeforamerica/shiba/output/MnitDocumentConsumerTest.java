@@ -1,9 +1,9 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.MilleLacsBand;
 import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.TribalNation.UPPER_SIOUX;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -33,10 +33,14 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -66,6 +70,10 @@ import org.springframework.test.context.ContextConfiguration;
 @Tag("db")
 class MnitDocumentConsumerTest {
 
+  @Autowired
+  private CountyMap<CountyRoutingDestination> countyMap;
+  @Autowired
+  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private MnitEsbWebServiceClient mnitClient;
   @MockBean
@@ -99,6 +107,8 @@ class MnitDocumentConsumerTest {
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
         .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build();
 
     ZonedDateTime completedAt = ZonedDateTime.of(
@@ -135,8 +145,10 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
   }
 
   @Test
@@ -149,6 +161,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -156,8 +169,10 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
   }
 
   @Test
@@ -170,6 +185,9 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -177,8 +195,10 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
   }
 
   @Test
@@ -191,6 +211,9 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -198,12 +221,17 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, MilleLacsBand, application.getId(), CAF, FULL);
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, Olmsted, application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
     // CCAP never goes to Mille Lacs
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+        FULL);
   }
 
   @Test
@@ -216,11 +244,15 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(mnitClient).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+        FULL);
   }
 
   @Test
@@ -230,6 +262,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -248,6 +281,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -276,7 +310,8 @@ class MnitDocumentConsumerTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(mnitClient, times(2))
-        .send(captor.capture(), eq(Olmsted), eq(application.getId()), eq(UPLOADED_DOC), any());
+        .send(captor.capture(), eq(countyMap.get(Olmsted)), eq(application.getId()),
+            eq(UPLOADED_DOC), any());
 
     // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
 //         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
@@ -304,7 +339,8 @@ class MnitDocumentConsumerTest {
         "pdf1of2.pdf");
     documentConsumer.processUploadedDocuments(application);
     ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
-    verify(mnitClient, never()).send(pdfApplicationFile, Olmsted, application.getId(), CCAP, FULL);
+    verify(mnitClient, never()).send(pdfApplicationFile, countyMap.get(Olmsted),
+        application.getId(), CCAP, FULL);
   }
 
   @Test

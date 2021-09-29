@@ -17,9 +17,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-  // TODO provide this list via environment variables or application.yaml config or something
-  // Or maybe just say it's okay to redeploy every time a new teammate joins
   public static final List<String> ADMIN_EMAILS = List.of(
       "aedstrom@codeforamerica.org",
       "agonzalez@codeforamerica.org",
@@ -78,7 +75,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder();
   }
 
-  // TODO do we want this to be a static class?
   public static class EmailBasedAccessDecider {
 
     public boolean check(Authentication authentication) {

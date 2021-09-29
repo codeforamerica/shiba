@@ -4,6 +4,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -18,12 +19,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -33,9 +36,9 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
@@ -94,7 +97,7 @@ public class PageController {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final NextStepsContentService nextStepsContentService;
   private final DocRecommendationMessageService docRecommendationMessageService;
-  private final RoutingDestinationService routingDestinationService;
+  private final RoutingDecisionService routingDecisionService;
   private final DocumentRepository documentRepository;
 
   public PageController(
@@ -113,7 +116,7 @@ public class PageController {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       NextStepsContentService nextStepsContentService,
       DocRecommendationMessageService docRecommendationMessageService,
-      RoutingDestinationService routingDestinationService,
+      RoutingDecisionService routingDecisionService,
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository) {
     this.applicationData = applicationData;
@@ -131,7 +134,7 @@ public class PageController {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.nextStepsContentService = nextStepsContentService;
     this.docRecommendationMessageService = docRecommendationMessageService;
-    this.routingDestinationService = routingDestinationService;
+    this.routingDecisionService = routingDecisionService;
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
   }
@@ -365,19 +368,27 @@ public class PageController {
           .getPageInputFirstValue("healthcareCoverage", "healthcareCoverage");
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
-      RoutingDestination routingDestination = DocumentListParser.parse(applicationData).stream()
-          .map(doc -> routingDestinationService.getRoutingDestination(applicationData, doc))
-          .reduce(new RoutingDestination(), (acc, element) -> {
-            if (element.getTribalNation() != null) {
-              acc.setTribalNation(element.getTribalNation());
+
+      LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+      List<String> routingDestinations = DocumentListParser.parse(applicationData).stream()
+          .flatMap(
+              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
+          .map(rd -> {
+            if (rd instanceof TribalNationRoutingDestination) {
+              return rd.getName();
             }
-            if (element.getCounty() != null) {
-              acc.setCounty(element.getCounty());
+            String county = rd.getName();
+            if (application.getCounty() == County.Other) {
+              county = County.Hennepin.displayName();
             }
-            return acc;
-          });
-      model.put("routedTribalNation", routingDestination.getTribalNation());
-      model.put("routedCounty", application.getCounty() == County.Other ? County.Hennepin.displayName() : routingDestination.getCounty());
+            return lms.getMessage("general.county", List.of(county));
+          })
+          .collect(Collectors.toSet())
+          .stream().toList();
+
+      // TODO need a test for different combinations of tribal nations and counties
+      String finalDestinationList = listToString(routingDestinations, lms);
+      model.put("routingDestinationList", finalDestinationList);
     }
 
     if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
