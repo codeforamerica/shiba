@@ -1,11 +1,8 @@
 package org.codeforamerica.shiba.pages;
 
-import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Becker;
 import static org.codeforamerica.shiba.County.Clearwater;
-import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Mahnomen;
-import static org.codeforamerica.shiba.County.Ramsey;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
@@ -24,11 +21,17 @@ import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings("DanglingJavadoc")
 @Service
-// The tests for this class live in MnitDocumentConsumerTest
+/**
+ * The tests for this class live in a few places:
+ * @see org.codeforamerica.shiba.pages.TribalNationsMockMvcTest
+ * @see org.codeforamerica.shiba.output.MnitDocumentConsumerTest
+ */
 public class RoutingDecisionService {
 
   private final List<String> TRIBES_WE_SERVICE = List.of(MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH,
@@ -54,10 +57,10 @@ public class RoutingDecisionService {
     if (tribeName != null && TRIBES_WE_SERVICE.contains(tribeName)) {
       // Route members of Tribal Nations we service
       return switch (tribeName) {
-        case WHITE_EARTH -> getDestinationsForWhiteEarth(applicationData, county);
-        case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> getDestinationsForMilleLacs(
+        case WHITE_EARTH -> routeWhiteEarthClients(programs, applicationData, document, county);
+        case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> routeClientsServicedByMilleLacs(
             programs, applicationData, document, county);
-        default -> List.of(countyRoutingDestinations.get(county)); // not a situation now??
+        default -> List.of(countyRoutingDestinations.get(county));
       };
     }
 
@@ -66,21 +69,34 @@ public class RoutingDecisionService {
   }
 
   @NotNull
-  private List<RoutingDestination> getDestinationsForWhiteEarth(ApplicationData applicationData,
-      County county) {
-    boolean shouldSendToWhiteEarth = shouldSendToWhiteEarth(applicationData, county);
+  private List<RoutingDestination> routeWhiteEarthClients(Set<String> programs,
+      ApplicationData applicationData,
+      Document document, County county) {
+    var pagesData = applicationData.getPagesData();
+    var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
+
+    boolean shouldSendToWhiteEarth = selectedTribeName != null
+        && selectedTribeName.equals(WHITE_EARTH)
+        && List.of(Becker, Mahnomen, Clearwater).contains(county);
     if (shouldSendToWhiteEarth) {
       return List.of(tribalNations.get(WHITE_EARTH));
-    } else if (URBAN_COUNTIES.contains(county)) {
-      // Send to the county and to mille lacs
-      return List.of(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-          countyRoutingDestinations.get(county));
-    } else {
-      return List.of(countyRoutingDestinations.get(county));// send to county
     }
+
+    List<RoutingDestination> result = new ArrayList<>();
+    if (URBAN_COUNTIES.contains(county)
+        && isApplyingForTribalTanf(applicationData.getPagesData())
+        && !Document.CCAP.equals(document)) {
+      result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+    }
+    result.add(countyRoutingDestinations.get(county));
+    return result;
   }
 
-  private List<RoutingDestination> getDestinationsForMilleLacs(Set<String> programs,
+  private boolean isApplyingForTribalTanf(PagesData pagesData) {
+    return Boolean.parseBoolean(getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
+  }
+
+  private List<RoutingDestination> routeClientsServicedByMilleLacs(Set<String> programs,
       ApplicationData applicationData, Document document, County county) {
     List<RoutingDestination> result = new ArrayList<>();
     if (shouldSendToMilleLacs(applicationData, document, county)) {
@@ -100,30 +116,17 @@ public class RoutingDecisionService {
         || programs.contains(GRH) || programs.contains(CCAP);
   }
 
-  // TODO do we need this method?
-  private boolean shouldSendToWhiteEarth(ApplicationData applicationData, County county) {
-    var pagesData = applicationData.getPagesData();
-    var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
-
-    return selectedTribeName != null
-        && selectedTribeName.equals(WHITE_EARTH)
-        && List.of(Becker, Mahnomen, Clearwater).contains(county);
-  }
-
   // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
   private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document,
       County county) {
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
-    var applyingForTribalTanf = Boolean.parseBoolean(
-        getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
     return selectedTribeName != null
         && tribalNations.get(selectedTribeName) != null
-        && tribalNations.get(selectedTribeName).isServicedByMilleLacs()
-        && (applyingForTribalTanf || programs.contains(EA))
-        && !Document.CCAP.equals(document)
-        && !shouldSendToWhiteEarth(applicationData, county);
+        && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
+        && !Document.CCAP.equals(document);
   }
 }
+
