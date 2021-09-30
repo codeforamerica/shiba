@@ -26,7 +26,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "ccef8f5a-efe1-4ecf-93e2-3b853bea82e6",
-        "A000048500",
+        "A602658300",
         "help+staging@mnbenefits.org",
         "320-532-7407",
         true));
@@ -40,7 +40,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "accef8f5a-efe1-4ecf-93e2-3b853bea82e6",
-        "A000048500",
+        "A602658300",
         "help+staging@mnbenefits.org",
         "320-532-7407",
         true));
@@ -54,7 +54,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "f30bf89e-f3ab-4c74-8e38-af7ada922719",
-        "A000048500",
+        "A602658300",
         "candace.benjamin@millelacsband.com",
         "320-532-7407",
         true));
@@ -67,7 +67,7 @@ public class TribalNationConfiguration {
     result.put(MILLE_LACS_BAND_OF_OJIBWE, new TribalNationRoutingDestination(
         MILLE_LACS_BAND_OF_OJIBWE,
         "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
-        "A000048500",
+        "A602658300",
         "help+dev@mnbenefits.org",
         "320-532-7407",
         true));
