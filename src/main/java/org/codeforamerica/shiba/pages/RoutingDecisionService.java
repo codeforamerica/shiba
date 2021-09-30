@@ -70,7 +70,7 @@ public class RoutingDecisionService {
     if (shouldSendToWhiteEarth) {
       return List.of(tribalNations.get(WHITE_EARTH));
     } else {
-      return getDestinationsForMilleLacs(programs, applicationData, document, county);
+      return List.of(countyRoutingDestinations.get(county));
     }
   }
 
@@ -94,6 +94,7 @@ public class RoutingDecisionService {
         || programs.contains(GRH) || programs.contains(CCAP);
   }
 
+  // TODO do we need this method?
   private boolean shouldSendToWhiteEarth(ApplicationData applicationData, County county) {
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);

@@ -114,35 +114,35 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
       throws Exception {
     goThroughShortTribalTanfFlow(nationName, county);
-    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
+    assertRoutingDestinationIsCorrectForDocument(CAF, "Mille Lacs Band of Ojibwe", county);
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"Becker", "Mahnomen", "Clearwater"})
   void routeApplicationsToWhiteEarthOnly(String county) throws Exception {
-
-    // Filling out the app
     getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
+    addAddressInGivenCounty(county);
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county); // this
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, WHITE_EARTH);
+  }
+
+  @Test
+  void routeApplicationsToCountyForWhiteEarthSometimes() throws Exception {
+    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
+    String county = "Nobles";
     addAddressInGivenCounty(county);
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
     postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
 
-    List<RoutingDestination> cafRoutingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, CAF);
-    List<String> cafRoutingDestinationNames = getRoutingDestinationNames(cafRoutingDestinations);
-    assertThat(cafRoutingDestinationNames).containsExactly(WHITE_EARTH);
-
-    List<RoutingDestination> ccapRoutingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, Document.CCAP);
-    List<String> ccapRoutingDestinationNames = getRoutingDestinationNames(ccapRoutingDestinations);
-    assertThat(ccapRoutingDestinationNames).containsExactly(WHITE_EARTH);
-
-    List<RoutingDestination> uploadedDocumentRoutingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, Document.UPLOADED_DOC);
-    List<String> uploadedDocRoutingDestinationNames = getRoutingDestinationNames(
-        uploadedDocumentRoutingDestinations);
-    assertThat(uploadedDocRoutingDestinationNames).containsExactly(WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
   }
 
   @NotNull
@@ -251,15 +251,12 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForTribalTANF");
   }
 
-  private void assertCountyAndTribalNationRoutingAreCorrect(String county,
-      String tribalNationName) {
+  private void assertRoutingDestinationIsCorrectForDocument(Document document,
+      String... expectedNames) {
     List<RoutingDestination> routingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, CAF);
-    List<String> routingDestinationNames = routingDestinations.stream()
-        .map(RoutingDestination::getName)
-        .toList();
-    assertThat(routingDestinationNames)
-        .containsExactly(tribalNationName, county);
+        routingDecisionService.getRoutingDestinations(applicationData, document);
+    List<String> routingDestinationNames = getRoutingDestinationNames(routingDestinations);
+    assertThat(routingDestinationNames).containsExactly(expectedNames);
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
