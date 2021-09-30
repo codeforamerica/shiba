@@ -34,7 +34,8 @@ import org.springframework.stereotype.Service;
  */
 public class RoutingDecisionService {
 
-  private final List<String> TRIBES_WE_SERVICE = List.of(MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH,
+  private final List<String> TRIBES_WE_CAN_ROUTE_TO = List.of(MILLE_LACS_BAND_OF_OJIBWE,
+      WHITE_EARTH,
       BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE);
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
@@ -54,7 +55,7 @@ public class RoutingDecisionService {
     County county = countyParser.parse(applicationData);
 
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
-    if (tribeName != null && TRIBES_WE_SERVICE.contains(tribeName)) {
+    if (tribeName != null && TRIBES_WE_CAN_ROUTE_TO.contains(tribeName)) {
       // Route members of Tribal Nations we service
       return switch (tribeName) {
         case WHITE_EARTH -> routeWhiteEarthClients(programs, applicationData, document, county);
