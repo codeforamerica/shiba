@@ -1,8 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
+import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Becker;
 import static org.codeforamerica.shiba.County.Clearwater;
+import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Mahnomen;
+import static org.codeforamerica.shiba.County.Ramsey;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
@@ -51,8 +54,7 @@ public class RoutingDecisionService {
     if (tribeName != null && TRIBES_WE_SERVICE.contains(tribeName)) {
       // Route members of Tribal Nations we service
       return switch (tribeName) {
-        case WHITE_EARTH -> getDestinationsForWhiteEarth(applicationData, document, programs,
-            county);
+        case WHITE_EARTH -> getDestinationsForWhiteEarth(applicationData, county);
         case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> getDestinationsForMilleLacs(
             programs, applicationData, document, county);
         default -> List.of(countyRoutingDestinations.get(county)); // not a situation now??
@@ -65,12 +67,16 @@ public class RoutingDecisionService {
 
   @NotNull
   private List<RoutingDestination> getDestinationsForWhiteEarth(ApplicationData applicationData,
-      Document document, Set<String> programs, County county) {
+      County county) {
     boolean shouldSendToWhiteEarth = shouldSendToWhiteEarth(applicationData, county);
     if (shouldSendToWhiteEarth) {
       return List.of(tribalNations.get(WHITE_EARTH));
+    } else if (URBAN_COUNTIES.contains(county)) {
+      // Send to the county and to mille lacs
+      return List.of(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+          countyRoutingDestinations.get(county));
     } else {
-      return List.of(countyRoutingDestinations.get(county));
+      return List.of(countyRoutingDestinations.get(county));// send to county
     }
   }
 

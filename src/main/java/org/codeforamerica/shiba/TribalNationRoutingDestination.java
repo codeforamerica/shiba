@@ -1,5 +1,9 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.Hennepin;
+
+import java.util.List;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +27,7 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final String RED_LAKE = "Red Lake";
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
+  public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, County.Ramsey);
 
   private static final Set<String> MILLE_LACS_SERVICED_TRIBES =
       Set.of(
@@ -32,6 +37,7 @@ public class TribalNationRoutingDestination extends RoutingDestination {
           LEECH_LAKE,
           WHITE_EARTH,
           MILLE_LACS_BAND_OF_OJIBWE);
+
 
   private String name;
   private boolean isServicedByMilleLacs;

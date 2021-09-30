@@ -14,10 +14,12 @@ import static org.codeforamerica.shiba.TribalNationRoutingDestination.FOND_DU_LA
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.GRAND_PORTAGE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.LEECH_LAKE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.URBAN_COUNTIES;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import org.codeforamerica.shiba.County;
 
 /* Matcher used for Condition */
 public enum ValueMatcher {
@@ -36,10 +38,10 @@ public enum ValueMatcher {
               WHITE_EARTH, FOND_DU_LAC).containsAll(testValue)
   ),
   IS_URBAN_TRIBAL_NATION_COUNTY((testValue, ignoredTargetValue) ->
-      List.of(Hennepin.displayName(), Anoka.displayName(), Ramsey.displayName())
-          .containsAll(testValue)),
+      URBAN_COUNTIES.stream().map(County::displayName).toList().containsAll(testValue)),
   IS_MILLE_LACS_RURAL_COUNTY((testValue, ignoredTargetValue) ->
-      List.of(Aitkin.displayName(), Benton.displayName(), CrowWing.displayName(),
+      List.of(
+          Aitkin.displayName(), Benton.displayName(), CrowWing.displayName(),
           Morrison.displayName(), MilleLacs.displayName(), Pine.displayName()
       ).containsAll(testValue)),
   DOES_NOT_CONTAIN_SUBSTRING((testValue, targetValue) -> testValue.stream()
