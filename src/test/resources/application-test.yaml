@@ -24,7 +24,6 @@ mail-gun:
   url: mailgun-url
 
 feature-flag:
-  filenet: off
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 

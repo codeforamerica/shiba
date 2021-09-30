@@ -35,6 +35,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -56,7 +57,7 @@ public class MnitEsbWebServiceClient {
   private final ApplicationRepository applicationRepository;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public MnitEsbWebServiceClient(WebServiceTemplate webServiceTemplate,
+  public MnitEsbWebServiceClient(@Qualifier("webServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
       @Value("${mnit-esb.username}") String username,
       @Value("${mnit-esb.password}") String password,
