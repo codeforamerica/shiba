@@ -3290,6 +3290,11 @@ workflow:
           pageName: nationsBoundary
           input: livingInNationBoundary
           value: "false"
+      - pageName: applyForTribalTANF
+        condition:
+          pageName: selectTheTribe
+          input: selectedTribe
+          value: Red Lake
       - pageName: applyForMFIP
     skipCondition:
       logicalOperator: OR

@@ -22,6 +22,7 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +56,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @CsvSource(value = {
       "Lower Sioux,Otter Tail",
       "Prairie Island,Otter Tail",
-      "Red Lake,Otter Tail",
       "Shakopee Mdewakanton,Otter Tail",
       "Upper Sioux,Otter Tail"
   })
-  void routingForNationsThatAreNotServicedByMilleLacs(String nationName, String county)
+  void tribesThatSeeMfipAndMustLiveInNationBoundaries(String nationName, String county)
       throws Exception {
     getToPersonalInfoScreen(EA);
     addAddressInGivenCounty(county);
@@ -76,7 +76,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     assertThat(routingDecisionService.getRoutingDestinations(applicationData, CAF))
         .containsExactly(countyMap.get(County.valueFor(county)));
-
   }
 
   @ParameterizedTest
@@ -113,9 +112,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
   }
 
-
   private void goThroughShortTribalTanfFlow(String nationName, String county) throws Exception {
-      getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
+    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
 
     postExpectingRedirect("tribalNationMember",
@@ -152,10 +150,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      "Red Lake,Hennepin,false",
-      "Shakopee Mdewakanton,Hennepin,false"
+      "Red Lake,Hennepin",
+      "Shakopee Mdewakanton,Hennepin"
   })
-  void shouldGetBootedFromTheFlow(String nationName, String county, String livingInNationBoundary)
+  void shouldGetBootedFromTheFlowIfLivingOutsideOfNationBoundary(String nationName, String county)
       throws Exception {
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember",
@@ -165,15 +163,19 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "nationsBoundary");
     postExpectingRedirect("nationsBoundary",
         "livingInNationBoundary",
-        livingInNationBoundary,
+        "false",
         "introIncome");
   }
 
   @ParameterizedTest
   @CsvSource(value = {
-      "Prairie Island,Hennepin,true"
+      "Prairie Island,Hennepin,true",
+      "Shakopee Mdewakanton,Hennepin,true",
+      "Lower Sioux,Ramsey,true",
+      "Upper Sioux,Ramsey,true"
   })
-  void fullTribalNationFlowMFIP(String nationName, String county, String livingInNationBoundary)
+  void tribesThatCanApplyForMfipIfWithinNationBoundaries(String nationName, String county,
+      String livingInNationBoundary)
       throws Exception {
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember",
@@ -185,6 +187,20 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "livingInNationBoundary",
         livingInNationBoundary,
         "applyForMFIP");
+  }
+
+  @Test
+  void redLakeCanApplyForTribalTanfIfWithinNationBoundaries() throws Exception {
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", "Hennepin");
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", "Red Lake", "nationsBoundary");
+    postExpectingRedirect("nationsBoundary",
+        "livingInNationBoundary",
+        "true",
+        "applyForTribalTANF");
   }
 
   private void assertCountyAndTribalNationRoutingAreCorrect(String county,
