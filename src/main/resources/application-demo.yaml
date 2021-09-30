@@ -8,6 +8,7 @@ spring:
         cachecontrol:
           max-age: 10m
 feature-flag:
+  landing-redirect-to-gov: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: off
   county-anoka: on

@@ -73,7 +73,7 @@ mail-gun:
 
 feature-flag:
   filenet: off
-  submit-via-email: off
+  landing-redirect-to-gov: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   county-anoka: on
