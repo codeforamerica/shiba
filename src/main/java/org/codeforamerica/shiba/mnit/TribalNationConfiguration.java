@@ -83,9 +83,9 @@ public class TribalNationConfiguration {
         "help+dev@mnbenefits.org",
         "320-532-7407",
         true);
-    result.put(FOND_DU_LAC, new TribalNationRoutingDestination(FOND_DU_LAC, true));
-    result.put(GRAND_PORTAGE, new TribalNationRoutingDestination(GRAND_PORTAGE, true));
-    result.put(LEECH_LAKE, new TribalNationRoutingDestination(LEECH_LAKE, true));
+    addTribalNation(result, FOND_DU_LAC, true);
+    addTribalNation(result, GRAND_PORTAGE, true);
+    addTribalNation(result, LEECH_LAKE, true);
     addTribalNation(result,
         WHITE_EARTH,
         "3b0aa880-db45-483d-fa0-7987c9b0c02d",
@@ -93,8 +93,14 @@ public class TribalNationConfiguration {
         "amy.littlewolf@whiteearth-nsn.gov",
         "218-935-2359",
         false);
-    result.put(BOIS_FORTE, new TribalNationRoutingDestination(BOIS_FORTE, true));
+    addTribalNation(result, BOIS_FORTE, true);
     return result;
+  }
+
+  private void addTribalNation(Map<String, TribalNationRoutingDestination> map,
+      String name,
+      boolean isServicedByMilleLacs) {
+    map.put(name, new TribalNationRoutingDestination(name, isServicedByMilleLacs));
   }
 
   private void addTribalNation(Map<String, TribalNationRoutingDestination> result,
