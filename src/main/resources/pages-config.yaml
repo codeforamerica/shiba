@@ -844,7 +844,7 @@ pageDefinitions:
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
     pageTitle: warning-page.delete-household-member-warning
-    primaryButtonTextKey: warning-page.nevermind-lets-keep-them
+    customPage: true
   - &introPersonalDetails
     name: introPersonalDetails
     pageTitle: intro-personal-details.title
