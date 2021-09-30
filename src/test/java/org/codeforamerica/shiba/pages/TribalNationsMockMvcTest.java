@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-public class TribalNationsMockMvcTestRoutingDestination extends AbstractShibaMockMvcTest {
+public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Autowired
   private RoutingDecisionService routingDecisionService;
