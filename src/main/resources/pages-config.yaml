@@ -1693,6 +1693,8 @@ pageDefinitions:
               messageKey: select-the-tribe.upper-sioux
             - value: White Earth
               messageKey: select-the-tribe.white-earth
+            - value: Federally recognized tribe outside of MN
+              messageKey: select-the-tribe.other
   - &applyForTribalTANF
     name: applyForTribalTANF
     pageTitle: apply-for-tribal-TANF.title
