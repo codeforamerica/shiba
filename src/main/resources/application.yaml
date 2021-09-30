@@ -63,6 +63,7 @@ mail-gun:
   shouldCC: false
 
 feature-flag:
+  landing-redirect-to-gov: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   county-anoka: on

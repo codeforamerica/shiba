@@ -641,7 +641,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForWabasha() throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Wabasha", "55981",
-            "We have received your application that you submitted through MNbenefits.org. Processing your application in a timely fashion is our highest priority. We have submitted your application to an Eligibility Worker who will contact you no later than the end of the next business day to discuss your application. For questions or concerns, please contact us at 651.565.3351(collect calls accepted), toll free at 1.888.315.8815 or email us at imuinterview@co.wabasha.mn.us. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. Thank you and have a great day!");
+            "We have received your application that you submitted through MNbenefits.mn.gov. Processing your application in a timely fashion is our highest priority. We have submitted your application to an Eligibility Worker who will contact you no later than the end of the next business day to discuss your application. For questions or concerns, please contact us at 651.565.3351(collect calls accepted), toll free at 1.888.315.8815 or email us at imuinterview@co.wabasha.mn.us. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. Thank you and have a great day!");
       }
 
       @Test

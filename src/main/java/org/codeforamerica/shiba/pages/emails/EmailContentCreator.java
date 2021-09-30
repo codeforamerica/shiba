@@ -174,7 +174,7 @@ public class EmailContentCreator {
   }
 
   public String createHennepinDocUploadsHTML(Map<String, String> args) {
-    return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.org.</p>" +
+    return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.mn.gov.</p>" +
         "<p><b>Name:</b> " + args.get("name") + "</p>" +
         "<p><b>DOB:</b> " + args.get("dob") + "</p>" +
         "<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
