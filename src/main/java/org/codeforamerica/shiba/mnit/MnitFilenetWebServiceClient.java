@@ -161,7 +161,7 @@ public class MnitFilenetWebServiceClient {
   private final ApplicationRepository applicationRepository;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public MnitFilenetWebServiceClient(WebServiceTemplate webServiceTemplate,
+  public MnitFilenetWebServiceClient(@Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,

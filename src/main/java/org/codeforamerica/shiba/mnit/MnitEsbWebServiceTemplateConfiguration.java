@@ -41,13 +41,6 @@ public class MnitEsbWebServiceTemplateConfiguration {
       @Value("${mnit-filenet.timeout-seconds}") long filenetTimeoutSeconds,
       @Value("${feature-flag.filenet}") FeatureFlag filenetFeatureFlag)
       throws KeyManagementException, NoSuchAlgorithmException {
-	if (filenetFeatureFlag.isOn()) {
-		username = filenetUsername; 
-	    password = filenetPassword;
-	    jaxbContextPath = filenetJaxbContextPath;
-	    url = filenetUrl;
-	    timeoutSeconds = filenetTimeoutSeconds;
-	}
     Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
     jaxb2Marshaller.setContextPath(jaxbContextPath);
     String auth = username + ":" + password;
