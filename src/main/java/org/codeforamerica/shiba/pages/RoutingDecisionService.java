@@ -9,18 +9,26 @@ import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,13 +38,16 @@ public class RoutingDecisionService {
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
+  private final MessageSource messageSource;
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
-      CountyMap<CountyRoutingDestination> countyRoutingDestinations) {
+      CountyMap<CountyRoutingDestination> countyRoutingDestinations,
+      MessageSource messageSource) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
+    this.messageSource = messageSource;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,

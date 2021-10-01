@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -19,6 +20,7 @@ import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -28,6 +30,7 @@ import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
 
@@ -39,19 +42,23 @@ class CoverPageInputsMapperTest {
   private StaticMessageSource staticMessageSource;
   private PagesData pagesData;
   private ApplicationData applicationData;
+  private RoutingDecisionService routingDecisionService;
+  @Mock
+  private RoutingDestinationMessageService routingDestinationMessageService;
 
   @BeforeEach
   public void setUp() throws IOException {
+
     countyInstructionsMapping = new CountyMap<>();
     CountyMap<CountyRoutingDestination> countyInformationMapping = new CountyMap<>();
     pagesDataBuilder = new PagesDataBuilder();
     staticMessageSource = new StaticMessageSource();
     pagesData = new PagesData();
     applicationData = new ApplicationData();
-
     applicationData.setPagesData(pagesData);
     coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping,
-        countyInformationMapping, staticMessageSource);
+        countyInformationMapping, staticMessageSource, routingDecisionService,
+        routingDestinationMessageService);
     countyInstructionsMapping.getCounties().put(County.Other, Map.of(
         Recipient.CLIENT, "county-to-instructions.default-client",
         Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
@@ -77,8 +84,10 @@ class CoverPageInputsMapperTest {
         .addMessage("county-to-instructions.olmsted-client",
             LocaleContextHolder.getLocale(),
             "Olmsted client");
-    staticMessageSource.addMessage("county-to-instructions.olmsted-client", new Locale("es"),
-        "Olmsted client instructions in spanish");
+    staticMessageSource.addMessage("county-to-instructions.anoka-client", new Locale("es"),
+        "Anoka client instructions in spanish");
+    staticMessageSource.addMessage("county-to-instructions.generic-client", LocaleContextHolder.getLocale(),
+        "This application was submitted to {0} with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\\n\\nFor more support, you can call {1}.");
   }
 
   @Test
@@ -202,12 +211,12 @@ class CoverPageInputsMapperTest {
         .id("someId")
         .completedAt(ZonedDateTime.now())
         .applicationData(applicationData)
-        .county(County.Olmsted)
+        .county(County.Anoka)
         .timeToComplete(null)
         .build();
-    countyInstructionsMapping.getCounties().put(County.Olmsted, Map.of(
-        Recipient.CLIENT, "county-to-instructions.olmsted-client",
-        Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
+    countyInstructionsMapping.getCounties().put(County.Anoka, Map.of(
+        Recipient.CLIENT, "county-to-instructions.anoka-client",
+        Recipient.CASEWORKER, "county-to-instructions.anoka-caseworker"
     ));
 
     List<ApplicationInput> applicationInputs = coverPageInputsMapper
@@ -225,7 +234,7 @@ class CoverPageInputsMapperTest {
         new ApplicationInput(
             "coverPage",
             "countyInstructions",
-            "Olmsted client",
+            "This application was submitted to Anoka County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\\n\\nFor more support, you can call Anoka County 763-422-7200.",
             ApplicationInputType.SINGLE_VALUE
         ));
 

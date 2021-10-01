@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
@@ -27,6 +28,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -45,14 +47,20 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private final CountyMap<CountyRoutingDestination> countyInformationMapping;
   private final MessageSource messageSource;
+  private final RoutingDecisionService routingDecisionService;
+  private final RoutingDestinationMessageService routingDestinationMessageService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
       CountyMap<CountyRoutingDestination> countyInformationMapping,
-      MessageSource messageSource) {
+      MessageSource messageSource,
+      RoutingDecisionService routingDecisionService,
+      RoutingDestinationMessageService routingDestinationMessageService) {
     this.countyInstructionsMapping = countyInstructionsMapping;
     this.countyInformationMapping = countyInformationMapping;
     this.messageSource = messageSource;
+    this.routingDecisionService = routingDecisionService;
+    this.routingDestinationMessageService = routingDestinationMessageService;
   }
 
   @Override
@@ -62,7 +70,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     var programsInput = getPrograms(application);
     var fullNameInput = getFullName(application);
     var householdMemberInputs = getHouseholdMembers(application);
-    var countyInstructionsInput = getCountyInstructions(application, recipient);
+    var countyInstructionsInput = getCountyInstructions(application, recipient, document);
     var utmSourceInput = getUtmSource(application, document);
     return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
         utmSourceInput, householdMemberInputs);
@@ -171,7 +179,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     return inputsForSubworkflow;
   }
 
-  private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
+  private ApplicationInput getCountyInstructions(Application application, Recipient recipient, Document document) {
     Locale locale = switch (recipient) {
       case CASEWORKER -> LocaleContextHolder.getLocale();
       case CLIENT -> {
@@ -186,14 +194,28 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
-    var displayName = application.getCounty().displayName();
-    var phoneNumber = ofNullable(
+    String listOfRoutingDestinationsWithoutPhoneNumbers = RoutingDestinationMessageService
+        .generatePhraseWithoutPhoneNumbers(locale, application.getCounty(), routingDecisionService.getRoutingDestinations(
+            application.getApplicationData(), document), messageSource);
+
+    String listOfRoutingDestinationsWithPhoneNumbers = RoutingDestinationMessageService
+        .generatePhraseWithPhoneNumbers(locale, application.getCounty(), routingDecisionService.getRoutingDestinations(
+            application.getApplicationData(), document), messageSource);
+
+    var countyDisplayName = application.getCounty().displayName();
+    var countyPhoneNumber = ofNullable(
         countyInformationMapping.get(application.getCounty()).getPhoneNumber())
         .orElse(null);
-    var args = List.of(displayName, phoneNumber);
+    var argsCAF = List.of(listOfRoutingDestinationsWithoutPhoneNumbers, listOfRoutingDestinationsWithPhoneNumbers);
+    var argsCCAP = List.of(lms.getMessage("general.county", List.of(countyDisplayName)),
+        lms.getMessage("general.county-and-phone", List.of(countyDisplayName, countyPhoneNumber)));
 
-    var countyInstructions = lms.getMessage(messageCode, args);
-    return new ApplicationInput("coverPage", "countyInstructions", countyInstructions,
+    var countyInstructionsCAF = lms.getMessage(messageCode, argsCAF);
+    var countInstructionsCCAP = lms.getMessage(messageCode, argsCCAP);
+
+    return document.equals(Document.CCAP) ? new ApplicationInput("coverPage", "countyInstructions", countInstructionsCCAP,
+        SINGLE_VALUE) :
+        new ApplicationInput("coverPage", "countyInstructions", countyInstructionsCAF,
         SINGLE_VALUE);
   }
 }
