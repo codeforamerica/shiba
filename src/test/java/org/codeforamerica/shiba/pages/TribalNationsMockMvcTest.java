@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -39,8 +38,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
-  @Autowired
-  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private CountyParser countyParser;
 
