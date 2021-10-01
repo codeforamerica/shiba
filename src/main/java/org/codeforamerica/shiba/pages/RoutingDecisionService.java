@@ -99,14 +99,14 @@ public class RoutingDecisionService {
     if (shouldSendToMilleLacs(applicationData, document)) {
       result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
     }
-    if (shouldSendToCounty(programs, applicationData, document, county)) {
+    if (shouldSendToCounty(programs, applicationData, document)) {
       result.add(countyRoutingDestinations.get(county));
     }
     return result;
   }
 
-  private boolean shouldSendToCounty(Set<String> programs,
-      ApplicationData applicationData, Document document, County county) {
+  private boolean shouldSendToCounty(Set<String> programs, ApplicationData applicationData,
+      Document document) {
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     return !shouldSendToMilleLacs
         || programs.contains(SNAP) || programs.contains(CASH)
