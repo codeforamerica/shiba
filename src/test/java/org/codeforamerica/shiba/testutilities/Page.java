@@ -117,18 +117,15 @@ public class Page {
     webElement.sendKeys(input);
   }
 
-  private void enterDateInput(String inputName, String value) {
-    String[] dateParts = value.split("/", 3);
-    enterDateInput(inputName, DatePart.MONTH, dateParts[DatePart.MONTH.getPosition() - 1]);
-    enterDateInput(inputName, DatePart.DAY, dateParts[DatePart.DAY.getPosition() - 1]);
-    enterDateInput(inputName, DatePart.YEAR, dateParts[DatePart.YEAR.getPosition() - 1]);
+  private void enterInputById(String inputId, String value) {
+    enterInput(driver.findElementById(inputId), value);
   }
 
-  public void enterDateInput(String inputName, DatePart datePart, String value) {
-    WebElement input = driver.findElement(By.cssSelector(
-        String.format("input[name='%s[]']:nth-of-type(%s)", inputName, datePart.getPosition())));
-    input.clear();
-    input.sendKeys(value);
+  private void enterDateInput(String inputName, String value) {
+    String[] dateParts = value.split("/", 3);
+    enterInputById(inputName + "-month", dateParts[DatePart.MONTH.getPosition() - 1]);
+    enterInputById(inputName + "-day", dateParts[DatePart.DAY.getPosition() - 1]);
+    enterInputById(inputName + "-year", dateParts[DatePart.YEAR.getPosition() - 1]);
   }
 
   private void selectEnumeratedInput(List<WebElement> webElements, String optionText) {
@@ -183,8 +180,8 @@ public class Page {
 
   public String getBirthDateValue(String inputName, DatePart datePart) {
     return driver.findElement(
-        By.cssSelector(
-            String.format("input[name='%s[]']:nth-of-type(%s)", inputName, datePart.getPosition())))
+            By.cssSelector(
+                String.format("input[name='%s[]']:nth-of-type(%s)", inputName, datePart.getPosition())))
         .getAttribute("value");
   }
 
@@ -273,7 +270,7 @@ public class Page {
 
   public void chooseSentiment(Sentiment sentiment) {
     driver.findElement(
-        By.cssSelector(String.format("label[for='%s']", sentiment.name().toLowerCase())))
+            By.cssSelector(String.format("label[for='%s']", sentiment.name().toLowerCase())))
         .click();
   }
 
