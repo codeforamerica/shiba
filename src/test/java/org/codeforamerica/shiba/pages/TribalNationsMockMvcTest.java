@@ -269,12 +269,13 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForTribalTANF");
   }
 
-  private void assertRoutingDestinationIsCorrectForDocument(Document document,
+  private void assertRoutingDestinationIsCorrectForDocument(Document doc,
       String... expectedNames) {
-    List<RoutingDestination> routingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, document);
+    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+        applicationData, doc);
     List<String> routingDestinationNames = routingDestinations.stream()
-        .map(RoutingDestination::getName).collect(Collectors.toList());
+        .map(RoutingDestination::getName)
+        .collect(Collectors.toList());
     assertThat(routingDestinationNames).containsExactly(expectedNames);
   }
 
