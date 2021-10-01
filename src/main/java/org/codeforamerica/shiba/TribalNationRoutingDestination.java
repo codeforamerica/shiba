@@ -29,15 +29,10 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, County.Ramsey);
   public static final List<County> COUNTIES_SERVICED_BY_WHITE_EARTH = List.of(Becker, Mahnomen,
       Clearwater);
-
-  private static final Set<String> MILLE_LACS_SERVICED_TRIBES =
-      Set.of(
-          BOIS_FORTE,
-          FOND_DU_LAC,
-          GRAND_PORTAGE,
-          LEECH_LAKE,
-          WHITE_EARTH,
-          MILLE_LACS_BAND_OF_OJIBWE);
+  public static final List<County> MILLE_LACS_RURAL_COUNTIES = List.of(
+      Aitkin, Benton, CrowWing, Morrison, MilleLacs, Pine);
+  public static final Set<String> MILLE_LACS_SERVICED_TRIBES = Set.of(BOIS_FORTE, GRAND_PORTAGE,
+      LEECH_LAKE, MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH, FOND_DU_LAC);
 
 
   private String name;

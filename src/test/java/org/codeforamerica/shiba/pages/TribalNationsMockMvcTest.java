@@ -121,15 +121,12 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"Becker", "Mahnomen", "Clearwater"})
-  void routeWhiteEarthApplicationsToWhiteEarthOnly(String county) throws Exception {
-    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
-    addAddressInGivenCounty(county);
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", county); // this
-    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForTribalTANF");
-    postExpectingRedirect("applyForTribalTANF", "applyForTribalTANF", "true",
-        "tribalTANFConfirmation");
+  @CsvSource(value = {
+      "Becker,true", "Mahnomen,true", "Clearwater,true",
+      "Becker,false", "Mahnomen,false", "Clearwater,false"})
+  void routeWhiteEarthApplicationsToWhiteEarthOnly(String county, String applyForTribalTanf)
+      throws Exception {
+    goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTanf, EA, CCAP, GRH, SNAP);
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
@@ -145,7 +142,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
-  void routeWhiteEarthApplicationsToCountyOnly(String county) throws Exception {
+  void routeWhiteEarthApplicationsToCountyOnlyAndSeeMfip(String county) throws Exception {
     getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
