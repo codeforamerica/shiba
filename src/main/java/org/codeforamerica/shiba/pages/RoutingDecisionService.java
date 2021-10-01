@@ -1,8 +1,5 @@
 package org.codeforamerica.shiba.pages;
 
-import static org.codeforamerica.shiba.County.Becker;
-import static org.codeforamerica.shiba.County.Clearwater;
-import static org.codeforamerica.shiba.County.Mahnomen;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
@@ -76,21 +73,20 @@ public class RoutingDecisionService {
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
 
-    boolean shouldSendToWhiteEarth = selectedTribeName != null
-        && selectedTribeName.equals(WHITE_EARTH)
-        && List.of(Becker, Mahnomen, Clearwater).contains(county);
-    if (shouldSendToWhiteEarth) {
+    if (livesInCountyServicedByWhiteEarth(county, selectedTribeName)) {
       return List.of(tribalNations.get(WHITE_EARTH));
     }
 
-    List<RoutingDestination> result = new ArrayList<>();
-    if (URBAN_COUNTIES.contains(county)
-        && isApplyingForTribalTanf(applicationData.getPagesData())
-        && !Document.CCAP.equals(document)) {
-      result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+    if (URBAN_COUNTIES.contains(county)) {
+      return routeClientsServicedByMilleLacs(programs, applicationData, document, county);
     }
-    result.add(countyRoutingDestinations.get(county));
-    return result;
+    return List.of(countyRoutingDestinations.get(county));
+  }
+
+  private boolean livesInCountyServicedByWhiteEarth(County county, String selectedTribeName) {
+    return selectedTribeName != null
+        && selectedTribeName.equals(WHITE_EARTH)
+        && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
   }
 
   private boolean isApplyingForTribalTanf(PagesData pagesData) {

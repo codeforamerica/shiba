@@ -53,7 +53,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
-    addHouseholdMembers();
+    addHouseholdMembersWithEA();
   }
 
   @ParameterizedTest
@@ -115,6 +115,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       throws Exception {
     goThroughShortTribalTanfFlow(nationName, county, "true", EA, CCAP, GRH, SNAP);
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, "Mille Lacs Band of Ojibwe", county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, "Mille Lacs Band of Ojibwe",
+        county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 
@@ -125,7 +127,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addAddressInGivenCounty(county);
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county); // this
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF", "applyForTribalTANF", "true",
+        "tribalTANFConfirmation");
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
@@ -139,10 +143,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
   }
 
-  @Test
-  void routeWhiteEarthApplicationsToCountyOnly() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
+  void routeWhiteEarthApplicationsToCountyOnly(String county) throws Exception {
     getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
-    String county = "Nobles";
     addAddressInGivenCounty(county);
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
@@ -152,32 +156,29 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
   }
-//
-//  @ParameterizedTest
-//  @ValueSource(strings = {"Hennepin", "Ramsey", "Anoka"})
-//  void routeUrbanWhiteEarthApplicationsToMilleLacsOnly(String county) throws Exception {
-//    goThroughShortTribalTanfFlow("White Earth", county, EA);
-//
-//    assertRoutingDestinationIsCorrectForDocument(Document.CAF, MILLE_LACS_BAND_OF_OJIBWE);
-//    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, MILLE_LACS_BAND_OF_OJIBWE);
-//    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, MILLE_LACS_BAND_OF_OJIBWE);
-//  }
 
   @ParameterizedTest
-  @ValueSource(strings = {"Hennepin", "Ramsey", "Anoka"})
-  void routeUrbanWhiteEarthApplicationsToCountyIfTheyAreNotApplyingForTribalTanf(String county)
-      throws Exception {
-    goThroughShortTribalTanfFlow("White Earth", county, "false", EA);
+  @CsvSource(value = {
+      "Hennepin,true,Mille Lacs Band of Ojibwe",
+      "Ramsey,true,Mille Lacs Band of Ojibwe",
+      "Anoka,true,Mille Lacs Band of Ojibwe",
+      "Hennepin,false,Mille Lacs Band of Ojibwe",
+      "Ramsey,false,Mille Lacs Band of Ojibwe",
+      "Anoka,false,Mille Lacs Band of Ojibwe",
+  })
+  void routeUrbanWhiteEarthApplicationsForOnlyEaAndTribalTanf(String county,
+      String applyForTribalTANF,
+      String destinationName) throws Exception {
+    goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTANF, EA);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, destinationName);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, destinationName);
   }
 
   private void goThroughShortTribalTanfFlow(String nationName, String county,
       String applyForTribalTANF,
-      String... strings) throws Exception {
-    getToPersonalInfoScreen(strings);
+      String... programs) throws Exception {
+    getToPersonalInfoScreen(programs);
     addAddressInGivenCounty(county);
 
     postExpectingRedirect("tribalNationMember",

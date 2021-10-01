@@ -1,21 +1,7 @@
 package org.codeforamerica.shiba.inputconditions;
 
-import static org.codeforamerica.shiba.County.Aitkin;
-import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.County.Benton;
-import static org.codeforamerica.shiba.County.CrowWing;
-import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.MilleLacs;
-import static org.codeforamerica.shiba.County.Morrison;
-import static org.codeforamerica.shiba.County.Pine;
-import static org.codeforamerica.shiba.County.Ramsey;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.BOIS_FORTE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.FOND_DU_LAC;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.GRAND_PORTAGE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.LEECH_LAKE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.URBAN_COUNTIES;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
+import static org.codeforamerica.shiba.County.*;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -38,12 +24,15 @@ public enum ValueMatcher {
               WHITE_EARTH, FOND_DU_LAC).containsAll(testValue)
   ),
   IS_URBAN_TRIBAL_NATION_COUNTY((testValue, ignoredTargetValue) ->
-      URBAN_COUNTIES.stream().map(County::displayName).toList().containsAll(testValue)),
+      URBAN_COUNTIES.stream().map(County::displayName).anyMatch(testValue::contains)),
   IS_MILLE_LACS_RURAL_COUNTY((testValue, ignoredTargetValue) ->
       List.of(
           Aitkin.displayName(), Benton.displayName(), CrowWing.displayName(),
           Morrison.displayName(), MilleLacs.displayName(), Pine.displayName()
       ).containsAll(testValue)),
+  IS_WHITE_EARTH_COUNTY((testValue, ignored) -> COUNTIES_SERVICED_BY_WHITE_EARTH.stream()
+      .map(County::displayName)
+      .anyMatch(testValue::contains)),
   DOES_NOT_CONTAIN_SUBSTRING((testValue, targetValue) -> testValue.stream()
       .noneMatch(string -> string.contains(targetValue)));
 

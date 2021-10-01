@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.*;
 
 import java.util.List;
 import java.util.Set;
@@ -28,6 +27,8 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
   public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, County.Ramsey);
+  public static final List<County> COUNTIES_SERVICED_BY_WHITE_EARTH = List.of(Becker, Mahnomen,
+      Clearwater);
 
   private static final Set<String> MILLE_LACS_SERVICED_TRIBES =
       Set.of(
