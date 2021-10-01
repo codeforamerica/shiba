@@ -27,8 +27,8 @@ public class TribalNationConfiguration {
         "ccef8f5a-efe1-4ecf-93e2-3b853bea82e6",
         "A602658300",
         "help+staging@mnbenefits.org",
-        "320-532-7407",
-        true);
+        "320-532-7407"
+    );
     return result;
   }
 
@@ -41,15 +41,15 @@ public class TribalNationConfiguration {
         "accef8f5a-efe1-4ecf-93e2-3b853bea82e6",
         "A602658300",
         "help+staging@mnbenefits.org",
-        "320-532-7407",
-        true);
+        "320-532-7407"
+    );
     addTribalNation(result,
         WHITE_EARTH,
         "4c598f9b-ba43-4077-aee2-b29da2aef79c",
         "A086642300",
         "amy.littlewolf@whiteearth-nsn.gov",
-        "218-935-2359",
-        false);
+        "218-935-2359"
+    );
     return result;
   }
 
@@ -61,15 +61,15 @@ public class TribalNationConfiguration {
         "f30bf89e-f3ab-4c74-8e38-af7ada922719",
         "A602658300",
         "candace.benjamin@millelacsband.com",
-        "320-532-7407",
-        true);
+        "320-532-7407"
+    );
     addTribalNation(result,
         WHITE_EARTH,
         "d78fd8df-5faf-424c-b05d-f249c11a19cc",
         "A086642300",
         "amy.littlewolf@whiteearth-nsn.gov",
-        "218-935-2359",
-        false);
+        "218-935-2359"
+    );
     return result;
   }
 
@@ -81,33 +81,30 @@ public class TribalNationConfiguration {
         "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
         "A602658300",
         "help+dev@mnbenefits.org",
-        "320-532-7407",
-        true);
-    addTribalNation(result, FOND_DU_LAC, true);
-    addTribalNation(result, GRAND_PORTAGE, true);
-    addTribalNation(result, LEECH_LAKE, true);
+        "320-532-7407"
+    );
+    addTribalNation(result, FOND_DU_LAC);
+    addTribalNation(result, GRAND_PORTAGE);
+    addTribalNation(result, LEECH_LAKE);
     addTribalNation(result,
         WHITE_EARTH,
         "3b0aa880-db45-483d-fa0-7987c9b0c02d",
         "A086642300",
         "amy.littlewolf@whiteearth-nsn.gov",
-        "218-935-2359",
-        false);
-    addTribalNation(result, BOIS_FORTE, true);
+        "218-935-2359"
+    );
+    addTribalNation(result, BOIS_FORTE);
     return result;
   }
 
   private void addTribalNation(Map<String, TribalNationRoutingDestination> map,
-      String name,
-      boolean isServicedByMilleLacs) {
-    map.put(name, new TribalNationRoutingDestination(name, isServicedByMilleLacs));
+      String name) {
+    map.put(name, new TribalNationRoutingDestination(name));
   }
 
   private void addTribalNation(Map<String, TribalNationRoutingDestination> result,
-      String name, String folderId, String dhsProviderId, String email, String phoneNumber,
-      boolean isServicedByMilleLacs) {
+      String name, String folderId, String dhsProviderId, String email, String phoneNumber) {
     result.put(name,
-        new TribalNationRoutingDestination(name, folderId, dhsProviderId, email, phoneNumber,
-            isServicedByMilleLacs));
+        new TribalNationRoutingDestination(name, folderId, dhsProviderId, email, phoneNumber));
   }
 }

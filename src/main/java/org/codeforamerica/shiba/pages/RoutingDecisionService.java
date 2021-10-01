@@ -113,7 +113,6 @@ public class RoutingDecisionService {
         || programs.contains(GRH) || programs.contains(CCAP);
   }
 
-  // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
   private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document) {
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);

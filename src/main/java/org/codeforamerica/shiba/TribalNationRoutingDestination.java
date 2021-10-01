@@ -34,28 +34,20 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final Set<String> MILLE_LACS_SERVICED_TRIBES = Set.of(BOIS_FORTE, GRAND_PORTAGE,
       LEECH_LAKE, MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH, FOND_DU_LAC);
 
-
   private String name;
-  private boolean isServicedByMilleLacs;
 
   public TribalNationRoutingDestination(
       String name,
       String folderId,
       String dhsProviderId,
       String email,
-      String phoneNumber,
-      boolean isServicedByMilleLacs) {
+      String phoneNumber) {
     super(folderId, dhsProviderId, email, phoneNumber);
-    this.isServicedByMilleLacs = isServicedByMilleLacs;
     this.name = name;
   }
 
-  public TribalNationRoutingDestination(
-      String name,
-      boolean isServicedByMilleLacs
-  ) {
+  public TribalNationRoutingDestination(String name) {
     super();
-    this.isServicedByMilleLacs = isServicedByMilleLacs;
     this.name = name;
   }
 }
