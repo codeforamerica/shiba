@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
 import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,18 +14,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -35,8 +38,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
-  @Autowired
-  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private CountyParser countyParser;
 
@@ -49,7 +50,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
-    addHouseholdMembers();
+    addHouseholdMembersWithEA();
   }
 
   @ParameterizedTest
@@ -106,24 +107,66 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Mille Lacs Band of Ojibwe,Mille Lacs",
       "Mille Lacs Band of Ojibwe,Pine"
   })
-  void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
+  void shouldSkipNationBoundariesPageAddTribalTanfAndRouteToBothMilleLacsAndCounty(
+      String nationName, String county)
       throws Exception {
-    goThroughShortTribalTanfFlow(nationName, county);
-    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
+    goThroughShortTribalTanfFlow(nationName, county, "true", EA, CCAP, GRH, SNAP);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, "Mille Lacs Band of Ojibwe", county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, "Mille Lacs Band of Ojibwe",
+        county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 
-  private void goThroughShortTribalTanfFlow(String nationName, String county) throws Exception {
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Becker,true", "Mahnomen,true", "Clearwater,true",
+      "Becker,false", "Mahnomen,false", "Clearwater,false"})
+  void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeTanf(String county,
+      String applyForTribalTanf) throws Exception {
+    goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTanf, EA, CCAP, GRH, SNAP);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, WHITE_EARTH);
+
+    var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
+    RoutingDestination routingDestination = routingDestinations.get(0);
+    assertThat(routingDestination.getFolderId()).isEqualTo("3b0aa880-db45-483d-fa0-7987c9b0c02d");
+    assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
+    assertThat(routingDestination.getEmail()).isEqualTo("amy.littlewolf@whiteearth-nsn.gov");
+    assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
+  void routeWhiteEarthApplicationsToCountyOnlyAndSeeMfip(String county) throws Exception {
     getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
     addAddressInGivenCounty(county);
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
 
-    postExpectingRedirect("tribalNationMember",
-        "isTribalNationMember",
-        "true",
-        "selectTheTribe");
-    postExpectingRedirect("selectTheTribe",
-        "selectedTribe",
-        nationName,
-        "applyForTribalTANF");
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Hennepin,true,Mille Lacs Band of Ojibwe",
+      "Ramsey,true,Mille Lacs Band of Ojibwe",
+      "Anoka,true,Mille Lacs Band of Ojibwe",
+      "Hennepin,false,Mille Lacs Band of Ojibwe",
+      "Ramsey,false,Mille Lacs Band of Ojibwe",
+      "Anoka,false,Mille Lacs Band of Ojibwe",
+  })
+  void routeUrbanWhiteEarthApplicationsForOnlyEaAndTribalTanf(String county,
+      String applyForTribalTANF,
+      String destinationName) throws Exception {
+    goThroughShortTribalTanfFlow(WHITE_EARTH, county, applyForTribalTANF, EA);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, destinationName);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, destinationName);
   }
 
   @ParameterizedTest
@@ -203,15 +246,34 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForTribalTANF");
   }
 
-  private void assertCountyAndTribalNationRoutingAreCorrect(String county,
-      String tribalNationName) {
-    List<RoutingDestination> routingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, CAF);
+  private void goThroughShortTribalTanfFlow(String nationName, String county,
+      String applyForTribalTANF,
+      String... programs) throws Exception {
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe",
+        "selectedTribe",
+        nationName,
+        "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF",
+        "applyForTribalTANF",
+        applyForTribalTANF,
+        applyForTribalTANF.equals("true") ? "tribalTANFConfirmation" : "introIncome");
+  }
+
+  private void assertRoutingDestinationIsCorrectForDocument(Document doc,
+      String... expectedNames) {
+    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+        applicationData, doc);
     List<String> routingDestinationNames = routingDestinations.stream()
         .map(RoutingDestination::getName)
-        .toList();
-    assertThat(routingDestinationNames)
-        .containsExactly(tribalNationName, county);
+        .collect(Collectors.toList());
+    assertThat(routingDestinationNames).containsExactly(expectedNames);
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
@@ -222,14 +284,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     fillOutPersonalInfo();
     fillOutContactInfo();
 
-    when(locationClient.validateAddress(any()))
-        .thenReturn(Optional.of(new Address(
-            "testStreet",
-            "testCity",
-            "someState",
-            "testZipCode",
-            "someApt",
-            county)));
+    when(locationClient.validateAddress(any())).thenReturn(
+        Optional.of(
+            new Address("testStreet", "testCity", "someState", "testZipCode", "", county)));
     postExpectingSuccess("homeAddress", Map.of(
         "streetAddress", List.of("originalStreetAddress"),
         "apartmentNumber", List.of("originalApt"),
