@@ -58,7 +58,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
     selectPrograms("CCAP");
-    addHouseholdMembers();
+    addHouseholdMembersWithCCAP();
 
     String jimHalpertId = getFirstHouseholdMemberId();
     postExpectingSuccess("childrenInNeedOfCare",
@@ -90,7 +90,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() throws Exception {
     selectPrograms("CCAP");
 
-    addHouseholdMembers();
+    addHouseholdMembersWithCCAP();
 
     postExpectingSuccess("childrenInNeedOfCare",
         "whoNeedsChildCare",
@@ -164,7 +164,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldMapAdultsInHouseholdRequestingChildcareAssistance() throws Exception {
     selectPrograms("CCAP");
 
-    addHouseholdMembers();
+    addHouseholdMembersWithCCAP();
 
     String jim = getJimFullNameAndId();
     postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare", jim);
@@ -205,7 +205,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() throws Exception {
     selectPrograms("CASH");
-    addHouseholdMembers();
+    addHouseholdMembersWithCCAP();
     fillInRequiredPages();
 
     // Add a job for Jim
@@ -360,7 +360,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapFullEmployeeNames() throws Exception {
-      addHouseholdMembers();
+      addHouseholdMembersWithCCAP();
       String jim = getJimFullNameAndId();
       addFirstJob(jim, "someEmployerName");
 
@@ -373,7 +373,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapJobLastThirtyDayIncomeSomeBlankIsDetermined() throws Exception {
-      addHouseholdMembers();
+      addHouseholdMembersWithCCAP();
 
       fillInRequiredPages();
 
