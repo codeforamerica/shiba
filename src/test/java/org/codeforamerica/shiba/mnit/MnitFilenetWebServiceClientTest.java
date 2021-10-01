@@ -21,7 +21,6 @@ import java.util.Base64;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -85,12 +84,21 @@ class MnitFilenetWebServiceClientTest {
   @MockBean
   protected FeatureFlagConfiguration featureFlagConfiguration;
 
+  private RoutingDestination olmsted;
+  private RoutingDestination hennepin;
+
   @BeforeEach
   void setUp() {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
-    //when(featureFlagConfiguration.get("filenet")).thenReturn(FeatureFlag.ON);
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
+    olmsted = new CountyRoutingDestination();
+    olmsted.setDhsProviderId("A000055800");
+    olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
+    hennepin = new CountyRoutingDestination();
+    hennepin.setDhsProviderId("A000027200");
+    hennepin.setFolderId("5195b061-9bdc-4d31-9840-90a99902d329");
   }
 
   @Test
@@ -124,9 +132,13 @@ class MnitFilenetWebServiceClientTest {
                 .evaluatesTo(Base64.getEncoder().encodeToString(fileContent.getBytes())))
         .andRespond(withSoapEnvelope(successResponse));
 
+    RoutingDestination routingDestination = new CountyRoutingDestination();
+    routingDestination.setDhsProviderId("A000055800");
+    routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
     mnitFilenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
-        County.Olmsted, "someId", Document.CAF, FlowType.FULL
+        routingDestination, "someId", Document.CAF, FlowType.FULL
     );
 
     verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
@@ -137,14 +149,14 @@ class MnitFilenetWebServiceClientTest {
   @Test
   void sendingDocumentRetriesIfSOAPExceptionIsThrown() {
     mockWebServiceServer.expect(connectionTo(url))
-        .andRespond(withException(
+    .andRespond(withException(
             new RuntimeException(new SOAPException("soap exception ahhh"))));
 
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(withSoapEnvelope(successResponse));
 
     mnitFilenetWebServiceClient
-        .send(new ApplicationFile(fileContent.getBytes(), fileName), County.Olmsted,
+        .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
             Document.CAF, any());
 
@@ -166,14 +178,14 @@ class MnitFilenetWebServiceClientTest {
             new RuntimeException(new WebServiceTransportException("retry 2 failure"))));
 
     RuntimeException exceptionToSend = new RuntimeException(
-        mock(SoapFaultClientException.class));
-    mockWebServiceServer.expect(connectionTo(url))
-        .andRespond(withException(exceptionToSend));
+            mock(SoapFaultClientException.class));
+        mockWebServiceServer.expect(connectionTo(url))
+            .andRespond(withException(exceptionToSend));
 
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
     mnitFilenetWebServiceClient
-        .send(applicationFile, County.Olmsted, "someId", Document.CAF, any());
+        .send(applicationFile, olmsted, "someId", Document.CAF, any());
 
     mockWebServiceServer.verify();
   }
@@ -209,13 +221,13 @@ class MnitFilenetWebServiceClientTest {
                   namespaceContext,
                   Matchers.equalTo(password)));
           MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath(
-              "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
-              namespaceContext));
+                  "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
+                  namespaceContext));
         });
 
     mnitFilenetWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
-        "someFileName"), County.Hennepin, "someId", Document.CAF, FlowType.FULL);
+        "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
   }
