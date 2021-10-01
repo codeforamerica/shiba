@@ -96,7 +96,7 @@ public class RoutingDecisionService {
   private List<RoutingDestination> routeClientsServicedByMilleLacs(Set<String> programs,
       ApplicationData applicationData, Document document, County county) {
     List<RoutingDestination> result = new ArrayList<>();
-    if (shouldSendToMilleLacs(applicationData, document, county)) {
+    if (shouldSendToMilleLacs(applicationData, document)) {
       result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
     }
     if (shouldSendToCounty(programs, applicationData, document, county)) {
@@ -107,15 +107,14 @@ public class RoutingDecisionService {
 
   private boolean shouldSendToCounty(Set<String> programs,
       ApplicationData applicationData, Document document, County county) {
-    boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document, county);
+    boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     return !shouldSendToMilleLacs
         || programs.contains(SNAP) || programs.contains(CASH)
         || programs.contains(GRH) || programs.contains(CCAP);
   }
 
   // Send to Mille Lacs if the tribe is serviced by Mille Lacs and applying for Tribal TANF and/or EA
-  private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document,
-      County county) {
+  private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document) {
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
