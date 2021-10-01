@@ -196,7 +196,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.percy:percy-java-selenium:1.0.0'
     testImplementation 'com.deque.html.axe-core:selenium:4.3.1'
-    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
+    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
 }
 
 compileJava {
