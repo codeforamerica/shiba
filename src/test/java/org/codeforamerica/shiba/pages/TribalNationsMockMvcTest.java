@@ -121,8 +121,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @CsvSource(value = {
       "Becker,true", "Mahnomen,true", "Clearwater,true",
       "Becker,false", "Mahnomen,false", "Clearwater,false"})
-  void routeWhiteEarthApplicationsToWhiteEarthOnly(String county, String applyForTribalTanf)
-      throws Exception {
+  void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeTanf(String county,
+      String applyForTribalTanf) throws Exception {
     goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTanf, EA, CCAP, GRH, SNAP);
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
@@ -163,30 +163,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   void routeUrbanWhiteEarthApplicationsForOnlyEaAndTribalTanf(String county,
       String applyForTribalTANF,
       String destinationName) throws Exception {
-    goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTANF, EA);
+    goThroughShortTribalTanfFlow(WHITE_EARTH, county, applyForTribalTANF, EA);
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, destinationName);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, destinationName);
-  }
-
-  private void goThroughShortTribalTanfFlow(String nationName, String county,
-      String applyForTribalTANF,
-      String... programs) throws Exception {
-    getToPersonalInfoScreen(programs);
-    addAddressInGivenCounty(county);
-
-    postExpectingRedirect("tribalNationMember",
-        "isTribalNationMember",
-        "true",
-        "selectTheTribe");
-    postExpectingRedirect("selectTheTribe",
-        "selectedTribe",
-        nationName,
-        "applyForTribalTANF");
-    postExpectingRedirect("applyForTribalTANF",
-        "applyForTribalTANF",
-        applyForTribalTANF,
-        applyForTribalTANF.equals("true") ? "tribalTANFConfirmation" : "introIncome");
   }
 
   @ParameterizedTest
@@ -266,6 +246,26 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForTribalTANF");
   }
 
+  private void goThroughShortTribalTanfFlow(String nationName, String county,
+      String applyForTribalTANF,
+      String... programs) throws Exception {
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe",
+        "selectedTribe",
+        nationName,
+        "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF",
+        "applyForTribalTANF",
+        applyForTribalTANF,
+        applyForTribalTANF.equals("true") ? "tribalTANFConfirmation" : "introIncome");
+  }
+
   private void assertRoutingDestinationIsCorrectForDocument(Document doc,
       String... expectedNames) {
     List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
@@ -284,14 +284,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     fillOutPersonalInfo();
     fillOutContactInfo();
 
-    when(locationClient.validateAddress(any()))
-        .thenReturn(Optional.of(new Address(
-            "testStreet",
-            "testCity",
-            "someState",
-            "testZipCode",
-            "someApt",
-            county)));
+    when(locationClient.validateAddress(any())).thenReturn(
+        Optional.of(
+            new Address("testStreet", "testCity", "someState", "testZipCode", "", county)));
     postExpectingSuccess("homeAddress", Map.of(
         "streetAddress", List.of("originalStreetAddress"),
         "apartmentNumber", List.of("originalApt"),
