@@ -20,13 +20,9 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
-import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
-import org.codeforamerica.shiba.pages.RoutingDestinationService;
-import org.codeforamerica.shiba.pages.RoutingDestinationService.RoutingDestination;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
@@ -43,7 +39,6 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
-  private final FeatureFlagConfiguration featureFlags;
   private final HashMap<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyMap;
   private final FeatureFlagConfiguration featureFlagConfiguration;
@@ -53,16 +48,11 @@ public class MnitDocumentConsumer {
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
-      RoutingDestinationService routingDestinationService,
-      ApplicationRepository applicationRepository,
-      FeatureFlagConfiguration featureFlags) {
-	this.mnitClient = mnitClient;
-    this.mnitFilenetClient = mnitFilenetClient;
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
       HashMap<String, TribalNationRoutingDestination> tribalNations,
       CountyMap<CountyRoutingDestination> countyMap,
-      FeatureFlagConfiguration featurFlagConfiguration) {
+      FeatureFlagConfiguration featureFlags) {
     this.mnitClient = mnitClient;
     this.mnitFilenetClient = mnitFilenetClient;
     this.xmlGenerator = xmlGenerator;
@@ -70,10 +60,9 @@ public class MnitDocumentConsumer {
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
-    this.featureFlags = featureFlags;
     this.tribalNations = tribalNations;
     this.countyMap = countyMap;
-    this.featureFlagConfiguration = featurFlagConfiguration;
+    this.featureFlagConfiguration = featureFlags;
   }
 
   public void processCafAndCcap(Application application) {
@@ -133,27 +122,6 @@ public class MnitDocumentConsumer {
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), document);
 
-    if (featureFlags.get("filenet").isOn()) {
-        if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
-            mnitFilenetClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-          }
-          if (routingDestination.getCounty() != null) {
-            mnitFilenetClient.send(file, application.getCounty(), application.getId(), document,
-                application.getFlow());
-          }
-    } else {
-        if (MilleLacsBand.displayName().equals(routingDestination.getTribalNation())) {
-            mnitClient.send(file, MilleLacsBand, application.getId(), document, application.getFlow());
-          }
-          if (routingDestination.getCounty() != null) {
-            mnitClient.send(file, application.getCounty(), application.getId(), document,
-                application.getFlow());
-          }
-    }
-    routingDestinations.forEach(rd -> {
-      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
-    });
-    
     if (featureFlagConfiguration.get("filenet").isOff()) {
 	    routingDestinations.forEach(rd -> {
 	      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
