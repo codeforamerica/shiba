@@ -14,11 +14,12 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -276,8 +277,9 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any());
 
-    doThrow(new RuntimeException()).doNothing().when(mnitClient)
-        .send(any(), any(), any(), any(), any());
+    doThrow(new RuntimeException()).when(mnitClient)
+        .send(any(), any(), any(), eq(CCAP), any());
+    doNothing().when(mnitClient).send(any(), any(), any(), eq(CAF), any());
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
@@ -286,8 +288,11 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(applicationRepository, atLeastOnce())
-        .updateStatus(application.getId(), CCAP, DELIVERY_FAILED);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CCAP, SENDING);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CAF, SENDING);
+
+    verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
+        CCAP, DELIVERY_FAILED);
   }
 
   @Test
