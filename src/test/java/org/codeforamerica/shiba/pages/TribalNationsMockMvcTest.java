@@ -118,12 +118,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @ParameterizedTest
-  @CsvSource(value = {
-      "Becker,true", "Mahnomen,true", "Clearwater,true",
-      "Becker,false", "Mahnomen,false", "Clearwater,false"})
-  void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeTanf(String county,
-      String applyForTribalTanf) throws Exception {
-    goThroughShortTribalTanfFlow("White Earth", county, applyForTribalTanf, EA, CCAP, GRH, SNAP);
+  @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
+  void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeMFIP(String county) throws Exception {
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
@@ -140,15 +137,20 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @ParameterizedTest
   @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
   void routeWhiteEarthApplicationsToCountyOnlyAndSeeMfip(String county) throws Exception {
-    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
-    addAddressInGivenCounty(county);
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
-    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", WHITE_EARTH, "applyForMFIP");
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+  }
+
+  private void goThroughShortMfipFlow(String county, String nationName, String[] programs)
+      throws Exception {
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForMFIP");
   }
 
   @ParameterizedTest

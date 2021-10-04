@@ -3279,14 +3279,6 @@ workflow:
                   matcher: IS_URBAN_TRIBAL_NATION_COUNTY
             - logicalOperator: AND
               conditions:
-                - pageName: identifyCounty
-                  input: county
-                  matcher: IS_WHITE_EARTH_COUNTY
-                - pageName: selectTheTribe
-                  input: selectedTribe
-                  value: White Earth
-            - logicalOperator: AND
-              conditions:
                 - pageName: selectTheTribe
                   input: selectedTribe
                   value: Mille Lacs Band of Ojibwe
