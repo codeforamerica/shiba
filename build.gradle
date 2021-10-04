@@ -1,14 +1,14 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.5'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
-    id 'com.github.jk1.dependency-license-report' version '2.0'
-    id 'com.gorylenko.gradle-git-properties' version '2.3.1'
+    id("org.springframework.boot") version "2.5.5"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("java")
+    id("com.github.jk1.dependency-license-report") version "2.0"
+    id("com.gorylenko.gradle-git-properties") version "2.3.1"
 }
 
-group = 'org.codeforamerica'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '16'
+group = "org.codeforamerica"
+version = "0.0.1-SNAPSHOT"
+sourceCompatibility = "16"
 
 configurations {
     compileOnly {
@@ -65,93 +65,90 @@ task genJaxb {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.session:spring-session-bom:2021.0.2'
+        mavenBom("org.springframework.session:spring-session-bom:2021.0.2")
     }
 }
 
 dependencies {
     modules {
-        module('javax.activation:activation') {
-            replacedBy('jakarta.activation:jakarta.activation-api', 'Use jakarta instead of javax')
+        module("javax.activation:activation") {
+            replacedBy("jakarta.activation:jakarta.activation-api", "Use jakarta instead of javax")
         }
-        module('org.apache.commons:commons-email'){
-            replacedBy('com.sun.mail:jakarta.mail', 'Use jakarta instead of apache')
+        module("org.apache.commons:commons-email") {
+            replacedBy("com.sun.mail:jakarta.mail", "Use jakarta instead of apache")
         }
     }
 
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    compileOnly("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation 'org.springframework.session:spring-session-jdbc'
-    implementation 'io.sentry:sentry-spring-boot-starter:5.2.0'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation('org.springframework.boot:spring-boot-starter-web-services') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    implementation("org.springframework.session:spring-session-jdbc")
+    implementation("io.sentry:sentry-spring-boot-starter:5.2.0")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web-services") {
+        exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
     }
 
-    implementation 'io.awspring.cloud:spring-cloud-aws-context:2.3.1'
-    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
-    implementation 'io.awspring.cloud:spring-cloud-aws-autoconfigure:2.3.1'
-    implementation 'com.azure:azure-storage-blob:12.14.0'
-    implementation 'org.postgresql:postgresql'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
-    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'org.jetbrains:annotations:22.0.0'
-    implementation 'commons-validator:commons-validator:1.7'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.apache.httpcomponents:httpclient'
-    implementation 'io.sentry:sentry-logback:5.2.0'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'com.google.crypto.tink:tink:1.6.1'
-    implementation 'org.flywaydb:flyway-core:7.15.0'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.mixpanel:mixpanel-java:1.5.0'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'com.sun.activation:jakarta.activation'
-    implementation 'org.apache.commons:commons-email:1.5'
-    implementation 'org.springframework:spring-aspects'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'org.springframework.retry:spring-retry'
-    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
-    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
-    implementation 'ch.qos.logback:logback-core:1.2.0'
-    implementation 'ch.qos.logback:logback-classic:1.2.0'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.28.0'
-    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.28.0'
+    implementation("com.azure:azure-storage-blob:12.14.0")
+    implementation("org.postgresql:postgresql")
+    implementation("org.glassfish.jaxb:jaxb-runtime")
+    implementation("org.apache.pdfbox:pdfbox:2.0.24")
+    implementation("org.apache.commons:commons-lang3")
+    implementation("org.apache.commons:commons-text:1.9")
+    implementation("org.jetbrains:annotations:22.0.0")
+    implementation("commons-validator:commons-validator:1.7")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.apache.httpcomponents:httpclient")
+    implementation("io.sentry:sentry-logback:5.2.0")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("com.google.crypto.tink:tink:1.6.1")
+    implementation("org.flywaydb:flyway-core:7.15.0")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("com.mixpanel:mixpanel-java:1.5.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.sun.activation:jakarta.activation")
+    implementation("org.apache.commons:commons-email:1.5")
+    implementation("org.springframework:spring-aspects")
+    implementation("com.google.code.findbugs:jsr305:3.0.2")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
+    implementation("ch.qos.logback:logback-core:1.2.0")
+    implementation("ch.qos.logback:logback-classic:1.2.0")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.6")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:4.28.0")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.28.0")
 
-    implementation 'org.springframework.ws:spring-ws-core'
+    implementation("org.springframework.ws:spring-ws-core")
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb(
-            'org.glassfish.jaxb:jaxb-runtime',
-            'org.glassfish.jaxb:jaxb-xjc',
-            'org.glassfish.jaxb:jaxb-jxc'
+            "org.glassfish.jaxb:jaxb-runtime",
+            "org.glassfish.jaxb:jaxb-xjc",
+            "org.glassfish.jaxb:jaxb-jxc"
     )
 
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.seleniumhq.selenium:selenium-java'
-    testImplementation 'de.redsix:pdfcompare:1.1.60'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    testCompileOnly("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.seleniumhq.selenium:selenium-java")
+    testImplementation("de.redsix:pdfcompare:1.1.60")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+        exclude group: "com.vaadin.external.google", module: "android-json"
     }
-    testImplementation 'com.h2database:h2'
-    testImplementation 'org.awaitility:awaitility'
-    testImplementation 'com.github.tomakehurst:wiremock-standalone:2.27.2'
-    testImplementation 'org.mockito:mockito-inline'
-    testImplementation 'io.github.bonigarcia:webdrivermanager:5.0.3'
-    testImplementation 'org.springframework.ws:spring-ws-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'io.percy:percy-java-selenium:1.0.0'
-    testImplementation 'com.deque.html.axe-core:selenium:4.3.1'
-    testImplementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
+    testImplementation("com.h2database:h2")
+    testImplementation("org.awaitility:awaitility")
+    testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+    testImplementation("org.mockito:mockito-inline")
+    testImplementation("io.github.bonigarcia:webdrivermanager:5.0.3")
+    testImplementation("org.springframework.ws:spring-ws-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("io.percy:percy-java-selenium:1.0.0")
+    testImplementation("com.deque.html.axe-core:selenium:4.3.1")
+    testImplementation("org.jsoup:jsoup:1.14.3")
 }
 
 compileJava {
@@ -164,7 +161,7 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags 'db', 'journey', 'framework', 'pdf', 'ccap', 'validation', 'a11y'
+                options.excludeTags("db", "journey", "framework", "pdf", "ccap", "validation", "a11y")
         }
 }
 
@@ -172,7 +169,7 @@ def journeyTest = tasks.register("journeyTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'journey'
+                options.includeTags("journey")
         }
 }
 
@@ -180,7 +177,7 @@ def frameworkTest = tasks.register("frameworkTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'framework'
+                options.includeTags("framework")
         }
 }
 
@@ -188,7 +185,7 @@ def pdfTest = tasks.register("pdfTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'pdf'
+                options.includeTags("pdf")
         }
 }
 
@@ -196,7 +193,7 @@ def dbTest = tasks.register("dbTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'db'
+                options.includeTags("db")
         }
 }
 
@@ -204,7 +201,7 @@ def ccapTest = tasks.register("ccapTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'ccap'
+                options.includeTags("ccap")
         }
 }
 
@@ -212,7 +209,7 @@ def validationTest = tasks.register("validationTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'validation'
+                options.includeTags("validation")
         }
 }
 
@@ -220,14 +217,14 @@ def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags 'a11y'
+                options.includeTags("a11y")
         }
 }
 
 test {
     useJUnitPlatform {
         JUnitPlatformOptions options ->
-            options.excludeTags 'a11y'
+            options.excludeTags("a11y")
     }
     dependsOn(checkLicense)
 }
@@ -235,30 +232,25 @@ test {
 tasks.withType(Test).configureEach {
     Test task ->
         task.doFirst {
-            file('.env.test').readLines().each() {
-                def (key, value) = it.split('=', 2)
+            file(".env.test").readLines().each() {
+                def (key, value) = it.split("=", 2)
                 environment(key, value)
             }
         }
-        task.jvmArgs '-XX:+ShowCodeDetailsInExceptionMessages'
         task.maxParallelForks(Runtime.runtime.availableProcessors().intdiv(2) ?: 1)
         task.testLogging {
-            exceptionFormat = 'full'
-            events "failed", "skipped"
-            showStackTraces true
-            showCauses true
-            showExceptions true
+            exceptionFormat = "full"
+            events = ["failed", "skipped"]
+            showStackTraces = true
+            showCauses = true
+            showExceptions = true
             // uncomment the following line to print stdout and stderr for every test
-            // showStandardStreams true
+            // showStandardStreams = true
         }
 }
 
 licenseReport {
     allowedLicensesFile = new File("$projectDir/allowed-licenses.json")
-}
-
-bootRun {
-    jvmArgs = ["-XX:+ShowCodeDetailsInExceptionMessages"]
 }
 
 jar {
