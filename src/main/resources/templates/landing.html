@@ -2,10 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body class="locale-en" id="landing-page">
-<div class="page-wrapper"
-     th:with="redirectToGovSite=${featureFlags.get('landing-redirect-to-gov') != null && featureFlags.get('landing-redirect-to-gov').isOn()},
-     applyLink=${redirectToGovSite ? 'https://mnbenefits.mn.gov/pages/identifyCountyBeforeApplying' : '/pages/'+pageName+'/navigation'},
-     uploadDocsLink=${redirectToGovSite ? 'https://mnbenefits.mn.gov/pages/identifyCounty' : '/pages/identifyCounty'}">
+<div class="page-wrapper">
   <div th:replace="fragments/toolbar :: toolbar"></div>
   <div th:replace="fragments/demoBanner :: demoBanner"></div>
   <section class="slab">
@@ -17,7 +14,7 @@
         <h1 class="spacing-below-35" th:text="#{landing.header}"></h1>
         <p class="text-25 spacing-below-35" th:text="#{landing.subheader}"></p>
         <a class="button button--primary spacing-below-0"
-           th:href="${applyLink}">
+           th:href="'/pages/'+${pageName}+'/navigation'">
           <span th:text="#{landing.apply-now}"></span>
           <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
         </a>
@@ -80,7 +77,7 @@
         th:text="#{landing.submit-documents-to-county}"></h1>
     <p class="max-width-500 margin-left-right-auto"
        th:text="#{landing.submit-documents-for-counties}"/>
-    <a class="button spacing-below-0" th:href="${uploadDocsLink}">
+    <a class="button spacing-below-0" th:href="'/pages/identifyCounty'">
       <span th:text="#{landing.upload-documents}"></span>
     </a>
   </section>
