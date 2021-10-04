@@ -80,8 +80,8 @@ public class MnitEsbWebServiceClient {
       listeners = {"esbRetryListener"}
   )
   public void send(ApplicationFile applicationFile, RoutingDestination routingDestination,
-      String applicationNumber,
-      Document applicationDocument, FlowType flowType) {
+      String applicationNumber, Document applicationDocument, FlowType flowType) {
+    MDC.put("applicationId", applicationNumber);
     MDC.put("applicationFile", applicationFile.getFileName());
     CreateDocument createDocument = new CreateDocument();
     createDocument.setFolderId("workspace://SpacesStore/" + routingDestination.getFolderId());
