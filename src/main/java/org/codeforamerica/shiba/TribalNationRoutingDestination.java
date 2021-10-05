@@ -4,7 +4,6 @@ import static org.codeforamerica.shiba.County.*;
 
 import java.util.List;
 import java.util.Set;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
