@@ -176,7 +176,7 @@ public class AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram("EA");
   }
 
-  private void addHouseholdMembersWithProgram(String program) throws Exception {
+  protected void addHouseholdMembersWithProgram(String program) throws Exception {
     postExpectingSuccess("personalInfo", Map.of(
         "firstName", List.of("Dwight"),
         "lastName", List.of("Schrute"),

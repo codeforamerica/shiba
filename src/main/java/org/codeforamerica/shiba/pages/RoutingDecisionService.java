@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
@@ -32,8 +33,7 @@ import org.springframework.stereotype.Service;
 public class RoutingDecisionService {
 
   private final List<String> TRIBES_WE_CAN_ROUTE_TO = List.of(MILLE_LACS_BAND_OF_OJIBWE,
-      WHITE_EARTH,
-      BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE);
+      WHITE_EARTH, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, RED_LAKE);
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
@@ -58,12 +58,37 @@ public class RoutingDecisionService {
         case WHITE_EARTH -> routeWhiteEarthClients(programs, applicationData, document, county);
         case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> routeClientsServicedByMilleLacs(
             programs, applicationData, document, county);
+        case RED_LAKE -> routeRedLakeClients(programs, applicationData, document, county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
     }
 
     // By default, just send to county
     return List.of(countyRoutingDestinations.get(county));
+  }
+
+  private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
+      ApplicationData applicationData, Document document, County county) {
+    if (!isLivingInTribalNationBoundary(applicationData)
+        || isOnlyApplyingForGrh(programs, applicationData)) {
+      return List.of(countyRoutingDestinations.get(county));
+    }
+
+    if (programs.contains(GRH)) {
+      return List.of(countyRoutingDestinations.get(county), tribalNations.get(RED_LAKE));
+    }
+
+    return List.of(tribalNations.get(RED_LAKE));
+  }
+
+  private boolean isLivingInTribalNationBoundary(ApplicationData applicationData) {
+    return Boolean.parseBoolean(
+        getFirstValue(applicationData.getPagesData(), LIVING_IN_TRIBAL_NATION_BOUNDARY));
+  }
+
+  private boolean isOnlyApplyingForGrh(Set<String> programs, ApplicationData applicationData) {
+    return programs.size() == 1 && programs.contains(GRH) &&
+        !isApplyingForTribalTanf(applicationData.getPagesData());
   }
 
   @NotNull
