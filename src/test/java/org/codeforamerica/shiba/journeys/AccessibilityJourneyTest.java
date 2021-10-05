@@ -118,7 +118,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // Enter incorrect information to get validation errors to check against aria-properties
     assertThat(testPage.inputIsValid("firstName")).isTrue();
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo("false");
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo(
+        "false");
     assertThat(testPage.inputIsValid("ssn")).isTrue();
     testPage.enter("firstName", "");
     testPage.enter("lastName", "defaultLastName");
@@ -129,14 +130,22 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(testPage.hasInputError("firstName")).isTrue();
     assertThat(testPage.hasInputError("ssn")).isTrue();
     assertThat(testPage.inputIsValid("firstName")).isFalse();
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo("true");
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo(
+        "true");
     assertThat(testPage.inputIsValid("ssn")).isFalse();
-    assertThat(testPage.getInputAriaLabelledBy("firstName")).isEqualTo("firstName-error-p firstName-label");
-    assertThat(testPage.getInputAriaDescribedBy("firstName")).isEqualTo("firstName-error-message-1 firstName-help-message");
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-labelledby")).isEqualTo("dateOfBirth-error-p dateOfBirth-legend dateOfBirth-day-label");
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-describedby")).isEqualTo("dateOfBirth-error-message-1");;
+    assertThat(testPage.getInputAriaLabelledBy("firstName")).isEqualTo(
+        "firstName-error-p firstName-label");
+    assertThat(testPage.getInputAriaDescribedBy("firstName")).isEqualTo(
+        "firstName-error-message-1 firstName-help-message");
+    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-labelledby")).isEqualTo(
+        "dateOfBirth-error-p dateOfBirth-legend dateOfBirth-day-label");
+    assertThat(
+        driver.findElementById("dateOfBirth-day").getAttribute("aria-describedby")).isEqualTo(
+        "dateOfBirth-error-message-1");
+    ;
     assertThat(testPage.getInputAriaLabelledBy("ssn")).isEqualTo("ssn-error-p ssn-label");
-    assertThat(testPage.getInputAriaDescribedBy("ssn")).isEqualTo("ssn-error-message-1 ssn-help-message");
+    assertThat(testPage.getInputAriaDescribedBy("ssn")).isEqualTo(
+        "ssn-error-message-1 ssn-help-message");
 
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
@@ -186,8 +195,10 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("phoneOrEmail", "Text me");
     testPage.clickContinue();
     assertThat(testPage.hasInputError("phoneNumber")).isTrue();
-    assertThat(testPage.getInputAriaLabelledBy("phoneNumber")).isEqualTo("phoneNumber-error-p phoneNumber-label");
-    assertThat(testPage.getInputAriaDescribedBy("phoneNumber")).isEqualTo("phoneNumber-error-message-2 phoneNumber-error-message-1");
+    assertThat(testPage.getInputAriaLabelledBy("phoneNumber")).isEqualTo(
+        "phoneNumber-error-p phoneNumber-label");
+    assertThat(testPage.getInputAriaDescribedBy("phoneNumber")).isEqualTo(
+        "phoneNumber-error-message-2 phoneNumber-error-message-1");
 
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
@@ -197,7 +208,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickLink("This looks correct");
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
-    testPage.enter("relationship", "housemate");
+    testPage.enter("relationship", "Other");
     testPage.enter("programs", PROGRAM_CCAP);
     testPage.enter("firstName", "householdMemberFirstName");
     testPage.enter("lastName", "householdMemberLastName");
@@ -244,8 +255,10 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(testPage.getInputAriaLabelledBy("employersName")).isEqualTo("employersName-label");
     testPage.clickContinue();
     assertThat(testPage.inputIsValid("employersName")).isFalse();
-    assertThat(testPage.getInputAriaLabelledBy("employersName")).isEqualTo("employersName-error-p employersName-label");
-    assertThat(testPage.getInputAriaDescribedBy("employersName")).isEqualTo("employersName-error-message-1");
+    assertThat(testPage.getInputAriaLabelledBy("employersName")).isEqualTo(
+        "employersName-error-p employersName-label");
+    assertThat(testPage.getInputAriaDescribedBy("employersName")).isEqualTo(
+        "employersName-error-message-1");
 
     testPage.enter("employersName", "some employer");
     testPage.clickContinue();
@@ -257,7 +270,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     assertThat(testPage.inputIsValid("hourlyWage")).isFalse();
     assertThat(testPage.getInputAriaLabel("hourlyWage")).isEqualTo("Error hourlyWage");
-    assertThat(testPage.getInputAriaDescribedBy("hourlyWage")).isEqualTo("hourlyWage-error-message-1");
+    assertThat(testPage.getInputAriaDescribedBy("hourlyWage")).isEqualTo(
+        "hourlyWage-error-message-1");
 
     testPage.enter("hourlyWage", "1");
     testPage.clickContinue();
@@ -268,7 +282,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     assertThat(testPage.inputIsValid("hoursAWeek")).isFalse();
     assertThat(testPage.getInputAriaLabel("hoursAWeek")).isEqualTo("Error hoursAWeek");
-    assertThat(testPage.getInputAriaDescribedBy("hoursAWeek")).isEqualTo("hoursAWeek-error-message-1");
+    assertThat(testPage.getInputAriaDescribedBy("hoursAWeek")).isEqualTo(
+        "hoursAWeek-error-message-1");
 
     testPage.enter("hoursAWeek", "30");
     testPage.clickContinue();
@@ -285,8 +300,10 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     testPage.hasInputError("socialSecurityAmount");
     assertThat(testPage.inputIsValid("socialSecurityAmount")).isFalse();
-    assertThat(testPage.getInputAriaDescribedBy("socialSecurityAmount")).isEqualTo("socialSecurityAmount-error-message-1 socialSecurityAmount-help-message");
-    assertThat(testPage.getInputAriaLabelledBy("socialSecurityAmount")).isEqualTo("socialSecurityAmount-error-p socialSecurityAmount-label");
+    assertThat(testPage.getInputAriaDescribedBy("socialSecurityAmount")).isEqualTo(
+        "socialSecurityAmount-error-message-1 socialSecurityAmount-help-message");
+    assertThat(testPage.getInputAriaLabelledBy("socialSecurityAmount")).isEqualTo(
+        "socialSecurityAmount-error-p socialSecurityAmount-label");
 
     testPage.enter("socialSecurityAmount", "200");
     testPage.clickContinue();
