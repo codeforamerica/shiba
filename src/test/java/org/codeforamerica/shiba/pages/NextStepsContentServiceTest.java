@@ -46,8 +46,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "If you don't hear from your county within 3 days or want an update on your case, please call your county.")
+                "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+                "If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please call your county or tribal servicing agency.")
         ),
         Arguments.of(
             "Only Non-expedited SNAP",
@@ -55,8 +55,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.NOT_ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
             List.of(
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your food support application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your food support application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Expedited SNAP + Expedited CCAP",
@@ -64,9 +64,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.ELIGIBLE,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+                "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and send you a letter in the mail.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Expedited SNAP + non-expedited CCAP",
@@ -74,9 +74,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.NOT_ELIGIBLE,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your childcare application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Expedited CCAP + non-expedited SNAP",
@@ -84,9 +84,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.NOT_ELIGIBLE,
             CcapExpeditedEligibility.ELIGIBLE,
             List.of(
-                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your food support application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your food support application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Only Expedited CCAP",
@@ -94,8 +94,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.UNDETERMINED,
             CcapExpeditedEligibility.ELIGIBLE,
             List.of(
-                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and send you a letter in the mail.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Only Non-expedited CCAP",
@@ -103,8 +103,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.UNDETERMINED,
             CcapExpeditedEligibility.NOT_ELIGIBLE,
             List.of(
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your childcare application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Expedited SNAP + any other program",
@@ -112,9 +112,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your housing application. The letter will explain your next steps.",
-                "If you don't hear from your county within 3 days or want an update on your case, please call your county.")
+                "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your housing application. The letter will explain your next steps.",
+                "If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please call your county or tribal servicing agency.")
         ),
         Arguments.of(
             "Expedited SNAP + multiple other programs",
@@ -122,9 +122,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.ELIGIBLE,
             CcapExpeditedEligibility.UNDETERMINED,
             List.of(
-                "Within 24 hours, expect a call from your county about your food assistance application.",
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your housing and emergency assistance application. The letter will explain your next steps.",
-                "If you don't hear from your county within 3 days or want an update on your case, please call your county.")
+                "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your housing and emergency assistance application. The letter will explain your next steps.",
+                "If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please call your county or tribal servicing agency.")
         ),
         Arguments.of(
             "Expedited CCAP + any other program besides SNAP",
@@ -132,9 +132,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.UNDETERMINED,
             CcapExpeditedEligibility.ELIGIBLE,
             List.of(
-                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your housing application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your housing application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         ),
         Arguments.of(
             "Non-expedited CCAP + any other program besides SNAP",
@@ -142,8 +142,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             SnapExpeditedEligibility.UNDETERMINED,
             CcapExpeditedEligibility.NOT_ELIGIBLE,
             List.of(
-                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare and housing application. The letter will explain your next steps.",
-                "Call your county if you don’t hear from them in the time period we’ve noted.")
+                "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your childcare and housing application. The letter will explain your next steps.",
+                "Call your county or tribal servicing agency if you don’t hear from them in the time period we’ve noted.")
         )
     );
   }
@@ -193,9 +193,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     List<String> expectedMessages = List.of(
-        "Within 24 hours, expect a call from your county about your food assistance application.",
-        "In the next 7-10 days, expect to get a letter in the mail from your county about your housing and emergency assistance application. The letter will explain your next steps.",
-        "If you don't hear from your county within 3 days or want an update on your case, please call your county.");
+        "Within 24 hours, expect a call from your county or tribal servicing agency about your food assistance application.",
+        "In the next 7-10 days, expect to get a letter in the mail from your county or tribal servicing agency about your housing and emergency assistance application. The letter will explain your next steps.",
+        "If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please call your county or tribal servicing agency.");
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
 

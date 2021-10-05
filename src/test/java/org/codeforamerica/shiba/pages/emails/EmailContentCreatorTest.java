@@ -80,7 +80,7 @@ class EmailContentCreatorTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      "ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application.<br><br>If you don't hear from your county within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
+      "ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>Within 24 hours, <strong>expect a call</strong> from your county or tribal servicing agency about your food assistance application.<br><br>If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
       "NOT_ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
       "UNDETERMINED,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
   })
@@ -165,7 +165,7 @@ class EmailContentCreatorTest {
     assertThat(emailContent).contains(
         "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
     assertThat(emailContent).contains(
-        "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.");
+        "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.");
   }
 
   @Test
@@ -176,7 +176,7 @@ class EmailContentCreatorTest {
                                       + "<br><br>Confirmation number: <strong>#someNumber</strong>"
                                       + "<br>Application status: <strong>In review</strong>"
                                       + "<br><br>"
-                                      + "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a>.</body></html>");
+                                      + "If you want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county or tribal servicing agency.</a>.</body></html>");
     assertThat(emailContent).doesNotContain(
         "if you don’t hear from them in the time period we’ve noted");
     assertThat(emailContent).doesNotContain("Verification Docs");
@@ -192,13 +192,13 @@ class EmailContentCreatorTest {
         ENGLISH);
     assertThat(emailContent).contains(
         "<html><body><strong>You Are Eligible for Expedited SNAP:</strong><br>"
-        + "Within 24 hours, <strong>expect a call</strong> from your county about your food assistance application.<br><br>"
+        + "Within 24 hours, <strong>expect a call</strong> from your county or tribal servicing agency about your food assistance application.<br><br>"
         + "<strong>You Are Eligible for Expedited CCAP:</strong><br>"
-        + "Within 5 days, your county will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.<br><br>"
+        + "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.<br><br>"
         + "<strong>Time to Hear Back:</strong><br>"
-        + "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your emergency assistance application. The letter will explain your next steps.<br><br>"
+        + "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county or tribal servicing agency about your emergency assistance application. The letter will explain your next steps.<br><br>"
         + "<strong>When to Reach Out:</strong><br>"
-        + "<a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted.<br><br>"
+        + "<a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county or tribal servicing agency</a> if you don’t hear from them in the time period we’ve noted.<br><br>"
         + "<strong>Get More Help:</strong><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>");
   }
 
@@ -234,8 +234,28 @@ class EmailContentCreatorTest {
         SnapExpeditedEligibility.UNDETERMINED,
         CcapExpeditedEligibility.UNDETERMINED,
         ENGLISH);
-    assertThat(confirmationEmail).contains("""
-        <html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your childcare, housing, emergency assistance, cash support and food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted.<br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.<p><strong>Verification Docs:</strong><br>If you need to submit verification documents for your case, you can <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">return to MNbenefits.mn.gov</a> to upload documents at any time.<br>You may need to share the following documents:<br><ul><li><strong>Proof of Income:</strong> A document with employer and employee names and your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li><strong>Proof of Housing Costs:</strong> A document showing total amount paid for housing. Examples: Rent receipts, lease, or mortgage statements</li><li><strong>Proof of Job Loss:</strong> A document with your former employer’s name and signature, the last day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li><strong>Proof of Medical Expenses:</strong> Documents showing medical expenses that you paid for.</li></ul></p></body></html>""");
+    assertThat(confirmationEmail).contains(
+        "<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: "
+        + "<strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In "
+        + "the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county "
+        + "or tribal servicing agency about your childcare, housing, emergency assistance, cash support "
+        + "and food support application. The letter will explain your next steps.<br><br><a "
+        + "href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" "
+        + "rel=\"noopener noreferrer\">Call your county or tribal servicing agency</a> if you don’t hear from them in the time "
+        + "period we’ve noted.<br><br>You may be able to receive more support. See “What benefits "
+        + "programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" "
+        + "target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.<p><strong>Verification "
+        + "Docs:</strong><br>If you need to submit verification documents for your case, you can "
+        + "<a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" "
+        + "target=\"_blank\" rel=\"noopener noreferrer\">return to MNbenefits.mn.gov</a> to upload "
+        + "documents at any time.<br>You may need to share the following documents:<br><ul><li><strong>Proof "
+        + "of Income:</strong> A document with employer and employee names and your total pre-tax income from "
+        + "the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li><strong>Proof "
+        + "of Housing Costs:</strong> A document showing total amount paid for housing. Examples: Rent receipts, "
+        + "lease, or mortgage statements</li><li><strong>Proof of Job Loss:</strong> A document with your former "
+        + "employer’s name and signature, the last day you worked, and date and amount of your final paycheck. "
+        + "Example: Pink slip</li><li><strong>Proof of Medical Expenses:</strong> Documents showing medical "
+        + "expenses that you paid for.</li></ul></p></body></html>");
 
     String docRecEmail = emailContentCreator.createDocRecommendationEmail(applicationData);
     assertThat(docRecEmail).contains(

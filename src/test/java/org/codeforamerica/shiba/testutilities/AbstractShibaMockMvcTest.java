@@ -23,12 +23,7 @@ import java.io.FileInputStream;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.assertj.core.api.Assertions;
@@ -173,7 +168,15 @@ public class AbstractShibaMockMvcTest {
         expectedNextPageName);
   }
 
-  protected void addHouseholdMembers() throws Exception {
+  protected void addHouseholdMembersWithCCAP() throws Exception {
+    addHouseholdMembersWithProgram("CCAP");
+  }
+
+  protected void addHouseholdMembersWithEA() throws Exception {
+    addHouseholdMembersWithProgram("EA");
+  }
+
+  protected void addHouseholdMembersWithProgram(String program) throws Exception {
     postExpectingSuccess("personalInfo", Map.of(
         "firstName", List.of("Dwight"),
         "lastName", List.of("Schrute"),
@@ -183,14 +186,15 @@ public class AbstractShibaMockMvcTest {
     postExpectingSuccess("householdMemberInfo", Map.of(
         "firstName", List.of("Jim"),
         "lastName", List.of("Halpert"),
-        "programs", List.of("CCAP")
+        "programs", List.of(program)
     ));
     postExpectingSuccess("householdMemberInfo", Map.of(
         "firstName", List.of("Pam"),
         "lastName", List.of("Beesly"),
-        "programs", List.of("CCAP")
+        "programs", List.of(program)
     ));
   }
+
 
   protected void fillOutHousemateInfo(String programSelection) throws Exception {
     Map<String, List<String>> householdMemberInfo = new HashMap<>();

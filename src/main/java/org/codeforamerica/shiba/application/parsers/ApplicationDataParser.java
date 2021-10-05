@@ -85,6 +85,10 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.SELECTED_TRIBAL_NATION,
         new ParsingCoordinate("selectTheTribe", "selectedTribe"));
+
+    coordinatesMap.put(Field.LIVING_IN_TRIBAL_NATION_BOUNDARY,
+        new ParsingCoordinate("nationsBoundary", "livingInNationBoundary"));
+
     coordinatesMap.put(Field.APPLYING_FOR_TRIBAL_TANF,
         new ParsingCoordinate("applyForTribalTANF", "applyForTribalTANF"));
 
@@ -155,6 +159,8 @@ public class ApplicationDataParser {
 
     groupCoordinatesMap.put(Group.JOBS, "jobs");
     groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
+
+
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -167,6 +173,13 @@ public class ApplicationDataParser {
     String pageInputValue = pagesData
         .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
     return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
+  }
+
+  public static boolean getBooleanValue(PagesData pagesData, Field field) {
+    ParsingCoordinate coordinate = coordinatesMap.get(field);
+    String pageInputValue = pagesData
+        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
+    return Boolean.parseBoolean(pageInputValue == null ? field.getDefaultValue() : pageInputValue);
   }
 
   public static List<String> getValues(Group group, Field field, ApplicationData applicationData) {
@@ -236,6 +249,7 @@ public class ApplicationDataParser {
     GENERAL_DELIVERY_ZIPCODE,
 
     SELECTED_TRIBAL_NATION,
+    LIVING_IN_TRIBAL_NATION_BOUNDARY,
     APPLYING_FOR_TRIBAL_TANF,
 
     IDENTIFY_ZIPCODE,

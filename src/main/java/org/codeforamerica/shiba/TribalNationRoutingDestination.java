@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.County.*;
+
+import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Data;
@@ -24,32 +27,28 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final String RED_LAKE = "Red Lake";
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
-
-  private static final Set<String> MILLE_LACS_SERVICED_TRIBES =
-      Set.of(BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, WHITE_EARTH,
-          MILLE_LACS_BAND_OF_OJIBWE);
+  public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, County.Ramsey);
+  public static final List<County> COUNTIES_SERVICED_BY_WHITE_EARTH = List.of(Becker, Mahnomen,
+      Clearwater);
+  public static final List<County> MILLE_LACS_RURAL_COUNTIES = List.of(
+      Aitkin, Benton, CrowWing, Morrison, MilleLacs, Pine);
+  public static final Set<String> MILLE_LACS_SERVICED_TRIBES = Set.of(BOIS_FORTE, GRAND_PORTAGE,
+      LEECH_LAKE, MILLE_LACS_BAND_OF_OJIBWE, WHITE_EARTH, FOND_DU_LAC);
 
   private String name;
-  private boolean isServicedByMilleLacs;
 
   public TribalNationRoutingDestination(
       String name,
       String folderId,
       String dhsProviderId,
       String email,
-      String phoneNumber,
-      boolean isServicedByMilleLacs) {
+      String phoneNumber) {
     super(folderId, dhsProviderId, email, phoneNumber);
-    this.isServicedByMilleLacs = isServicedByMilleLacs;
     this.name = name;
   }
 
-  public TribalNationRoutingDestination(
-      String name,
-      boolean isServicedByMilleLacs
-  ) {
+  public TribalNationRoutingDestination(String name) {
     super();
-    this.isServicedByMilleLacs = isServicedByMilleLacs;
     this.name = name;
   }
 

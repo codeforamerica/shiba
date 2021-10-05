@@ -96,19 +96,16 @@ public class DocumentUploadEmailService {
 
     EmailParser.parse(applicationData).ifPresent(clientEmail -> {
           try {
-            log.info("Attempting to send document upload email to %s for application %s"
-                .formatted(clientEmail, id));
+            log.info("Attempting to send document upload email for application %s".formatted(id));
             Locale locale = applicationData.getLocale();
             String emailContent = emailContentCreator.createDocRecommendationEmail(applicationData);
-            LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale,
-                messageSource);
+            LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
             String subject = lms.getMessage("email.document-recommendation-email-subject");
 
             emailClient.sendEmail(subject, senderEmail, clientEmail, emailContent);
             applicationRepository.setDocUploadEmailStatus(id, Status.DELIVERED);
           } catch (Exception e) {
-            log.error("Failed to send document upload email to %s for application %s".formatted(
-                clientEmail, id), e);
+            log.error("Failed to send document upload email for application %s".formatted(id), e);
             applicationRepository.setDocUploadEmailStatus(id, Status.DELIVERY_FAILED);
           }
         }

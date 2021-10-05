@@ -1,10 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.Program.CCAP;
-import static org.codeforamerica.shiba.Program.EA;
-import static org.codeforamerica.shiba.Program.GRH;
-import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.Program.*;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,18 +12,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -35,8 +37,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
-  @Autowired
-  private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private CountyParser countyParser;
 
@@ -49,7 +49,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
-    addHouseholdMembers();
+
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.ON);
   }
 
   @ParameterizedTest
@@ -61,6 +63,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   })
   void tribesThatSeeMfipAndMustLiveInNationBoundaries(String nationName, String county)
       throws Exception {
+    addHouseholdMembersWithEA();
     getToPersonalInfoScreen(EA);
     addAddressInGivenCounty(county);
 
@@ -106,24 +109,64 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Mille Lacs Band of Ojibwe,Mille Lacs",
       "Mille Lacs Band of Ojibwe,Pine"
   })
-  void shouldSkipNationBoundariesPageAndRouteToTribalTanf(String nationName, String county)
+  void shouldSkipNationBoundariesPageAddTribalTanfAndRouteToBothMilleLacsAndCounty(
+      String nationName, String county)
       throws Exception {
-    goThroughShortTribalTanfFlow(nationName, county);
-    assertCountyAndTribalNationRoutingAreCorrect(county, "Mille Lacs Band of Ojibwe");
+    addHouseholdMembersWithEA();
+    goThroughShortTribalTanfFlow(nationName, county, "true", EA, CCAP, GRH, SNAP);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, "Mille Lacs Band of Ojibwe", county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, "Mille Lacs Band of Ojibwe",
+        county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 
-  private void goThroughShortTribalTanfFlow(String nationName, String county) throws Exception {
-    getToPersonalInfoScreen(EA, CCAP, GRH, SNAP);
-    addAddressInGivenCounty(county);
+  @ParameterizedTest
+  @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
+  void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeMFIP(String county) throws Exception {
+    addHouseholdMembersWithEA();
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
 
-    postExpectingRedirect("tribalNationMember",
-        "isTribalNationMember",
-        "true",
-        "selectTheTribe");
-    postExpectingRedirect("selectTheTribe",
-        "selectedTribe",
-        nationName,
-        "applyForTribalTANF");
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WHITE_EARTH);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, WHITE_EARTH);
+
+    var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
+    RoutingDestination routingDestination = routingDestinations.get(0);
+    assertThat(routingDestination.getFolderId()).isEqualTo("3b0aa880-db45-483d-fa0-7987c9b0c02d");
+    assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
+    assertThat(routingDestination.getEmail()).isEqualTo("help+dev@mnbenefits.org");
+    assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
+  void routeWhiteEarthApplicationsToCountyOnlyAndSeeMfip(String county) throws Exception {
+    addHouseholdMembersWithEA();
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Hennepin,true,Mille Lacs Band of Ojibwe",
+      "Ramsey,true,Mille Lacs Band of Ojibwe",
+      "Anoka,true,Mille Lacs Band of Ojibwe",
+      "Hennepin,false,Mille Lacs Band of Ojibwe",
+      "Ramsey,false,Mille Lacs Band of Ojibwe",
+      "Anoka,false,Mille Lacs Band of Ojibwe",
+  })
+  void routeUrbanWhiteEarthApplicationsForOnlyEaAndTribalTanf(String county,
+      String applyForTribalTANF,
+      String destinationName) throws Exception {
+    addHouseholdMembersWithEA();
+
+    goThroughShortTribalTanfFlow(WHITE_EARTH, county, applyForTribalTANF, EA);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, destinationName);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, destinationName);
   }
 
   @ParameterizedTest
@@ -143,6 +186,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   })
   void shouldSkipNationBoundariesPageAndRouteToMfip(String nationName, String county)
       throws Exception {
+    addHouseholdMembersWithEA();
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
     postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForMFIP");
@@ -153,9 +197,14 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Red Lake,Hennepin",
       "Shakopee Mdewakanton,Hennepin"
   })
-  void shouldGetBootedFromTheFlowIfLivingOutsideOfNationBoundary(String nationName, String county)
+  void shouldGetBootedFromTheFlowAndSentToCountyIfLivingOutsideOfNationBoundary(String nationName,
+      String county)
       throws Exception {
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    addHouseholdMembersWithEA();
+
+    getToPersonalInfoScreen(CCAP, SNAP, CASH, EA);
+
+    addAddressInGivenCounty("Hennepin");
     postExpectingRedirect("tribalNationMember",
         "isTribalNationMember",
         "true",
@@ -165,6 +214,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "livingInNationBoundary",
         "false",
         "introIncome");
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 
   @ParameterizedTest
@@ -175,8 +228,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Upper Sioux,Ramsey,true"
   })
   void tribesThatCanApplyForMfipIfWithinNationBoundaries(String nationName, String county,
-      String livingInNationBoundary)
-      throws Exception {
+      String livingInNationBoundary) throws Exception {
+    addHouseholdMembersWithEA();
+
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
     postExpectingRedirect("tribalNationMember",
         "isTribalNationMember",
@@ -190,28 +244,160 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
-  void redLakeCanApplyForTribalTanfIfWithinNationBoundaries() throws Exception {
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", "Hennepin");
+  void redLakeApplicationsWithoutGrhGetSentToRedLake() throws Exception {
+    addHouseholdMembersWithEA();
+    goThroughLongTribalTanfFlow(RED_LAKE, "Hennepin", "true", CCAP, SNAP, CASH, EA);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
+  }
+
+  @Test
+  void redLakeApplicationsWithOnlySnapGetSentToRedLake() throws Exception {
+    addHouseholdMembersWithProgram(SNAP);
+    goThroughLongTribalTanfFlow(RED_LAKE, "Hennepin", "false", SNAP);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
+  }
+
+  @Test
+  void redLakeApplicationsWithGrhAndTribalTanfGetSentToRedLakeAndCounty() throws Exception {
+    addHouseholdMembersWithProgram("GRH");
+
+    String county = "Olmsted";
+    goThroughLongTribalTanfFlow(RED_LAKE, county, "true", GRH);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+  }
+
+  @Test
+  void redLakeApplicationsWithGrhAndSnapAndTribalTanfGetSentToRedLakeAndCounty() throws Exception {
+    addHouseholdMembersWithProgram(SNAP);
+
+    String county = "Olmsted";
+    goThroughLongTribalTanfFlow(RED_LAKE, county, "true", GRH);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+  }
+
+  @Test
+  void redLakeApplicationsWithOnlyGrhAndCcapGetSentToRedLakeAndCounty() throws Exception {
+    addHouseholdMembersWithProgram(CCAP);
+
+    String county = "Olmsted";
+    goThroughLongTribalTanfFlow(RED_LAKE, county, "false", GRH);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+  }
+
+  @Test
+  void redLakeApplicationsWithGrhOnlyGetSentToCounty() throws Exception {
+    addHouseholdMembersWithProgram("GRH");
+    getToPersonalInfoScreen(GRH);
+    String county = "Anoka";
+    addAddressInGivenCounty(county);
     postExpectingRedirect("tribalNationMember",
         "isTribalNationMember",
         "true",
         "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", "Red Lake", "nationsBoundary");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", RED_LAKE, "nationsBoundary");
+    postExpectingRedirect("nationsBoundary",
+        "livingInNationBoundary",
+        "false",
+        "introIncome");
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+  }
+
+  @Test
+  void redLakeApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    addHouseholdMembersWithProgram(CCAP);
+
+    String county = "Olmsted";
+    goThroughLongTribalTanfFlow(RED_LAKE, county, "false", GRH);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+  }
+
+  @Test
+  void whiteEarthApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    addHouseholdMembersWithEA();
+    String county = "Becker";
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+  }
+
+  private void goThroughLongTribalTanfFlow(String nationName, String county,
+      String applyForTribalTanf,
+      String... programs) throws Exception {
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "nationsBoundary");
     postExpectingRedirect("nationsBoundary",
         "livingInNationBoundary",
         "true",
         "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF",
+        "applyForTribalTANF",
+        applyForTribalTanf,
+        applyForTribalTanf.equals("true") ? "tribalTANFConfirmation" : "introIncome");
   }
 
-  private void assertCountyAndTribalNationRoutingAreCorrect(String county,
-      String tribalNationName) {
-    List<RoutingDestination> routingDestinations =
-        routingDecisionService.getRoutingDestinations(applicationData, CAF);
+  private void goThroughShortTribalTanfFlow(String nationName, String county,
+      String applyForTribalTanf,
+      String... programs) throws Exception {
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+
+    postExpectingRedirect("tribalNationMember",
+        "isTribalNationMember",
+        "true",
+        "selectTheTribe");
+    postExpectingRedirect("selectTheTribe",
+        "selectedTribe",
+        nationName,
+        "applyForTribalTANF");
+    postExpectingRedirect("applyForTribalTANF",
+        "applyForTribalTANF",
+        applyForTribalTanf,
+        applyForTribalTanf.equals("true") ? "tribalTANFConfirmation" : "introIncome");
+  }
+
+  private void assertRoutingDestinationIsCorrectForDocument(Document doc,
+      String... expectedNames) {
+    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+        applicationData, doc);
     List<String> routingDestinationNames = routingDestinations.stream()
         .map(RoutingDestination::getName)
-        .toList();
-    assertThat(routingDestinationNames)
-        .containsExactly(tribalNationName, county);
+        .collect(Collectors.toList());
+    assertThat(routingDestinationNames).containsExactly(expectedNames);
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
@@ -222,14 +408,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     fillOutPersonalInfo();
     fillOutContactInfo();
 
-    when(locationClient.validateAddress(any()))
-        .thenReturn(Optional.of(new Address(
-            "testStreet",
-            "testCity",
-            "someState",
-            "testZipCode",
-            "someApt",
-            county)));
+    when(locationClient.validateAddress(any())).thenReturn(
+        Optional.of(
+            new Address("testStreet", "testCity", "someState", "testZipCode", "", county)));
     postExpectingSuccess("homeAddress", Map.of(
         "streetAddress", List.of("originalStreetAddress"),
         "apartmentNumber", List.of("originalApt"),
@@ -257,5 +438,16 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "true",
         "mailingAddress-address_street",
         "smarty street");
+  }
+
+
+  private void goThroughShortMfipFlow(String county, String nationName, String[] programs)
+      throws Exception {
+    addHouseholdMembersWithEA();
+    getToPersonalInfoScreen(programs);
+    addAddressInGivenCounty(county);
+    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForMFIP");
   }
 }

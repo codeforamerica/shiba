@@ -567,6 +567,10 @@ input[id='sad']:checked + .feedback-buttons {
   word-wrap: break-word;
 }
 
+.spacing-above-45 {
+  margin-top: 45px;
+}
+
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
 .checkbox-icons {
   font-weight: bold;

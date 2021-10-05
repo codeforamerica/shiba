@@ -20,10 +20,10 @@ mail-gun:
   shouldCC: true
 
 feature-flag:
-  landing-redirect-to-gov: off
   send-download-alert: on
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
+  white-earth-and-red-lake-routing: off
   county-anoka: on
   county-carver: on
   county-clay: on
