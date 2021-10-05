@@ -51,7 +51,7 @@ jobs:
         uses: innocarpe/actions-slack@v1
         with:
           status: ${{ job.status }}
-          success_text: ':eyes: Check out new the Percy build: https://percy.io/e1ec91a4/shiba'
+          success_text: ':eyes: Check out new the Percy build: https://percy.io/Code-for-America/shiba'
           failure_text: ':frowning: Percy build failed '
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
