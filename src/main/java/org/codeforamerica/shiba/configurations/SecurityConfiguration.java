@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.configurations;
 
+import java.time.Duration;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +9,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Slf4j
 @Configuration
@@ -63,6 +66,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/resend-confirmation-email/??????????")
                 .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
         .oauth2Login();
+
+    http.headers()
+        .httpStrictTransportSecurity()
+        .includeSubDomains(true)
+        .maxAgeInSeconds(31536000);
   }
 
   @Bean
