@@ -77,10 +77,11 @@ public class RoutingDecisionService {
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
       Set<String> programs, ApplicationData applicationData, Document document, County county) {
-    if (county.equals(County.Beltrami)) {
-      return List.of(tribalNations.get(RED_LAKE));
+    if (!county.equals(County.Beltrami) ||
+        featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
+      return List.of(countyRoutingDestinations.get(county));
     }
-    return List.of(countyRoutingDestinations.get(county));
+    return List.of(tribalNations.get(RED_LAKE));
   }
 
   private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
