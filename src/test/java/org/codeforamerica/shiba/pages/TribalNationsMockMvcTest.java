@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Beltrami;
 import static org.codeforamerica.shiba.Program.*;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.OTHER_FEDERALLY_RECOGNIZED_TRIBE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -171,25 +173,43 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      "Bois Forte,Olmsted",
-      "Fond Du Lac,Olmsted",
-      "Grand Portage,Olmsted",
-      "Leech Lake,Olmsted",
-      "Mille Lacs Band of Ojibwe,Olmsted",
-      "White Earth,Olmsted",
-      "Bois Forte,Aitkin",
-      "Fond Du Lac,Benton",
-      "Grand Portage,Crow Wing",
-      "Leech Lake,Morrison",
-      "White Earth,Mille Lacs",
-      "Bois Forte,Pine"
+      "Bois Forte,Olmsted,Mille Lacs Band of Ojibwe",
+      "Fond Du Lac,Olmsted,Mille Lacs Band of Ojibwe",
+      "Grand Portage,Olmsted,Mille Lacs Band of Ojibwe",
+      "Leech Lake,Olmsted,Mille Lacs Band of Ojibwe",
+      "Mille Lacs Band of Ojibwe,Olmsted,Mille Lacs Band of Ojibwe",
+      "White Earth,Olmsted,Olmsted",
+      "Bois Forte,Aitkin,Mille Lacs Band of Ojibwe",
+      "Fond Du Lac,Benton,Mille Lacs Band of Ojibwe",
+      "Grand Portage,Crow Wing,Mille Lacs Band of Ojibwe",
+      "Leech Lake,Morrison,Mille Lacs Band of Ojibwe",
+      "White Earth,Mille Lacs,Mille Lacs",
+      "Bois Forte,Pine,Mille Lacs Band of Ojibwe",
+      "Federally recognized tribe outside of MN,Otter Tail,Otter Tail"
   })
-  void shouldSkipNationBoundariesPageAndRouteToMfip(String nationName, String county)
+  void shouldSkipNationBoundariesPageAndSendToMfipScreen(String nationName, String county,
+      String expectedRoutingDestination)
       throws Exception {
     addHouseholdMembersWithEA();
-    postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
+    addAddressInGivenCounty(county);
+
     postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
     postExpectingRedirect("selectTheTribe", "selectedTribe", nationName, "applyForMFIP");
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, expectedRoutingDestination);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, expectedRoutingDestination);
+  }
+
+  @Test
+  void clientsFromOtherFederallyRecognizedNationsShouldBeAbleToApplyForTribalTanfAndRouteToRedLake()
+      throws Exception {
+    // TODO feature flag
+    addHouseholdMembersWithEA();
+    goThroughShortTribalTanfFlow(OTHER_FEDERALLY_RECOGNIZED_TRIBE, Beltrami.displayName(), "true",
+        EA);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
   }
 
   @ParameterizedTest

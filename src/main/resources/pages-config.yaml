@@ -3295,6 +3295,16 @@ workflow:
           pageName: selectTheTribe
           input: selectedTribe
           value: Red Lake
+      - pageName: applyForTribalTANF
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Federally recognized tribe outside of MN
+            - pageName: identifyCounty
+              input: county
+              value: Beltrami
       - pageName: applyForMFIP
     skipCondition:
       logicalOperator: OR
@@ -3306,6 +3316,9 @@ workflow:
               input: isTribalNationMember
               value: NO
         - *isUrbanTribalNationMember?
+        - pageName: selectTheTribe
+          input: selectedTribe
+          value: Federally recognized tribe outside of MN
     datasources:
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
