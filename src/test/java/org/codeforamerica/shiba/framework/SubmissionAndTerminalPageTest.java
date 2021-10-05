@@ -30,8 +30,6 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
   private ApplicationSubmittedListener applicationSubmittedListener;
   @MockBean
   private ApplicationRepository applicationRepository;
-  @MockBean
-  private RoutingDestinationMessageService routingDestinationMessageService;
 
   @Test
   void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() throws Exception {
@@ -52,7 +50,6 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
         .feedback(feedbackText)
         .build();
     when(applicationRepository.find(any())).thenReturn(application);
-    when(routingDestinationMessageService.generateSuccessPageMessageString(any(), any(), any())).thenReturn("test");
 
     assertThat(getFormPage("firstPage").getInputByName("foo")).isNotNull();
     postToUrlExpectingSuccess("/submit",

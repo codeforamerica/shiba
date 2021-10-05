@@ -30,50 +30,37 @@ class RoutingDestinationMessageServiceTest {
   private List<RoutingDestination> routingDestinations;
 
   @Test
-  void generateCcapMessageStrings() {
-    routingDestinations = new ArrayList<>();
-    routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    // Add a Tribal Routing Destination to assert that it isn't included in the final output
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE));
-    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
-
-    assertThat(routingDestinationMessageService.generateCcapMessageStrings(LocaleContextHolder.getLocale(),
-        Anoka, routingDestinations)).isEqualTo(List.of("Anoka County", "Anoka County 555-5555"));
-  }
-
-  @Test
-  void generateCafMessageStringsWhenCountyAndTribalNation() {
+  void generatesMessageStringsWhenCountyAndTribalNation() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
     routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
-    assertThat(routingDestinationMessageService.generateCafMessageStrings(LocaleContextHolder.getLocale(),
+    assertThat(routingDestinationMessageService.generateCoverPageMessageStrings(LocaleContextHolder.getLocale(),
         Anoka, routingDestinations)).isEqualTo(List.of("Anoka County and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency",
         "Anoka County 555-5555 and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency 222-2222"));
   }
 
   @Test
-  void generateCafMessageStringsWhenCountyOnly() {
+  void generatesMessageStringsWhenCountyOnly() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
-    assertThat(routingDestinationMessageService.generateCafMessageStrings(LocaleContextHolder.getLocale(),
+    assertThat(routingDestinationMessageService.generateCoverPageMessageStrings(LocaleContextHolder.getLocale(),
         Anoka, routingDestinations)).isEqualTo(List.of("Anoka County", "Anoka County 555-5555"));
   }
 
   @Test
-  void generateCafMessageStringsWhenTribalNationOnly() {
+  void generatesMessageStringsWhenTribalNationOnly() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
-    assertThat(routingDestinationMessageService.generateCafMessageStrings(LocaleContextHolder.getLocale(),
+    assertThat(routingDestinationMessageService.generateCoverPageMessageStrings(LocaleContextHolder.getLocale(),
         Anoka, routingDestinations)).isEqualTo(List.of("Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency", "Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency 222-2222"));
   }
 

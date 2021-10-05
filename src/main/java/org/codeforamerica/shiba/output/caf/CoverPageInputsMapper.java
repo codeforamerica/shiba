@@ -197,15 +197,11 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var county = application.getCounty();
     var routingDestinations = routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
-    var argsCAF = routingDestinationMessageService.generateCafMessageStrings(locale, county, routingDestinations);
-    var argsCCAP = routingDestinationMessageService.generateCcapMessageStrings(locale, county, routingDestinations);
+    var coverPageMessageStrings = routingDestinationMessageService.generateCoverPageMessageStrings(locale, county, routingDestinations);
 
-    var countyInstructionsCAF = lms.getMessage(messageCode, argsCAF);
-    var countyInstructionsCCAP = lms.getMessage(messageCode, argsCCAP);
+    var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 
-    return document.equals(Document.CCAP) ? new ApplicationInput("coverPage", "countyInstructions", countyInstructionsCCAP,
-        SINGLE_VALUE) :
-        new ApplicationInput("coverPage", "countyInstructions", countyInstructionsCAF,
+    return new ApplicationInput("coverPage", "countyInstructions", coverPageMessageStrings,
         SINGLE_VALUE);
   }
 }

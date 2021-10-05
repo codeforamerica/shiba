@@ -21,13 +21,7 @@ public class RoutingDestinationMessageService {
     this.messageSource = messageSource;
   }
 
-  public List<String> generateCcapMessageStrings(Locale locale, County county,
-      List<RoutingDestination> routingDestinations) {
-    return List.of(generatePhraseWithCountyOnly(locale, county, false, routingDestinations),
-        generatePhraseWithCountyOnly(locale, county, true, routingDestinations));
-  }
-
-  public List<String> generateCafMessageStrings(Locale locale, County county,
+  public List<String> generateCoverPageMessageStrings(Locale locale, County county,
       List<RoutingDestination> routingDestinations) {
     return List.of(generatePhrase(locale, county, false, routingDestinations),
         generatePhrase(locale, county, true, routingDestinations));
@@ -36,21 +30,6 @@ public class RoutingDestinationMessageService {
   public String generateSuccessPageMessageString(Locale locale, County county,
       List<RoutingDestination> routingDestinations) {
     return generatePhrase(locale, county, true, routingDestinations);
-  }
-
-  private String generatePhraseWithCountyOnly(Locale locale, County county,
-      boolean withPhoneNumbers,
-      List<RoutingDestination> routingDestinations) {
-    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    List<String> routingDestinationStrings = routingDestinations.stream()
-        .filter(rd -> rd instanceof CountyRoutingDestination).map(rd -> {
-          String clientCounty = setCountyName(county, rd);
-          return withPhoneNumbers ? lms
-              .getMessage("general.county-and-phone", List.of(clientCounty, rd.getPhoneNumber())) :
-              lms.getMessage("general.county", List.of(clientCounty));
-        })
-        .collect(Collectors.toList());
-    return listToString(routingDestinationStrings, lms);
   }
 
   private String generatePhrase(Locale locale, County county, boolean withPhoneNumbers,
