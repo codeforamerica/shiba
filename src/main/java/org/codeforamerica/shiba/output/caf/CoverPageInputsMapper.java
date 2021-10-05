@@ -23,6 +23,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
@@ -194,26 +195,15 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
-    String listOfRoutingDestinationsWithoutPhoneNumbers = RoutingDestinationMessageService
-        .generatePhraseWithoutPhoneNumbers(locale, application.getCounty(), routingDecisionService.getRoutingDestinations(
-            application.getApplicationData(), document), messageSource);
-
-    String listOfRoutingDestinationsWithPhoneNumbers = RoutingDestinationMessageService
-        .generatePhraseWithPhoneNumbers(locale, application.getCounty(), routingDecisionService.getRoutingDestinations(
-            application.getApplicationData(), document), messageSource);
-
-    var countyDisplayName = application.getCounty().displayName();
-    var countyPhoneNumber = ofNullable(
-        countyInformationMapping.get(application.getCounty()).getPhoneNumber())
-        .orElse(null);
-    var argsCAF = List.of(listOfRoutingDestinationsWithoutPhoneNumbers, listOfRoutingDestinationsWithPhoneNumbers);
-    var argsCCAP = List.of(lms.getMessage("general.county", List.of(countyDisplayName)),
-        lms.getMessage("general.county-and-phone", List.of(countyDisplayName, countyPhoneNumber)));
+    var county = application.getCounty();
+    var routingDestinations = routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
+    var argsCAF = routingDestinationMessageService.generateCafMessageStrings(locale, county, routingDestinations);
+    var argsCCAP = routingDestinationMessageService.generateCcapMessageStrings(locale, county, routingDestinations);
 
     var countyInstructionsCAF = lms.getMessage(messageCode, argsCAF);
-    var countInstructionsCCAP = lms.getMessage(messageCode, argsCCAP);
+    var countyInstructionsCCAP = lms.getMessage(messageCode, argsCCAP);
 
-    return document.equals(Document.CCAP) ? new ApplicationInput("coverPage", "countyInstructions", countInstructionsCCAP,
+    return document.equals(Document.CCAP) ? new ApplicationInput("coverPage", "countyInstructions", countyInstructionsCCAP,
         SINGLE_VALUE) :
         new ApplicationInput("coverPage", "countyInstructions", countyInstructionsCAF,
         SINGLE_VALUE);

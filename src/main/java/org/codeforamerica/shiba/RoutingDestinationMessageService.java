@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class RoutingDestinationMessageService {
   private final MessageSource messageSource;
 
@@ -16,16 +20,34 @@ public class RoutingDestinationMessageService {
     this.messageSource = messageSource;
   }
 
-  public String generateCcapMessageStrings(Locale locale, County county, List<RoutingDestination> routingDestinations) {
-    return generatePhrase(locale, county, false, routingDestinations);
+  public List<String> generateCcapMessageStrings(Locale locale, County county, List<RoutingDestination> routingDestinations) {
+    return List.of(generatePhraseWithCountyOnly(locale, county, false, routingDestinations),
+        generatePhraseWithCountyOnly(locale, county, true, routingDestinations));
   }
 
-  public String generateCafMessageStrings(Locale locale, County county, List<RoutingDestination> routingDestinations) {
+  public List<String> generateCafMessageStrings(Locale locale, County county, List<RoutingDestination> routingDestinations) {
+    return List.of(generatePhrase(locale, county, false, routingDestinations), generatePhrase(locale, county, true, routingDestinations));
+  }
+
+  public String generateSuccessPageMessageString(Locale locale, County county, List<RoutingDestination> routingDestinations) {
     return generatePhrase(locale, county, true, routingDestinations);
   }
 
-  public String generateSuccessPageMessageStrings(Locale locale, County county, List<RoutingDestination> routingDestinations) {
-    return generatePhrase(locale, county, true, routingDestinations);
+  private String generatePhraseWithCountyOnly(Locale locale, County county, boolean withPhoneNumbers,
+      List<RoutingDestination> routingDestinations) {
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    List<String> routingDestinationStrings = routingDestinations.stream()
+        .filter(rd -> rd instanceof CountyRoutingDestination).map(rd -> {
+      String clientCounty = rd.getName();
+      if (county == County.Other) {
+        clientCounty = County.Hennepin.displayName();
+      }
+      return withPhoneNumbers ? lms.getMessage("general.county-and-phone", List.of(clientCounty, rd.getPhoneNumber())) :
+          lms.getMessage("general.county", List.of(clientCounty));
+
+    })
+        .collect(Collectors.toList());
+    return listToString(routingDestinationStrings, lms);
   }
 
   private String generatePhrase(Locale locale, County county, boolean withPhoneNumbers,
@@ -44,9 +66,7 @@ public class RoutingDestinationMessageService {
               lms.getMessage("general.county", List.of(clientCounty));
 
         })
-        .collect(Collectors.toSet())
-        .stream().toList();
-    // TODO need a test for different combinations of tribal nations and counties
+        .collect(Collectors.toList());
     return listToString(routingDestinationStrings, lms);
   }
 }

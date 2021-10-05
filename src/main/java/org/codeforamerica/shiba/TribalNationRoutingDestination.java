@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import java.util.Set;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -49,6 +50,13 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   ) {
     super();
     this.isServicedByMilleLacs = isServicedByMilleLacs;
+    this.name = name;
+  }
+
+  @Builder
+  public TribalNationRoutingDestination(String name, String folderId, String dhsProviderId,
+      String email, String phoneNumber) {
+    super(folderId, dhsProviderId, email, phoneNumber);
     this.name = name;
   }
 }
