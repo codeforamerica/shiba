@@ -51,11 +51,4 @@ public class TribalNationRoutingDestination extends RoutingDestination {
     super();
     this.name = name;
   }
-
-  @Builder
-  public TribalNationRoutingDestination(String name, String folderId, String dhsProviderId,
-      String email, String phoneNumber) {
-    super(folderId, dhsProviderId, email, phoneNumber);
-    this.name = name;
-  }
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -29,6 +30,8 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
   private ApplicationSubmittedListener applicationSubmittedListener;
   @MockBean
   private ApplicationRepository applicationRepository;
+  @MockBean
+  private RoutingDestinationMessageService routingDestinationMessageService;
 
   @Test
   void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() throws Exception {
@@ -49,6 +52,7 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
         .feedback(feedbackText)
         .build();
     when(applicationRepository.find(any())).thenReturn(application);
+    when(routingDestinationMessageService.generateSuccessPageMessageString(any(), any(), any())).thenReturn("test");
 
     assertThat(getFormPage("firstPage").getInputByName("foo")).isNotNull();
     postToUrlExpectingSuccess("/submit",

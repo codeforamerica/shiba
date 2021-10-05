@@ -34,7 +34,7 @@ class RoutingDestinationMessageServiceTest {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
     // Add a Tribal Routing Destination to assert that it isn't included in the final output
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, true));
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
@@ -46,7 +46,7 @@ class RoutingDestinationMessageServiceTest {
   void generateCafMessageStringsWhenCountyAndTribalNation() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222", true));
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
@@ -69,7 +69,7 @@ class RoutingDestinationMessageServiceTest {
   @Test
   void generateCafMessageStringsWhenTribalNationOnly() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222", true));
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
@@ -81,7 +81,7 @@ class RoutingDestinationMessageServiceTest {
   void generateSuccessPageMessageStrings() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222", true));
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 

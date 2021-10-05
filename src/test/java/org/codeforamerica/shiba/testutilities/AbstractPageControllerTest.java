@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.testutilities;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -67,6 +68,8 @@ public class AbstractPageControllerTest {
   protected DocumentRepository documentRepository;
   @MockBean
   protected RoutingDecisionService routingDecisionService;
+  @MockBean
+  protected RoutingDestinationMessageService routingDestinationMessageService;
 
   @Autowired
   protected MockMvc mockMvc;
