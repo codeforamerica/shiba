@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class RoutingDecisionService {
         case WHITE_EARTH -> routeWhiteEarthClients(programs, applicationData, document, county);
         case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> routeClientsServicedByMilleLacs(
             programs, applicationData, document, county);
-        case RED_LAKE -> routeRedLakeClients(programs, applicationData, document, county);
+        case RED_LAKE -> routeRedLakeClients(programs, applicationData, county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
     }
@@ -68,9 +69,10 @@ public class RoutingDecisionService {
   }
 
   private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
-      ApplicationData applicationData, Document document, County county) {
-    if (!isLivingInTribalNationBoundary(applicationData)
-        || isOnlyApplyingForGrh(programs, applicationData)) {
+      ApplicationData applicationData, County county) {
+    boolean isLivingInTribalNationBoundary = getBooleanValue(applicationData.getPagesData(),
+        LIVING_IN_TRIBAL_NATION_BOUNDARY);
+    if (!isLivingInTribalNationBoundary || isOnlyApplyingForGrh(programs, applicationData)) {
       return List.of(countyRoutingDestinations.get(county));
     }
 
@@ -79,11 +81,6 @@ public class RoutingDecisionService {
     }
 
     return List.of(tribalNations.get(RED_LAKE));
-  }
-
-  private boolean isLivingInTribalNationBoundary(ApplicationData applicationData) {
-    return Boolean.parseBoolean(
-        getFirstValue(applicationData.getPagesData(), LIVING_IN_TRIBAL_NATION_BOUNDARY));
   }
 
   private boolean isOnlyApplyingForGrh(Set<String> programs, ApplicationData applicationData) {
@@ -115,7 +112,7 @@ public class RoutingDecisionService {
   }
 
   private boolean isApplyingForTribalTanf(PagesData pagesData) {
-    return Boolean.parseBoolean(getFirstValue(pagesData, APPLYING_FOR_TRIBAL_TANF));
+    return getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
   }
 
   private List<RoutingDestination> routeClientsServicedByMilleLacs(Set<String> programs,

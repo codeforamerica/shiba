@@ -175,6 +175,13 @@ public class ApplicationDataParser {
     return pageInputValue == null ? field.getDefaultValue() : pageInputValue;
   }
 
+  public static boolean getBooleanValue(PagesData pagesData, Field field) {
+    ParsingCoordinate coordinate = coordinatesMap.get(field);
+    String pageInputValue = pagesData
+        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
+    return Boolean.parseBoolean(pageInputValue == null ? field.getDefaultValue() : pageInputValue);
+  }
+
   public static List<String> getValues(Group group, Field field, ApplicationData applicationData) {
     Subworkflow iterations = getGroup(applicationData, group);
     if (iterations == null) {
