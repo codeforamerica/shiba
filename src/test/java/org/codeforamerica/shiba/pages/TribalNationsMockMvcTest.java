@@ -213,6 +213,18 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
+  void clientsFromOtherFederallyRecognizedNationsShouldBeRoutedToRedLakeEvenIfTheyAreNotApplyingForTanf()
+      throws Exception {
+    addHouseholdMembersWithEA();
+    goThroughShortTribalTanfFlow(OTHER_FEDERALLY_RECOGNIZED_TRIBE, Beltrami.displayName(), "false",
+        EA);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
+  }
+
+  @Test
   void clientsFromOtherFederallyRecognizedNationsShouldBeAbleToApplyForMFIPAndRouteToCounty()
       throws Exception {
     when(featureFlagConfiguration.get("white-earth-and-red-lake-routing"))
