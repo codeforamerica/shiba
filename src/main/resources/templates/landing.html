@@ -20,13 +20,13 @@
         </div>
         <a class="button button--primary spacing-below-0 spacing-above-45"
            th:href="'/pages/'+${pageName}+'/navigation?lang=en'">
-          <span th:text="#{landing.apply-now}"></span>
+          <span th:text="#{landing.apply-now-english}"></span>
           <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
         </a>
         <!--Add button to apply now in Spanish-->
         <div class="spacing-above-45">
           <a class="button button--small" th:href="'/pages/'+${pageName}+'/navigation?lang=es'">
-            <span th:text="#{landing.apply-in-spanish}"></span>
+            <span th:text="#{landing.apply-now-spanish}"></span>
             <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
           </a>
         </div>
