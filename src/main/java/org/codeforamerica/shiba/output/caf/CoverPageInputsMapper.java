@@ -23,7 +23,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
@@ -201,7 +200,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 
-    return new ApplicationInput("coverPage", "countyInstructions", coverPageMessageStrings,
+    return new ApplicationInput("coverPage", "countyInstructions", countyInstructions,
         SINGLE_VALUE);
   }
 }
