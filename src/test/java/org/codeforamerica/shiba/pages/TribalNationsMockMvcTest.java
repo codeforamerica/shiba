@@ -19,6 +19,7 @@ import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
+
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.ON);
   }
 
   @ParameterizedTest
@@ -314,6 +318,35 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+  }
+
+  @Test
+  void redLakeApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    addHouseholdMembersWithProgram(CCAP);
+
+    String county = "Olmsted";
+    goThroughLongTribalTanfFlow(RED_LAKE, county, "false", GRH);
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+  }
+
+  @Test
+  void whiteEarthApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    addHouseholdMembersWithEA();
+    String county = "Becker";
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
+
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
   }
 
   private void goThroughLongTribalTanfFlow(String nationName, String county,

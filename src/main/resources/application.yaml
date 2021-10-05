@@ -65,6 +65,7 @@ mail-gun:
 feature-flag:
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
+  white-earth-and-red-lake-routing: on
   county-anoka: on
   county-carver: on
   county-clay: on

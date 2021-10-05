@@ -19,9 +19,9 @@ import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @SuppressWarnings("DanglingJavadoc")
@@ -38,21 +38,25 @@ public class RoutingDecisionService {
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
+  private final FeatureFlagConfiguration featureFlagConfiguration;
+  private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
-      CountyMap<CountyRoutingDestination> countyRoutingDestinations) {
+      CountyMap<CountyRoutingDestination> countyRoutingDestinations,
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
+    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
       Document document) {
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
     County county = countyParser.parse(applicationData);
-
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
+
     if (tribeName != null && TRIBES_WE_CAN_ROUTE_TO.contains(tribeName)) {
       // Route members of Tribal Nations we service
       return switch (tribeName) {
@@ -70,9 +74,11 @@ public class RoutingDecisionService {
 
   private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
       ApplicationData applicationData, County county) {
+
     boolean isLivingInTribalNationBoundary = getBooleanValue(applicationData.getPagesData(),
         LIVING_IN_TRIBAL_NATION_BOUNDARY);
-    if (!isLivingInTribalNationBoundary || isOnlyApplyingForGrh(programs, applicationData)) {
+    if (!isLivingInTribalNationBoundary || isOnlyApplyingForGrh(programs, applicationData)
+        || featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
       return List.of(countyRoutingDestinations.get(county));
     }
 
@@ -88,10 +94,13 @@ public class RoutingDecisionService {
         !isApplyingForTribalTanf(applicationData.getPagesData());
   }
 
-  @NotNull
   private List<RoutingDestination> routeWhiteEarthClients(Set<String> programs,
       ApplicationData applicationData,
       Document document, County county) {
+    if (featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
+      return List.of(countyRoutingDestinations.get(county));
+    }
+
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
 
