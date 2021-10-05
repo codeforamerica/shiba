@@ -2737,6 +2737,12 @@ workflow:
           input: county
           value: Anoka
       - pageName: prepareToApply
+        flag: county-beltrami
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Beltrami
+      - pageName: prepareToApply
         flag: county-carver
         condition:
           pageName: identifyCounty
@@ -2832,6 +2838,12 @@ workflow:
           pageName: identifyZipcode
           input: mappedCounty
           value: Anoka
+      - pageName: prepareToApply
+        flag: county-beltrami
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Beltrami
       - pageName: prepareToApply
         flag: county-carver
         condition:

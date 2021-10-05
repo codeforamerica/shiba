@@ -41,6 +41,7 @@ public enum County {
   public static County valueFor(String county) {
     return switch (county) {
       case "Anoka" -> Anoka;
+      case "Beltrami" -> Beltrami;
       case "Carver" -> Carver;
       case "Clay" -> Clay;
       case "Cook" -> Cook;
