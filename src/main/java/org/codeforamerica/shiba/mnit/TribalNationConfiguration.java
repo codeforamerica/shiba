@@ -29,6 +29,19 @@ public class TribalNationConfiguration {
         "help+staging@mnbenefits.org",
         "320-532-7407"
     );
+
+    addTribalNation(result, WHITE_EARTH,
+        "3b0aa880-db45-483d-fa0-7987c9b0c02d",
+        "A086642300",
+        "help+staging@mnbenefits.org",
+        "218-935-2359"
+    );
+    addTribalNation(result, RED_LAKE,
+        "c0e7128f-53ee-4712-8f7a-dd85f36c193e",
+        "A590043300",
+        "help+staging@mnbenefits.org",
+        "218-679-3350"
+    );
     return result;
   }
 
@@ -40,15 +53,21 @@ public class TribalNationConfiguration {
         MILLE_LACS_BAND_OF_OJIBWE,
         "accef8f5a-efe1-4ecf-93e2-3b853bea82e6",
         "A602658300",
-        "help+staging@mnbenefits.org",
+        "help+demo@mnbenefits.org",
         "320-532-7407"
     );
     addTribalNation(result,
         WHITE_EARTH,
         "4c598f9b-ba43-4077-aee2-b29da2aef79c",
         "A086642300",
-        "amy.littlewolf@whiteearth-nsn.gov",
+        "help+demo@mnbenefits.org",
         "218-935-2359"
+    );
+    addTribalNation(result, RED_LAKE,
+        "4b925166-9dde-4212-9601-9e82a7ee39bd",
+        "A590043300",
+        "help+demo@mnbenefits.org",
+        "218-679-3350"
     );
     return result;
   }
@@ -70,14 +89,19 @@ public class TribalNationConfiguration {
         "amy.littlewolf@whiteearth-nsn.gov",
         "218-935-2359"
     );
+    addTribalNation(result, RED_LAKE,
+        "aa2c98f4-9f68-4071-8d2f-827e6a32fd94",
+        "A590043300",
+        "sarah.smythe@redlakenation.org",
+        "218-679-3350"
+    );
     return result;
   }
 
   @NotNull
   private Map<String, TribalNationRoutingDestination> getDefaultTribalNations() {
     Map<String, TribalNationRoutingDestination> result = new HashMap<>();
-    addTribalNation(result,
-        MILLE_LACS_BAND_OF_OJIBWE,
+    addTribalNation(result, MILLE_LACS_BAND_OF_OJIBWE,
         "ae7d7c7f-6503-46ea-92a7-4a813da9fb02",
         "A602658300",
         "help+dev@mnbenefits.org",
@@ -86,14 +110,19 @@ public class TribalNationConfiguration {
     addTribalNation(result, FOND_DU_LAC);
     addTribalNation(result, GRAND_PORTAGE);
     addTribalNation(result, LEECH_LAKE);
-    addTribalNation(result,
-        WHITE_EARTH,
+    addTribalNation(result, WHITE_EARTH,
         "3b0aa880-db45-483d-fa0-7987c9b0c02d",
         "A086642300",
-        "amy.littlewolf@whiteearth-nsn.gov",
+        "help+dev@mnbenefits.org",
         "218-935-2359"
     );
     addTribalNation(result, BOIS_FORTE);
+    addTribalNation(result, RED_LAKE,
+        "c0e7128f-53ee-4712-8f7a-dd85f36c193e",
+        "A590043300",
+        "help+dev@mnbenefits.org",
+        "218-679-3350"
+    );
     return result;
   }
 
