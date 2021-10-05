@@ -208,6 +208,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         EA);
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
   }
 
@@ -473,7 +474,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "mailingAddress-address_street",
         "smarty street");
   }
-
 
   private void goThroughShortMfipFlow(String county, String nationName, String[] programs)
       throws Exception {
