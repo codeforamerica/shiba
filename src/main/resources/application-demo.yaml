@@ -9,6 +9,7 @@ spring:
           max-age: 10m
 feature-flag:
   submit-via-api: off
+  certain-pops: off
   submit-docs-via-email-for-hennepin: off
   white-earth-and-red-lake-routing: off
   county-anoka: on
