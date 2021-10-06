@@ -56,7 +56,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("livedInMnWholeLife", "Yes"); // actually means they MOVED HERE
     testPage.enter("moveToMnDate", "02/18/1950");
     testPage.enter("moveToMnPreviousState", "Illinois");
-    testPage.enter("relationship", "my child");
+    testPage.enter("relationship", "My child");
     testPage.enter("programs", PROGRAM_CCAP);
     // Assert that the programs follow up questions are shown when a program is selected
     WebElement programsFollowUp = testPage.findElementById("programs-follow-up");
@@ -79,7 +79,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("maritalStatus", "Divorced");
     testPage.enter("sex", "Female");
     testPage.enter("livedInMnWholeLife", "No");
-    testPage.enter("relationship", "my child's parent");
+    testPage.enter("relationship", "Other");
     testPage.enter("programs", "None");
     testPage.clickContinue();
 
@@ -483,7 +483,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("FIRST_NAME_0", "householdMemberFirstName");
-    assertCcapFieldEquals("RELATIONSHIP_0", "my child");
+    assertCcapFieldEquals("RELATIONSHIP_0", "child");
     assertCcapFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "120.00");
     assertCcapFieldEquals("LIVING_WITH_FAMILY_OR_FRIENDS", "Off");
     assertCcapFieldEquals("CREATED_DATE", "2020-01-01");
@@ -619,7 +619,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("PREVIOUS_STATE_0", "Illinois");
     assertCafFieldEquals("OTHER_NAME_0", "houseHoldyMcMemberson");
     assertCafFieldEquals("CCAP_0", "Yes");
-    assertCafFieldEquals("RELATIONSHIP_0", "my child");
+    assertCafFieldEquals("RELATIONSHIP_0", "child");
     assertCafFieldEquals("MARITAL_STATUS_0", "NEVER_MARRIED");
     assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
