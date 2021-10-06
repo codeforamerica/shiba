@@ -161,15 +161,39 @@ def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.excludeTags("db", "journey", "framework", "pdf", "ccap", "validation", "a11y")
+                options.excludeTags("db", "documentUploadJourney", "laterDocsJourney", "fullFlowJourney", "minimumFlowJourney", "framework", "pdf", "ccap", "validation", "a11y")
         }
 }
 
-def journeyTest = tasks.register("journeyTest", Test) {
+def documentUploadJourneyTest = tasks.register("documentUploadJourneyTest", Test) {
     Test task ->
         task.useJUnitPlatform {
             JUnitPlatformOptions options ->
-                options.includeTags("journey")
+                options.includeTags("documentUploadJourney")
+        }
+}
+
+def fullFlowJourneyTest = tasks.register("fullFlowJourneyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags("fullFlowJourney")
+        }
+}
+
+def laterDocsJourneyTest = tasks.register("laterDocsJourneyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags("laterDocsJourney")
+        }
+}
+
+def minimumFlowJourneyTest = tasks.register("minimumFlowJourneyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags("minimumFlowJourney")
         }
 }
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
-@Tag("journey")
+@Tag("minimumFlowJourney")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
   private final String signature = "some signature";

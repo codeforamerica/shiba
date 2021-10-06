@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-@Tag("journey")
+@Tag("fullFlowJourney")
 public class FullFlowJourneyTest extends JourneyTest {
 
   @Test

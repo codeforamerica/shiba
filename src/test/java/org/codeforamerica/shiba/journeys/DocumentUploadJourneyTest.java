@@ -13,7 +13,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag("journey")
+@Tag("documentUploadJourney")
 public class DocumentUploadJourneyTest extends JourneyTest {
 
   @Test
