@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -70,13 +71,24 @@ public class FileDownloadController {
   @GetMapping("/download-ccap/{applicationId}")
   ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(
       @PathVariable String applicationId,
-      HttpServletRequest request
-  ) {
+      HttpServletRequest request) {
+
     String requestIp = createRequestIp(request);
     // TODO: Change this to a CCAP PDF Download Notification
     applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
     ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CCAP, CASEWORKER);
 
+    return createResponse(applicationFile);
+  }
+
+  @GetMapping("/download-certain-pops/{applicationId}")
+  ResponseEntity<byte[]> downloadCertainPopsWithApplicationId(
+      @PathVariable String applicationId,
+      HttpServletRequest request) {
+    String requestIp = createRequestIp(request);
+    applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
+    ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CERTAIN_POPS,
+        CASEWORKER);
     return createResponse(applicationFile);
   }
 

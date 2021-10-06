@@ -7,19 +7,9 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
@@ -243,12 +233,12 @@ public class ApplicationRepository {
         "id", id
     );
 
-    String statement =
-        switch (document) {
-          case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
-          case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
-          case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
-        };
+    String statement = switch (document) {
+      case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
+      case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
+      case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
+      case CERTAIN_POPS -> "UPDATE applications SET certain_pops_application_status = null WHERE id = :id";
+    };
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     namedParameterJdbcTemplate.update(statement, parameters);
@@ -261,6 +251,7 @@ public class ApplicationRepository {
       case CAF -> "UPDATE applications SET caf_application_status = :status WHERE id = :id";
       case CCAP -> "UPDATE applications SET ccap_application_status = :status WHERE id = :id";
       case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = :status WHERE id = :id";
+      case CERTAIN_POPS -> "UPDATE applications SET certain_pops_application_status = :status WHERE id = :id";
     };
   }
 
