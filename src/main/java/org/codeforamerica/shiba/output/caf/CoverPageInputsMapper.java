@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
@@ -27,6 +28,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -45,14 +47,20 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private final CountyMap<CountyRoutingDestination> countyInformationMapping;
   private final MessageSource messageSource;
+  private final RoutingDecisionService routingDecisionService;
+  private final RoutingDestinationMessageService routingDestinationMessageService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
       CountyMap<CountyRoutingDestination> countyInformationMapping,
-      MessageSource messageSource) {
+      MessageSource messageSource,
+      RoutingDecisionService routingDecisionService,
+      RoutingDestinationMessageService routingDestinationMessageService) {
     this.countyInstructionsMapping = countyInstructionsMapping;
     this.countyInformationMapping = countyInformationMapping;
     this.messageSource = messageSource;
+    this.routingDecisionService = routingDecisionService;
+    this.routingDestinationMessageService = routingDestinationMessageService;
   }
 
   @Override
@@ -62,7 +70,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     var programsInput = getPrograms(application);
     var fullNameInput = getFullName(application);
     var householdMemberInputs = getHouseholdMembers(application);
-    var countyInstructionsInput = getCountyInstructions(application, recipient);
+    var countyInstructionsInput = getCountyInstructions(application, recipient, document);
     var utmSourceInput = getUtmSource(application, document);
     return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
         utmSourceInput, householdMemberInputs);
@@ -171,7 +179,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     return inputsForSubworkflow;
   }
 
-  private ApplicationInput getCountyInstructions(Application application, Recipient recipient) {
+  private ApplicationInput getCountyInstructions(Application application, Recipient recipient, Document document) {
     Locale locale = switch (recipient) {
       case CASEWORKER -> LocaleContextHolder.getLocale();
       case CLIENT -> {
@@ -186,13 +194,13 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
-    var displayName = application.getCounty().displayName();
-    var phoneNumber = ofNullable(
-        countyInformationMapping.get(application.getCounty()).getPhoneNumber())
-        .orElse(null);
-    var args = List.of(displayName, phoneNumber);
+    var county = application.getCounty();
+    var routingDestinations = routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
+    var coverPageMessageStrings = List.of(routingDestinationMessageService.generatePhrase(locale, county, false, routingDestinations),
+        routingDestinationMessageService.generatePhrase(locale, county, true, routingDestinations));
 
-    var countyInstructions = lms.getMessage(messageCode, args);
+    var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
+
     return new ApplicationInput("coverPage", "countyInstructions", countyInstructions,
         SINGLE_VALUE);
   }

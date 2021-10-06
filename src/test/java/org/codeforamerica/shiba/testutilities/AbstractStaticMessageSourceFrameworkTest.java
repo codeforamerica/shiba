@@ -26,6 +26,7 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
     staticMessageSource.addMessage("general.continue", Locale.ENGLISH, "Continue");
     staticMessageSource.addMessage("general.inputs.yes", Locale.ENGLISH, "Yes");
     staticMessageSource.addMessage("general.inputs.no", Locale.ENGLISH, "No");
+    staticMessageSource.addMessage("general.county-and-phone", Locale.ENGLISH, "somethin");
     staticMessageSource.addMessage("dummy-page-title", Locale.ENGLISH, dummyPageTitle);
     staticMessageSource.addMessage("generic.footer", Locale.ENGLISH, "footer");
     staticMessageSource.addMessage("general.privacy", Locale.ENGLISH, "privacy");

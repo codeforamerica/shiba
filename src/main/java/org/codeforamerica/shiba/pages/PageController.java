@@ -4,7 +4,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -19,14 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
@@ -36,7 +33,8 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -99,6 +97,7 @@ public class PageController {
   private final DocRecommendationMessageService docRecommendationMessageService;
   private final RoutingDecisionService routingDecisionService;
   private final DocumentRepository documentRepository;
+  private final RoutingDestinationMessageService routingDestinationMessageService;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -118,7 +117,8 @@ public class PageController {
       DocRecommendationMessageService docRecommendationMessageService,
       RoutingDecisionService routingDecisionService,
       DocumentRepository documentRepository,
-      ApplicationRepository applicationRepository) {
+      ApplicationRepository applicationRepository,
+      RoutingDestinationMessageService routingDestinationMessageService) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -137,6 +137,7 @@ public class PageController {
     this.routingDecisionService = routingDecisionService;
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
+    this.routingDestinationMessageService = routingDestinationMessageService;
   }
 
   @GetMapping("/")
@@ -369,25 +370,10 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
-      LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-      List<String> routingDestinations = DocumentListParser.parse(applicationData).stream()
-          .flatMap(
-              doc -> routingDecisionService.getRoutingDestinations(applicationData, doc).stream())
-          .map(rd -> {
-            if (rd instanceof TribalNationRoutingDestination) {
-              return rd.getName();
-            }
-            String county = rd.getName();
-            if (application.getCounty() == County.Other) {
-              county = County.Hennepin.displayName();
-            }
-            return lms.getMessage("general.county", List.of(county));
-          })
-          .collect(Collectors.toSet())
-          .stream().toList();
+      // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
+      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale, application.getCounty(), true, routingDestinations);
 
-      // TODO need a test for different combinations of tribal nations and counties
-      String finalDestinationList = listToString(routingDestinations, lms);
       model.put("routingDestinationList", finalDestinationList);
     }
 
@@ -436,7 +422,6 @@ public class PageController {
 
     return model;
   }
-
 
   private boolean requestedPageAppliesToGroup(String iterationIndex,
       PageWorkflowConfiguration pageWorkflow) {

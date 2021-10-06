@@ -7,20 +7,27 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.internationalization.InternationalizationUtils.listToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.springframework.context.MessageSource;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +46,20 @@ public class RoutingDecisionService {
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
+  private final MessageSource messageSource;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
-      FeatureFlagConfiguration featureFlagConfiguration) {
-    this.countyParser = countyParser;
-    this.tribalNations = tribalNations;
-    this.countyRoutingDestinations = countyRoutingDestinations;
-    this.featureFlagConfiguration = featureFlagConfiguration;
+      FeatureFlagConfiguration featureFlagConfiguration, 
+      MessageSource messageSource) {
+        this.countyParser = countyParser;
+        this.tribalNations = tribalNations;
+        this.countyRoutingDestinations = countyRoutingDestinations;
+        this.featureFlagConfiguration = featureFlagConfiguration;
+        this.messageSource = messageSource;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
