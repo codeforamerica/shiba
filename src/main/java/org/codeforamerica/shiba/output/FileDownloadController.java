@@ -34,7 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @Slf4j
-public class FileDownLoadController {
+public class FileDownloadController {
 
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
@@ -42,7 +42,7 @@ public class FileDownLoadController {
   private final ApplicationData applicationData;
   private final ApplicationRepository applicationRepository;
 
-  public FileDownLoadController(
+  public FileDownloadController(
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       ApplicationEventPublisher applicationEventPublisher,

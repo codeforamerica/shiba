@@ -7,12 +7,7 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,7 +34,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-class FileDownLoadControllerTest {
+class FileDownloadControllerTest {
 
   MockMvc mockMvc;
 
@@ -62,12 +57,12 @@ class FileDownLoadControllerTest {
     applicationData = new ApplicationData();
     applicationData.setId("some-app-id");
     mockMvc = MockMvcBuilders.standaloneSetup(
-        new FileDownLoadController(
-            xmlGenerator,
-            pdfGenerator,
-            applicationEventPublisher,
-            applicationData,
-            applicationRepository))
+            new FileDownloadController(
+                xmlGenerator,
+                pdfGenerator,
+                applicationEventPublisher,
+                applicationData,
+                applicationRepository))
         .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
         .build();
 
