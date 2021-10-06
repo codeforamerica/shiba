@@ -31,9 +31,9 @@ public class Application {
   private Status docUploadEmailStatus;
 
   public Application addFeedback(Feedback feedback) {
-    var sentiment = Optional.ofNullable(feedback.getSentiment()).orElse(this.sentiment);
+    var sentiment = Optional.ofNullable(feedback.sentiment()).orElse(this.sentiment);
     var feedbackText =
-        StringUtils.hasLength(feedback.getFeedback()) ? feedback.getFeedback() : this.feedback;
+        StringUtils.hasLength(feedback.feedback()) ? feedback.feedback() : this.feedback;
     return new Application(
         id,
         completedAt,

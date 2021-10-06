@@ -1,24 +1,20 @@
 package org.codeforamerica.shiba.pages;
 
-import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
-@Value
-public class Feedback {
-
-  Sentiment sentiment;
-  String feedback;
+public record Feedback(Sentiment sentiment, String feedback) {
 
   boolean isInvalid() {
-    return getSentiment() == null && StringUtils.isEmpty(getFeedback());
+    return sentiment == null && !StringUtils.hasText(feedback);
   }
 
   boolean isSentimentOnly() {
-    return getSentiment() != null && StringUtils.isEmpty(getFeedback());
+    return sentiment != null && !StringUtils.hasText(feedback);
   }
 
-  @NotNull String getMessageKey() {
+  @NotNull
+  String getMessageKey() {
     if (isInvalid()) {
       return "success.feedback-failure";
     } else if (isSentimentOnly()) {
