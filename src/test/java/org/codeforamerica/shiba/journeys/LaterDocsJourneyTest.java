@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
-@Tag("journey")
+@Tag("laterDocsJourney")
 public class LaterDocsJourneyTest extends JourneyTest {
 
   @Test

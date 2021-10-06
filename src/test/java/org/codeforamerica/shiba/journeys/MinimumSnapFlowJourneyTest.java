@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
-@Tag("journey")
+@Tag("minimumFlowJourney")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
   private final String signature = "some signature";
@@ -202,7 +202,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");
     assertCafFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
-    assertCafFieldEquals("EMAIL_OPTIN", "Off");
+    assertCafFieldEquals("EMAIL_OPTIN", "Yes");
     assertCafFieldEquals("PHONE_OPTIN", "Yes");
     assertCafFieldEquals("DATE_OF_BIRTH", "01/12/1928");
     assertCafFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");

@@ -182,7 +182,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     // How can we get in touch with you?
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
-    testPage.enter("phoneOrEmail", "Text me");
+    assertThat(testPage.getCheckboxValues("phoneOrEmail")).contains("It's okay to text me", "It's okay to email me");
     testPage.clickContinue();
   }
 
