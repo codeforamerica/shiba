@@ -10,6 +10,7 @@ feature-flag:
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   county-anoka: on
+  county-beltrami: on
   county-carver: on
   county-clay: on
   county-cook: on

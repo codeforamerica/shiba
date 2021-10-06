@@ -12,6 +12,7 @@ feature-flag:
   submit-docs-via-email-for-hennepin: off
   white-earth-and-red-lake-routing: off
   county-anoka: on
+  county-beltrami: off
   county-carver: on
   county-clay: on
   county-cook: on

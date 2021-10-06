@@ -2737,6 +2737,12 @@ workflow:
           input: county
           value: Anoka
       - pageName: prepareToApply
+        flag: county-beltrami
+        condition:
+          pageName: identifyCounty
+          input: county
+          value: Beltrami
+      - pageName: prepareToApply
         flag: county-carver
         condition:
           pageName: identifyCounty
@@ -2832,6 +2838,12 @@ workflow:
           pageName: identifyZipcode
           input: mappedCounty
           value: Anoka
+      - pageName: prepareToApply
+        flag: county-beltrami
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          value: Beltrami
       - pageName: prepareToApply
         flag: county-carver
         condition:
@@ -3295,6 +3307,16 @@ workflow:
           pageName: selectTheTribe
           input: selectedTribe
           value: Red Lake
+      - pageName: applyForTribalTANF
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: selectTheTribe
+              input: selectedTribe
+              value: Federally recognized tribe outside of MN
+            - pageName: identifyCounty
+              input: county
+              value: Beltrami
       - pageName: applyForMFIP
     skipCondition:
       logicalOperator: OR
@@ -3306,6 +3328,9 @@ workflow:
               input: isTribalNationMember
               value: NO
         - *isUrbanTribalNationMember?
+        - pageName: selectTheTribe
+          input: selectedTribe
+          value: Federally recognized tribe outside of MN
     datasources:
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe

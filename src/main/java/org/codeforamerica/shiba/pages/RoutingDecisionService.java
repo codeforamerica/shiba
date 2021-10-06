@@ -34,7 +34,8 @@ import org.springframework.stereotype.Service;
 public class RoutingDecisionService {
 
   private final List<String> TRIBES_WE_CAN_ROUTE_TO = List.of(MILLE_LACS_BAND_OF_OJIBWE,
-      WHITE_EARTH, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, RED_LAKE);
+      WHITE_EARTH, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, RED_LAKE,
+      OTHER_FEDERALLY_RECOGNIZED_TRIBE);
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
@@ -64,12 +65,23 @@ public class RoutingDecisionService {
         case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> routeClientsServicedByMilleLacs(
             programs, applicationData, document, county);
         case RED_LAKE -> routeRedLakeClients(programs, applicationData, county);
+        case OTHER_FEDERALLY_RECOGNIZED_TRIBE -> routeClientsInOtherFederallyRecognizedTribe(
+            programs, applicationData, document, county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
     }
 
     // By default, just send to county
     return List.of(countyRoutingDestinations.get(county));
+  }
+
+  private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
+      Set<String> programs, ApplicationData applicationData, Document document, County county) {
+    if (!county.equals(County.Beltrami) ||
+        featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
+      return List.of(countyRoutingDestinations.get(county));
+    }
+    return List.of(tribalNations.get(RED_LAKE));
   }
 
   private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
