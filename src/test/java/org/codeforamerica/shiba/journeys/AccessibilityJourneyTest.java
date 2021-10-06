@@ -183,7 +183,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // Enter incorrect phone number to throw error and check aria properties
     testPage.enter("phoneNumber", "134567890");
-    testPage.enter("phoneOrEmail", "Text me");
+    //testPage.enter("phoneOrEmail", "It's okay to text me");
     testPage.clickContinue();
     assertThat(testPage.hasInputError("phoneNumber")).isTrue();
     assertThat(testPage.getInputAriaLabelledBy("phoneNumber")).isEqualTo("phoneNumber-error-p phoneNumber-label");
@@ -191,7 +191,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
-    testPage.enter("phoneOrEmail", "Text me");
+    testPage.enter("phoneOrEmail", "It's okay to text me");
     testPage.clickContinue();
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "homeApartmentNumber");
     testPage.clickLink("This looks correct");

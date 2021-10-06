@@ -142,9 +142,44 @@ var noneOfTheAbove = (function () {
   }
 })();
 
+var preCheckContactInfo = (function () {
+  var preCheck = {
+    init: function () {
+	  var phoneInputTextBox = document.getElementById('phoneNumber');
+	  var emailInputTextBox = document.getElementById('email');
+	  phoneInputTextBox.addEventListener('input', function() {
+		var textCheckbox = document.getElementById('TEXT');
+		if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
+		  textCheckbox.checked = true;
+		  document.querySelector('label[for="TEXT"').classList.add('is-selected');
+		}
+		if (phoneInputTextBox.value.length == 0 && textCheckbox.checked) {
+		  textCheckbox.checked = false;
+		  document.querySelector('label[for="TEXT"').classList.remove('is-selected');
+		}
+  	  });
+	  emailInputTextBox.addEventListener('input', function() {
+	    var emailCheckbox = document.getElementById('EMAIL');
+	    if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {
+	      emailCheckbox.checked = true;
+	      document.querySelector('label[for="EMAIL"').classList.add('is-selected');
+	    }
+	    if (emailInputTextBox.value.length == 0 && emailCheckbox.checked) {
+	      emailCheckbox.checked = false;
+	      document.querySelector('label[for="EMAIL"').classList.remove('is-selected');
+	    }
+    });  
+   }
+  };
+  return {
+    init: preCheck.init
+  }
+})();
+
 $(document).ready(function () {
   followUpQuestion.init();
   noneOfTheAbove.init();
+  preCheckContactInfo.init();
   hasError.init();
   $("#page-form").submit(function () {
     var btn = $("#form-submit-button");
@@ -153,3 +188,4 @@ $(document).ready(function () {
     return true;
   });
 });
+

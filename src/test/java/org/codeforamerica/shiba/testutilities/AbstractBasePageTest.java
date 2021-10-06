@@ -171,7 +171,7 @@ public abstract class AbstractBasePageTest {
 
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
-    testPage.enter("phoneOrEmail", "Text me");
+    testPage.enter("phoneOrEmail", "It's okay to text me");
     testPage.clickContinue();
     fillOutAddress();
     testPage.enter("sameMailingAddress", "No, use a different address for mail");
