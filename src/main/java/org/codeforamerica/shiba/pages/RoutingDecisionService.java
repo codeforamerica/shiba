@@ -44,7 +44,7 @@ public class RoutingDecisionService {
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
-      CountyMap<CountyRoutingDestination> countyRoutingDestinations,
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
       FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
@@ -110,7 +110,7 @@ public class RoutingDecisionService {
       ApplicationData applicationData,
       Document document, County county) {
     if (featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
-      return List.of(countyRoutingDestinations.get(county));
+      return routeClientsServicedByMilleLacs(programs, applicationData, document, county);
     }
 
     var pagesData = applicationData.getPagesData();

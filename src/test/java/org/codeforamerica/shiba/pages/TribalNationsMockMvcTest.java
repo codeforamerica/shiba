@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Beltrami;
 import static org.codeforamerica.shiba.Program.*;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.OTHER_FEDERALLY_RECOGNIZED_TRIBE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
@@ -383,7 +384,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
-  void whiteEarthApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
+  void whiteEarthApplicationsGetSentToCountyAndMilleLacsIfFeatureFlagIsTurnedOff()
+      throws Exception {
     when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
         FeatureFlag.OFF);
 
@@ -391,9 +393,39 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     String county = "Becker";
     goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{EA, CCAP, GRH, SNAP});
 
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, MILLE_LACS_BAND_OF_OJIBWE, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, MILLE_LACS_BAND_OF_OJIBWE,
+        county);
+  }
+
+  @Test
+  void whiteEarthApplicationsGetSentToCountyOnlyIfFeatureFlagIsTurnedOff() throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    addHouseholdMembersWithCCAP();
+    String county = "Becker";
+    goThroughShortMfipFlow(county, WHITE_EARTH, new String[]{CCAP});
+
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);
+  }
+
+  @Test
+  void whiteEarthApplicationsGetSentToMilleLacsAndCountyIfFeatureFlagIsTurnedOff()
+      throws Exception {
+    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
+        FeatureFlag.OFF);
+
+    String county = "Hennepin";
+    addHouseholdMembersWithEA();
+    goThroughShortTribalTanfFlow(WHITE_EARTH, county, "true", EA, CCAP, GRH, SNAP);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, MILLE_LACS_BAND_OF_OJIBWE, county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, MILLE_LACS_BAND_OF_OJIBWE,
+        county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 
   private void goThroughLongTribalTanfFlow(String nationName, String county,
@@ -489,7 +521,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
   private void goThroughShortMfipFlow(String county, String nationName, String[] programs)
       throws Exception {
-    addHouseholdMembersWithEA();
     getToPersonalInfoScreen(programs);
     addAddressInGivenCounty(county);
     postExpectingSuccess("identifyCountyBeforeApplying", "county", county);
