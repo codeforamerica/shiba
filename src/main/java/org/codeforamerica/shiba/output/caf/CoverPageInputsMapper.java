@@ -196,7 +196,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var county = application.getCounty();
     var routingDestinations = routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
-    var coverPageMessageStrings = routingDestinationMessageService.generateCoverPageMessageStrings(locale, county, routingDestinations);
+    var coverPageMessageStrings = List.of(routingDestinationMessageService.generatePhrase(locale, county, false, routingDestinations),
+        routingDestinationMessageService.generatePhrase(locale, county, true, routingDestinations));
 
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 

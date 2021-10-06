@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -21,24 +20,13 @@ public class RoutingDestinationMessageService {
     this.messageSource = messageSource;
   }
 
-  public List<String> generateCoverPageMessageStrings(Locale locale, County county,
-      List<RoutingDestination> routingDestinations) {
-    return List.of(generatePhrase(locale, county, false, routingDestinations),
-        generatePhrase(locale, county, true, routingDestinations));
-  }
-
-  public String generateSuccessPageMessageString(Locale locale, County county,
-      List<RoutingDestination> routingDestinations) {
-    return generatePhrase(locale, county, true, routingDestinations);
-  }
-
-  private String generatePhrase(Locale locale, County county, boolean withPhoneNumbers,
+  public String generatePhrase(Locale locale, County county, boolean withPhoneNumbers,
       List<RoutingDestination> routingDestinations) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     List<String> routingDestinationStrings = routingDestinations.stream().map(rd -> {
       if (rd instanceof TribalNationRoutingDestination) {
-        return withPhoneNumbers ? rd.getName() + " Tribal Nation Servicing Agency " + rd
-            .getPhoneNumber() :
+        return withPhoneNumbers ? rd.getName() + " Tribal Nation Servicing Agency " + "(" + rd
+            .getPhoneNumber() + ")":
             rd.getName() + " Tribal Nation Servicing Agency";
       }
       String clientCounty = setCountyName(county, rd);

@@ -372,7 +372,7 @@ public class PageController {
 
       // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
       List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
-      String finalDestinationList = routingDestinationMessageService.generateSuccessPageMessageString(locale, application.getCounty(), routingDestinations);
+      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale, application.getCounty(), true, routingDestinations);
 
       model.put("routingDestinationList", finalDestinationList);
     }
