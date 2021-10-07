@@ -1500,3 +1500,13 @@ legend.form-question {
     -ms-high-contrast-adjust: none;
   }
 }
+
+.doc-rec-reveal-header {
+  display: inline;
+  margin-left: 10px;
+}
+
+.doc-rec-icon svg {
+  position: relative;
+  top: 10px;
+}
