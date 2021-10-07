@@ -778,6 +778,12 @@ pageDefinitions:
               messageKey: household-member-info.aunt-or-uncle
             - value: niece or nephew
               messageKey: household-member-info.niece-or-nephew
+            - value: roommate
+              messageKey: household-member-info.roommate
+            - value: friend
+              messageKey: household-member-info.friend
+            - value: grandchild
+              messageKey: household-member-info.grandchild
             - value: other
               messageKey: household-member-info.other
         promptMessage:
