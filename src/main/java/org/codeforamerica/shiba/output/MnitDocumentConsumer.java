@@ -116,6 +116,8 @@ public class MnitDocumentConsumer {
         .getRoutingDestinations(application.getApplicationData(), document);
 
     routingDestinations.forEach(rd -> {
+      log.info("Now sending %s to recipient %s for application %s".formatted(document.name(),
+          rd.getName(), application.getId()));
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     });
   }
