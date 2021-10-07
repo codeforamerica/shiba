@@ -60,7 +60,32 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
         createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
 
-        createApplicationInput("basicCriteria", "blindOrHasDisability", "false"),
+        createApplicationInput("basicCriteria", "disabilityDetermination", "false")
+    );
+  }
+
+  @Test
+  public void testNotBlindAndDoesntHaveDisabilityButAnsweredLaterDisabilityQuestion() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
+        .withPageData("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"))
+        .withPageData("disability", "hasDisability", List.of("true"))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
+        createApplicationInput("basicCriteria", "BLIND", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
+        createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+
+        createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "false")
     );
   }
@@ -91,7 +116,64 @@ public class BasicCriteriaInputsMapperTest {
   }
 
   @Test
-  public void testDeterminedNoDisability() {
+  public void testDeterminedDisabilityForSSA() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
+        .withPageData("basicCriteria", "basicCriteria", List.of("HAVE_DISABILITY_SSA"))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
+        createApplicationInput("basicCriteria", "BLIND", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "true"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
+        createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+
+        createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
+        createApplicationInput("basicCriteria", "disabilityDetermination", "true")
+    );
+  }
+
+  @Test
+  public void testDeterminedDisabilityForSMRT() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
+        .withPageData("basicCriteria", "basicCriteria", List.of("HAVE_DISABILITY_SMRT"))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
+        createApplicationInput("basicCriteria", "BLIND", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "true"),
+        createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+
+        createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
+        createApplicationInput("basicCriteria", "disabilityDetermination", "true")
+    );
+  }
+
+  // Tests we still need:
+  //  don't
+
+  // SSA disability
+  // SMRT disability
+  // Medicare
+
+  @Test
+  public void testDeterminedDisabilityMedicalAssitance() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
         .withPageData("basicCriteria", "basicCriteria", List.of("MEDICAL_ASSISTANCE"))
@@ -110,7 +192,7 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "true"),
         createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
 
-        createApplicationInput("basicCriteria", "blindOrHasDisability", "false"),
+        createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "false")
     );
   }
@@ -124,5 +206,4 @@ public class BasicCriteriaInputsMapperTest {
 
     assertThat(result).isEmpty();
   }
-
 }

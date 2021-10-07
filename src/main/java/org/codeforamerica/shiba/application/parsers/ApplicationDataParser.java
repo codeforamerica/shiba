@@ -40,6 +40,8 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.LIVING_SITUATION,
         new ParsingCoordinate("livingSituation", "livingSituation"));
 
+    coordinatesMap.put(Field.HAS_DISABILITY, new ParsingCoordinate("disability", "hasDisability"));
+
     coordinatesMap
         .put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
     coordinatesMap.put(Field.MAILING_CITY, new ParsingCoordinate("mailingAddress", "city"));
@@ -208,6 +210,8 @@ public class ApplicationDataParser {
     WRITTEN_LANGUAGE_PREFERENCES,
 
     BASIC_CRITERIA_CERTAIN_POPS,
+
+    HAS_DISABILITY,
 
     MEDICAL_EXPENSES,
 
