@@ -7,4 +7,5 @@ public class Program {
   public static final String GRH = "GRH";
   public static final String CASH = "CASH";
   public static final String EA = "EA";
+  public static final String CERTAIN_POPS = "CERTAIN_POPS";
 }
