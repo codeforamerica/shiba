@@ -1,0 +1,31 @@
+<div th:fragment="selectRelationshipCustomInput(input, data)"
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''"
+     th:with="inputData=${data.get(input.name)},
+	     formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+	     hasError=${!data.isValid() && !inputData.valid(data)},
+	     hasHelpMessage=${input.helpMessageKey != null},
+	     needsAriaLabel=${input.needsAriaLabel()}"
+     class="form-group">
+ <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+    <p class="text--help"
+       th:if="${input.helpMessageKey != null}"
+       th:text="#{${input.helpMessageKey}}"></p>
+ <div class="select">
+    <select th:id="${input.name}"
+            class="select__element"
+            th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                     aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
+                     aria-invalid=${hasError},
+                     aria-label=${needsAriaLabel ? input.name : ''}"
+            th:name="${formInputName}"
+    >
+        <th:block th:each="option: ${input.options.selectableOptions}">
+            <option th:value="${option.value}" th:text="#{${option.messageKey}}"
+                    th:selected="${inputData.value.contains(option.value)}"></option>
+        </th:block>
+    </select>
+ </div>
+ <div th:text="${data.toString}">
+ </div>
+    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+</div>
