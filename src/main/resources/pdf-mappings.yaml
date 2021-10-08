@@ -44,7 +44,7 @@ mappings:
     programList: PROGRAMS
   basicCriteria:
     BLIND: BLIND
-    SSI_OR_RSDI: SSI_OR_RSDI
+    HELP_WITH_MEDICARE: HELP_WITH_MEDICARE
     blindOrHasDisability: [ BLIND_OR_HAS_DISABILITY, HAS_PHYSICAL_MENTAL_HEALTH_CONDITION ]
     disabilityDetermination: DISABILITY_DETERMINATION
   preparingMealsTogether:

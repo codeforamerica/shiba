@@ -99,10 +99,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
     TestUtils.assertPdfFieldEquals(fieldName, expectedVal, ccap);
   }
 
-  protected void assertCertainPopsFieldEquals(String fieldName, String expectedVal) {
-    TestUtils.assertPdfFieldEquals(fieldName, expectedVal, certainPops);
-  }
-
   protected String signApplicationAndDownloadPdfs(String signature,
       boolean shouldHaveCafDownloadLink,
       boolean shouldHaveCcapDownloadLink) {

@@ -243,7 +243,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldMapRecognizedUtmSourceCCAP() throws Exception {
     selectPrograms("CCAP");
 
-    getWithQueryParam("identifyCountyBeforeApplying", "utm_source", CHILDCARE_WAITING_LIST_UTM_SOURCE);
+    getWithQueryParam("identifyCountyBeforeApplying", "utm_source",
+        CHILDCARE_WAITING_LIST_UTM_SOURCE);
     fillInRequiredPages();
 
     var ccap = submitAndDownloadCcap();
@@ -253,7 +254,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldNotMapRecognizedUtmSourceCAF() throws Exception {
     selectPrograms("CASH");
-    getWithQueryParam("identifyCountyBeforeApplying", "utm_source", CHILDCARE_WAITING_LIST_UTM_SOURCE);
+    getWithQueryParam("identifyCountyBeforeApplying", "utm_source",
+        CHILDCARE_WAITING_LIST_UTM_SOURCE);
     var caf = submitAndDownloadCaf();
     assertPdfFieldIsEmpty("UTM_SOURCE", caf);
   }
@@ -746,11 +748,27 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Nested
   @Tag("pdf")
   class CertainPops {
-    // buncha tests here
 
-    @BeforeEach
-    void setUp() {
+    @Test
+    void allFieldsDoGetWrittenToPDF() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("CERTAIN_POPS");
+      postExpectingSuccess("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER",
+          "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
+          "SSI_OR_RSDI", "HELP_WITH_MEDICARE"));
 
+      submitApplication();
+      var certainPops = downloadCertainPops(applicationData.getId());
+
+      // Assert that cover page is present
+      assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", certainPops);
+      assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), certainPops);
+
+      // Actual fields get filled
+      assertPdfFieldEquals("BLIND", "Yes", certainPops);
+      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", certainPops);
+      assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", certainPops);
+      assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", certainPops);
     }
   }
 }
