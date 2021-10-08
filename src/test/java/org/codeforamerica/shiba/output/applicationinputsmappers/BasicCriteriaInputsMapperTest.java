@@ -32,7 +32,7 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "false")
@@ -40,10 +40,11 @@ public class BasicCriteriaInputsMapperTest {
   }
 
   @Test
-  public void testNotBlindAndDoesntHaveDisability() {
+  public void testNotBlindAndDoesntHaveDisabilityButWantsHelpWithMedicare() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
-        .withPageData("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"))
+        .withPageData("basicCriteria", "basicCriteria",
+            List.of("SIXTY_FIVE_OR_OLDER", "HELP_WITH_MEDICARE"))
         .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
@@ -56,7 +57,8 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false")
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "true")
     );
   }
 
@@ -78,7 +80,7 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "false")
@@ -103,7 +105,6 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "true")
@@ -127,7 +128,7 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "true"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "true")
@@ -151,19 +152,12 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "true"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "true")
     );
   }
-
-  // Tests we still need:
-  //  don't
-
-  // SSA disability
-  // SMRT disability
-  // Medicare
 
   @Test
   public void testDeterminedDisabilityMedicalAssitance() {
@@ -182,7 +176,7 @@ public class BasicCriteriaInputsMapperTest {
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "true"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
 
         createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
         createApplicationInput("basicCriteria", "disabilityDetermination", "false")

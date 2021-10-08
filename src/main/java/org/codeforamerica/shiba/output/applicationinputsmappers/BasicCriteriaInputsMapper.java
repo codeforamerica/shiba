@@ -29,7 +29,7 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
 
   private static final List<String> BASIC_CRITERIA_OPTIONS = List.of("SIXTY_FIVE_OR_OLDER", "BLIND",
       "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
-      "HELP_WITH_MEDICARE");
+      "SSI_OR_RSDI");
 
   @Override
   public List<ApplicationInput> map(Application application, Document _document,
@@ -66,8 +66,8 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
       result.add(createApplicationInput(determinedDisability, "disabilityDetermination"));
     }
 
-    if (criteriaSelections.contains("SSI_OR_RSDI")) {
-      result.add(createApplicationInput(true, "SSI_OR_RSDI"));
+    if (criteriaSelections.contains("HELP_WITH_MEDICARE")) {
+      result.add(createApplicationInput(true, "HELP_WITH_MEDICARE"));
     }
 
     return result;
