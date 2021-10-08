@@ -228,6 +228,7 @@ workflow:
             selectableOptions:
               - value: "a"
                 messageKey: select-option-1
+                limitSelection: "true"
               - value: "b"
                 messageKey: select-option-2
     nextPages:

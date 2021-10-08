@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
@@ -25,6 +27,25 @@ public interface OptionsWithDataSourceTemplate {
 
         return optionsTemplate;
       } else {
+        List<Option> limitedOptions = formInput.getOptions().getSelectableOptions().stream().filter(
+            Option::isLimitSelection).toList();
+
+        List<String> valuesToBeRemoved = new ArrayList<>();
+
+        applicationData.getSubworkflows().forEach((groupName, subworkflow) -> {
+          subworkflow.forEach(iteration -> {
+            iteration.getPagesData().forEach((pageName, pageData) -> {
+              limitedOptions.forEach(option -> {
+                pageData.forEach((s, inputData) -> {
+                  if (inputData.getValue().equals(option.getValue())) {
+                    valuesToBeRemoved.add(inputData.getValue());
+                  }
+                });
+              });
+            });
+          });
+        });
+
         SelectableOptionsTemplate optionsTemplate = new SelectableOptionsTemplate();
         optionsTemplate.setSelectableOptions(formInput.getOptions().getSelectableOptions());
         return optionsTemplate;
