@@ -75,8 +75,8 @@ mail-gun:
 
 feature-flag:
   certain-pops: on
-  filenet: off
-  submit-via-api: off
+  filenet: on
+  submit-via-api: on
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
   use-county-selection: on
