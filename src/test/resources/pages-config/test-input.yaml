@@ -216,11 +216,32 @@ workflow:
           type: TEXT
     nextPages:
       - pageName: subworkflowPage
+  selectSubworkflowPage:
+    groupName: subworkflow2
+    pageConfiguration:
+      name: selectSubworkflowPage
+      pageTitle: dummy-page-title
+      inputs:
+        - name: selectInput
+          type: SELECT
+          options:
+            selectableOptions:
+              - value: "a"
+                messageKey: select-option-1
+              - value: "b"
+                messageKey: select-option-2
+    nextPages:
+      - pageName: subworkflowPage
 pageGroups:
   subworkflow1:
     startPages:
       - subworkflowPage
     completePages:
       - subworkflowPage
+  subworkflow2:
+    startPages:
+      - selectSubworkflowPage
+    completePages:
+      - selectSubworkflowPage
 landmarkPages:
   terminalPage:
