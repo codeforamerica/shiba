@@ -167,6 +167,7 @@ public class EmailContentCreator {
     String documentType = switch (document) {
       case CAF -> "a CAF application.";
       case CCAP -> "a CCAP application.";
+      case CERTAIN_POPS -> "a Certain Populations application.";
       case UPLOADED_DOC -> "an uploaded document.";
     };
     String messageBody = getMessage(RESUBMIT_EMAIL_BODY, List.of(documentType), locale);

@@ -325,6 +325,11 @@ pageDefinitions:
               messageKey: choose-programs.housing-support-group-residential-housing
               helpMessageKey: choose-programs.housing-grh-help
               helpIcon: icon-apartment
+            - value: CERTAIN_POPS
+              messageKey: choose-programs.certain-pops
+              helpMessageKey: choose-programs.certain-pops-help
+              helpIcon: icon-medical-expenses
+              flag: certain-pops
             - value: NONE
               messageKey: choose-programs.none-of-the-above
               helpIcon: icon-people
@@ -332,6 +337,37 @@ pageDefinitions:
     alertBox:
       type: CHOOSE_NONE_WARNING
       message: choose-programs.you-will-be-asked
+  - &basicCriteria
+    name: basicCriteria
+    pageTitle: basic-criteria.title
+    headerKey: basic-criteria.do-any-of-these-situations-apply
+    headerHelpMessageKey: basic-criteria.to-apply-for-healthcare-at-least-one-should-be-true
+    contextFragment: healthcareCoverageFragment
+    inputs:
+      - name: basicCriteria
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: SIXTY_FIVE_OR_OLDER
+              messageKey: basic-criteria.i-am-65-or-older
+            - value: BLIND
+              messageKey: basic-criteria.i-am-blind
+            - value: SSI_OR_RSDI
+              messageKey: basic-criteria.i-receive-ssi-or-rsdi
+            - value: HAVE_DISABILITY_SSA
+              messageKey: basic-criteria.i-have-a-disability-ssa
+            - value: HAVE_DISABILITY_SMRT
+              messageKey: basic-criteria.i-have-a-disability-smrt
+            - value: MEDICAL_ASSISTANCE
+              messageKey: basic-criteria.i-want-to-apply-for-medical-assistance
+            - value: HELP_WITH_MEDICARE
+              messageKey: basic-criteria.i-want-help-with-my-medicare-costs
+            - value: NONE
+              messageKey: general.inputs.none-of-the-above
+              isNone: true
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
@@ -2981,6 +3017,16 @@ workflow:
       - pageName: choosePrograms
   choosePrograms:
     pageConfiguration: *choosePrograms
+    nextPages:
+      - pageName: basicCriteria
+        condition:
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: CERTAIN_POPS
+      - pageName: introBasicInfo
+  basicCriteria:
+    pageConfiguration: *basicCriteria
     nextPages:
       - pageName: introBasicInfo
   introBasicInfo:
