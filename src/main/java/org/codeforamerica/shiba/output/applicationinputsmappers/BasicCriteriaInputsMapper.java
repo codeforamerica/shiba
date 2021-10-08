@@ -28,7 +28,7 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
       "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT");
 
   private static final List<String> BASIC_CRITERIA_OPTIONS = List.of("SIXTY_FIVE_OR_OLDER", "BLIND",
-      "SSI_OR_RSDI", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
+      "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
       "HELP_WITH_MEDICARE");
 
   @Override
@@ -52,17 +52,23 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
 
     List<ApplicationInput> result = super.map(pagesData);
 
-    List<String> basicCriteria = getValues(pagesData, BASIC_CRITERIA_CERTAIN_POPS);
+    List<String> criteriaSelections = getValues(pagesData, BASIC_CRITERIA_CERTAIN_POPS);
 
     boolean blindOrHasDisability =
-        basicCriteria.stream().anyMatch(BLIND_OR_HAS_DISABILITY::contains)
+        criteriaSelections.stream().anyMatch(BLIND_OR_HAS_DISABILITY::contains)
             || getBooleanValue(pagesData, HAS_DISABILITY);
+
     if (blindOrHasDisability) {
       result.add(createApplicationInput(true, "blindOrHasDisability"));
+
+      boolean determinedDisability =
+          criteriaSelections.stream().anyMatch(DETERMINED_DISABILITY::contains);
+      result.add(createApplicationInput(determinedDisability, "disabilityDetermination"));
     }
 
-    boolean determinedDisability = basicCriteria.stream().anyMatch(DETERMINED_DISABILITY::contains);
-    result.add(createApplicationInput(determinedDisability, "disabilityDetermination"));
+    if (criteriaSelections.contains("SSI_OR_RSDI")) {
+      result.add(createApplicationInput(true, "SSI_OR_RSDI"));
+    }
 
     return result;
   }

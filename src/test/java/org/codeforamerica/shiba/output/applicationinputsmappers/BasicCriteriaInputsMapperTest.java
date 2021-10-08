@@ -29,7 +29,6 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
         createApplicationInput("basicCriteria", "BLIND", "true"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
@@ -54,13 +53,10 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
         createApplicationInput("basicCriteria", "BLIND", "false"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
-        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false"),
-
-        createApplicationInput("basicCriteria", "disabilityDetermination", "false")
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "false")
     );
   }
 
@@ -79,7 +75,6 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
         createApplicationInput("basicCriteria", "BLIND", "false"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
@@ -129,7 +124,6 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
         createApplicationInput("basicCriteria", "BLIND", "false"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "true"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
@@ -154,7 +148,6 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
         createApplicationInput("basicCriteria", "BLIND", "false"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "true"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "false"),
@@ -186,7 +179,6 @@ public class BasicCriteriaInputsMapperTest {
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
         createApplicationInput("basicCriteria", "BLIND", "false"),
-        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "false"),
         createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "false"),
         createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "true"),
