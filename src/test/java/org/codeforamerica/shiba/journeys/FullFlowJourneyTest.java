@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
@@ -626,6 +627,15 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
     assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
+
+    // Download certain pops form
+    driver.navigate().to(baseUrl + "/download-certain-pops/" + applicationId);
+    await().until(() -> getAllFiles().size() == successPage.pdfDownloadLinks() + 1);
+    certainPops = getAllFiles().get(Document.CERTAIN_POPS);
+    assertCertainPopsFieldEquals("BLIND", "Yes");
+    assertCertainPopsFieldEquals("HELP_WITH_MEDICARE", "Yes");
+    assertCertainPopsFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes");
+    assertCertainPopsFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes");
 
     assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
   }

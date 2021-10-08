@@ -47,6 +47,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
   protected PDAcroForm caf;
   protected PDAcroForm ccap;
+  protected PDAcroForm certainPops;
   protected String applicationId;
 
   @MockBean
@@ -98,6 +99,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
     TestUtils.assertPdfFieldEquals(fieldName, expectedVal, ccap);
   }
 
+  protected void assertCertainPopsFieldEquals(String fieldName, String expectedVal) {
+    TestUtils.assertPdfFieldEquals(fieldName, expectedVal, certainPops);
+  }
+
   protected String signApplicationAndDownloadPdfs(String signature,
       boolean shouldHaveCafDownloadLink,
       boolean shouldHaveCcapDownloadLink) {
@@ -139,7 +144,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
   }
 
   @NotNull
-  private Callable<Boolean> pdfDownloadCompletes(SuccessPage successPage) {
+  protected Callable<Boolean> pdfDownloadCompletes(SuccessPage successPage) {
     return () -> getAllFiles().size() == successPage.pdfDownloadLinks();
   }
 

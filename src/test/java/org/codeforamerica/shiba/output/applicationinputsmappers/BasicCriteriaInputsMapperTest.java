@@ -184,6 +184,35 @@ public class BasicCriteriaInputsMapperTest {
   }
 
   @Test
+  public void testYesToEverything() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of(Program.CERTAIN_POPS))
+        .withPageData("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER",
+            "BLIND", "SSI_OR_RSDI", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+            "MEDICAL_ASSISTANCE",
+            "HELP_WITH_MEDICARE"
+        ))
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
+        createApplicationInput("basicCriteria", "BLIND", "true"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SSA", "true"),
+        createApplicationInput("basicCriteria", "HAVE_DISABILITY_SMRT", "true"),
+        createApplicationInput("basicCriteria", "MEDICAL_ASSISTANCE", "true"),
+        createApplicationInput("basicCriteria", "SSI_OR_RSDI", "true"),
+        createApplicationInput("basicCriteria", "HELP_WITH_MEDICARE", "true"),
+
+        createApplicationInput("basicCriteria", "blindOrHasDisability", "true"),
+        createApplicationInput("basicCriteria", "disabilityDetermination", "true")
+    );
+  }
+
+  @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
     List<ApplicationInput> result = mapper.map(Application.builder()
