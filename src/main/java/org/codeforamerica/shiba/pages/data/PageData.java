@@ -81,17 +81,4 @@ public class PageData extends HashMap<String, InputData> {
       });
     }
   }
-
-  /**
-   * Convenience method for checking if the input data values contain any of the given values.
-   *
-   * @param inputDataKey input data key to check
-   * @param values       values to check for
-   * @return True - at least one of the input data's values is in the given values list; False -
-   * input data doesn't exist or none of the input data values are in the given values list
-   */
-  public boolean inputDataValueContainsAny(String inputDataKey, List<String> values) {
-    InputData inputData = get(inputDataKey);
-    return inputData != null && inputData.getValue().stream().anyMatch(values::contains);
-  }
 }
