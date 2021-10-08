@@ -3,11 +3,7 @@ package org.codeforamerica.shiba.application;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.County.Other;
-import static org.codeforamerica.shiba.County.StLouis;
+import static org.codeforamerica.shiba.County.*;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
@@ -20,25 +16,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -122,6 +109,9 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
     assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
+    assertThat(savedApplication.getCafApplicationStatus()).isNull();
+    assertThat(savedApplication.getCcapApplicationStatus()).isNull();
+    assertThat(savedApplication.getCertainPopsApplicationStatus()).isNull();
   }
 
   @Test
@@ -188,13 +178,11 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     applicationRepository.save(updatedApplication);
-    ZonedDateTime expectedUpdatedAt = ZonedDateTime.now(UTC);
 
     Application retrievedApplication = applicationRepository.find(applicationId);
 
     assertThat(retrievedApplication).usingRecursiveComparison()
         .ignoringFields("fileName", "updatedAt").isEqualTo(updatedApplication);
-    assertThat(retrievedApplication.getUpdatedAt()).isBetween(completedAt, expectedUpdatedAt);
   }
 
   @Test
@@ -411,5 +399,39 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
       Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
       assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
     }
+  }
+
+  @Test
+  void saveShouldUpdateApplicationStatuses() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
+        .build();
+    Application application = Application.builder()
+        .id(applicationData.getId())
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(applicationData)
+        .cafApplicationStatus(IN_PROGRESS)
+        .ccapApplicationStatus(null)
+        .certainPopsApplicationStatus(IN_PROGRESS)
+        .county(Olmsted)
+        .build();
+    applicationRepository.save(application);
+
+    applicationData.getPagesData().putPage("choosePrograms",
+        new PageData(Map.of("programs", new InputData(List.of("CCAP")))));
+    applicationRepository.save(application);
+    Application resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getCafApplicationStatus()).isNull();
+    assertThat(resultingApplication.getCcapApplicationStatus()).isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isNull();
+
+    applicationData.getPagesData().putPage("choosePrograms",
+        new PageData(Map.of("programs", new InputData(List.of("SNAP", "CERTAIN_POPS")))));
+    applicationRepository.save(application);
+    resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getCcapApplicationStatus()).isNull();
+    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isEqualTo(IN_PROGRESS);
   }
 }

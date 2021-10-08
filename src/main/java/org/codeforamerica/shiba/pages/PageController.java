@@ -4,11 +4,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.io.IOException;
@@ -20,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
@@ -516,13 +511,10 @@ public class PageController {
         applicationData.setId(applicationRepository.getNextId());
       }
       Application application = applicationFactory.newApplication(applicationData);
-      applicationRepository.save(application); //upsert already
+      applicationRepository.save(application);
     }
 
     if (pageDataIsValid) {
-      if (pagesData.containsKey("choosePrograms")) {
-        updateApplicationStatuses();
-      }
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());
       }
@@ -533,29 +525,10 @@ public class PageController {
           .ifPresent(pageData::putAll);
 
       Application application = applicationFactory.newApplication(applicationData);
-      applicationRepository.save(application); //upsert already
+      applicationRepository.save(application);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);
-    }
-  }
-
-  private void updateApplicationStatuses() {
-    if (applicationData.isCAFApplication()) {
-      applicationRepository.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
-    } else {
-      applicationRepository.updateStatusToNull(CAF, applicationData.getId());
-    }
-    if (applicationData.isCCAPApplication()) {
-      applicationRepository.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
-    } else {
-      applicationRepository.updateStatusToNull(CCAP, applicationData.getId());
-    }
-    List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
-    if (programs.contains(Program.CERTAIN_POPS)) {
-      applicationRepository.updateStatus(applicationData.getId(), CERTAIN_POPS, IN_PROGRESS);
-    } else {
-      applicationRepository.updateStatusToNull(CERTAIN_POPS, applicationData.getId());
     }
   }
 
