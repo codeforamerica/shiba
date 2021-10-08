@@ -407,10 +407,6 @@ public class PageController {
         .containsKey(pageWorkflow.getAppliesToGroup());
   }
 
-  private boolean notFound(String pageName) {
-    return applicationConfiguration.getPageWorkflow(pageName) == null;
-  }
-
   private boolean shouldRedirectToLandingPage(@PathVariable String pageName) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
@@ -555,7 +551,6 @@ public class PageController {
     } else {
       applicationRepository.updateStatusToNull(CCAP, applicationData.getId());
     }
-    // TODO - flag?
     List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
     if (programs.contains(Program.CERTAIN_POPS)) {
       applicationRepository.updateStatus(applicationData.getId(), CERTAIN_POPS, IN_PROGRESS);
