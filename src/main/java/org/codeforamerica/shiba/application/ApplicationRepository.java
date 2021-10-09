@@ -28,14 +28,11 @@ public class ApplicationRepository {
 
   private final JdbcTemplate jdbcTemplate;
   private final Encryptor<ApplicationData> encryptor;
-  private final Clock clock;
 
   public ApplicationRepository(JdbcTemplate jdbcTemplate,
-      Encryptor<ApplicationData> encryptor,
-      Clock clock) {
+      Encryptor<ApplicationData> encryptor) {
     this.jdbcTemplate = jdbcTemplate;
     this.encryptor = encryptor;
-    this.clock = clock;
   }
 
   @SuppressWarnings("ConstantConditions")
@@ -113,90 +110,6 @@ public class ApplicationRepository {
     return Optional.ofNullable(dateTime)
         .map(time -> Timestamp.from(time.toInstant()))
         .orElse(null);
-  }
-
-  public Duration getMedianTimeToComplete() {
-    Long medianTimeToComplete = jdbcTemplate.queryForObject(
-        "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
-        Long.class);
-    return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
-  }
-
-  public Integer count() {
-    return jdbcTemplate.queryForObject(
-        "SELECT COUNT(*) FROM applications WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL;",
-        Integer.class);
-  }
-
-  public Map<County, Integer> countByCounty() {
-    return jdbcTemplate.query(
-            "SELECT county, COUNT(*) AS count " +
-                "FROM applications  WHERE flow <> 'LATER_DOCS' AND completed_at IS NOT NULL " +
-                "GROUP BY county", (resultSet, rowNumber) ->
-                Map.entry(
-                    County.valueFor(resultSet.getString("county")),
-                    resultSet.getInt("count"))).stream()
-        .collect(toMap(Entry::getKey, Entry::getValue));
-  }
-
-  public Map<County, Integer> countByCountyWeekToDate(ZoneId zoneId) {
-    ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
-    return jdbcTemplate.query(
-        "SELECT county, COUNT(*) AS count " +
-            "FROM applications " +
-            "WHERE flow <> 'LATER_DOCS' AND completed_at >= ? " +
-            "GROUP BY county",
-        (resultSet, rowNumber) -> Map.entry(
-            County.valueFor(resultSet.getString("county")),
-            resultSet.getInt("count")),
-        Timestamp.from(lowerBound.toInstant())
-    ).stream().collect(toMap(Entry::getKey, Entry::getValue));
-  }
-
-  public Duration getAverageTimeToCompleteWeekToDate(ZoneId zoneId) {
-    ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
-    Double averageTimeToComplete = jdbcTemplate.queryForObject(
-        "SELECT COALESCE(AVG(time_to_complete), 0) AS averagetime " +
-            "FROM applications " +
-            "WHERE flow <> 'LATER_DOCS' AND completed_at >= ?",
-        Double.class,
-        Timestamp.from(lowerBound.toInstant())
-    );
-
-    return Duration.ofSeconds(Objects.requireNonNull(averageTimeToComplete).longValue());
-  }
-
-  public Duration getMedianTimeToCompleteWeekToDate(ZoneId zoneId) {
-    ZonedDateTime lowerBound = getBeginningOfWeekForTimeZone(zoneId);
-    Long medianTimeToComplete = jdbcTemplate.queryForObject(
-        "SELECT COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY time_to_complete), 0) " +
-            "FROM applications " +
-            "WHERE flow <> 'LATER_DOCS' AND completed_at >= ? ",
-        Long.class,
-        Timestamp.from(lowerBound.toInstant()));
-    return Duration.ofSeconds(Objects.requireNonNull(medianTimeToComplete));
-  }
-
-  @NotNull
-  private ZonedDateTime getBeginningOfWeekForTimeZone(ZoneId zoneId) {
-    LocalDate localDate = LocalDate.ofInstant(clock.instant(), zoneId);
-    LocalDate beginningOfWeek = localDate.minusDays(localDate.getDayOfWeek().getValue());
-    return beginningOfWeek.atStartOfDay(zoneId).withZoneSameInstant(ZoneOffset.UTC);
-  }
-
-  public Map<Sentiment, Double> getSentimentDistribution() {
-    return jdbcTemplate.query(
-            "SELECT sentiment, count, SUM(count) OVER () AS total_count " +
-                "FROM (" +
-                "         SELECT sentiment, COUNT(id) AS count " +
-                "         FROM applications " +
-                "         WHERE sentiment IS NOT NULL " +
-                "         GROUP BY sentiment " +
-                "     ) AS subquery",
-            (resultSet, rowNumber) -> Map.entry(
-                Sentiment.valueOf(resultSet.getString("sentiment")),
-                resultSet.getDouble("count") / resultSet.getDouble("total_count"))).stream()
-        .collect(toMap(Entry::getKey, Entry::getValue));
   }
 
   private void setUpdatedAtTime(String id) {

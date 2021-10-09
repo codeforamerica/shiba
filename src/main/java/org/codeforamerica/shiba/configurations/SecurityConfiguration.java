@@ -60,7 +60,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     "/download-ccap/??????????",
                     "/download-certain-pops/??????????",
                     "/download-docs/??????????",
-                    "/metrics",
                     "/resend-confirmation-email/??????????")
                 .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
         .oauth2Login();
