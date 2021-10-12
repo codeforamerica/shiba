@@ -1,21 +1,23 @@
 <div th:fragment="submittingApplication">
-    <div class="grid__item text--centered spacing-above-35">
-        <div th:replace="fragments/icons/milestone-application :: milestone-application"></div>
-        <p class="text--help  spacing-below-10"
-           th:text="#{general.step-five-of-six}"></p>
-        <h1 class="h2 spacing-below-35 spacing-above-0"
-            th:text="#{submitting-application.submitting-your-application}"></h1>
-    </div>
-    <div class="grid__item intro-section boxed-content spacing-below-60">
-        <h2 class="h3 text--centered spacing-below-0" th:text="#{submitting-application.before-you-submit}"></h2>
-        <h2 class="h3 text--centered intro-box__title spacing-above-0" th:text="#{submitting-application.well-ask-about}"></h2>
-        <ol class="list--numbered spacing-above-10">
-            <li th:text="#{submitting-application.registering-to-vote}"></li>
-            <li th:text="#{submitting-application.getting-help-with-benefits}"></li>
-            <li th:text="#{submitting-application.agreeing-to-terms}"></li>
-        </ol>
-    </div>
-    <div class="text--centered">
-        <div th:replace="fragments/continue :: continue"></div>
-    </div>
+  <div class="grid__item text--centered spacing-above-35">
+    <div th:replace="fragments/icons/milestone-application :: milestone-application"></div>
+    <p class="text--help  spacing-below-10"
+       th:text="#{general.step-of-six('5')}"></p>
+    <h1 class="h2 spacing-below-35 spacing-above-0"
+        th:text="#{submitting-application.submitting-your-application}"></h1>
+  </div>
+  <div class="grid__item intro-section boxed-content spacing-below-60">
+    <h2 class="h3 text--centered spacing-below-0"
+        th:text="#{submitting-application.before-you-submit}"></h2>
+    <h2 class="h3 text--centered intro-box__title spacing-above-0"
+        th:text="#{submitting-application.well-ask-about}"></h2>
+    <ol class="list--numbered spacing-above-10">
+      <li th:text="#{submitting-application.registering-to-vote}"></li>
+      <li th:text="#{submitting-application.getting-help-with-benefits}"></li>
+      <li th:text="#{submitting-application.agreeing-to-terms}"></li>
+    </ol>
+  </div>
+  <div class="text--centered">
+    <div th:replace="fragments/continue :: continue"></div>
+  </div>
 </div>

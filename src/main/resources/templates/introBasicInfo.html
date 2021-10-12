@@ -1,20 +1,20 @@
 <div th:fragment="introBasicInfo">
-    <div class="grid__item spacing-above-35 text--centered">
-        <div th:replace="fragments/icons/milestone-person :: milestone-person"></div>
-        <p class="text--help spacing-below-10"
-           th:text="#{general.step-one-of-six}"></p>
-        <h1 class="h2 spacing-below-35 spacing-above-0"
-            th:text="#{intro-basic-info.getting-to-know-you}"></h1>
-    </div>
-    <div class="grid__item intro-section boxed-content spacing-below-60">
-        <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
-        <ol class="list--numbered spacing-above-10">
-            <li th:text="#{intro-basic-info.basic-info}"></li>
-            <li th:text="#{intro-basic-info.contact-info}"></li>
-            <li th:text="#{intro-basic-info.living-situation}"></li>
-        </ol>
-    </div>
-    <div class="text--centered">
-        <div th:replace="fragments/continue :: continue"></div>
-    </div>
+  <div class="grid__item spacing-above-35 text--centered">
+    <div th:replace="fragments/icons/milestone-person :: milestone-person"></div>
+    <p class="text--help spacing-below-10"
+       th:text="#{general.step-of-six('1')}"></p>
+    <h1 class="h2 spacing-below-35 spacing-above-0"
+        th:text="#{intro-basic-info.getting-to-know-you}"></h1>
+  </div>
+  <div class="grid__item intro-section boxed-content spacing-below-60">
+    <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
+    <ol class="list--numbered spacing-above-10">
+      <li th:text="#{intro-basic-info.basic-info}"></li>
+      <li th:text="#{intro-basic-info.contact-info}"></li>
+      <li th:text="#{intro-basic-info.living-situation}"></li>
+    </ol>
+  </div>
+  <div class="text--centered">
+    <div th:replace="fragments/continue :: continue"></div>
+  </div>
 </div>
