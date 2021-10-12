@@ -54,7 +54,7 @@ mnit-esb:
 mnit-filenet:
   username: ${MNIT-FILENET_USERNAME}
   password: ${MNIT-FILENET_PASSWORD}
-  url:  https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
+  url: https://ecm-stst.mn.gov/fncmis/resources/Service
   jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
   max-attempts: 4
   delay: 5400000 # 1.5 hours
