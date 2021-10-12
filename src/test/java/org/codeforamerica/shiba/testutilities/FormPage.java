@@ -122,10 +122,6 @@ public class FormPage {
 
   }
 
-  public List<String> getSelectOptionValues(String inputName) {
-    return html.select("select[name='%s[]']".formatted(inputName)).select("option").stream().map(Element::val).toList();
-  }
-
   public String getSelectValue(String inputName) {
     var optionElements = html.select("select[name='%s[]']".formatted(inputName)).select("option");
     return optionElements.stream()
