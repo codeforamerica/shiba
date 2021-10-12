@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 @Tag("fullFlowJourney")
 public class FullFlowJourneyTest extends JourneyTest {
@@ -70,7 +71,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("ssn", "987654321");
     testPage.clickContinue();
 
-    // Add second Household Member and delete
+    // Add a spouse and assert spouse is no longer an option then delete
     testPage.clickLink("Add a person");
     testPage.clickContinue();
     testPage.enter("firstName", "householdMember2");
@@ -79,9 +80,15 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("maritalStatus", "Divorced");
     testPage.enter("sex", "Female");
     testPage.enter("livedInMnWholeLife", "No");
-    testPage.enter("relationship", "Other");
+    testPage.enter("relationship", "My spouse (ex: wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
+
+    // Verify spouse option has been removed
+    testPage.clickLink("Add a person");
+    Select relationshipSelect = new Select(driver.findElementById("relationship"));
+    assertThat(relationshipSelect.getOptions().stream().noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
     driver.findElementById("iteration1-delete").click();

@@ -37,13 +37,19 @@ public interface OptionsWithDataSourceTemplate {
             iteration.getPagesData().forEach((pageName, pageData) -> {
               limitedOptions.forEach(option -> {
                 pageData.forEach((s, inputData) -> {
-                  if (inputData.getValue().equals(option.getValue())) {
-                    valuesToBeRemoved.add(inputData.getValue());
+                  if (inputData.getValue().contains(option.getValue())) {
+                    valuesToBeRemoved.add(option.getValue());
                   }
                 });
               });
             });
           });
+        });
+
+        List<Option> selectableOptions = formInput.getOptions().getSelectableOptions();
+        List<String> selectableOptionValues = selectableOptions.stream().map(option -> option.getValue()).toList();
+        valuesToBeRemoved.forEach(value -> {
+          selectableOptions.remove(selectableOptionValues.indexOf(value));
         });
 
         SelectableOptionsTemplate optionsTemplate = new SelectableOptionsTemplate();

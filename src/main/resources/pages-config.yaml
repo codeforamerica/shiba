@@ -751,8 +751,7 @@ pageDefinitions:
             promptMessage:
               promptMessageKey: household-member-info.what-state-did-they-move-from
       - name: relationship
-        type: CUSTOM
-        customInputFragment: selectRelationshipCustomInput
+        type: SELECT
         options:
           selectableOptions:
             - value: child
@@ -761,6 +760,7 @@ pageDefinitions:
               messageKey: household-member-info.step-child
             - value: spouse
               messageKey: household-member-info.spouse
+              limitSelection: true
             - value: partner
               messageKey: household-member-info.partner
             - value: brother or sister

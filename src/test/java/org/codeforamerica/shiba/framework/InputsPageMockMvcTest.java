@@ -154,12 +154,4 @@ public class InputsPageMockMvcTest extends AbstractFrameworkTest {
     assertThat(testPage.getElementsByTag("legend")).hasSize(3);
     assertThat(testPage.getElementsByTag("fieldset")).hasSize(3);
   }
-
-  @Test
-  void shouldRemoveSelectedOptionFromSelectDropDownWhenOptionHasRemoveIfSelected() throws Exception {
-    var testPage = getFormPage("selectSubworkflowPage");
-    assertThat(testPage.getSelectOptionValues("selectInput")).containsExactly("a", "b");
-    postAndFollowRedirect("selectSubworkflowPage", "selectInput", "a");
-    assertThat(testPage.getSelectOptionValues("selectInput")).containsExactly("b");
-  }
 }
