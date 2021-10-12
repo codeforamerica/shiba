@@ -2,7 +2,7 @@ pageDefinitions:
   - &testStaticLandingPage
     name: testStaticLandingPage
     pageTitle: first-page-title
-    customPage: true
+    usingPageTemplateFragment: false
   - &pageThatDoesNotStartTimer
     name: pageThatDoesNotStartTimer
     pageTitle: not-start-timer-title

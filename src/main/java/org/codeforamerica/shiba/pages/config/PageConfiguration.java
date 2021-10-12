@@ -65,10 +65,10 @@ public class PageConfiguration {
   private String contextFragment;
 
   /**
-   * Boolean to indicate whether this page should be rendered with the pageTemplate (false) or not
-   * (true). Custom pages do not use the same template that static and form pages use.
+   * Boolean to indicate whether this page should be rendered with the pageTemplate (true) or not
+   * (false). Custom pages do not use the same template that static and form pages use.
    */
-  private boolean isCustomPage = false;
+  private boolean usingPageTemplateFragment = true;
 
   /**
    * Warning or notice message for page.
@@ -89,7 +89,7 @@ public class PageConfiguration {
    * @return True - is a static page; False - otherwise
    */
   public boolean isStaticPage() {
-    return !isCustomPage && this.inputs.isEmpty();
+    return usingPageTemplateFragment && this.inputs.isEmpty();
   }
 
 }

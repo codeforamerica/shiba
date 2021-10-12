@@ -219,7 +219,7 @@ pageDefinitions:
   - &landing
     name: landing
     pageTitle: landing.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &goToApplyMn
     name: goToApplyMn
     pageTitle: go-to-apply-mn.title
@@ -870,7 +870,7 @@ pageDefinitions:
   - &noProgramsSelected
     name: noProgramsSelected
     pageTitle: no-programs-selected.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &childrenInNeedOfCare
     name: childrenInNeedOfCare
     pageTitle: children-in-need-of-care.title
@@ -915,7 +915,7 @@ pageDefinitions:
   - &householdDeleteWarningPage
     name: householdDeleteWarningPage
     pageTitle: warning-page.delete-household-member-warning
-    customPage: true
+    usingPageTemplateFragment: false
   - &introPersonalDetails
     name: introPersonalDetails
     pageTitle: intro-personal-details.title
@@ -1291,7 +1291,7 @@ pageDefinitions:
         type: YES_NO
   - &snapExpeditedDetermination
     name: snapExpeditedDetermination
-    customPage: true
+    usingPageTemplateFragment: false
   - &legalStuff
     name: legalStuff
     pageTitle: legal-stuff.title
@@ -1345,7 +1345,7 @@ pageDefinitions:
   - &documentRecommendation
     name: documentRecommendation
     pageTitle: document-recommendation.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &documentOffboarding
     name: documentOffboarding
     pageTitle: document-offboarding.title
@@ -1355,12 +1355,12 @@ pageDefinitions:
   - &uploadDocuments
     name: uploadDocuments
     pageTitle: upload-documents.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &uploadDocumentsDeleteWarningPage
     name: uploadDocumentsDeleteWarningPage
     headerKey: upload-documents-delete-warning.you-are-about-to-delete
     pageTitle: upload-documents-delete-warning.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &documentSubmitConfirmation
     name: documentSubmitConfirmation
     pageTitle: document-submit-confirmation.title
@@ -1673,11 +1673,11 @@ pageDefinitions:
   - &success
     name: success
     pageTitle: success.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &feedback
     name: feedback
     pageTitle: feedback.title
-    customPage: true
+    usingPageTemplateFragment: false
   - &documentsSent
     name: documentsSent
     pageTitle: documentsSent.title
@@ -2397,12 +2397,12 @@ pageDefinitions:
       conditionalValues:
         - value: job-builder.your-jobs
           condition: *livesAlone?
-    customPage: true
+    usingPageTemplateFragment: false
   - &jobRedirectPage
     name: jobRedirectPage
     headerKey: warning-page.going-back-will-take-you-to-the-beginning-of-the-jobs-section-where-you-will-start-over
     pageTitle: warning-page.go-back-title
-    customPage: true
+    usingPageTemplateFragment: false
   - &jobDeleteWarningPage
     name: jobDeleteWarningPage
     headerKey:
@@ -2416,7 +2416,7 @@ pageDefinitions:
             value: "applicant"
             matcher: DOES_NOT_CONTAIN_SUBSTRING
     pageTitle: warning-page.no-data-title
-    customPage: true
+    usingPageTemplateFragment: false
   - &startExpenses
     name: startExpenses
     pageTitle: start-expenses.title

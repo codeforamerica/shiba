@@ -9,7 +9,7 @@ pageDefinitions:
           - validation: NOT_BLANK
   - &terminalPage
     pageTitle: dummy-page-title
-    customPage: true
+    usingPageTemplateFragment: false
 workflow:
   firstPage:
     pageConfiguration: *firstPage

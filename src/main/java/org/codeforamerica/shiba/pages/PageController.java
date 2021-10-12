@@ -250,7 +250,8 @@ public class PageController {
         pageTemplate,
         pageWorkflowConfig, pagesData, iterationIndex);
     var view =
-        pageWorkflowConfig.getPageConfiguration().isCustomPage() ? pageName : "pageTemplate";
+        pageWorkflowConfig.getPageConfiguration().isUsingPageTemplateFragment() ? "pageTemplate"
+            : pageName;
     return new ModelAndView(view, model);
   }
 
@@ -344,8 +345,10 @@ public class PageController {
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
       // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
-      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale, application.getCounty(), true, routingDestinations);
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+          applicationData, CAF);
+      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
+          application.getCounty(), true, routingDestinations);
 
       model.put("routingDestinationList", finalDestinationList);
     }
@@ -366,9 +369,9 @@ public class PageController {
       model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
     }
 
-    if (pageWorkflow.getPageConfiguration().isStaticPage() || pageWorkflow
+    if (pageWorkflow.getPageConfiguration().isStaticPage() || !pageWorkflow
         .getPageConfiguration()
-        .isCustomPage()) {
+        .isUsingPageTemplateFragment()) {
       model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
       model.put("applicationData", applicationData);
 

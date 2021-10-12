@@ -57,7 +57,7 @@ pageDefinitions:
   - &testCustomPage
     name: testCustomPage
     pageTitle: dummy-page-title
-    customPage: true
+    usingPageTemplateFragment: false
   - &testFormPage
     name: testFormPage
     pageTitle: dummy-page-title
