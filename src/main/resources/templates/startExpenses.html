@@ -1,20 +1,10 @@
-<div th:fragment="startExpenses">
-  <div class="grid__item text--centered spacing-above-35">
-    <div th:replace="fragments/icons/milestone-money-and-cards :: milestone-money-and-cards"></div>
-    <p class="text--help spacing-below-10"
-       th:text="#{general.step-of-six('4')}"></p>
-    <h1 class="h2 spacing-below-35 spacing-above-0"
-        th:text="#{start-expenses.expenses-and-deductions}"></h1>
-  </div>
-  <div class="grid__item intro-section boxed-content spacing-below-60">
-    <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
-    <ol class="list--numbered spacing-above-10">
-      <li th:text="#{start-expenses.household-payments}"></li>
-      <li th:text="#{start-expenses.savings}"></li>
-      <li th:text="#{start-expenses.assets}"></li>
-    </ol>
-  </div>
-  <div class="text--centered">
-    <div th:replace="fragments/continue :: continue"></div>
-  </div>
+<div th:fragment="startExpenses"
+     th:with="
+     contentHeaders=${ {'general.well-ask-about'} },
+     contentItems=${ {
+       'start-expenses.household-payments',
+       'start-expenses.savings',
+       'start-expenses.assets'} }">
+  <div
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-money-and-cards', '4', 'start-expenses.expenses-and-deductions', ${contentHeaders}, ${contentItems})"></div>
 </div>

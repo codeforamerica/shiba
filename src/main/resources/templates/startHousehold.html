@@ -1,23 +1,12 @@
-<div th:fragment="startHousehold">
-  <div class="grid__item spacing-above-35 text--centered">
-    <div
-        th:replace="fragments/icons/milestone-live-with-family :: milestone-live-with-family"></div>
-    <p class="text--help spacing-below-10"
-       th:text="#{general.step-of-six('2')}"></p>
-    <h1 class="h2 spacing-below-35 spacing-above-0"
-        th:text="#{start-household.your-household}"></h1>
-  </div>
-  <div class="grid__item intro-section boxed-content spacing-below-60">
-    <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
-    <ol class="list--numbered spacing-above-10">
-      <li th:text="#{start-household.everyone-you-live-with}"></li>
-      <li th:text="#{start-household.preparing-meals}"></li>
-      <li th:text="#{start-household.special-situations}"></li>
-      <li th:text="#{start-household.citizenship}"></li>
-      <li th:text="#{start-household.ability-to-work}"></li>
-    </ol>
-  </div>
-  <div class="text--centered">
-    <div th:replace="fragments/continue :: continue"></div>
-  </div>
+<div th:fragment="startHousehold"
+     th:with="
+     contentHeaders=${ {'general.well-ask-about'} },
+     contentItems=${ {
+       'start-household.everyone-you-live-with',
+       'start-household.preparing-meals',
+       'start-household.special-situations',
+       'start-household.citizenship',
+       'start-household.ability-to-work'} }">
+  <div
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-live-with-family', '2', 'start-household.your-household', ${contentHeaders}, ${contentItems})"></div>
 </div>

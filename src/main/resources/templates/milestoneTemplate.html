@@ -1,0 +1,25 @@
+<div th:fragment="milestoneTemplate(iconName, step, headerKey, contentHeaderKeys, contentItems)">
+  <div class="grid__item spacing-above-35 text--centered">
+    <div th:replace="|fragments/icons/${iconName}| :: ${iconName}"></div>
+    <p class="text--help spacing-below-10"
+       th:text="#{general.step(${step})}"></p>
+    <h1 class="h2 spacing-below-35 spacing-above-0"
+        th:text="#{${headerKey}}"></h1>
+  </div>
+
+  <div class="grid__item intro-section boxed-content spacing-below-60">
+    <th:block th:each="contentHeaderKey: ${contentHeaderKeys}">
+      <h2 class="h3 text--centered spacing-above-0 spacing-below-0"
+          th:text="#{${contentHeaderKey}}"></h2>
+    </th:block>
+    <ol class="list--numbered spacing-above-15">
+      <th:block th:each="contentItem: ${contentItems}">
+        <li th:text="#{${contentItem}}"></li>
+      </th:block>
+    </ol>
+  </div>
+
+  <div class="text--centered">
+    <div th:replace="fragments/continue :: continue"></div>
+  </div>
+</div>
