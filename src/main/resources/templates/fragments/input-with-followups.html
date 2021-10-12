@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="input-with-followups (input, data)">
-    <div th:if="${!input.hasFollowUps()}">
-        <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+  <div th:if="${!input.hasFollowUps()}">
+    <div
+        th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+  </div>
+  <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
+    <div class="question-with-follow-up__question">
+      <div
+          th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
     </div>
-    <div class="question-with-follow-up" th:if="${input.hasFollowUps()}">
-        <div class="question-with-follow-up__question">
-            <div th:replace="'fragments/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
-        </div>
-        <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
-            <th:block th:each="followUp: ${input.followUps}">
-                <div th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
-            </th:block>
-        </div>
+    <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
+      <th:block th:each="followUp: ${input.followUps}">
+        <div
+            th:replace="'fragments/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+      </th:block>
     </div>
+  </div>
 </th:block>
 </html>
