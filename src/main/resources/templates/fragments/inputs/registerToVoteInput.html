@@ -1,18 +1,19 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<!-- This is custom because it uses buttons for radio options rather than the standard radio or checkbox inputs -->
 <th:block th:fragment="registerToVoteInput (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
 >
-    <div class="form-group vertical-button-group">
-        <p class="text--help"
-           th:if="${input.helpMessageKey != null}"
-           th:text="#{${input.helpMessageKey}}"></p>
-        <label th:each="option: ${input.options.selectableOptions}" th:for="${#ids.next(input.name)}" class="button">
-            <input type="radio" th:name="${formInputName}" class="hide-radio-circle" th:id="${#ids.seq(input.name)}"
-                   th:value="${option.value}" onclick="this.form.submit()">
-            <span class="button__icon--left emoji emoji--inline" th:classappend="${option.value == 'YES' ? 'emoji--checkmark' : 'emoji--crossmark'}"></span>
-            <span th:text="#{${option.messageKey}}"></span>
-        </label>
-    </div>
+  <div class="form-group vertical-button-group">
+    <p class="text--help"
+       th:if="${input.helpMessageKey != null}"
+       th:text="#{${input.helpMessageKey}}"></p>
+    <label th:each="option: ${input.options.selectableOptions}" th:for="${#ids.next(input.name)}"
+           class="button">
+      <input type="radio" th:name="${formInputName}" class="hide-radio-circle"
+             th:id="${#ids.seq(input.name)}"
+             th:value="${option.value}" onclick="this.form.submit()">
+      <span class="button__icon--left emoji emoji--inline"
+            th:classappend="${option.value == 'YES' ? 'emoji--checkmark' : 'emoji--crossmark'}"></span>
+      <span th:text="#{${option.messageKey}}"></span>
+    </label>
+  </div>
 </th:block>
-</html>

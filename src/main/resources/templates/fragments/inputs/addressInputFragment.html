@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<!-- This is a custom input for mailing address and home address screens to have additional functionality to hide and show portions of the inputs -->
 <div th:fragment="addressInputFragment(input, data)"
      th:with="
      name=|${input.name}[]|,
@@ -30,4 +29,3 @@
     });
   </script>
 </div>
-</html>

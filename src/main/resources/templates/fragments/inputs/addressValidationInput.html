@@ -1,43 +1,55 @@
-<!DOCTYPE html >
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<!-- This is a custom input for the home and mailing address validation screens to select the enriched or non-enriched address (if smarty-streets was able to find it) -->
 <th:block th:fragment="addressValidationInput (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                    addressData=${page.name.contains('home') ? pageDatasources.get('homeAddress') : pageDatasources.get('mailingAddress')},
                    foundEnrichedAddress=${addressData.containsKey('enrichedStreetAddress')}"
 >
-    <div class="grid__item spacing-above-35 spacing-below-35">
-        <h1 class="h2" th:if="${foundEnrichedAddress}" th:text="#{address-validation.check-your-address}"></h1>
-        <h1 class="h2" th:unless="${foundEnrichedAddress}" th:text="#{address-validation.make-sure-your-address-is-correct}"></h1>
-        <p th:if="${foundEnrichedAddress}" th:text="#{address-validation.we-updated-the-address-you-entered}" class="notice--warning"></p>
-        <p th:unless="${foundEnrichedAddress}" th:text="#{address-validation.we-couldnt-find-your-address}" class="notice--warning"></p>
-    </div>
-    <div class="grid__item address-validation spacing-below-60">
-        <label th:for="enriched-address" class="radio-button"
-               th:if="${foundEnrichedAddress}">
-            <p class="spacing-below-15" th:text="#{${input.options.selectableOptions.get(0).messageKey}}"></p>
-            <div th:text="${addressData.get('enrichedStreetAddress').value[0]}"></div>
-            <div th:if="${!addressData.get('enrichedApartmentNumber').value[0].isEmpty()}"
-               th:text="${addressData.get('enrichedApartmentNumber').value[0]}"></div>
-            <div th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('enrichedCity').value[0], addressData.get('enrichedState').value[0])}"></div>
-            <div th:text="${addressData.get('enrichedZipCode').value[0]}"></div>
-            <input type="radio" th:name="${formInputName}" id="enriched-address"
-                   th:value="true"
-                   th:checked="true">
-        </label>
-        <label th:for="original-address" class="radio-button" th:classappend="${foundEnrichedAddress} ? '' : 'is-selected left-aligned'">
-            <p class="spacing-below-15" th:text="#{${input.options.selectableOptions.get(1).messageKey}}"></p>
-            <div th:text="${addressData.get('streetAddress').value[0]}"></div>
-            <div th:if="${!addressData.get('apartmentNumber').value[0].isEmpty()}"
-               th:text="${addressData.get('apartmentNumber').value[0]}"></div>
-            <div th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('city').value[0], addressData.get('state').value[0])}"></div>
-            <div th:text="${addressData.get('zipCode').value[0]}"></div>
-            <input type="radio" th:classappend="${foundEnrichedAddress} ? '' : 'hide-radio-circle'" th:name="${formInputName}" id="original-address"
-                   th:value="false"
-                   th:checked="${foundEnrichedAddress} ? false : true">
-        </label>
-    </div>
-    <button th:if="${foundEnrichedAddress}" id="form-submit-button" class="button button--primary" type="submit" th:text="#{general.continue}"></button>
-    <a th:href="'/pages/'+${pageName}+'/navigation?option=1'" th:if="${!foundEnrichedAddress}" class="button button--primary" th:text="#{address-validation.edit-my-address}"></a>
-    <button th:if="${!foundEnrichedAddress}" id="form-submit-button" class="button" type="submit" th:text="#{address-validation.use-this-address}"></button>
+  <div class="grid__item spacing-above-35 spacing-below-35">
+    <h1 class="h2" th:if="${foundEnrichedAddress}"
+        th:text="#{address-validation.check-your-address}"></h1>
+    <h1 class="h2" th:unless="${foundEnrichedAddress}"
+        th:text="#{address-validation.make-sure-your-address-is-correct}"></h1>
+    <p th:if="${foundEnrichedAddress}"
+       th:text="#{address-validation.we-updated-the-address-you-entered}"
+       class="notice--warning"></p>
+    <p th:unless="${foundEnrichedAddress}"
+       th:text="#{address-validation.we-couldnt-find-your-address}" class="notice--warning"></p>
+  </div>
+  <div class="grid__item address-validation spacing-below-60">
+    <label th:for="enriched-address" class="radio-button"
+           th:if="${foundEnrichedAddress}">
+      <p class="spacing-below-15"
+         th:text="#{${input.options.selectableOptions.get(0).messageKey}}"></p>
+      <div th:text="${addressData.get('enrichedStreetAddress').value[0]}"></div>
+      <div th:if="${!addressData.get('enrichedApartmentNumber').value[0].isEmpty()}"
+           th:text="${addressData.get('enrichedApartmentNumber').value[0]}"></div>
+      <div
+          th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('enrichedCity').value[0], addressData.get('enrichedState').value[0])}"></div>
+      <div th:text="${addressData.get('enrichedZipCode').value[0]}"></div>
+      <input type="radio" th:name="${formInputName}" id="enriched-address"
+             th:value="true"
+             th:checked="true">
+    </label>
+    <label th:for="original-address" class="radio-button"
+           th:classappend="${foundEnrichedAddress} ? '' : 'is-selected left-aligned'">
+      <p class="spacing-below-15"
+         th:text="#{${input.options.selectableOptions.get(1).messageKey}}"></p>
+      <div th:text="${addressData.get('streetAddress').value[0]}"></div>
+      <div th:if="${!addressData.get('apartmentNumber').value[0].isEmpty()}"
+           th:text="${addressData.get('apartmentNumber').value[0]}"></div>
+      <div
+          th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('city').value[0], addressData.get('state').value[0])}"></div>
+      <div th:text="${addressData.get('zipCode').value[0]}"></div>
+      <input type="radio" th:classappend="${foundEnrichedAddress} ? '' : 'hide-radio-circle'"
+             th:name="${formInputName}" id="original-address"
+             th:value="false"
+             th:checked="${foundEnrichedAddress} ? false : true">
+    </label>
+  </div>
+  <button th:if="${foundEnrichedAddress}" id="form-submit-button" class="button button--primary"
+          type="submit" th:text="#{general.continue}"></button>
+  <a th:href="'/pages/'+${pageName}+'/navigation?option=1'" th:if="${!foundEnrichedAddress}"
+     class="button button--primary" th:text="#{address-validation.edit-my-address}"></a>
+  <button th:if="${!foundEnrichedAddress}" id="form-submit-button" class="button" type="submit"
+          th:text="#{address-validation.use-this-address}"></button>
 </th:block>
-</html>

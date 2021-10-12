@@ -1,30 +1,29 @@
-<!DOCTYPE html>
-<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<!-- Custom input for displaying household members in a checkbox. This needs to be custom because we're formatting the application data values that are displayed to the applicant on the screen -->
 <th:block th:fragment="householdOptionsCheckboxes (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                     inputData=${data.get(input.name)}">
-    <div class="spacing-below-60 word-wrap-break-word">
-        <label th:for="householdMember-me" class="checkbox"
-               th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
-            <input type="checkbox"
-                   th:id="householdMember-me"
-                   th:value="${fullName} + ' applicant'"
-                   th:name="${formInputName}"
-                   th:checked="${inputData.value.contains(fullName)}">
-            <span th:text="#{general.me}"></span>
-        </label>
-        <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}">
-            <label th:for="|householdMember${iterationStat.index}|"
-                   class="checkbox"
-                   th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
-                <input type="checkbox"
-                       th:id="|householdMember${iterationStat.index}|"
-                       th:value="${fullName} + ' ' + ${iteration.id}"
-                       th:name="${formInputName}"
-                       th:checked="${inputData.value.contains(fullName)}">
-                <span th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
-            </label>
-        </th:block>
-    </div>
+  <div class="spacing-below-60 word-wrap-break-word">
+    <label th:for="householdMember-me" class="checkbox"
+           th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
+      <input type="checkbox"
+             th:id="householdMember-me"
+             th:value="${fullName} + ' applicant'"
+             th:name="${formInputName}"
+             th:checked="${inputData.value.contains(fullName)}">
+      <span th:text="#{general.me}"></span>
+    </label>
+    <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}">
+      <label th:for="|householdMember${iterationStat.index}|"
+             class="checkbox"
+             th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
+        <input type="checkbox"
+               th:id="|householdMember${iterationStat.index}|"
+               th:value="${fullName} + ' ' + ${iteration.id}"
+               th:name="${formInputName}"
+               th:checked="${inputData.value.contains(fullName)}">
+        <span
+            th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
+      </label>
+    </th:block>
+  </div>
 </th:block>
-</html>
