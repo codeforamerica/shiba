@@ -123,7 +123,7 @@ public class AbstractShibaMockMvcTest {
   protected void postWithQueryParam(String pageName, String queryParam, String value)
       throws Exception {
     mockMvc.perform(
-        post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value))
+            post("/pages/" + pageName).session(session).with(csrf()).queryParam(queryParam, value))
         .andExpect(redirectedUrl("/pages/" + pageName + "/navigation"));
   }
 
@@ -142,10 +142,10 @@ public class AbstractShibaMockMvcTest {
 
   protected ResultActions getPageWithAuth(String pageName) throws Exception {
     return mockMvc.perform(
-        get(String.format("http://localhost/%s", pageName))
-            .with(oauth2Login()
-                .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
-            .session(session))
+            get(String.format("http://localhost/%s", pageName))
+                .with(oauth2Login()
+                    .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+                .session(session))
         .andExpect(status().isOk());
   }
 
@@ -260,9 +260,9 @@ public class AbstractShibaMockMvcTest {
 
   protected PDAcroForm downloadCaf() throws Exception {
     var cafBytes = mockMvc.perform(get("/download")
-        .with(oauth2Login()
-            .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
-        .session(session))
+            .with(oauth2Login()
+                .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+            .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();
@@ -420,6 +420,12 @@ public class AbstractShibaMockMvcTest {
   protected void postExpectingRedirect(String pageName, String inputName,
       String value, String expectedNextPageName) throws Exception {
     postExpectingSuccess(pageName, inputName, value);
+    assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
+  }
+
+  protected void postExpectingRedirect(String pageName, String inputName, List<String> values,
+      String expectedNextPageName) throws Exception {
+    postExpectingSuccess(pageName, inputName, values);
     assertNavigationRedirectsToCorrectNextPage(pageName, expectedNextPageName);
   }
 
@@ -654,6 +660,10 @@ public class AbstractShibaMockMvcTest {
   protected void completeFlowFromLandingPageThroughContactInfo(String... programSelections)
       throws Exception {
     getToPersonalInfoScreen(programSelections);
+    fillInPersonalInfoAndContactInfoAndAddress();
+  }
+
+  protected void fillInPersonalInfoAndContactInfoAndAddress() throws Exception {
     fillOutPersonalInfo();
     fillOutContactInfo();
     fillOutHomeAddress();
@@ -851,20 +861,16 @@ public class AbstractShibaMockMvcTest {
       postExpectingRedirect("authorizedRep", "communicateOnYourBehalf", "true", "speakToCounty");
       postExpectingRedirect("speakToCounty", "getMailNotices", "true", "spendOnYourBehalf");
       postExpectingRedirect("spendOnYourBehalf", "spendOnYourBehalf", "true", "helperContactInfo");
-      fillOutHelperInfo();
+      postExpectingRedirect("helperContactInfo", Map.of(
+          "helpersFullName", List.of("My Helpful Friend"),
+          "helpersStreetAddress", List.of("helperStreetAddress"),
+          "helpersCity", List.of("helperCity"),
+          "helpersZipCode", List.of("54321"),
+          "helpersPhoneNumber", List.of("7234561111")
+      ), "additionalInfo");
     } else {
       postExpectingRedirect("helper", "helpWithBenefits", "false", "additionalInfo");
     }
-  }
-
-  protected void fillOutHelperInfo() throws Exception {
-    postExpectingRedirect("helperContactInfo", Map.of(
-        "helpersFullName", List.of("defaultFirstName defaultLastName"),
-        "helpersStreetAddress", List.of("someStreetAddress"),
-        "helpersCity", List.of("someCity"),
-        "helpersZipCode", List.of("12345"),
-        "helpersPhoneNumber", List.of("7234567890")
-    ), "additionalInfo");
   }
 
   protected void getToDocumentUploadScreen() throws Exception {

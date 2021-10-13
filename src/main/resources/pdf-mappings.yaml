@@ -207,6 +207,8 @@ mappings:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
     registerToVoteSelection: REGISTER_TO_VOTE
+  helper:
+    helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRep:
     communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
   speakToCounty:

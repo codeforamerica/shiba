@@ -27,8 +27,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     super.setUp();
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("identifyCountyBeforeApplying", "county", "Hennepin");
-    postExpectingSuccess("languagePreferences",
-        Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
+    postExpectingSuccess("languagePreferences", Map.of(
+        "writtenLanguage", List.of("ENGLISH"),
+        "spokenLanguage", List.of("ENGLISH"),
+        "needInterpreter", List.of("true"))
     );
 
     postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
@@ -753,22 +755,67 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     void allFieldsDoGetWrittenToPDF() throws Exception {
       fillInRequiredPages();
       selectPrograms("CERTAIN_POPS");
-      postExpectingSuccess("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER",
-          "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
-          "SSI_OR_RSDI", "HELP_WITH_MEDICARE"));
+      postExpectingRedirect("basicCriteria",
+          "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "introBasicInfo");
+
+      fillInPersonalInfoAndContactInfoAndAddress();
+      postExpectingSuccess("livingSituation", "livingSituation",
+          "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE");
+
+      completeHelperWorkflow(true);
 
       submitApplication();
-      var certainPops = downloadCertainPops(applicationData.getId());
+      var pdf = downloadCertainPops(applicationData.getId());
 
       // Assert that cover page is present
-      assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", certainPops);
-      assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), certainPops);
+      assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", pdf);
+      assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), pdf);
 
-      // Actual fields get filled
-      assertPdfFieldEquals("BLIND", "Yes", certainPops);
-      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", certainPops);
-      assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", certainPops);
-      assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", certainPops);
+      // Basic Criteria Questions
+      assertPdfFieldEquals("BLIND", "Yes", pdf);
+      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", pdf);
+      assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
+      assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
+
+      // Section 1
+      assertPdfFieldEquals("APPLICANT_LAST_NAME", "defaultLastName", pdf);
+      assertPdfFieldEquals("APPLICANT_FIRST_NAME", "defaultFirstName", pdf);
+      assertPdfFieldEquals("DATE_OF_BIRTH", "01/12/1928", pdf);
+      assertPdfFieldEquals("APPLICANT_SSN", "123456789", pdf);
+      assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED", pdf);
+      assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", pdf);
+      assertPdfFieldEquals("NEED_INTERPRETER", "Yes", pdf);
+
+      // Section 2
+      assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_CITY", "someCity", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", "12345", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "smarty street", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_CITY", "City", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_STATE", "CA", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104", pdf);
+      //TODO home and mailing counties
+
+      // Section 3
+      assertPdfFieldEquals("LIVING_SITUATION", "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE",
+          pdf);
+      assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
+      // TODO county in living situation
+      // TODO plan to make MN your home
+
+      // Section 7 & appendix B: Authorized Rep
+      assertPdfFieldEquals("WANT_AUTHORIZED_REP", "Yes", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_NAME", "My Helpful Friend", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_ADDRESS", "helperStreetAddress", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_CITY", "helperCity", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_ZIP_CODE", "54321", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_PHONE_NUMBER", "7234561111", pdf);
+      assertPdfFieldEquals("APPLICANT_SIGNATURE", "Human McPerson", pdf);
+      assertPdfFieldEquals("CREATED_DATE", "2020-01-01", pdf);
     }
   }
 }
