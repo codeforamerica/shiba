@@ -71,7 +71,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("ssn", "987654321");
     testPage.clickContinue();
 
-    // Add a spouse and assert spouse is no longer an option then delete
+    // Add a spouse and assert spouse is no longer an option then delete -- Household member 2
     testPage.clickLink("Add a person");
     testPage.clickContinue();
     testPage.enter("firstName", "householdMember2");
@@ -86,14 +86,18 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
-    Select relationshipSelect = new Select(driver.findElementById("relationship"));
-    assertThat(relationshipSelect.getOptions().stream().noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    Select relationshipSelectWithRemovedSpouseOption = new Select(driver.findElementById("relationship"));
+    assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream().noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
     testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
     driver.findElementById("iteration1-delete").click();
     testPage.clickButton("Yes, remove them");
-
+    // Check that My Spouse is now an option again after deleting the spouse
+    testPage.clickLink("Add a person");
+    Select relationshipSelectWithSpouseOption = new Select(driver.findElementById("relationship"));
+    assertThat(relationshipSelectWithSpouseOption.getOptions().stream().anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    testPage.goBack();
     testPage.clickButton("Yes, that's everyone");
 
     // Who are the children in need of childcare

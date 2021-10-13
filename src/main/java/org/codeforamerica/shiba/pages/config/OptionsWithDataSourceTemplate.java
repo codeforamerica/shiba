@@ -27,37 +27,42 @@ public interface OptionsWithDataSourceTemplate {
 
         return optionsTemplate;
       } else {
-        List<Option> limitedOptions = formInput.getOptions().getSelectableOptions().stream().filter(
-            Option::isLimitSelection).toList();
-
-        List<String> valuesToBeRemoved = new ArrayList<>();
-
-        applicationData.getSubworkflows().forEach((groupName, subworkflow) -> {
-          subworkflow.forEach(iteration -> {
-            iteration.getPagesData().forEach((pageName, pageData) -> {
-              limitedOptions.forEach(option -> {
-                pageData.forEach((s, inputData) -> {
-                  if (inputData.getValue().contains(option.getValue())) {
-                    valuesToBeRemoved.add(option.getValue());
-                  }
-                });
-              });
-            });
-          });
-        });
-
-        List<Option> selectableOptions = formInput.getOptions().getSelectableOptions();
-        List<String> selectableOptionValues = selectableOptions.stream().map(option -> option.getValue()).toList();
-        valuesToBeRemoved.forEach(value -> {
-          selectableOptions.remove(selectableOptionValues.indexOf(value));
-        });
-
-        SelectableOptionsTemplate optionsTemplate = new SelectableOptionsTemplate();
-        optionsTemplate.setSelectableOptions(formInput.getOptions().getSelectableOptions());
-        return optionsTemplate;
+        return removeLimitedOptions(applicationData, formInput);
       }
     } else {
       return null;
     }
+  }
+
+  private static SelectableOptionsTemplate removeLimitedOptions(ApplicationData applicationData,
+      FormInput formInput) {
+    List<Option> limitedOptions = formInput.getOptions().getSelectableOptions().stream().filter(
+        Option::isLimitSelection).toList();
+
+    List<String> valuesToBeRemoved = new ArrayList<>();
+
+    applicationData.getSubworkflows().forEach((groupName, subworkflow) -> {
+      subworkflow.forEach(iteration -> {
+        iteration.getPagesData().forEach((pageName, pageData) -> {
+          limitedOptions.forEach(option -> {
+            pageData.forEach((inputName, inputData) -> {
+              if (inputData.getValue().contains(option.getValue())) {
+                valuesToBeRemoved.add(option.getValue());
+              }
+            });
+          });
+        });
+      });
+    });
+
+    List<Option> selectableOptions = new ArrayList<>(formInput.getOptions().getSelectableOptions());
+    List<String> selectableOptionValues = selectableOptions.stream().map(Option::getValue).toList();
+    valuesToBeRemoved.forEach(value -> {
+      selectableOptions.remove(selectableOptionValues.indexOf(value));
+    });
+
+    SelectableOptionsTemplate optionsTemplate = new SelectableOptionsTemplate();
+    optionsTemplate.setSelectableOptions(selectableOptions);
+    return optionsTemplate;
   }
 }
