@@ -5,19 +5,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -34,27 +27,12 @@ import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
-import org.codeforamerica.shiba.pages.config.NextPage;
-import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.PageTemplate;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.DatasourcePages;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
-import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
-import org.codeforamerica.shiba.pages.events.PageEventPublisher;
-import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
-import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
-import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -62,12 +40,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -277,7 +250,8 @@ public class PageController {
         pageTemplate,
         pageWorkflowConfig, pagesData, iterationIndex);
     var view =
-        pageWorkflowConfig.getPageConfiguration().isCustomPage() ? pageName : "pageTemplate";
+        pageWorkflowConfig.getPageConfiguration().isUsingPageTemplateFragment() ? "pageTemplate"
+            : pageName;
     return new ModelAndView(view, model);
   }
 
@@ -304,7 +278,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -371,8 +345,10 @@ public class PageController {
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
       // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
-      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale, application.getCounty(), true, routingDestinations);
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+          applicationData, CAF);
+      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
+          application.getCounty(), true, routingDestinations);
 
       model.put("routingDestinationList", finalDestinationList);
     }
@@ -393,9 +369,9 @@ public class PageController {
       model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
     }
 
-    if (pageWorkflow.getPageConfiguration().isStaticPage() || pageWorkflow
+    if (pageWorkflow.getPageConfiguration().isStaticPage() || !pageWorkflow
         .getPageConfiguration()
-        .isCustomPage()) {
+        .isUsingPageTemplateFragment()) {
       model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
       model.put("applicationData", applicationData);
 
@@ -429,16 +405,12 @@ public class PageController {
         .containsKey(pageWorkflow.getAppliesToGroup());
   }
 
-  private boolean notFound(String pageName) {
-    return applicationConfiguration.getPageWorkflow(pageName) == null;
-  }
-
   private boolean shouldRedirectToLandingPage(@PathVariable String pageName) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     return !landmarkPagesConfiguration.isLandingPage(pageName)
-        && applicationData.getStartTime() == null;
+           && applicationData.getStartTime() == null;
   }
 
   private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
@@ -446,8 +418,8 @@ public class PageController {
         .getLandmarkPages();
     // If not on post-submit page and application is already submitted
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-        !landmarkPagesConfiguration.isLandingPage(pageName) &&
-        applicationData.isSubmitted();
+           !landmarkPagesConfiguration.isLandingPage(pageName) &&
+           applicationData.isSubmitted();
   }
 
   @PostMapping("/groups/{groupName}/delete")
@@ -542,22 +514,10 @@ public class PageController {
         applicationData.setId(applicationRepository.getNextId());
       }
       Application application = applicationFactory.newApplication(applicationData);
-      applicationRepository.save(application); //upsert already
+      applicationRepository.save(application);
     }
 
     if (pageDataIsValid) {
-      if (pagesData.containsKey("choosePrograms")) {
-        if (applicationData.isCAFApplication()) {
-          applicationRepository.updateStatus(applicationData.getId(), CAF, IN_PROGRESS);
-        } else {
-          applicationRepository.updateStatusToNull(CAF, applicationData.getId());
-        }
-        if (applicationData.isCCAPApplication()) {
-          applicationRepository.updateStatus(applicationData.getId(), CCAP, IN_PROGRESS);
-        } else {
-          applicationRepository.updateStatusToNull(CCAP, applicationData.getId());
-        }
-      }
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());
       }
@@ -568,7 +528,7 @@ public class PageController {
           .ifPresent(pageData::putAll);
 
       Application application = applicationFactory.newApplication(applicationData);
-      applicationRepository.save(application); //upsert already
+      applicationRepository.save(application);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);

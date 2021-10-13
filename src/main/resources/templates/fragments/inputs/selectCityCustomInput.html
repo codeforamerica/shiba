@@ -1,0 +1,19 @@
+<!-- This is custom because we are using cityInfo configuration to display the list rather than manually adding them to pages-config or getting them from another page's datasource -->
+<div th:fragment="selectCityCustomInput(input, data)"
+     th:classappend="${!data.isValid() && !inputData.valid(data)} ? 'form-group--error' : ''"
+     th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
+     class="form-group">
+  <p class="text--help"
+     th:if="${input.helpMessageKey != null}"
+     th:text="#{${input.helpMessageKey}}"></p>
+  <div class="select">
+    <select th:id="${input.name}" class="select__element" th:name="${formInputName}">
+      <option th:value="''" th:text="#{city-for-general-delivery.select-your-city}"></option>
+      <th:block th:each="option: ${cityInfo.entrySet()}">
+        <option th:value="${option.getKey()}" th:text="${option.getKey()}"
+                th:selected="${inputData.value.contains(option.getKey())}"></option>
+      </th:block>
+    </select>
+  </div>
+  <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+</div>

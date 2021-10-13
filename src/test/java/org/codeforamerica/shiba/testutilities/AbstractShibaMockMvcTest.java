@@ -271,9 +271,19 @@ public class AbstractShibaMockMvcTest {
 
   protected PDAcroForm downloadCcap() throws Exception {
     var ccapBytes = mockMvc.perform(get("/download-ccap")
-        .with(oauth2Login()
-            .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
-        .session(session))
+            .with(oauth2Login()
+                .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+            .session(session))
+        .andReturn()
+        .getResponse()
+        .getContentAsByteArray();
+    return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+  }
+
+  protected PDAcroForm downloadCertainPops(String applicationId) throws Exception {
+    var ccapBytes = mockMvc.perform(get("/download-certain-pops/" + applicationId)
+            .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
+            .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();

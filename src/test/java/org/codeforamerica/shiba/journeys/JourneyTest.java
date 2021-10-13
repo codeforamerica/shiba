@@ -47,6 +47,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
   protected PDAcroForm caf;
   protected PDAcroForm ccap;
+  protected PDAcroForm certainPops;
   protected String applicationId;
 
   @MockBean
@@ -139,7 +140,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
   }
 
   @NotNull
-  private Callable<Boolean> pdfDownloadCompletes(SuccessPage successPage) {
+  protected Callable<Boolean> pdfDownloadCompletes(SuccessPage successPage) {
     return () -> getAllFiles().size() == successPage.pdfDownloadLinks();
   }
 
@@ -164,6 +165,20 @@ abstract class JourneyTest extends AbstractBasePageTest {
     // Program Selection
     programSelections.forEach(program -> testPage.enter("programs", program));
     testPage.clickContinue();
+
+    if (programSelections.contains(PROGRAM_CERTAIN_POPS)) {
+      // Basic Criteria:
+      testPage.enter("basicCriteria", "I am 65 years old or older");
+      testPage.enter("basicCriteria", "I am blind");
+      testPage.enter("basicCriteria", "I currently receive SSI or RSDI for a disability");
+      testPage.enter("basicCriteria", "I have a disability that has been certified by the Social Security Administration (SSA)");
+      testPage.enter("basicCriteria", "I have a disability that has been certified by the State Medical Review Team (SMRT)");
+      testPage.enter("basicCriteria", "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EDP)");
+      testPage.enter("basicCriteria", "I want help with my Medicare costs");
+      testPage.clickContinue();
+    }
+
+    // Getting to know you (Personal Info intro page)
     testPage.clickContinue();
 
     // Personal Info

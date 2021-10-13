@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.journeys;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -28,13 +30,14 @@ public class FullFlowJourneyTest extends JourneyTest {
         LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
         LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
     );
+    when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
 
     // Assert intercom button is present on landing page
     await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
     assertThat(driver.findElementById("intercom-frame")).isNotNull();
 
     List<String> programSelections = List
-        .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH);
+        .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
     getToHomeAddress(programSelections);
 
     // Where are you currently Living?
@@ -83,6 +86,13 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("relationship", "My spouse (ex: wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
+    
+    // Flaky spot - sometimes the test doesn't get passed the Add Householdmember page
+    String inputError = testPage.getFirstInputError();
+    if (inputError != null) {
+      takeSnapShot("input_error.png");
+      fail("Unexpected validation error: " + inputError);
+    }
 
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
@@ -400,7 +410,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-    assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CASH, TRIBAL TANF");
+    assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, CASH, TRIBAL TANF");
     assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("UTM_SOURCE", "");
     assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
@@ -519,7 +529,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-    assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CASH, TRIBAL TANF");
+    assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, CASH, TRIBAL TANF");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCafFieldEquals("PROGRAMS_0", "CCAP");

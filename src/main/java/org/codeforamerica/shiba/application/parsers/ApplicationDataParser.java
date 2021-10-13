@@ -21,6 +21,8 @@ public class ApplicationDataParser {
   static {
     coordinatesMap.put(Field.WRITTEN_LANGUAGE_PREFERENCES,
         new ParsingCoordinate("languagePreferences", "writtenLanguage"));
+    coordinatesMap.put(Field.BASIC_CRITERIA_CERTAIN_POPS,
+        new ParsingCoordinate("basicCriteria", "basicCriteria"));
     coordinatesMap.put(Field.MEDICAL_EXPENSES,
         new ParsingCoordinate("medicalExpenses", "medicalExpenses"));
     coordinatesMap
@@ -37,6 +39,8 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.LIVING_SITUATION,
         new ParsingCoordinate("livingSituation", "livingSituation"));
+
+    coordinatesMap.put(Field.HAS_DISABILITY, new ParsingCoordinate("disability", "hasDisability"));
 
     coordinatesMap
         .put(Field.MAILING_STREET, new ParsingCoordinate("mailingAddress", "streetAddress"));
@@ -204,6 +208,10 @@ public class ApplicationDataParser {
    */
   public enum Field {
     WRITTEN_LANGUAGE_PREFERENCES,
+
+    BASIC_CRITERIA_CERTAIN_POPS,
+
+    HAS_DISABILITY,
 
     MEDICAL_EXPENSES,
 

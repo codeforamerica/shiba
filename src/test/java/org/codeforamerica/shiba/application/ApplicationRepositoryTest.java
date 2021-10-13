@@ -3,11 +3,7 @@ package org.codeforamerica.shiba.application;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.County.Other;
-import static org.codeforamerica.shiba.County.StLouis;
+import static org.codeforamerica.shiba.County.*;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
@@ -20,25 +16,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -122,6 +109,9 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
     assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
+    assertThat(savedApplication.getCafApplicationStatus()).isNull();
+    assertThat(savedApplication.getCcapApplicationStatus()).isNull();
+    assertThat(savedApplication.getCertainPopsApplicationStatus()).isNull();
   }
 
   @Test
@@ -188,13 +178,11 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     applicationRepository.save(updatedApplication);
-    ZonedDateTime expectedUpdatedAt = ZonedDateTime.now(UTC);
 
     Application retrievedApplication = applicationRepository.find(applicationId);
 
     assertThat(retrievedApplication).usingRecursiveComparison()
         .ignoringFields("fileName", "updatedAt").isEqualTo(updatedApplication);
-    assertThat(retrievedApplication.getUpdatedAt()).isBetween(completedAt, expectedUpdatedAt);
   }
 
   @Test
@@ -325,7 +313,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     @BeforeEach
     void setUp() {
       applicationRepositoryWithMockEncryptor = new ApplicationRepository(jdbcTemplate,
-          mockEncryptor, clock);
+          mockEncryptor);
       when(mockEncryptor.encrypt(any())).thenReturn(jsonData);
     }
 
@@ -413,355 +401,37 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     }
   }
 
-  @Nested
-  class MetricsQueries extends AbstractRepositoryTest {
+  @Test
+  void saveShouldUpdateApplicationStatuses() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
+        .build();
+    Application application = Application.builder()
+        .id(applicationData.getId())
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(applicationData)
+        .cafApplicationStatus(IN_PROGRESS)
+        .ccapApplicationStatus(null)
+        .certainPopsApplicationStatus(IN_PROGRESS)
+        .county(Olmsted)
+        .build();
+    applicationRepository.save(application);
 
-    County defaultCounty = County.Other;
+    applicationData.getPagesData().putPage("choosePrograms",
+        new PageData(Map.of("programs", new InputData(List.of("CCAP")))));
+    applicationRepository.save(application);
+    Application resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getCafApplicationStatus()).isNull();
+    assertThat(resultingApplication.getCcapApplicationStatus()).isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isNull();
 
-    ZonedDateTime defaultCompletedAt = ZonedDateTime.now(UTC);
-
-    Duration defaultDuration = Duration.ofMinutes(14);
-
-    @Test
-    void shouldCalculateMedianTimeToComplete() {
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(1))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(2))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(3))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application4 = Application.builder()
-          .id("someId4")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(4))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-      applicationRepository.save(application4);
-
-      assertThat(applicationRepository.getMedianTimeToComplete())
-          .isEqualTo(Duration.ofDays(2).plusHours(12));
-    }
-
-    @Test
-    void shouldReturn0ForMedianTimeToCompleteWhenThereIsNoEntries() {
-      assertThat(applicationRepository.getMedianTimeToComplete()).isEqualTo(Duration.ZERO);
-    }
-
-    @Test
-    void shouldGetCountOfNonLaterDocsSubmissions() {
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application4 = Application.builder()
-          .id("someId4")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application5 = Application.builder()
-          .id("someId5")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.LATER_DOCS)
-          .completedAt(defaultCompletedAt)
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-      applicationRepository.save(application4);
-      applicationRepository.save(application5);
-
-      assertThat(applicationRepository.count()).isEqualTo(4);
-    }
-
-    @Test
-    void shouldGetCountByCounty() {
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Olmsted)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Hennepin)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application4 = Application.builder()
-          .id("someId4")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Hennepin)
-          .flow(FlowType.FULL)
-          .completedAt(defaultCompletedAt)
-          .build();
-      Application application5 = Application.builder()
-          .id("someId5")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Hennepin)
-          .flow(FlowType.LATER_DOCS)
-          .completedAt(defaultCompletedAt)
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-      applicationRepository.save(application4);
-      applicationRepository.save(application5);
-
-      assertThat(applicationRepository.countByCounty()).isEqualTo(
-          Map.of(
-              Hennepin, 2,
-              Olmsted, 1,
-              Other, 1
-          )
-      );
-    }
-
-    @Test
-    void shouldGetCountByCountyForWeekToDateInSpecifiedTimezone() {
-        /*Calendar for reference
-        S   M   T   W  TH  F  S
-        29  30  31  1  2   3  4
-        Chicago is in -06:00
-        * */
-      when(clock.instant())
-          .thenReturn(LocalDate.of(2020, 1, 1).atStartOfDay(ZoneId.of("UTC")).toInstant());
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Olmsted)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Olmsted)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(Hennepin)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-
-      assertThat(applicationRepository.countByCountyWeekToDate(ZoneId.of("America/Chicago")))
-          .isEqualTo(
-              Map.of(
-                  Hennepin, 1,
-                  Olmsted, 1
-              )
-          );
-    }
-
-    @Test
-    void shouldGetAverageTimeToCompleteForWeekToDateInSpecifiedTimezone() {
-      when(clock.instant())
-          .thenReturn(LocalDate.of(2020, 1, 1).atStartOfDay(ZoneId.of("UTC")).toInstant());
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(1))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(2))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(3))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-
-      assertThat(
-          applicationRepository.getAverageTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
-          .isEqualTo(Duration.ofDays(2).plusHours(12));
-    }
-
-    @Test
-    void shouldGetAverageTimeToCompleteForWeekToDateInSpecifiedTimezone_whenNoApplicationIsFound() {
-      when(clock.instant()).thenReturn(Instant.now());
-      assertThat(
-          applicationRepository.getAverageTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
-          .isEqualTo(Duration.ofSeconds(0));
-    }
-
-    @Test
-    void shouldGetMedianForWeekToDate() {
-      when(clock.instant())
-          .thenReturn(LocalDate.of(2020, 1, 1).atStartOfDay(ZoneId.of("UTC")).toInstant());
-      Application application1 = Application.builder()
-          .id("someId1")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(1))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 5, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-      Application application2 = Application.builder()
-          .id("someId2")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(2))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 29, 6, 0, 0, 0, ZoneId.of("UTC")))
-          .build();
-      Application application3 = Application.builder()
-          .id("someId3")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(4))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-      Application application4 = Application.builder()
-          .id("someId4")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(10))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-      Application application5 = Application.builder()
-          .id("someId5")
-          .applicationData(new ApplicationData())
-          .timeToComplete(Duration.ofDays(20))
-          .county(defaultCounty)
-          .flow(FlowType.FULL)
-          .completedAt(ZonedDateTime.of(2019, 12, 31, 17, 59, 59, 0, ZoneId.of("UTC")))
-          .build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-      applicationRepository.save(application4);
-      applicationRepository.save(application5);
-
-      assertThat(
-          applicationRepository.getMedianTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
-          .isEqualTo(Duration.ofDays(7));
-    }
-
-    @Test
-    void shouldGetMedianForWeekToDate_whenNoApplicationIsFound() {
-      when(clock.instant()).thenReturn(Instant.now());
-      assertThat(
-          applicationRepository.getMedianTimeToCompleteWeekToDate(ZoneId.of("America/Chicago")))
-          .isEqualTo(Duration.ofSeconds(0));
-    }
-
-    @Test
-    void shouldCalculateTheSentimentDistribution() {
-      Application.ApplicationBuilder applicationBuilder = Application.builder()
-          .applicationData(new ApplicationData())
-          .timeToComplete(defaultDuration)
-          .county(defaultCounty)
-          .completedAt(defaultCompletedAt);
-      Application application1 = applicationBuilder.id("id1").sentiment(Sentiment.HAPPY).build();
-      Application application2 = applicationBuilder.id("id2").sentiment(Sentiment.HAPPY).build();
-      Application application3 = applicationBuilder.id("id3").sentiment(Sentiment.MEH).build();
-      Application application4 = applicationBuilder.id("id4").sentiment(Sentiment.SAD).build();
-      Application application5 = applicationBuilder.id("id5").sentiment(null).build();
-
-      applicationRepository.save(application1);
-      applicationRepository.save(application2);
-      applicationRepository.save(application3);
-      applicationRepository.save(application4);
-      applicationRepository.save(application5);
-
-      assertThat(applicationRepository.getSentimentDistribution()).isEqualTo(Map.of(
-          Sentiment.HAPPY, 0.5,
-          Sentiment.MEH, 0.25,
-          Sentiment.SAD, 0.25));
-    }
-
+    applicationData.getPagesData().putPage("choosePrograms",
+        new PageData(Map.of("programs", new InputData(List.of("SNAP", "CERTAIN_POPS")))));
+    applicationRepository.save(application);
+    resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getCcapApplicationStatus()).isNull();
+    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isEqualTo(IN_PROGRESS);
   }
 }

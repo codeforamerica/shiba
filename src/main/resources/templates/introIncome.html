@@ -1,20 +1,10 @@
-<div th:fragment="introIncome">
-    <div class="grid__item text--centered spacing-above-35">
-        <div th:replace="fragments/icons/milestone-income :: milestone-income"></div>
-        <p class="text--help spacing-below-10"
-           th:text="#{general.step-three-of-six}"></p>
-        <h1 class="h2 spacing-below-35 spacing-above-0"
-            th:text="#{intro-income.income-and-employment}"></h1>
-    </div>
-    <div class="grid__item intro-section boxed-content spacing-below-60">
-        <h2 class="h3 text--centered intro-box__title" th:text="#{general.well-ask-about}"></h2>
-        <ol class="list--numbered spacing-above-10">
-            <li th:text="#{intro-income.current-jobs}"></li>
-            <li th:text="#{intro-income.unearned-income}"></li>
-            <li th:text="#{intro-income.recent-income-changes}"></li>
-        </ol>
-    </div>
-    <div class="text--centered">
-        <div th:replace="fragments/continue :: continue"></div>
-    </div>
+<div th:fragment="introIncome"
+     th:with="
+     contentHeaders=${ {'general.well-ask-about'} },
+     contentItems=${ {
+       'intro-income.current-jobs',
+       'intro-income.unearned-income',
+       'intro-income.recent-income-changes'} }">
+  <div
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-income', '3', 'intro-income.income-and-employment', ${contentHeaders}, ${contentItems})"></div>
 </div>

@@ -32,6 +32,6 @@ public class InternationalizationUtils {
     String firstPart = String.join(", ", list.subList(0, lastIdx));
     String and = lms.getMessage("general.and");
 
-    return String.join(" %s ".formatted(and), firstPart, lastElement);
+    return "%s %s %s".formatted(firstPart, and, lastElement);
   }
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="selfEmploymentPrompt" class="reveal reveal-adjacent spacing-below-60">
+    <a href="#" class="reveal__link reveal__link-adjacent">
+        <div class="reveal__link__header-adjacent" th:text="#{self-employment.reveal-title}"></div>
+        <div class="reveal__content reveal__content-adjacent">
+            <ul class="left-justified-list">
+                <li th:text="#{self-employment.you-do-gig-work-independent-contracting-or-run-your-own-business}"></li>
+                <li class="spacing-above-15"
+                     th:text="#{self-employment.you-receive-a-1099-misc-tax-form-from-a-company-or-individual-at-the-end-of-the-year}"></li>
+                <li class="spacing-above-15"
+                     th:text="#{self-employment.you-do-not-get-employment-benefits-or-tax-contributions-from-the-company-or-individual-you-work-for}"></li>
+                <li class="spacing-above-15">
+                    <strong th:text="#{self-employment.job-examples}"></strong>
+                    <span th:text="#{self-employment.rideshare-or-food-delivery-driver-hair-dresser-dog-walker-newspaper-delivery-artist}"></span>
+                </li>
+            </ul>
+        </div>
+    </a>
+</div>
+</body>
+</html>

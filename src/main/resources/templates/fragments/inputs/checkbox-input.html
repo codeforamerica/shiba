@@ -18,6 +18,7 @@
                           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
                     <label th:for="${option.isNone} ? 'none__checkbox' : ${option.value}"
                            th:id="${option.isNone} ? 'none__checkbox-label' : ${option.value} + '-label'"
+                           th:if="${option.flag == null || (featureFlags.get(option.flag) != null && featureFlags.get(option.flag).isOn())}"
                            class="checkbox display-flex">
                         <input type="checkbox"
                                th:id="${option.isNone} ? 'none__checkbox' : ${option.value}"

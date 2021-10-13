@@ -1,20 +1,10 @@
-<div th:fragment="addingDocuments">
-    <div class="grid__item text--centered spacing-above-35">
-        <div th:replace="fragments/icons/milestone-documents :: milestone-documents"></div>
-        <p class="text--help  spacing-below-10"
-           th:text="#{general.step-six-of-six}"></p>
-        <h1 class="h2 spacing-below-35 spacing-above-0"
-            th:text="#{adding-documents.adding-documents}"></h1>
-    </div>
-    <div class="grid__item intro-section boxed-content spacing-below-60">
-        <h2 class="h3 text--centered intro-box__title spacing-below-0" th:text="#{adding-documents.we-will-tell-you}"></h2>
-        <ol class="list--numbered spacing-above-10">
-            <li th:text="#{adding-documents.how-to-add-docs}"></li>
-            <li th:text="#{adding-documents.which-docs-you-can-add}"></li>
-            <li th:text="#{adding-documents.how-to-submit-docs-now-or-later}"></li>
-        </ol>
-    </div>
-    <div class="text--centered">
-        <div th:replace="fragments/continue :: continue"></div>
-    </div>
+<div th:fragment="addingDocuments"
+     th:with="
+     contentHeaders=${ {'adding-documents.we-will-tell-you'} },
+     contentItems=${ {
+       'adding-documents.how-to-add-docs',
+       'adding-documents.which-docs-you-can-add',
+       'adding-documents.how-to-submit-docs-now-or-later'} }">
+  <div
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-documents', '6', 'adding-documents.adding-documents', ${contentHeaders}, ${contentItems})"></div>
 </div>

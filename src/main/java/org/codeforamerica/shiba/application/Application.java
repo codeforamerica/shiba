@@ -27,6 +27,7 @@ public class Application {
   private String feedback;
   private Status cafApplicationStatus;
   private Status ccapApplicationStatus;
+  private Status certainPopsApplicationStatus;
   private Status uploadedDocumentApplicationStatus;
   private Status docUploadEmailStatus;
 
@@ -46,6 +47,7 @@ public class Application {
         feedbackText,
         cafApplicationStatus,
         ccapApplicationStatus,
+        certainPopsApplicationStatus,
         uploadedDocumentApplicationStatus,
         docUploadEmailStatus
     );

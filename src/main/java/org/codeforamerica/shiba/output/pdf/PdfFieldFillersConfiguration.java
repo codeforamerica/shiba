@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.pdf;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
@@ -73,6 +74,24 @@ public class PdfFieldFillersConfiguration {
   }
 
   @Bean
+  public PdfFieldFiller caseworkerCertainPopsFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:certain-pops.pdf") Resource certainPops,
+      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+  ) {
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops), font);
+  }
+
+  @Bean
+  public PdfFieldFiller clientCertainPopsFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:certain-pops.pdf") Resource certainPops,
+      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+  ) {
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops), font);
+  }
+
+  @Bean
   public PdfFieldFiller uploadedDocCoverPageFilter(
       @Value("classpath:uploaded-document-cover-page.pdf") Resource coverPage,
       @Value("classpath:LiberationSans-Regular.ttf") Resource font
@@ -86,16 +105,20 @@ public class PdfFieldFillersConfiguration {
       PdfFieldFiller clientCafFiller,
       PdfFieldFiller caseworkerCcapFiller,
       PdfFieldFiller clientCcapFiller,
+      PdfFieldFiller caseworkerCertainPopsFiller,
+      PdfFieldFiller clientCertainPopsFiller,
       PdfFieldFiller uploadedDocCoverPageFilter) {
     return Map.of(
         CASEWORKER, Map.of(
             CAF, caseworkerCafFiller,
             CCAP, caseworkerCcapFiller,
-            UPLOADED_DOC, uploadedDocCoverPageFilter
+            UPLOADED_DOC, uploadedDocCoverPageFilter,
+            CERTAIN_POPS, caseworkerCertainPopsFiller
         ),
         CLIENT, Map.of(
             CAF, clientCafFiller,
-            CCAP, clientCcapFiller)
+            CCAP, clientCcapFiller,
+            CERTAIN_POPS, clientCertainPopsFiller)
     );
   }
 }

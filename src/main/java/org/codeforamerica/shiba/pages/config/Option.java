@@ -11,4 +11,5 @@ public class Option {
   private String helpMessageKey;
   private String helpIcon;
   private boolean limitSelection = false;
+  private String flag;
 }

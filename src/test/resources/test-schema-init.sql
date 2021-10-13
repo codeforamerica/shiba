@@ -4,21 +4,22 @@ CREATE SEQUENCE IF NOT EXISTS application_id START WITH 1 MAXVALUE 9999999;
 
 CREATE TABLE IF NOT EXISTS applications
 (
-    id                        varchar                                     NOT NULL
+    id                              varchar                                     NOT NULL
         CONSTRAINT applications_pkey
             PRIMARY KEY,
-    completed_at              timestamp,
-    county                    varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
-    time_to_complete          integer DEFAULT 0,
-    sentiment                 varchar,
-    feedback                  text,
-    flow                      varchar,
-    application_data          jsonb,
-    updated_at                varchar,
-    caf_application_status    varchar,
-    ccap_application_status   varchar,
-    uploaded_documents_status varchar,
-    doc_upload_email_status   varchar
+    completed_at                    timestamp,
+    county                          varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
+    time_to_complete                integer DEFAULT 0,
+    sentiment                       varchar,
+    feedback                        text,
+    flow                            varchar,
+    application_data                jsonb,
+    updated_at                      varchar,
+    caf_application_status          varchar,
+    ccap_application_status         varchar,
+    certain_pops_application_status varchar,
+    uploaded_documents_status       varchar,
+    doc_upload_email_status         varchar
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id
@@ -65,4 +66,4 @@ CREATE TABLE IF NOT EXISTS shedlock
     locked_at  TIMESTAMP(3) NULL,
     locked_by  VARCHAR(255),
     PRIMARY KEY (name)
-)
+);

@@ -1,0 +1,31 @@
+<!-- This is a custom input for mailing address and home address screens to have additional functionality to hide and show portions of the inputs -->
+<div th:fragment="addressInputFragment(input, data)"
+     th:with="
+     name=|${input.name}[]|,
+     showCheckbox=${!input.name.equals('sameMailingAddress') || pageDatasources.get('homeAddress').get('isHomeless') == null || pageDatasources.get('homeAddress').get('isHomeless').value.isEmpty()},
+     isChecked=${showCheckbox && !data.get(input.name).value.isEmpty()}">
+  <div th:if="${showCheckbox}">
+    <div th:replace="'fragments/inputs/checkbox-input' :: checkbox-input(${input}, ${data})"></div>
+  </div>
+  <div th:class="${isChecked} ? 'hide' : ''" id="address-questions">
+    <th:block th:each="followUp: ${input.followUps}">
+      <div class="spacing-above-60">
+        <div
+            th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+      </div>
+    </th:block>
+  </div>
+  <script th:inline="javascript">
+    $(document).ready(function () {
+      var checkbox = document.getElementsByName([[${name}]])[0];
+      checkbox.addEventListener('change', function () {
+        if (this.checked) {
+          $($(":input:text:not([readonly='readonly'])")).val("");
+          $("#address-questions").hide();
+        } else {
+          $("#address-questions").show();
+        }
+      });
+    });
+  </script>
+</div>
