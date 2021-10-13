@@ -225,6 +225,11 @@ public class Page {
         .stream().anyMatch(webElement -> webElement.getText().equals(errorMessage));
   }
 
+  public String getFirstInputError() {
+    return driver.findElements(By.cssSelector("p.text--error > span")).stream().findFirst()
+        .map(WebElement::getText).orElse(null);
+  }
+
   public boolean inputIsValid(String inputName) {
     return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
         .getAttribute("aria-invalid").equals("false");

@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.journeys;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
@@ -84,6 +85,13 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("relationship", "Other");
     testPage.enter("programs", "None");
     testPage.clickContinue();
+
+    // Flaky spot - sometimes the test doesn't get passed the Add Householdmember page
+    String inputError = testPage.getFirstInputError();
+    if (inputError != null) {
+      takeSnapShot("input_error.png");
+      fail("Unexpected validation error: " + inputError);
+    }
 
     // You are about to delete householdMember2 as a household member.
     driver.findElementById("iteration1-delete").click();
