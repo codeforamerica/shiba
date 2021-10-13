@@ -21,7 +21,7 @@ public class UploadedDocument implements Serializable {
   private String s3Filepath;
   private String thumbnailFilepath;
   private String type;
-  private long size;
+  private long size; // bytes
 
   public String getThumbnail(DocumentRepository documentRepository) {
     try {

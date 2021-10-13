@@ -5,7 +5,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.notMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -18,6 +17,7 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
+import static org.codeforamerica.shiba.pages.emails.MailGunEmailClient.MAX_ATTACHMENT_SIZE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
@@ -52,6 +52,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -199,34 +200,79 @@ class MailGunEmailClientTest {
   }
 
   @Test
-  void sendsHennepinDocUploadsEmail() {
+  void sendsHennepinConsolidatedSmallDocUploadsEmail() {
     wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-    var applicationData = new ApplicationData();
     var phoneNumber = "(603) 879-1111";
     var email = "jane@example.com";
-    var pagesData = new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("personalInfo", Map.of(
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Doe"),
-            "otherName", List.of(""),
-            "dateOfBirth", List.of("10", "04", "2020"),
-            "ssn", List.of("123-45-6789"),
-            "sex", List.of("FEMALE"),
-            "maritalStatus", List.of("NEVER_MARRIED"),
-            "livedInMnWholeLife", List.of("false"),
-            "moveToMnDate", List.of("11", "03", "2020"),
-            "moveToMnPreviousCity", List.of("")
-        )),
-        new PageDataBuilder("contactInfo", Map.of(
-            "phoneNumber", List.of(phoneNumber),
-            "email", List.of(email),
-            "phoneOrEmail", List.of("PHONE")
-        ))
-    ));
-    applicationData.setPagesData(pagesData);
+    var applicationData = new TestApplicationDataBuilder()
+        .withPersonalInfo()
+        .withPageData("contactInfo", "phoneNumber", phoneNumber)
+        .withPageData("contactInfo", "email", email)
+        .build();
+
     ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
     UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
     UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "", 1000);
+    applicationData.setUploadedDocs(List.of(doc1, doc2));
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(Hennepin)
+        .timeToComplete(null)
+        .build();
+    var emailContent = "content";
+    when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
+    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
+        .thenReturn(testFile);
+    when(pdfGenerator
+        .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
+            any())).thenReturn(testFile);
+
+    mailGunEmailClient.sendHennepinDocUploadsEmails(application);
+    verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
+
+    wireMockServer.verify(1, postToMailgun()
+        .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
+        .withRequestBodyPart(requestBodyPart("from", senderEmail))
+        .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
+        .withRequestBodyPart(requestBodyPart("html", emailContent))
+        .withRequestBodyPart(aMultipart()
+            .withName("subject")
+            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
+            .withBody(containing("Verification docs for Jane Doe"))
+            .matchingType(ANY)
+            .build())
+    );
+
+    @SuppressWarnings("unchecked") ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor
+        .forClass(Map.class);
+    verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
+    Map<String, String> actual = captor.getValue();
+    assertThat(actual).containsAllEntriesOf(Map.of(
+        "name", "Jane Doe",
+        "dob", "10/04/2020",
+        "last4SSN", "6789",
+        "phoneNumber", phoneNumber,
+        "email", email));
+  }
+
+  @Test
+  void sendsHennepinIndividualLargeDocUploadsEmail() {
+    wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
+    var phoneNumber = "(603) 879-1111";
+    var email = "jane@example.com";
+    var applicationData = new TestApplicationDataBuilder()
+        .withPersonalInfo()
+        .withPageData("contactInfo", "phoneNumber", phoneNumber)
+        .withPageData("contactInfo", "email", email)
+        .build();
+
+    ApplicationFile testFile = new ApplicationFile(new byte[MAX_ATTACHMENT_SIZE - 1], "");
+    UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "",
+        MAX_ATTACHMENT_SIZE - 1);
+    UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "",
+        MAX_ATTACHMENT_SIZE - 1);
     applicationData.setUploadedDocs(List.of(doc1, doc2));
     Application application = Application.builder()
         .id("someId")
@@ -311,7 +357,7 @@ class MailGunEmailClientTest {
     mailGunEmailClient.sendHennepinDocUploadsEmails(application);
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
-    wireMockServer.verify(2, postToMailgun()
+    wireMockServer.verify(1, postToMailgun()
         .withBasicAuth(credentials)
         .withRequestBodyPart(requestBodyPart("from", senderEmail))
         .withRequestBodyPart(requestBodyPart("to", hennepinEmail))

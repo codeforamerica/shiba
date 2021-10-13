@@ -41,6 +41,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 public class MailGunEmailClient implements EmailClient {
 
+  public static final int MAX_ATTACHMENT_SIZE = 20_000_000; // 20MB
   private final String senderEmail;
   private final String securityEmail;
   private final String auditEmail;
@@ -166,6 +167,8 @@ public class MailGunEmailClient implements EmailClient {
 
     // Generate Uploaded Doc PDFs
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
+    List<ApplicationFile> applicationFiles = new ArrayList<>();
+    long totalAttachmentSize = 0;
     byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
@@ -176,10 +179,27 @@ public class MailGunEmailClient implements EmailClient {
         log.info("Now attaching: %s original filename: %s".formatted(
             fileToSend.getFileName(),
             uploadedDocument.getFilename()));
-        sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody, List.of(fileToSend),
-            true);
+        applicationFiles.add(fileToSend);
       }
+
+      totalAttachmentSize += fileToSend.getFileBytes().length;
     }
+
+    if (totalAttachmentSize >= MAX_ATTACHMENT_SIZE) {
+      log.info("Exceeded max attachment size. Sending separately.");
+      for (ApplicationFile fileToSend : applicationFiles) {
+        if (fileToSend.getFileBytes().length >= MAX_ATTACHMENT_SIZE) {
+          // Let's see how often this happens
+          log.warn("File might be too big to send.");
+        }
+        sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
+            List.of(fileToSend), true);
+      }
+    } else if (!applicationFiles.isEmpty()) {
+      sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
+          applicationFiles, true);
+    }
+
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
   }
 
