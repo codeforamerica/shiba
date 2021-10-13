@@ -50,7 +50,7 @@ class MnitEsbWebServiceClientTest {
       .of("ns2", "http://www.cmis.org/2008/05");
   String fileContent = "fileContent";
   String fileName = "fileName";
-  StringSource successResponse = new StringSource("" +
+  StringSource successResponse = new StringSource(
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
       "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
       "<createDocumentResponse></createDocumentResponse>" +
@@ -170,7 +170,7 @@ class MnitEsbWebServiceClientTest {
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
     mnitEsbWebServiceClient
-        .send(applicationFile, olmsted, "someId", Document.CAF, any());
+        .send(applicationFile, olmsted, "someId", Document.CAF, FlowType.MINIMUM);
 
     mockWebServiceServer.verify();
   }

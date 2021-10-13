@@ -128,6 +128,7 @@ public class MnitEsbWebServiceClient {
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
   }
 
+  // Recover method has to have the same arguments at the retryable
   @Recover
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
