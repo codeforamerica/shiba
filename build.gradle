@@ -92,7 +92,7 @@ dependencies {
         exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
     }
 
-    implementation("com.azure:azure-storage-blob:12.14.0")
+    implementation("com.azure:azure-storage-blob:12.14.1")
     implementation("org.postgresql:postgresql")
     implementation("org.glassfish.jaxb:jaxb-runtime")
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
