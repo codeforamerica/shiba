@@ -1,11 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.Program.CASH;
-import static org.codeforamerica.shiba.Program.CCAP;
-import static org.codeforamerica.shiba.Program.EA;
-import static org.codeforamerica.shiba.Program.GRH;
-import static org.codeforamerica.shiba.Program.SNAP;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,13 +59,35 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   private static Stream<Arguments> nextStepMessageTestCases() {
     return Stream.of(
         Arguments.of(
-            "Example 1 (Only Expedited SNAP)",
-            List.of(SNAP),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
-            List.of(
+            "Example 1 (Only Expedited SNAP)", // test Name
+            List.of(SNAP), // Programs they're applying for
+            SnapExpeditedEligibility.ELIGIBLE, // Eligible for SNAP expedited service
+            CcapExpeditedEligibility.NOT_ELIGIBLE, // Eligible for CCAP expedited service
+            List.of( // expected messages at the end.
                 "Within 24 hours, expect a call from your county about your food assistance application.",
                 "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        ),
+        Arguments.of(
+            "Example 2", // test Name
+            List.of(SNAP, CCAP), // Programs they're applying for
+            SnapExpeditedEligibility.ELIGIBLE,
+            CcapExpeditedEligibility.NOT_ELIGIBLE,
+            List.of( // expected messages at the end.
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare application. The letter will explain your next steps.",
+                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        ),
+        Arguments.of(
+            "Example 3",
+            List.of(SNAP, CCAP, CASH, EA),
+            SnapExpeditedEligibility.NOT_ELIGIBLE,
+            CcapExpeditedEligibility.ELIGIBLE,
+            List.of( // expected messages at the end.
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your emergency assistance, cash support and food support application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
             )
         )
     );
@@ -77,9 +95,12 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#nextStepMessageTestCases")
-  void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
+  void displaysCorrectSuccessMessageForApplicantPrograms(
+      String testName,
+      List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<String> expectedMessages)
       throws Exception {
     PageData programsPage = new PageData();
     programsPage.put("programs", InputData.builder().value(programs).build());
