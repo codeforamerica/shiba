@@ -86,8 +86,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("relationship", "My spouse (ex: wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
-    
-    // Flaky spot - sometimes the test doesn't get passed the Add Householdmember page
+
+    // Flaky spot - sometimes the test doesn't get past the Add Householdmember page
     String inputError = testPage.getFirstInputError();
     if (inputError != null) {
       takeSnapShot("input_error.png");

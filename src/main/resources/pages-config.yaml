@@ -3064,7 +3064,6 @@ workflow:
     subtleLinkTargetPage: cityForGeneralDelivery
     nextPages:
       - pageName: mailingAddress
-      - pageName: cityForGeneralDelivery
   cityForGeneralDelivery:
     pageConfiguration: *cityForGeneralDelivery
     enrichment: generalDeliveryAddressEnrichment
