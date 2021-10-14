@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
@@ -31,7 +32,8 @@ class HomeAddressStreetMapperTest {
         createHomeAddressApplicationInput("selectedZipCode", ""),
         createHomeAddressApplicationInput("selectedCity", ""),
         createHomeAddressApplicationInput("selectedState", "MN"),
-        createHomeAddressApplicationInput("selectedApartmentNumber", "")
+        createHomeAddressApplicationInput("selectedApartmentNumber", ""),
+        createHomeAddressApplicationInput("selectedCounty", "")
     );
   }
 
@@ -53,7 +55,8 @@ class HomeAddressStreetMapperTest {
         createHomeAddressApplicationInput("selectedZipCode", "02103"),
         createHomeAddressApplicationInput("selectedCity", "city"),
         createHomeAddressApplicationInput("selectedState", "CA"),
-        createHomeAddressApplicationInput("selectedApartmentNumber", "ste 123")
+        createHomeAddressApplicationInput("selectedApartmentNumber", "ste 123"),
+        createHomeAddressApplicationInput("selectedCounty", "Other")
     );
   }
 
@@ -75,7 +78,8 @@ class HomeAddressStreetMapperTest {
         createHomeAddressApplicationInput("selectedZipCode", "02103-9999"),
         createHomeAddressApplicationInput("selectedCity", "smarty city"),
         createHomeAddressApplicationInput("selectedState", "CA"),
-        createHomeAddressApplicationInput("selectedApartmentNumber", "apt 123")
+        createHomeAddressApplicationInput("selectedApartmentNumber", "apt 123"),
+        createHomeAddressApplicationInput("selectedCounty", Collections.emptyList())
     );
   }
 
@@ -86,6 +90,10 @@ class HomeAddressStreetMapperTest {
     List<ApplicationInput> map = mapper.map(application, null, null, null);
 
     assertThat(map).isEmpty();
+  }
+
+  private ApplicationInput createHomeAddressApplicationInput(String name, List<String> value) {
+    return new ApplicationInput("homeAddress", name, value, ApplicationInputType.SINGLE_VALUE);
   }
 
   private ApplicationInput createHomeAddressApplicationInput(String name, String value) {

@@ -754,6 +754,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void allFieldsDoGetWrittenToPDF() throws Exception {
       fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
       selectPrograms("CERTAIN_POPS");
       postExpectingRedirect("basicCriteria",
           "basicCriteria",
@@ -801,10 +802,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       //TODO home and mailing counties
 
       // Section 3
+      assertPdfFieldEquals("APPLICANT_HOME_COUNTY", "", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_COUNTY", "someCounty", pdf);
+      assertPdfFieldEquals("LIVING_SITUATION_COUNTY", "Anoka", pdf);
       assertPdfFieldEquals("LIVING_SITUATION", "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE",
           pdf);
       assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
-      // TODO county in living situation
       // TODO plan to make MN your home
 
       // Section 7 & appendix B: Authorized Rep

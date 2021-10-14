@@ -3,6 +3,8 @@ mappings:
     spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
     writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
     needInterpreter: NEED_INTERPRETER
+  identifyCounty:
+    county: LIVING_SITUATION_COUNTY
   personalInfo:
     firstName: APPLICANT_FIRST_NAME
     lastName: APPLICANT_LAST_NAME
@@ -61,12 +63,14 @@ mappings:
     selectedState: APPLICANT_HOME_STATE
     selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
     streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
+    selectedCounty: APPLICANT_HOME_COUNTY
   mailingAddress:
     selectedZipCode: APPLICANT_MAILING_ZIPCODE
     selectedCity: APPLICANT_MAILING_CITY
     selectedState: APPLICANT_MAILING_STATE
     selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
     selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
+    selectedCounty: APPLICANT_MAILING_COUNTY
   liquidAssets:
     liquidAssets: EXPEDITED_QUESTION_2
   utilityPayments:
