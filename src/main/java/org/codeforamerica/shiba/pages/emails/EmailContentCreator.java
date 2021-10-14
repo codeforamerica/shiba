@@ -58,7 +58,7 @@ public class EmailContentCreator {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
     String nextSteps = nextStepsContentService
-        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale).stream()
+        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility).stream()
         .map(NextStepSection::message)
         .collect(Collectors.joining("<br><br>"));
 

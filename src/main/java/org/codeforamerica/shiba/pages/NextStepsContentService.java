@@ -15,16 +15,9 @@ public class NextStepsContentService {
   private final String LETTER_ICON = "fragments/icons/icon-letter :: icon-letter";
   private final String SILHOUETTE_ICON = "fragments/icons/icon-communicate :: icon-communicate";
 
-  private final MessageSource messageSource;
-
-  public NextStepsContentService(MessageSource messageSource) {
-    this.messageSource = messageSource;
-  }
-
   public List<NextStepSection> getNextSteps(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
-      Locale locale) {
+      CcapExpeditedEligibility ccapExpeditedEligibility) {
 
     return new ArrayList<>();
   }

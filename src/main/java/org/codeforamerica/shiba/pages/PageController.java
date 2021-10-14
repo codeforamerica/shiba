@@ -347,7 +347,7 @@ public class PageController {
           .getPageSpecificRecommendationsMessage(applicationData, locale, pageName));
       model.put("nextSteps", nextStepsContentService
           .getNextSteps(new ArrayList<>(programs), snapExpeditedEligibility,
-              ccapExpeditedEligibility, locale));
+              ccapExpeditedEligibility));
     }
 
     if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
