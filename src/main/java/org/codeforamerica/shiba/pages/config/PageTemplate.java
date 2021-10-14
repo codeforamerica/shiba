@@ -15,6 +15,7 @@ public class PageTemplate {
   String primaryButtonTextKey;
   String subtleLinkTextKey;
   String subtleLinkTargetPage;
+  String cardFooterTextKey;
   Boolean hasPrimaryButton;
   String contextFragment;
   AlertBox alertBox;
@@ -37,6 +38,9 @@ public class PageTemplate {
   public boolean hasSubtleLinkTextKey() {
     return StringUtils.isNotBlank(subtleLinkTextKey);
   }
+
+  @SuppressWarnings("unused")
+  public boolean hasCardFooterTextKey() { return StringUtils.isNotBlank(cardFooterTextKey); }
 
   public boolean isSingleCheckboxOrRadioInputPage() {
     return inputs.size() == 1 && (inputs.get(0).getType() == FormInputType.CHECKBOX
