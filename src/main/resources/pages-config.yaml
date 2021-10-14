@@ -487,7 +487,6 @@ pageDefinitions:
     name: contactInfo
     pageTitle: contact-info.title
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
-    headerHelpMessageKey: contact-info.the-department-of-human-services
     contextFragment: contactInfoContextFragment
     inputs:
       - name: phoneNumber
@@ -535,6 +534,7 @@ pageDefinitions:
               messageKey: contact-info.text-me
             - value: EMAIL
               messageKey: contact-info.email-me
+    cardFooterTextKey: contact-info.the-department-of-human-services
   - &homeAddress
     name: homeAddress
     headerKey: home-address.where-are-you-currently-living

@@ -45,6 +45,11 @@ public class PageConfiguration {
   private Value subtleLinkTextKey;
 
   /**
+   * Subtle footer text at the bottom of card page used for additional information.
+   */
+  private Value cardFooterTextKey;
+
+  /**
    * Text for the (submit) button for the page form or page navigation. Defaults to "Continue". Only
    * applicable if {@link #hasPrimaryButton} is {@code true}.
    *
