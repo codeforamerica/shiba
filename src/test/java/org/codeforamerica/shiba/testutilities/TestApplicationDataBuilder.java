@@ -112,6 +112,10 @@ public class TestApplicationDataBuilder {
     return this;
   }
 
+  public TestApplicationDataBuilder withPageData(String pageName, String input, String value) {
+    return withPageData(pageName, input, List.of(value));
+  }
+
   public TestApplicationDataBuilder withPageData(String pageName, String input,
       List<String> values) {
     PagesData pagesData = applicationData.getPagesData();
