@@ -32,17 +32,27 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
-/**
- * CMIS Service to handle operations within the session.
- * 
- * @author aborroy
- *
- */
 @Service
 public class MnitCmisFilenetClient
 {
-
-    // Set values from "application.properties" file
+    private static final String PROGRAMS = "Programs";
+    private static final String READ = "Read";
+    private static final String ORIGINAL_FILE_NAME = "OriginalFileName";
+    private static final String FILE_TYPE = "FileType";
+    private static final String MISC = "Misc";
+    private static final String NPI = "NPI";
+    private static final String MNITS_MAILBOX_TRANSACTION_TYPE = "MNITSMailboxTransactionType";
+    private static final String OLA = "OLA";
+    private static final String SOURCE = "Source";
+    private static final String MNITS = "MNITS";
+    private static final String FLOW = "Flow";
+    private static final String INBOUND = "Inbound";
+    private static final String MNITS_MAILBOX = "MNITSMailbox";
+    private static final String DESCRIPTION = "Description";
+    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+    private static final String APPLICATION_PDF = "application/pdf";
+    private static final String APPLICATION_XML = "application/xml";
+    
     @Value("${mnit-filenet.url}")
     String filenetUrl;
     @Value("${mnit-filenet.username}")
@@ -50,7 +60,6 @@ public class MnitCmisFilenetClient
     @Value("${mnit-filenet.password}")
     String filenetPassword;
 
-    // CMIS living session
     private Session session;
 
     @PostConstruct
@@ -65,7 +74,7 @@ public class MnitCmisFilenetClient
         // connection settings
         parameters.put(SessionParameter.ATOMPUB_URL, filenetUrl);
         parameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-        parameters.put(SessionParameter.REPOSITORY_ID, "Programs");
+        parameters.put(SessionParameter.REPOSITORY_ID, PROGRAMS);
 
         SessionFactory factory = SessionFactoryImpl.newInstance();
         session = factory.createSession(parameters);
@@ -86,22 +95,28 @@ public class MnitCmisFilenetClient
     	
     	//properties
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("Read",  false);
-        properties.put("OriginalFileName", applicationFile.getFileName());
+        properties.put(READ,  false);
+        properties.put(ORIGINAL_FILE_NAME, applicationFile.getFileName());
         properties.put(PropertyIds.NAME, applicationFile.getFileName());
-        properties.put("FileType", "Misc");
-        properties.put("NPI", routingDestination.getDhsProviderId());
-        properties.put("MNITSMailboxTransactionType", "OLA");
-        properties.put("Source", "MNITS");
-        properties.put("Flow", "Inbound");
-        properties.put(PropertyIds.OBJECT_TYPE_ID, "MNITSMailbox");
+        properties.put(FILE_TYPE, MISC);
+        properties.put(NPI, routingDestination.getDhsProviderId());
+        properties.put(MNITS_MAILBOX_TRANSACTION_TYPE, "OLA");
+        properties.put(SOURCE, MNITS);
+        properties.put(FLOW, INBOUND);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, MNITS_MAILBOX);
         properties.put("Description", generateDocumentDescription(applicationFile, applicationDocument, applicationNumber, flowType));
         
         //stream
         byte[] documentBytes = applicationFile.getFileBytes();
         InputStream stream = new ByteArrayInputStream(documentBytes);
-        ContentStream contentStream = new ContentStreamImpl(applicationFile.getFileName(), BigInteger.valueOf(documentBytes.length),
-        		MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE, stream);
+        String fileName = applicationFile.getFileName();
+        String mimeType = APPLICATION_OCTET_STREAM;
+        if (fileName.toLowerCase().endsWith(".pdf")) {
+        	mimeType = APPLICATION_PDF;
+        } else if (fileName.toLowerCase().endsWith(".xml")) {
+        	mimeType = APPLICATION_XML;
+        }
+        ContentStream contentStream = new ContentStreamImpl(fileName, BigInteger.valueOf(documentBytes.length), mimeType, stream );
         
     	Folder filenetFolder = session.getRootFolder();
     	Document document = null;
