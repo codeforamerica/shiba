@@ -38,7 +38,6 @@ workflow:
     pageConfiguration: *fourthPage
 landmarkPages:
   startTimerPage:
-    - thirdPage
     - secondPage
   landingPages:
     - testStaticLandingPage

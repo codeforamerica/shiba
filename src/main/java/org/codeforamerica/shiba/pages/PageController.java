@@ -409,16 +409,21 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
-    return !landmarkPagesConfiguration.isLandingPage(pageName)
-           && applicationData.getStartTime() == null;
+    boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
+                        && applicationData.getStartTime() == null;
+    // If they are restarting the application process after submitting
+    boolean restarted =
+        applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
+    return unstarted || restarted;
   }
 
   private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
-    // If not on post-submit page and application is already submitted
+    // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
            !landmarkPagesConfiguration.isLandingPage(pageName) &&
+           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
            applicationData.isSubmitted();
   }
 

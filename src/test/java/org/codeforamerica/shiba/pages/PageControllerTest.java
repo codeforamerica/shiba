@@ -107,12 +107,12 @@ class PageControllerTest {
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
     mockMvc.perform(post("/submit")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        .param("foo[]", "some value"))
-        .andExpect(redirectedUrl("/pages/firstPage/navigation"));
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .param("foo[]", "some value"))
+        .andExpect(redirectedUrl("/pages/secondPage/navigation"));
 
-    PageData firstPage = applicationData.getPagesData().getPage("firstPage");
-    assertThat(firstPage.get("foo").getValue()).contains("some value");
+    PageData secondPage = applicationData.getPagesData().getPage("secondPage");
+    assertThat(secondPage.get("foo").getValue()).contains("some value");
   }
 
   @Test
@@ -229,7 +229,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    mockMvc.perform(post("/pages/firstPage")
+    mockMvc.perform(post("/pages/secondPage")
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
@@ -280,10 +280,10 @@ class PageControllerTest {
 
     String feedback = "this was awesome!";
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("sentiment", "HAPPY")
-        .param("feedback", feedback))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("sentiment", "HAPPY")
+            .param("feedback", feedback))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
 
@@ -310,9 +310,9 @@ class PageControllerTest {
 
     String feedback = "this was awesome!";
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("feedback", feedback))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("feedback", feedback))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
 
@@ -340,9 +340,9 @@ class PageControllerTest {
     when(applicationRepository.find(applicationId)).thenReturn(application);
 
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("sentiment", "HAPPY"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("sentiment", "HAPPY"))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));
 
@@ -355,9 +355,9 @@ class PageControllerTest {
   @Test
   void shouldFailToSubmitFeedbackIfIdIsNotSet() throws Exception {
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .param("sentiment", "HAPPY")
-        .param("feedback", "this was awesome!"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("sentiment", "HAPPY")
+            .param("feedback", "this was awesome!"))
         .andExpect(redirectedUrl("/pages/terminalPage"));
 
     verify(applicationRepository, never()).save(any());
@@ -375,9 +375,9 @@ class PageControllerTest {
     applicationData.setId(applicationId);
 
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .param("feedback", "")
-        .locale(locale))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("feedback", "")
+            .locale(locale))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
 
@@ -420,6 +420,31 @@ class PageControllerTest {
     when(documentRepository.get(any())).thenThrow(RuntimeException.class);
 
     mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
+  }
+
+  /**
+   * If an applicant completes and application and wants to submit a second application from the
+   * same device then they should be able to navigate back to the beginning of the application and
+   * continue through the application process.
+   */
+  @Test
+  void shouldHandleMultipleApplicationsSequentially() throws Exception {
+    // Start with a completed application
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+    applicationData.setStartTimeOnce(Instant.now());
+    applicationData.setSubmitted(true);
+    Application application = Application.builder()
+        .id("14356236")
+        .completedAt(ZonedDateTime.now())
+        .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    // Should bump back to landing page to invalidate the session and start a new application
+    mockMvc.perform(get("/pages/firstPage")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(Locale.GERMAN))
+        .andExpect(redirectedUrl("/pages/landingPage"));
   }
 
   @Test
