@@ -15,13 +15,11 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_MAILING_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_CITY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_CITY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
@@ -84,7 +82,7 @@ class MailingAddressStreetMapperTest {
         createApplicationInput(pagesData, "selectedCity", HOME_CITY),
         createApplicationInput(pagesData, "selectedState", HOME_STATE),
         createApplicationInput(pagesData, "selectedZipCode", HOME_ZIPCODE),
-        createApplicationInput(pagesData, "selectedCounty", HOME_COUNTY));
+        createApplicationInput("selectedCounty", ""));
   }
 
   @Test
@@ -133,7 +131,7 @@ class MailingAddressStreetMapperTest {
         createApplicationInput(pagesData, "selectedCity", MAILING_CITY),
         createApplicationInput(pagesData, "selectedState", MAILING_STATE),
         createApplicationInput(pagesData, "selectedZipCode", MAILING_ZIPCODE),
-        createApplicationInput(pagesData, "selectedCounty", MAILING_COUNTY));
+        createApplicationInput("selectedCounty", ""));
   }
 
   @Test

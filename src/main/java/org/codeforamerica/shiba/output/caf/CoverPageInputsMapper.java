@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.caf;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
@@ -25,12 +24,11 @@ import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,26 +130,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   }
 
   private ApplicationInput getFullName(Application application) {
-    var pageName = application.getFlow() == LATER_DOCS ? "matchInfo" : "personalInfo";
-    return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
-        .map(this::getFullNameString)
-        .map(value -> new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE))
-        .orElse(null);
-  }
-
-  @NotNull
-  private String getFullNameString(PageData pageData) {
-    var firstName = getValueOrEmptyString(pageData, "firstName");
-    var lastName = getValueOrEmptyString(pageData, "lastName");
-    return firstName + " " + lastName;
-  }
-
-  @NotNull
-  private String getValueOrEmptyString(PageData pageData, String firstName) {
-    return ofNullable(pageData.get(firstName))
-        .map(InputData::getValue)
-        .map(val -> String.join("", val))
-        .orElse("");
+    var value = FullNameFormatter.getFullName(application);
+    return new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE);
   }
 
   private List<ApplicationInput> getHouseholdMembers(Application application) {
@@ -179,7 +159,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     return inputsForSubworkflow;
   }
 
-  private ApplicationInput getCountyInstructions(Application application, Recipient recipient, Document document) {
+  private ApplicationInput getCountyInstructions(Application application, Recipient recipient,
+      Document document) {
     Locale locale = switch (recipient) {
       case CASEWORKER -> LocaleContextHolder.getLocale();
       case CLIENT -> {
@@ -195,8 +176,10 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
     var county = application.getCounty();
-    var routingDestinations = routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
-    var coverPageMessageStrings = List.of(routingDestinationMessageService.generatePhrase(locale, county, false, routingDestinations),
+    var routingDestinations = routingDecisionService.getRoutingDestinations(
+        application.getApplicationData(), document);
+    var coverPageMessageStrings = List.of(
+        routingDestinationMessageService.generatePhrase(locale, county, false, routingDestinations),
         routingDestinationMessageService.generatePhrase(locale, county, true, routingDestinations));
 
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);

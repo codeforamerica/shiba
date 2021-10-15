@@ -766,6 +766,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("livingSituation", "livingSituation",
           "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE");
 
+      postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+      addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
+      addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
+
       completeHelperWorkflow(true);
 
       submitApplication();
@@ -799,7 +803,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICANT_MAILING_CITY", "City", pdf);
       assertPdfFieldEquals("APPLICANT_MAILING_STATE", "CA", pdf);
       assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104", pdf);
-      //TODO home and mailing counties
 
       // Section 3
       assertPdfFieldEquals("APPLICANT_HOME_COUNTY", "", pdf);
@@ -808,7 +811,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("LIVING_SITUATION", "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE",
           pdf);
       assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
-      // TODO plan to make MN your home
 
       // Section 7 & appendix B: Authorized Rep
       assertPdfFieldEquals("WANT_AUTHORIZED_REP", "Yes", pdf);
@@ -819,6 +821,22 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("AUTHORIZED_REP_PHONE_NUMBER", "7234561111", pdf);
       assertPdfFieldEquals("APPLICANT_SIGNATURE", "Human McPerson", pdf);
       assertPdfFieldEquals("CREATED_DATE", "2020-01-01", pdf);
+
+      // Section 9
+      assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "defaultFirstName defaultLastName",
+          pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "", pdf);
+
+      // Section 10
+      assertPdfFieldEquals("IS_WORKING", "Yes", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0",
+          "defaultFirstName defaultLastName", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
     }
   }
 }

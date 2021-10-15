@@ -120,6 +120,17 @@ public class AbstractShibaMockMvcTest {
     postExpectingSuccess("incomePerPayPeriod", "incomePerPayPeriod", "1");
   }
 
+  protected void addSelfEmployedJob(String householdMemberFullNameAndId, String employersName)
+      throws Exception {
+    postExpectingSuccess("householdSelectionForIncome", "whoseJobIsIt",
+        householdMemberFullNameAndId);
+    postExpectingSuccess("employersName", "employersName", employersName);
+    postExpectingSuccess("selfEmployment", "selfEmployment", "true");
+    postExpectingSuccess("paidByTheHour", "paidByTheHour", "true");
+    postExpectingSuccess("hourlyWage", "hourlyWage", "12");
+    postExpectingSuccess("hoursAWeek", "hoursAWeek", "10");
+  }
+
   protected void postWithQueryParam(String pageName, String queryParam, String value)
       throws Exception {
     mockMvc.perform(

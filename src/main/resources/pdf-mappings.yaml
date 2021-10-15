@@ -230,6 +230,7 @@ mappings:
     grossMonthlyIncome: GROSS_MONTHLY_INCOME
     selfEmployed: SELF_EMPLOYED
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    selfEmployedApplicantName: SELF_EMPLOYMENT_APPLICANT_NAME
   nonSelfEmployment_employersName:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
   nonSelfEmployment_employee:
