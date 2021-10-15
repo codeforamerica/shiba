@@ -18,10 +18,9 @@ public abstract class ApplicationEventListener {
   }
 
   @NotNull Application getApplicationFromEvent(ApplicationEvent event) {
-    Application application = applicationRepository.find(event.getApplicationId());
-    monitoringService.setApplicationId(application.getId());
-    MDC.put("applicationId", application.getId());
+    monitoringService.setApplicationId(event.getApplicationId());
+    MDC.put("applicationId", event.getApplicationId());
     MDC.put("sessionId", event.getSessionId());
-    return application;
+    return applicationRepository.find(event.getApplicationId());
   }
 }

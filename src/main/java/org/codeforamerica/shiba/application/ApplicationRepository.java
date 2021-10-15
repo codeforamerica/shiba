@@ -87,7 +87,8 @@ public class ApplicationRepository {
         programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null");
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    namedParameterJdbcTemplate.update("UPDATE applications SET " +
+    namedParameterJdbcTemplate.update(
+        "UPDATE applications SET " +
         "completed_at = :completedAt, " +
         "application_data = :applicationData ::jsonb, " +
         "county = :county, " +
@@ -108,14 +109,9 @@ public class ApplicationRepository {
   }
 
   public Application find(String id) {
-    try {
-      return jdbcTemplate
-          .queryForObject("SELECT * FROM applications WHERE id = ?", applicationRowMapper(),
-              id);
-    } catch (EmptyResultDataAccessException e) {
-      log.error("Unable to locate application with ID " + id);
-      throw e;
-    }
+    return jdbcTemplate
+        .queryForObject("SELECT * FROM applications WHERE id = ?", applicationRowMapper(),
+            id);
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {

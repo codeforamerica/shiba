@@ -56,6 +56,8 @@ public class SessionLogFilter implements Filter {
     if (httpReq.getUserPrincipal() instanceof OAuth2AuthenticationToken token) {
       String email = token.getPrincipal().getAttribute("email");
       MDC.put("admin", email);
+    } else {
+      MDC.remove("admin");
     }
     log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
     monitoringService.setSessionId(httpReq.getSession().getId());
