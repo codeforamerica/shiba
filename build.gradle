@@ -121,7 +121,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.0")
     implementation("net.logstash.logback:logstash-logback-encoder:6.6")
     implementation("net.javacrumbs.shedlock:shedlock-spring:4.28.0")
-    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.28.0")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.29.0")
 
     implementation("org.springframework.ws:spring-ws-core")
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
