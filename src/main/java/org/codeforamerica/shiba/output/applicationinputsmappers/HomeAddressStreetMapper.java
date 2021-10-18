@@ -3,11 +3,13 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import static java.lang.Boolean.parseBoolean;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_CITY;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_CITY;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
@@ -17,6 +19,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 import java.util.List;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -45,7 +48,8 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
           "",
           "",
           "",
-          "MN");
+          "MN",
+          "");
     }
 
     if (parseBoolean(getFirstValue(pagesData, USE_ENRICHED_HOME_ADDRESS))) {
@@ -54,44 +58,35 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
           getFirstValue(pagesData, ENRICHED_HOME_APARTMENT_NUMBER),
           getFirstValue(pagesData, ENRICHED_HOME_ZIPCODE),
           getFirstValue(pagesData, ENRICHED_HOME_CITY),
-          getFirstValue(pagesData, ENRICHED_HOME_STATE));
+          getFirstValue(pagesData, ENRICHED_HOME_STATE),
+          getFirstValue(pagesData, ENRICHED_HOME_COUNTY));
     } else {
       return createAddressInputs(
           getFirstValue(pagesData, HOME_STREET),
           getFirstValue(pagesData, HOME_APARTMENT_NUMBER),
           getFirstValue(pagesData, HOME_ZIPCODE),
           getFirstValue(pagesData, HOME_CITY),
-          getFirstValue(pagesData, HOME_STATE));
+          getFirstValue(pagesData, HOME_STATE),
+          getFirstValue(pagesData, HOME_COUNTY));
     }
   }
 
   private List<ApplicationInput> createAddressInputs(String street, String apartment,
-      String zipcode, String city, String state) {
-    return List.of(new ApplicationInput(
-        "homeAddress",
-        "streetAddressWithPermanentAddress",
-        street,
-        SINGLE_VALUE
-    ), new ApplicationInput(
-        "homeAddress",
-        "selectedApartmentNumber",
-        apartment,
-        SINGLE_VALUE
-    ), new ApplicationInput(
-        "homeAddress",
-        "selectedZipCode",
-        zipcode,
-        SINGLE_VALUE
-    ), new ApplicationInput(
-        "homeAddress",
-        "selectedCity",
-        city,
-        SINGLE_VALUE
-    ), new ApplicationInput(
-        "homeAddress",
-        "selectedState",
-        state,
-        SINGLE_VALUE
-    ));
+      String zipcode, String city, String state, String county) {
+    // county Fields default to "Other" but we don't want to write that to the PDF
+    if (County.Other.toString().equals(county)) {
+      county = "";
+    }
+    return List.of(
+        createSingleHomeAddressInput("streetAddressWithPermanentAddress", street),
+        createSingleHomeAddressInput("selectedApartmentNumber", apartment),
+        createSingleHomeAddressInput("selectedZipCode", zipcode),
+        createSingleHomeAddressInput("selectedCity", city),
+        createSingleHomeAddressInput("selectedState", state),
+        createSingleHomeAddressInput("selectedCounty", county));
+  }
+
+  private ApplicationInput createSingleHomeAddressInput(String name, String value) {
+    return new ApplicationInput("homeAddress", name, value, SINGLE_VALUE);
   }
 }

@@ -127,6 +127,7 @@ public class TestApplicationDataBuilder {
   public TestApplicationDataBuilder withJobs() {
     applicationData.setSubworkflows(
         new Subworkflows(Map.of("jobs", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+            new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
             new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
             new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
         )))))));

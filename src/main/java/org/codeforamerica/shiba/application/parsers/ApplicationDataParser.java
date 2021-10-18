@@ -36,6 +36,10 @@ public class ApplicationDataParser {
         new ParsingCoordinate("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome"));
     coordinatesMap.put(Field.IS_SELF_EMPLOYMENT,
         new ParsingCoordinate("selfEmployment", "selfEmployment"));
+    coordinatesMap.put(Field.WHOSE_JOB_IS_IT,
+        new ParsingCoordinate("householdSelectionForIncome", "whoseJobIsIt"));
+    coordinatesMap.put(Field.EMPLOYERS_NAME,
+        new ParsingCoordinate("employersName", "employersName"));
 
     coordinatesMap.put(Field.LIVING_SITUATION,
         new ParsingCoordinate("livingSituation", "livingSituation"));
@@ -61,6 +65,10 @@ public class ApplicationDataParser {
         new ParsingCoordinate("mailingAddress", "enrichedZipCode"));
     coordinatesMap.put(Field.ENRICHED_MAILING_APARTMENT_NUMBER,
         new ParsingCoordinate("mailingAddress", "enrichedApartmentNumber"));
+    coordinatesMap.put(Field.ENRICHED_MAILING_COUNTY,
+        new ParsingCoordinate("mailingAddress", "enrichedCounty"));
+    coordinatesMap.put(Field.USE_ENRICHED_MAILING_ADDRESS,
+        new ParsingCoordinate("mailingAddressValidation", "useEnrichedAddress"));
 
     coordinatesMap.put(Field.HOME_STREET, new ParsingCoordinate("homeAddress", "streetAddress"));
     coordinatesMap.put(Field.HOME_CITY, new ParsingCoordinate("homeAddress", "city"));
@@ -79,6 +87,8 @@ public class ApplicationDataParser {
         .put(Field.ENRICHED_HOME_ZIPCODE, new ParsingCoordinate("homeAddress", "enrichedZipCode"));
     coordinatesMap.put(Field.ENRICHED_HOME_APARTMENT_NUMBER,
         new ParsingCoordinate("homeAddress", "enrichedApartmentNumber"));
+    coordinatesMap.put(Field.ENRICHED_HOME_COUNTY,
+        new ParsingCoordinate("homeAddress", "enrichedCounty"));
     coordinatesMap.put(Field.USE_ENRICHED_HOME_ADDRESS,
         new ParsingCoordinate("homeAddressValidation", "useEnrichedAddress"));
 
@@ -222,6 +232,8 @@ public class ApplicationDataParser {
     INCOME_PER_PAY_PERIOD,
     LAST_THIRTY_DAYS_JOB_INCOME,
     IS_SELF_EMPLOYMENT,
+    WHOSE_JOB_IS_IT,
+    EMPLOYERS_NAME,
 
     LIVING_SITUATION,
 
@@ -236,6 +248,8 @@ public class ApplicationDataParser {
     ENRICHED_MAILING_STATE,
     ENRICHED_MAILING_ZIPCODE,
     ENRICHED_MAILING_APARTMENT_NUMBER,
+    ENRICHED_MAILING_COUNTY,
+    USE_ENRICHED_MAILING_ADDRESS,
 
     HOME_STREET,
     HOME_CITY,
@@ -248,6 +262,7 @@ public class ApplicationDataParser {
     ENRICHED_HOME_STATE,
     ENRICHED_HOME_ZIPCODE,
     ENRICHED_HOME_APARTMENT_NUMBER,
+    ENRICHED_HOME_COUNTY,
     USE_ENRICHED_HOME_ADDRESS,
 
     NO_PERMANENT_ADDRESS,

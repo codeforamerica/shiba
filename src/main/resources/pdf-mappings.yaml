@@ -3,6 +3,8 @@ mappings:
     spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
     writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
     needInterpreter: NEED_INTERPRETER
+  identifyCounty:
+    county: LIVING_SITUATION_COUNTY
   personalInfo:
     firstName: APPLICANT_FIRST_NAME
     lastName: APPLICANT_LAST_NAME
@@ -61,12 +63,14 @@ mappings:
     selectedState: APPLICANT_HOME_STATE
     selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
     streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
+    selectedCounty: APPLICANT_HOME_COUNTY
   mailingAddress:
     selectedZipCode: APPLICANT_MAILING_ZIPCODE
     selectedCity: APPLICANT_MAILING_CITY
     selectedState: APPLICANT_MAILING_STATE
     selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
     selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
+    selectedCounty: APPLICANT_MAILING_COUNTY
   liquidAssets:
     liquidAssets: EXPEDITED_QUESTION_2
   utilityPayments:
@@ -207,6 +211,8 @@ mappings:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
     registerToVoteSelection: REGISTER_TO_VOTE
+  helper:
+    helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRep:
     communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
   speakToCounty:
@@ -224,6 +230,7 @@ mappings:
     grossMonthlyIncome: GROSS_MONTHLY_INCOME
     selfEmployed: SELF_EMPLOYED
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    selfEmployedApplicantName: SELF_EMPLOYMENT_APPLICANT_NAME
   nonSelfEmployment_employersName:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
   nonSelfEmployment_employee:
