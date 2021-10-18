@@ -68,6 +68,10 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantChoseCERTAINPOPS?
+    pageName: choosePrograms
+    value: CERTAIN_POPS
+    input: programs
   - &someoneChoseCASH?
     logicalOperator: OR
     conditions:
@@ -92,6 +96,9 @@ conditionDefinitions:
   - &applicantDidNotChooseGRH?
     <<: *applicantDidNotChooseProgram?
     value: GRH
+  - &applicantDidNotChooseCERTAINPOPS?
+    <<: *applicantDidNotChooseProgram?
+    value: CERTAIN_POPS
   - &householdMemberDidNotChooseProgram?
     pageName: householdMemberInfo
     input: programs
@@ -145,8 +152,7 @@ conditionDefinitions:
   - &noOneChoseGRH?
     logicalOperator: AND
     conditions:
-      - <<: *applicantDidNotChooseProgram?
-        value: GRH
+      - *applicantDidNotChooseGRH?
       - logicalOperator: OR
         conditions:
           - <<: *householdMemberDidNotChooseProgram?
@@ -1805,6 +1811,10 @@ pageDefinitions:
     name: introIncome
     pageTitle: intro-income.title
     hasPrimaryButton: false
+  - &medicalCareMilestone
+    name: medicalCareMilestone
+    pageTitle: medical-care-milestone.title
+    hasPrimaryButton: false
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -3352,9 +3362,13 @@ workflow:
           pageName: tribalNationMember
           input: isTribalNationMember
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
     skipCondition: *livesAlone?
     datasources:
+      - pageName: choosePrograms
       - pageName: addHouseholdMembers
   selectTheTribe:
     pageConfiguration: *selectTheTribe
@@ -3384,6 +3398,14 @@ workflow:
                 - pageName: identifyCounty
                   input: county
                   matcher: IS_MILLE_LACS_RURAL_COUNTY
+      - pageName: medicalCareMilestone
+        condition:
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - pageName: nationsBoundary
+              input: livingInNationBoundary
+              value: "false"
+        flag: certain-pops
       - pageName: introIncome
         condition:
           pageName: nationsBoundary
@@ -3419,6 +3441,7 @@ workflow:
           input: selectedTribe
           value: Federally recognized tribe outside of MN
     datasources:
+      - pageName: choosePrograms
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
       - pageName: tribalNationMember
@@ -3431,7 +3454,12 @@ workflow:
           pageName: applyForTribalTANF
           input: applyForTribalTANF
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
@@ -3440,6 +3468,9 @@ workflow:
           pageName: applyForMFIP
           input: applyForMFIP
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
     skipCondition: *someoneChoseCASH?
     datasources:
@@ -3449,11 +3480,28 @@ workflow:
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
   applyForMFIPConfirmation:
     pageConfiguration: *applyForMFIPConfirmation
     nextPages:
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
+  medicalCareMilestone:
+    pageConfiguration: *medicalCareMilestone
+    nextPages:
+      - pageName: introIncome
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
   introIncome:
     pageConfiguration: *introIncome
     nextPages:

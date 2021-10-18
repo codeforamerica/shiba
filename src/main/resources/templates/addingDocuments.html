@@ -1,10 +1,11 @@
 <div th:fragment="addingDocuments"
      th:with="
+     step=${totalMilestones.equals('7') ? '7' : '6'},
      contentHeaders=${ {'adding-documents.we-will-tell-you'} },
      contentItems=${ {
        'adding-documents.how-to-add-docs',
        'adding-documents.which-docs-you-can-add',
        'adding-documents.how-to-submit-docs-now-or-later'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-documents', '6', 'adding-documents.adding-documents', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-documents', ${step}, 'adding-documents.adding-documents', ${contentHeaders}, ${contentItems})"></div>
 </div>

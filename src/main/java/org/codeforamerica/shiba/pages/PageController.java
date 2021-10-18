@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
@@ -301,18 +302,19 @@ public class PageController {
       model.put("pageNameContext", pageName);
     }
 
+    Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
+    if (!programs.isEmpty()) {
+      model.put("programs", String.join(", ", programs));
+    }
+
     model.put("county", countyParser.parse(applicationData));
     model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
+    model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
 
     List<String> zipCode = applicationData.getPagesData()
         .safeGetPageInputValue("homeAddress", "zipCode");
     if (!zipCode.isEmpty()) {
       model.put("zipCode", zipCode.get(0));
-    }
-
-    Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
-    if (!programs.isEmpty()) {
-      model.put("programs", String.join(", ", programs));
     }
 
     var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);

@@ -96,8 +96,10 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
-    Select relationshipSelectWithRemovedSpouseOption = new Select(driver.findElementById("relationship"));
-    assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream().noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    Select relationshipSelectWithRemovedSpouseOption = new Select(
+        driver.findElementById("relationship"));
+    assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream()
+        .noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
     testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
@@ -106,7 +108,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Check that My Spouse is now an option again after deleting the spouse
     testPage.clickLink("Add a person");
     Select relationshipSelectWithSpouseOption = new Select(driver.findElementById("relationship"));
-    assertThat(relationshipSelectWithSpouseOption.getOptions().stream().anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    assertThat(relationshipSelectWithSpouseOption.getOptions().stream()
+        .anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
     testPage.goBack();
     testPage.clickButton("Yes, that's everyone");
 
@@ -189,7 +192,12 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Tribal TANF Confirmation screen
     testPage.clickContinue();
 
+    // Medical Care Milestone
+    testPage.clickContinue();
+
     // Income & Employment
+    // Certain Pops will increment milestone steps
+    assertThat(testPage.getElementText("milestone-step")).isEqualTo("Step 4 of 7");
     testPage.clickContinue();
 
     // Is anyone in your household making money from a job?

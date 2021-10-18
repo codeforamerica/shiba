@@ -178,6 +178,10 @@ public class Page {
         .getAttribute("value");
   }
 
+  public String getElementText(String inputId) {
+    return driver.findElementById(inputId).getText();
+  }
+
   public String getBirthDateValue(String inputName, DatePart datePart) {
     return driver.findElement(
             By.cssSelector(
