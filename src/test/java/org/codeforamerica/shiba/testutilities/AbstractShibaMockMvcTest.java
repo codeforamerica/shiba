@@ -188,6 +188,7 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void addHouseholdMembersWithProgram(String program) throws Exception {
+    // TODO - should this personalInfo be in a separate method?
     postExpectingSuccess("personalInfo", Map.of(
         "firstName", List.of("Dwight"),
         "lastName", List.of("Schrute"),
@@ -308,8 +309,8 @@ public class AbstractShibaMockMvcTest {
 
   protected void fillOutPersonalInfo() throws Exception {
     postExpectingSuccess("personalInfo", Map.of(
-        "firstName", List.of("defaultFirstName"),
-        "lastName", List.of("defaultLastName"),
+        "firstName", List.of("Dwight"),
+        "lastName", List.of("Schrute"),
         "otherName", List.of("defaultOtherName"),
         "dateOfBirth", List.of("01", "12", "1928"),
         "ssn", List.of("123456789"),

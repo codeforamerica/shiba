@@ -131,6 +131,9 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
   private ApplicationInput getFullName(Application application) {
     var value = FullNameFormatter.getFullName(application);
+    if (value == null) {
+      return null;
+    }
     return new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE);
   }
 

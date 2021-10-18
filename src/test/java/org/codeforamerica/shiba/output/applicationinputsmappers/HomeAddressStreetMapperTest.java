@@ -56,7 +56,7 @@ class HomeAddressStreetMapperTest {
         createHomeAddressApplicationInput("selectedCity", "city"),
         createHomeAddressApplicationInput("selectedState", "CA"),
         createHomeAddressApplicationInput("selectedApartmentNumber", "ste 123"),
-        createHomeAddressApplicationInput("selectedCounty", "Other")
+        createHomeAddressApplicationInput("selectedCounty", "")
     );
   }
 

@@ -11,10 +11,14 @@ import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.Iteration;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class GrossMonthlyIncomeMapperTest {
@@ -38,19 +42,54 @@ class GrossMonthlyIncomeMapperTest {
         grossMonthlyIncomeParser, applicationConfiguration);
     Application application = Application.builder().applicationData(applicationData).build();
     when(grossMonthlyIncomeParser.parse(applicationData)).thenReturn(List.of(
-        new HourlyJobIncomeInformation("12", "30", 0, null),
-        new HourlyJobIncomeInformation("6", "45", 1, null)
+        new HourlyJobIncomeInformation("12", "30", 0, new Iteration()),
+        new HourlyJobIncomeInformation("6", "45", 1, new Iteration())
     ));
     List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper
         .map(application, null, null, scopeTracker);
 
-    assertThat(applicationInputs).contains(
+    assertThat(applicationInputs).containsOnly(
         new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
         new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
             SINGLE_VALUE, 0),
         new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080.00"), SINGLE_VALUE, 1),
         new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1080.00"),
             SINGLE_VALUE, 1)
+    );
+  }
+
+  /**
+   * For certain-pops, we only want to map gross monthly income for applicant's self-employment
+   */
+  @Test
+  void shouldMapApplicantJobIncomeInformationForCertainPops() {
+    when(scopeTracker.getIterationScopeInfo(any(), any())).thenReturn(
+        new SubworkflowIterationScopeTracker.IterationScopeInfo("prefix", 0),
+        new SubworkflowIterationScopeTracker.IterationScopeInfo("prefix", 1));
+    when(applicationConfiguration.getPageGroups())
+        .thenReturn(Map.of("jobs", mock(PageGroupConfiguration.class)));
+    GrossMonthlyIncomeMapper grossMonthlyIncomeMapper = new GrossMonthlyIncomeMapper(
+        grossMonthlyIncomeParser, applicationConfiguration);
+    Application application = Application.builder().applicationData(applicationData).build();
+    PagesData applicantJob = new TestApplicationDataBuilder()
+        .withPageData(
+            "householdSelectionForIncome", "whoseJobIsIt", "the applicant")
+        .build().getPagesData();
+    PagesData nonApplicantJob = new TestApplicationDataBuilder()
+        .withPageData(
+            "householdSelectionForIncome", "whoseJobIsIt", "someone else")
+        .build().getPagesData();
+    when(grossMonthlyIncomeParser.parse(applicationData)).thenReturn(List.of(
+        new HourlyJobIncomeInformation("12", "30", 0, new Iteration(applicantJob)),
+        new HourlyJobIncomeInformation("6", "45", 1, new Iteration(nonApplicantJob))
+    ));
+    List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper
+        .map(application, Document.CERTAIN_POPS, null, scopeTracker);
+
+    assertThat(applicationInputs).containsOnly(
+        new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
+        new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
+            SINGLE_VALUE, 0)
     );
   }
 }

@@ -786,8 +786,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
 
       // Section 1
-      assertPdfFieldEquals("APPLICANT_LAST_NAME", "defaultLastName", pdf);
-      assertPdfFieldEquals("APPLICANT_FIRST_NAME", "defaultFirstName", pdf);
+      assertPdfFieldEquals("APPLICANT_LAST_NAME", "Schrute", pdf);
+      assertPdfFieldEquals("APPLICANT_FIRST_NAME", "Dwight", pdf);
       assertPdfFieldEquals("DATE_OF_BIRTH", "01/12/1928", pdf);
       assertPdfFieldEquals("APPLICANT_SSN", "123456789", pdf);
       assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED", pdf);
@@ -824,7 +824,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       // Section 9
       assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
-      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "defaultFirstName defaultLastName",
+      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "Dwight Schrute",
           pdf);
       assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
       assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "", pdf);
@@ -832,7 +832,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       // Section 10
       assertPdfFieldEquals("IS_WORKING", "Yes", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0",
-          "defaultFirstName defaultLastName", pdf);
+          "Dwight Schrute", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
