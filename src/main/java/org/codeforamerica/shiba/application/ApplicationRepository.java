@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.security.SecureRandom;
@@ -23,7 +24,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -77,35 +77,41 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    parameters.put("cafStatus",
-        applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null");
-    parameters.put("ccapStatus",
-        applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null");
+    String cafStatus = applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    parameters.put("cafStatus", cafStatus);
+
+    String ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
+    parameters.put("ccapStatus", ccapStatus);
 
     List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
-    parameters.put("certainPopsStatus",
-        programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null");
+    final String certainPopsStatus =
+        programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";
+    parameters.put("certainPopsStatus", certainPopsStatus);
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     namedParameterJdbcTemplate.update(
         "UPDATE applications SET " +
-        "completed_at = :completedAt, " +
-        "application_data = :applicationData ::jsonb, " +
-        "county = :county, " +
-        "time_to_complete = :timeToComplete, " +
-        "sentiment = :sentiment, " +
-        "feedback = :feedback, " +
-        "doc_upload_email_status = :docUploadEmailStatus, " +
-        "caf_application_status = :cafStatus, " +
-        "ccap_application_status = :ccapStatus, " +
-        "certain_pops_application_status = :certainPopsStatus, " +
-        "flow = :flow WHERE id = :id", parameters);
+            "completed_at = :completedAt, " +
+            "application_data = :applicationData ::jsonb, " +
+            "county = :county, " +
+            "time_to_complete = :timeToComplete, " +
+            "sentiment = :sentiment, " +
+            "feedback = :feedback, " +
+            "doc_upload_email_status = :docUploadEmailStatus, " +
+            "caf_application_status = :cafStatus, " +
+            "ccap_application_status = :ccapStatus, " +
+            "certain_pops_application_status = :certainPopsStatus, " +
+            "flow = :flow WHERE id = :id", parameters);
     namedParameterJdbcTemplate.update(
         "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow, doc_upload_email_status) "
             +
             "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
             +
             "ON CONFLICT DO NOTHING", parameters);
+
+    logStatusUpdate(application.getId(), CAF, Status.valueFor(cafStatus));
+    logStatusUpdate(application.getId(), CCAP, Status.valueFor(ccapStatus));
+    logStatusUpdate(application.getId(), CERTAIN_POPS, Status.valueFor(certainPopsStatus));
   }
 
   public Application find(String id) {
@@ -141,11 +147,19 @@ public class ApplicationRepository {
     };
 
     namedParameterJdbcTemplate.update(statement, parameters);
+    logStatusUpdate(id, document, status);
+  }
+
+  private void logStatusUpdate(String id, Document document, Status status) {
+    if (status == null) {
+      log.info(String.format("%s #%s application status has been updated to null", document, id));
+      return;
+    }
+
+    final String msg = String.format("%s #%s has been updated to %s", document, id, status);
     switch (status) {
-      case IN_PROGRESS, SENDING, DELIVERED -> log
-          .info(String.format("%s #%s has been updated to %s", document, id, status));
-      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log
-          .error(String.format("%s #%s has been updated to %s", document, id, status));
+      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
+      default -> log.info(msg);
     }
   }
 
@@ -163,7 +177,7 @@ public class ApplicationRepository {
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     namedParameterJdbcTemplate.update(statement, parameters);
-    log.info(String.format("%s #%s application status has been updated to null", document, id));
+    logStatusUpdate(id, document, null);
   }
 
   public Map<Document, List<String>> getApplicationIdsToResubmit() {
