@@ -1815,6 +1815,15 @@ pageDefinitions:
     name: medicalCareMilestone
     pageTitle: medical-care-milestone.title
     hasPrimaryButton: false
+  - &longTermCare
+    name: longTermCare
+    pageTitle: long-term-care.title
+    headerKey: long-term-care.help-staying-in-your-home-or-help-paying-for-care-in-a-long-term-care-facility
+    contextFragment: homeCareContextFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: doYouNeedLongTermCare
+        type: YES_NO
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -3497,6 +3506,13 @@ workflow:
       - pageName: choosePrograms
   medicalCareMilestone:
     pageConfiguration: *medicalCareMilestone
+    nextPages:
+      - pageName: longTermCare
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  longTermCare:
+    pageConfiguration: *longTermCare
     nextPages:
       - pageName: introIncome
     skipCondition: *applicantDidNotChooseCERTAINPOPS?
