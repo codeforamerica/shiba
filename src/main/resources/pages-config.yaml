@@ -382,7 +382,7 @@ pageDefinitions:
     name: personalInfo
     pageTitle: personal-info.title
     headerKey: personal-info.tell-us-about-yourself
-    contextFragment: personalInfoContextFragment
+    contextFragment: personContextFragment
     inputs:
       - name: firstName
         type: TEXT
@@ -704,6 +704,7 @@ pageDefinitions:
     name: householdMemberInfo
     pageTitle: household-member-info.title
     headerKey: household-member-info.add-a-person-who-lives-with-you
+    contextFragment: personContextFragment
     inputs:
       - name: firstName
         type: TEXT
@@ -880,6 +881,7 @@ pageDefinitions:
     name: householdList
     pageTitle: household-list.title
     primaryButtonTextKey: household-list.yes-thats-everyone
+    contextFragment: householdContextFragment
   - &noProgramsSelected
     name: noProgramsSelected
     pageTitle: no-programs-selected.title
@@ -938,6 +940,7 @@ pageDefinitions:
     pageTitle: preparing-meals-together.title
     headerKey: preparing-meals-together.header
     hasPrimaryButton: false
+    contextFragment: groceriesContextFragment
     inputs:
       - name: isPreparingMealsTogether
         type: YES_NO
@@ -950,6 +953,7 @@ pageDefinitions:
         - value: going-to-school.header
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: schoolContextFragment
     inputs:
       - name: goingToSchool
         type: YES_NO
@@ -957,6 +961,7 @@ pageDefinitions:
     name: whoIsGoingToSchool
     pageTitle: who-is-going-to-school.title
     headerKey: who-is-going-to-school.who-is-going-to-school
+    contextFragment: schoolContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsGoingToSchool
@@ -974,6 +979,7 @@ pageDefinitions:
         - value: pregnant.are-you-pregnant
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: pregnantContextFragment
     inputs:
       - name: isPregnant
         type: YES_NO
@@ -982,6 +988,7 @@ pageDefinitions:
     pageTitle: who-is-pregnant.title
     headerKey: who-is-pregnant.header
     headerHelpMessageKey: general.check-all-that-apply
+    contextFragment: pregnantContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsPregnant
@@ -1000,6 +1007,7 @@ pageDefinitions:
           condition: *livesAlone?
     headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
     hasPrimaryButton: false
+    contextFragment: passportContextFragment
     inputs:
       - name: isUsCitizen
         type: YES_NO
@@ -1008,6 +1016,7 @@ pageDefinitions:
     pageTitle: who-is-non-citizen.title
     headerKey: who-is-non-citizen.header
     headerHelpMessageKey: general.check-all-that-apply
+    contextFragment: passportContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsNonCitizen
@@ -1299,6 +1308,7 @@ pageDefinitions:
         - value: expedited-migrant-farm-worker.header-one-person
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: wheatContextFragment
     inputs:
       - name: migrantOrSeasonalFarmWorker
         type: YES_NO
@@ -1719,6 +1729,7 @@ pageDefinitions:
         - value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: briefcaseContextFragment
     inputs:
       - name: hasWorkSituation
         type: YES_NO
