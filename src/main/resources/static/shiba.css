@@ -579,6 +579,14 @@ input[id='sad']:checked + .feedback-buttons {
   padding-left: 20px;
 }
 
+.padding-top-1rem {
+  padding-top: 1rem;
+}
+
+.padding-bottom-3rem {
+  padding-bottom: 3rem;
+}
+
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
 .checkbox-icons {
   font-weight: bold;
