@@ -651,7 +651,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForWright() throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390",
-            "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7414.");
+            "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7400.");
       }
 
       @Test
