@@ -8,16 +8,12 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -36,26 +32,19 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
-  private final HashMap<String, TribalNationRoutingDestination> tribalNations;
-  private final CountyMap<CountyRoutingDestination> countyMap;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      ApplicationRepository applicationRepository,
-      HashMap<String, TribalNationRoutingDestination> tribalNations,
-      CountyMap<CountyRoutingDestination> countyMap) {
+      ApplicationRepository applicationRepository) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
-
-    this.tribalNations = tribalNations;
-    this.countyMap = countyMap;
   }
 
   public void processCafAndCcap(Application application) {
@@ -100,12 +89,12 @@ public class MnitDocumentConsumer {
           application, coverPage);
       if (fileToSend != null && fileToSend.getFileBytes().length > 0) {
         log.info("Now sending: " + fileToSend.getFileName() + " original filename: "
-                 + uploadedDocument.getFilename());
+            + uploadedDocument.getFilename());
         sendApplication(application, UPLOADED_DOC, fileToSend);
         log.info("Finished sending document " + fileToSend.getFileName());
       } else {
         log.error("Skipped uploading file " + uploadedDocument.getFilename()
-                  + " because it was empty. This should only happen in a dev environment.");
+            + " because it was empty. This should only happen in a dev environment.");
       }
     }
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
@@ -116,8 +105,14 @@ public class MnitDocumentConsumer {
         .getRoutingDestinations(application.getApplicationData(), document);
 
     routingDestinations.forEach(rd -> {
-      log.info("Now sending %s to recipient %s for application %s".formatted(document.name(),
-          rd.getName(), application.getId()));
+      String filename = document.name();
+      if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
+        filename = "XML";
+      }
+      log.info("Now sending %s to recipient %s for application %s".formatted(
+          filename,
+          rd.getName(),
+          application.getId()));
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     });
   }
