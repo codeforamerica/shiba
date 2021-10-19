@@ -568,7 +568,7 @@ input[id='sad']:checked + .feedback-buttons {
 }
 
 .word-wrap-break-word {
-  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .spacing-above-45 {
