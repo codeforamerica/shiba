@@ -138,6 +138,10 @@
   background-color: #E9F6FF;
 }
 
+.slab--white {
+  background-color: #FFFFFF;
+}
+
 .slab--minnesota-sky-blue {
   background-color: rgba(155, 203, 235, 0.25);
 }
@@ -569,6 +573,10 @@ input[id='sad']:checked + .feedback-buttons {
 
 .spacing-above-45 {
   margin-top: 45px;
+}
+
+.padding-left-20 {
+  padding-left: 20px;
 }
 
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
