@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.io.Serial;
@@ -72,7 +74,7 @@ public class ApplicationData implements Serializable {
     return datasources.stream()
         .filter(datasource -> datasource.getGroupName() != null)
         .allMatch(datasource -> datasource.isOptional()
-            || getSubworkflows().get(datasource.getGroupName()) != null);
+                                || getSubworkflows().get(datasource.getGroupName()) != null);
   }
 
   public NextPage getNextPageName(
@@ -118,7 +120,8 @@ public class ApplicationData implements Serializable {
   }
 
   public boolean isCAFApplication() {
-    return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA"));
+    return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA")) ||
+           getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
   }
 
   public boolean isApplicationWith(List<String> programs) {
