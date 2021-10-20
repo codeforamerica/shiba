@@ -265,7 +265,11 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
+    // Send CCAP and XML (but not CAF)
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
         FULL);
   }
 
@@ -356,10 +360,10 @@ class MnitDocumentConsumerTest {
         MediaType.IMAGE_JPEG_VALUE);
     when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
         "pdf1of2.pdf");
+
     documentConsumer.processUploadedDocuments(application);
-    ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
-    verify(mnitClient, never()).send(pdfApplicationFile, countyMap.get(Olmsted),
-        application.getId(), UPLOADED_DOC, FULL);
+
+    verify(mnitClient, never()).send(any(), any(), any(), any(), any());
   }
 
   @Test
@@ -384,6 +388,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     // Assert that only email is sent for Hennepin and api for Mille Lacs
+    verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
     verify(mnitClient, never()).send(any(), eq(countyMap.get(Hennepin)),
         eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
     verify(mnitClient).send(any(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
@@ -406,6 +411,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     // Assert that only api is sent for Hennepin
+    verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(any(), eq(countyMap.get(Hennepin)), eq(application.getId()),
         eq(UPLOADED_DOC), eq(FULL));
     verify(emailClient, never()).sendHennepinDocUploadsEmails(eq(application), any());
