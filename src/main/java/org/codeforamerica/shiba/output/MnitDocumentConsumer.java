@@ -20,6 +20,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,19 +33,22 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
+  private final EmailClient emailClient;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      ApplicationRepository applicationRepository) {
+      ApplicationRepository applicationRepository,
+      EmailClient emailClient) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
+    this.emailClient = emailClient;
   }
 
   public void processCafAndCcap(Application application) {

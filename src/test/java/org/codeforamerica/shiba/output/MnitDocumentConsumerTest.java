@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
@@ -12,17 +13,7 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -47,6 +38,9 @@ import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -71,6 +65,7 @@ import org.springframework.test.context.ContextConfiguration;
 @Tag("db")
 class MnitDocumentConsumerTest {
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
@@ -89,6 +84,8 @@ class MnitDocumentConsumerTest {
   private FileNameGenerator fileNameGenerator;
   @MockBean
   private ApplicationRepository applicationRepository;
+  @MockBean
+  private EmailClient emailClient;
   @MockBean
   private MessageSource messageSource;
   @SpyBean
@@ -335,6 +332,7 @@ class MnitDocumentConsumerTest {
     String extension = "jpg";
     byte[] fileBytes = null;
     when(documentRepository.get("")).thenReturn(fileBytes);
+
     applicationData.addUploadedDoc(
         new MockMultipartFile(uploadedDocFilename, s3filepath + extension, contentType, fileBytes),
         "",
@@ -345,7 +343,30 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
     ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
     verify(mnitClient, never()).send(pdfApplicationFile, countyMap.get(Olmsted),
-        application.getId(), CCAP, FULL);
+        application.getId(), UPLOADED_DOC, FULL);
+  }
+
+  @Test
+  void uploadedDocumentsAreSentToHennepinViaEmail() throws IOException {
+    // Set county to Hennepin
+    application.setCounty(Hennepin);
+    application.getApplicationData().getPagesData().putPage(
+        "homeAddress", new PageData(
+            Map.of("enrichedCounty", new InputData(List.of("Hennepin")),
+                "county", new InputData(List.of("Hennepin"))
+            )));
+
+    mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
+        "pdf1of2.pdf");
+
+    documentConsumer.processUploadedDocuments(application);
+
+    verify(mnitClient, never()).send(any(), eq(countyMap.get(Hennepin)),
+        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+
+    verify(emailClient).sendHennepinDocUploadsEmails(application);
+    // TODO add a test (or assertion) about tribal nations
   }
 
   @Test

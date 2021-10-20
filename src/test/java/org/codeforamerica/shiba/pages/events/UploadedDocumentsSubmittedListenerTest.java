@@ -51,7 +51,6 @@ class UploadedDocumentsSubmittedListenerTest {
     applicationId = "some-application-id";
     event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId, locale);
 
-    application = Application.builder().id(applicationId).county(County.Olmsted).build();
     uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
         mnitDocumentConsumer,
         applicationRepository,
@@ -61,7 +60,9 @@ class UploadedDocumentsSubmittedListenerTest {
   }
 
   @Test
-  void shouldSendViaApiWhenFeatureFlagIsEnabled() {
+  void shouldSendViaApiForOlmstedWhenFeatureFlagIsEnabled() {
+    Application application = Application.builder().id(applicationId).county(County.Olmsted)
+        .build();
     when(applicationRepository.find(eq(applicationId))).thenReturn(application);
     when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
     uploadedDocumentsSubmittedListener.send(event);
