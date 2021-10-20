@@ -14,7 +14,6 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UploadedDocumentsSubmittedListenerTest {
 
+  private final String applicationId = "some-application-id";
+  private final Locale locale = new Locale("en");
   @Mock
   private MnitDocumentConsumer mnitDocumentConsumer;
   @Mock
@@ -38,17 +39,12 @@ class UploadedDocumentsSubmittedListenerTest {
   private FeatureFlagConfiguration featureFlags;
   @Mock
   private EmailClient emailClient;
-
   private UploadedDocumentsSubmittedListener uploadedDocumentsSubmittedListener;
-  private String applicationId;
-  private Application application;
   private UploadedDocumentsSubmittedEvent event;
-  private final Locale locale = new Locale("en");
 
   @BeforeEach
   void setUp() {
     String sessionId = "some-session-id";
-    applicationId = "some-application-id";
     event = new UploadedDocumentsSubmittedEvent(sessionId, applicationId, locale);
 
     uploadedDocumentsSubmittedListener = new UploadedDocumentsSubmittedListener(
@@ -60,32 +56,20 @@ class UploadedDocumentsSubmittedListenerTest {
   }
 
   @Test
-  void shouldSendViaApiForOlmstedWhenFeatureFlagIsEnabled() {
+  void shouldSendViaApi() {
     Application application = Application.builder().id(applicationId).county(County.Olmsted)
         .build();
     when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-    when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+
     uploadedDocumentsSubmittedListener.send(event);
 
     verify(mnitDocumentConsumer).processUploadedDocuments(application);
   }
 
-
-  @Test
-  void shouldSendViaEmailWhenCountyIsHennepinAndFeatureFlagIsEnabled() {
-    Application hennepinApplication = Application.builder().id(applicationId)
-        .county(County.Hennepin).build();
-    when(applicationRepository.find(eq(applicationId))).thenReturn(hennepinApplication);
-    when(featureFlags.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
-
-    uploadedDocumentsSubmittedListener.send(event);
-
-    verify(emailClient).sendHennepinDocUploadsEmails(hennepinApplication);
-  }
-
   @Test
   void shouldSendConfirmationEmail() {
-    application = Application.builder().id(applicationId).flow(FlowType.LATER_DOCS).build();
+    Application application = Application.builder().id(applicationId).flow(FlowType.LATER_DOCS)
+        .build();
     when(applicationRepository.find(eq(applicationId))).thenReturn(application);
     String email = "confirmation email";
     try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {

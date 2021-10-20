@@ -14,14 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.pages.emails.MailGunEmailClient.MAX_ATTACHMENT_SIZE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -223,13 +221,8 @@ class MailGunEmailClientTest {
         .build();
     var emailContent = "content";
     when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
-        .thenReturn(testFile);
-    when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
-            any())).thenReturn(testFile);
 
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application);
+    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
     wireMockServer.verify(1, postToMailgun()
@@ -283,13 +276,8 @@ class MailGunEmailClientTest {
         .build();
     var emailContent = "content";
     when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
-        .thenReturn(testFile);
-    when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
-            any())).thenReturn(testFile);
 
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application);
+    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
     wireMockServer.verify(2, postToMailgun()
@@ -348,13 +336,8 @@ class MailGunEmailClientTest {
         .build();
     var emailContent = "content";
     when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
-        .thenReturn(testFile);
-    when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
-            any())).thenReturn(testFile);
 
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application);
+    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
 
     wireMockServer.verify(1, postToMailgun()

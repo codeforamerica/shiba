@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.pages.events;
 
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -40,15 +39,8 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
   @EventListener
   public void send(UploadedDocumentsSubmittedEvent event) {
     Application application = getApplicationFromEvent(event);
-    if (featureFlags.get("submit-docs-via-email-for-hennepin").isOn()
-        && (application.getCounty().equals(County.Hennepin)
-        || application.getCounty().equals(County.Other))) {
-      log.info("Processing Hennepin uploaded documents");
-      emailClient.sendHennepinDocUploadsEmails(application);
-    } else {
-      log.info("Processing uploaded documents");
-      mnitDocumentConsumer.processUploadedDocuments(application);
-    }
+    log.info("Processing uploaded documents");
+    mnitDocumentConsumer.processUploadedDocuments(application);
     MDC.clear();
   }
 
