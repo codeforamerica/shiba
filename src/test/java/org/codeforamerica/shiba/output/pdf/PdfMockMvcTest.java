@@ -767,6 +767,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE");
 
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+      postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
 
@@ -784,7 +785,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", pdf);
       assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
       assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
-
+      assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);
       // Section 1
       assertPdfFieldEquals("APPLICANT_LAST_NAME", "Schrute", pdf);
       assertPdfFieldEquals("APPLICANT_FIRST_NAME", "Dwight", pdf);
