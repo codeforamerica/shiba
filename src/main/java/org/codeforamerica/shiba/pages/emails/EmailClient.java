@@ -40,7 +40,7 @@ public interface EmailClient {
 
   void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
 
-  void sendHennepinDocUploadsEmails(Application application);
+  void sendHennepinDocUploadsEmails(Application application, List<ApplicationFile> filesToSend);
 
   void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale);
 

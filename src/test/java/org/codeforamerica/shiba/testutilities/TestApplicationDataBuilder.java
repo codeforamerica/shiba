@@ -16,8 +16,16 @@ import org.codeforamerica.shiba.pages.data.Subworkflows;
  */
 public class TestApplicationDataBuilder {
 
-  private final ApplicationData applicationData = new ApplicationData();
+  private final ApplicationData applicationData;
   private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
+
+  public TestApplicationDataBuilder() {
+    applicationData = new ApplicationData();
+  }
+
+  public TestApplicationDataBuilder(ApplicationData applicationData) {
+    this.applicationData = applicationData;
+  }
 
   public ApplicationData build() {
     return applicationData;

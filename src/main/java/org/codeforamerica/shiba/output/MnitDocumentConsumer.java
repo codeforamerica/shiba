@@ -10,6 +10,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -19,7 +20,9 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,24 +30,30 @@ import org.springframework.stereotype.Component;
 public class MnitDocumentConsumer {
 
   private final MnitEsbWebServiceClient mnitClient;
+  private final EmailClient emailClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
+  private final FeatureFlagConfiguration featureFlagConfiguration;
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
+      EmailClient emailClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      ApplicationRepository applicationRepository) {
+      ApplicationRepository applicationRepository,
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
+    this.emailClient = emailClient;
+    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public void processCafAndCcap(Application application) {
@@ -82,21 +91,41 @@ public class MnitDocumentConsumer {
   public void processUploadedDocuments(Application application) {
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
+    List<ApplicationFile> applicationFiles = new ArrayList<>();
+
+    // General files to send
     byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
       ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i,
           application, coverPage);
       if (fileToSend != null && fileToSend.getFileBytes().length > 0) {
-        log.info("Now sending: " + fileToSend.getFileName() + " original filename: "
-            + uploadedDocument.getFilename());
-        sendApplication(application, UPLOADED_DOC, fileToSend);
-        log.info("Finished sending document " + fileToSend.getFileName());
+        log.info("Now queueing file to send: %s".formatted(fileToSend.getFileName()));
+        applicationFiles.add(fileToSend);
       } else {
-        log.error("Skipped uploading file " + uploadedDocument.getFilename()
-            + " because it was empty. This should only happen in a dev environment.");
+        // This should only happen in a dev environment
+        log.error(
+            "Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty.");
       }
     }
+
+    // Send files
+    List<RoutingDestination> routingDestinations = routingDecisionService
+        .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
+    for (RoutingDestination rd : routingDestinations) {
+      boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
+          "submit-docs-via-email-for-hennepin").isOn();
+      boolean isHennepin = rd.getName().equals(County.Hennepin.name());
+
+      if (sendToHennepinViaEmail && isHennepin) {
+        emailClient.sendHennepinDocUploadsEmails(application, applicationFiles);
+      } else {
+        for (ApplicationFile fileToSend : applicationFiles) {
+          sendApplication(application, UPLOADED_DOC, fileToSend, rd, fileToSend.getFileName());
+        }
+      }
+    }
+
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
@@ -109,12 +138,17 @@ public class MnitDocumentConsumer {
       if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
         filename = "XML";
       }
-      log.info("Now sending %s to recipient %s for application %s".formatted(
-          filename,
-          rd.getName(),
-          application.getId()));
-      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+      sendApplication(application, document, file, rd, filename);
     });
+  }
+
+  private void sendApplication(Application application, Document document, ApplicationFile file,
+      RoutingDestination rd, String filename) {
+    log.info("Now sending %s to recipient %s for application %s".formatted(
+        filename,
+        rd.getName(),
+        application.getId()));
+    mnitClient.send(file, rd, application.getId(), document, application.getFlow());
   }
 
   class SendPDFRunnable implements Runnable {
