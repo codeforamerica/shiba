@@ -76,7 +76,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Add a spouse and assert spouse is no longer an option then delete -- Household member 2
     testPage.clickLink("Add a person");
-    testPage.clickContinue();
+
     testPage.enter("firstName", "householdMember2");
     testPage.enter("lastName", householdMemberLastName);
     testPage.enter("dateOfBirth", "10/15/1950");
@@ -86,13 +86,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("relationship", "My spouse (ex: wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
-
-    // Flaky spot - sometimes the test doesn't get past the Add Householdmember page
-    String inputError = testPage.getFirstInputError();
-    if (inputError != null) {
-      takeSnapShot("input_error.png");
-      fail("Unexpected validation error: " + inputError);
-    }
 
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
