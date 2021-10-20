@@ -190,10 +190,7 @@ public class ApplicationDataParser {
   }
 
   public static boolean getBooleanValue(PagesData pagesData, Field field) {
-    ParsingCoordinate coordinate = coordinatesMap.get(field);
-    String pageInputValue = pagesData
-        .getPageInputFirstValue(coordinate.pageName(), coordinate.inputName());
-    return Boolean.parseBoolean(pageInputValue == null ? field.getDefaultValue() : pageInputValue);
+    return Boolean.parseBoolean(getFirstValue(pagesData, field));
   }
 
   public static List<String> getValues(Group group, Field field, ApplicationData applicationData) {
