@@ -107,6 +107,8 @@ mappings:
     snapExpeditedEligibility: SNAP_EXPEDITED_ELIGIBILITY
   ccapExpeditedEligibility:
     ccapExpeditedEligibility: CCAP_EXPEDITED_ELIGIBILITY
+  longTermCare:
+    doYouNeedLongTermCare: NEED_LONG_TERM_CARE
   unearnedIncome:
     SOCIAL_SECURITY: SOCIAL_SECURITY
     SSI: SSI

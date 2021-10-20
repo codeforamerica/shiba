@@ -195,6 +195,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Medical Care Milestone
     testPage.clickContinue();
 
+    // Long Term Care
+    testPage.enter("doYouNeedLongTermCare", YES.getDisplayValue());
+
     // Income & Employment
     // Certain Pops will increment milestone steps
     assertThat(testPage.getElementText("milestone-step")).isEqualTo("Step 4 of 7");
