@@ -768,6 +768,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
+      postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
 
