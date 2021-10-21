@@ -4,7 +4,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.io.IOException;
@@ -346,17 +345,25 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
-      // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
-      List<RoutingDestination> routingDestinations =
-          routingDecisionService.getRoutingDestinations(applicationData, CAF);
+      // Get all routing destinations for this application
+      Set<RoutingDestination> routingDestinations = new HashSet<>();
+      DocumentListParser.parse(applicationData).forEach(doc -> {
+        List<RoutingDestination> routingDestinationsForThisDoc =
+            routingDecisionService.getRoutingDestinations(applicationData, doc);
+        routingDestinations.addAll(routingDestinationsForThisDoc);
+      });
 
-      List<String> routingDestinationNames = routingDestinations.stream()
-          .map(RoutingDestination::getName).toList();
-      applicationData.setRoutingDestinationNames(routingDestinationNames);
+      // set the routing destination names for the application in the database
+      List<String> routingDestinationNames =
+          routingDestinations.stream().map(RoutingDestination::getName).toList();
+      application.getApplicationData().setRoutingDestinationNames(routingDestinationNames);
       applicationRepository.save(application);
 
+      // Generate human-readable list of routing destinations for success page
       String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
-          application.getCounty(), true, routingDestinations);
+          application.getCounty(),
+          true,
+          new ArrayList<>(routingDestinations));
       model.put("routingDestinationList", finalDestinationList);
     }
 
