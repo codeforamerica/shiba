@@ -21,7 +21,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 public class MailGunEmailClient implements EmailClient {
 
-  public static final int MAX_ATTACHMENT_SIZE = 20_000_000; // 20MB
   private final String senderEmail;
   private final String securityEmail;
   private final String auditEmail;
@@ -47,6 +45,7 @@ public class MailGunEmailClient implements EmailClient {
   private final String mailGunApiKey;
   private final EmailContentCreator emailContentCreator;
   private final boolean shouldCC;
+  private final int maxAttachmentSize;
   private final WebClient webClient;
   private final String activeProfile;
   private final ApplicationRepository applicationRepository;
@@ -60,7 +59,7 @@ public class MailGunEmailClient implements EmailClient {
       @Value("${mail-gun.api-key}") String mailGunApiKey,
       EmailContentCreator emailContentCreator,
       @Value("${mail-gun.shouldCC}") boolean shouldCC,
-      PdfGenerator pdfGenerator,
+      @Value("${mail-gun.max-attachment-size}") int maxAttachmentSize,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
       ApplicationRepository applicationRepository,
       MessageSource messageSource
@@ -72,6 +71,7 @@ public class MailGunEmailClient implements EmailClient {
     this.mailGunApiKey = mailGunApiKey;
     this.emailContentCreator = emailContentCreator;
     this.shouldCC = shouldCC;
+    this.maxAttachmentSize = maxAttachmentSize;
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
     this.activeProfile = activeProfile;
     this.applicationRepository = applicationRepository;
@@ -166,10 +166,10 @@ public class MailGunEmailClient implements EmailClient {
     long totalAttachmentSize = filesToSend.stream()
         .mapToLong(fileToSend -> fileToSend.getFileBytes().length).sum();
 
-    if (totalAttachmentSize >= MAX_ATTACHMENT_SIZE) {
+    if (totalAttachmentSize >= maxAttachmentSize) {
       log.info("Exceeded max attachment size. Sending separately.");
       for (ApplicationFile fileToSend : filesToSend) {
-        if (fileToSend.getFileBytes().length >= MAX_ATTACHMENT_SIZE) {
+        if (fileToSend.getFileBytes().length >= maxAttachmentSize) {
           // Let's see how often this happens
           log.warn("File might be too big to send.");
         }

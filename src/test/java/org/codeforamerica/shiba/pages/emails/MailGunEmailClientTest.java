@@ -1,13 +1,6 @@
 package org.codeforamerica.shiba.pages.emails;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aMultipart;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.anyUrl;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,13 +9,10 @@ import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
-import static org.codeforamerica.shiba.pages.emails.MailGunEmailClient.MAX_ATTACHMENT_SIZE;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -52,11 +42,7 @@ import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,6 +64,7 @@ class MailGunEmailClientTest {
   final String securityEmail = "someSecurityEmail";
   final String auditEmail = "someAuditEmail";
   final String hennepinEmail = "someHennepinEmail";
+  final int MAX_ATTACHMENT_SIZE = 100;
   MailGunEmailClient mailGunEmailClient;
   EmailContentCreator emailContentCreator;
   WireMockServer wireMockServer;
@@ -113,7 +100,7 @@ class MailGunEmailClientTest {
         mailGunApiKey,
         emailContentCreator,
         false,
-        pdfGenerator,
+        MAX_ATTACHMENT_SIZE,
         activeProfile,
         applicationRepository,
         messageSource);
@@ -485,7 +472,7 @@ class MailGunEmailClientTest {
           mailGunApiKey,
           emailContentCreator,
           false,
-          pdfGenerator,
+          MAX_ATTACHMENT_SIZE,
           "demo",
           applicationRepository,
           messageSource);
