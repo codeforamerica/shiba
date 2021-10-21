@@ -98,7 +98,7 @@ class DocumentUploadEmailServiceTest {
   private Application saveApplicationThatOptedOutOfEmails() {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(
-        new PagesDataBuilder().build(List.of(
+        PagesDataBuilder.build(List.of(
             new PageDataBuilder("contactInfo", Map.of(
                 "email", List.of(CLIENT_EMAIL),
                 "phoneOrEmail", List.of("PHONE"))),
@@ -147,7 +147,7 @@ class DocumentUploadEmailServiceTest {
   private Application saveApplicationWithoutDocRecommendations() {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(
-        new PagesDataBuilder().build(List.of(
+        PagesDataBuilder.build(List.of(
             new PageDataBuilder("contactInfo", Map.of(
                 "email", List.of(CLIENT_EMAIL),
                 "phoneOrEmail", List.of("EMAIL"))),
@@ -169,7 +169,7 @@ class DocumentUploadEmailServiceTest {
   private ApplicationData getApplicationDataWithEmailAndDocRecommendations() {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(
-        new PagesDataBuilder().build(List.of(
+        PagesDataBuilder.build(List.of(
             new PageDataBuilder("contactInfo", Map.of(
                 "email", List.of(CLIENT_EMAIL),
                 "phoneOrEmail", List.of("EMAIL"))),

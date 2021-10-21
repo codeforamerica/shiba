@@ -168,7 +168,7 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(applicationData.isCAFApplication()).thenReturn(true);
-      when(applicationData.getPagesData()).thenReturn(new PagesDataBuilder().build(List.of(
+      when(applicationData.getPagesData()).thenReturn(PagesDataBuilder.build(List.of(
           new PageDataBuilder("contactInfo", Map.of("phoneOrEmail", List.of("EMAIL"))))));
       when(snapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(SnapExpeditedEligibility.ELIGIBLE);

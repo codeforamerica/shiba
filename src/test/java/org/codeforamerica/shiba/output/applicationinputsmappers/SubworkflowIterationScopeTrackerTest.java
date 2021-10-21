@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 
 class SubworkflowIterationScopeTrackerTest {
 
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
   private PageGroupConfiguration group1;
 
   @BeforeEach
@@ -35,7 +34,7 @@ class SubworkflowIterationScopeTrackerTest {
 
   @Test
   public void testDuplicateScopeDoesNotIncreaseIterationIndex() {
-    Iteration iteration = new Iteration(pagesDataBuilder.build(List.of(
+    Iteration iteration = new Iteration(PagesDataBuilder.build(List.of(
         new PageDataBuilder("page1", Map.of(
             "input1", List.of("true"),
             "input2", List.of("coolString")

@@ -37,12 +37,12 @@ public class HouseholdTest extends AbstractPageControllerTest {
     //Delete the second household member
     String iterationIndex = "1";
     mockMvc.perform(get("/pages/householdDeleteWarningPage").param("iterationIndex", iterationIndex)
-        .session(session))
+            .session(session))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("Second HouseholdMember")));
 
     mockMvc.perform(
-        post("/groups/household/" + iterationIndex + "/delete").with(csrf()).session(session))
+            post("/groups/household/" + iterationIndex + "/delete").with(csrf()).session(session))
         .andExpect(redirectedUrl("/pages/householdList"));
 
     mockMvc.perform(get("/pages/householdList").session(session))
@@ -50,7 +50,7 @@ public class HouseholdTest extends AbstractPageControllerTest {
 
     // When we "hit back", we should be redirected to the household list
     mockMvc.perform(get("/pages/householdDeleteWarningPage").param("iterationIndex", iterationIndex)
-        .session(session))
+            .session(session))
         .andExpect(redirectedUrl("/pages/householdList"));
   }
 
@@ -73,7 +73,7 @@ public class HouseholdTest extends AbstractPageControllerTest {
     personalInfoPage.put("lastName", InputData.builder().value(List.of("Applicant")).build());
     applicationData.getPagesData().put("personalInfo", personalInfoPage);
     applicationData.getSubworkflows()
-        .addIteration("household", new PagesDataBuilder().build(List.of(
+        .addIteration("household", PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo", Map.of(
                 "programs", List.of("SNAP", "CCAP"),
                 "firstName", List.of("First"),
@@ -81,7 +81,7 @@ public class HouseholdTest extends AbstractPageControllerTest {
             ))
         )));
     applicationData.getSubworkflows()
-        .addIteration("household", new PagesDataBuilder().build(List.of(
+        .addIteration("household", PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo", Map.of(
                 "programs", List.of("SNAP"),
                 "firstName", List.of("Second"),

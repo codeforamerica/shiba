@@ -17,7 +17,6 @@ import org.codeforamerica.shiba.pages.data.Subworkflows;
 public class TestApplicationDataBuilder {
 
   private final ApplicationData applicationData;
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
   public TestApplicationDataBuilder() {
     applicationData = new ApplicationData();
@@ -134,7 +133,7 @@ public class TestApplicationDataBuilder {
 
   public TestApplicationDataBuilder withJobs() {
     applicationData.setSubworkflows(
-        new Subworkflows(Map.of("jobs", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+        new Subworkflows(Map.of("jobs", new Subworkflow(List.of(PagesDataBuilder.build(List.of(
             new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
             new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
             new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
@@ -144,7 +143,7 @@ public class TestApplicationDataBuilder {
 
   public TestApplicationDataBuilder withHouseholdMemberPrograms(List<String> programs) {
     applicationData.setSubworkflows(
-        new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+        new Subworkflows(Map.of("household", new Subworkflow(List.of(PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo", Map.of("programs", programs)))
         ))))));
     return this;
@@ -152,7 +151,7 @@ public class TestApplicationDataBuilder {
 
   public TestApplicationDataBuilder withHouseholdMember() {
     applicationData.setSubworkflows(
-        new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+        new Subworkflows(Map.of("household", new Subworkflow(List.of(PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo",
                 Map.of("firstName", List.of("Daria"),
                     "lastName", List.of("Agàta"),

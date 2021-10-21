@@ -212,7 +212,7 @@ class EmailContentCreatorTest {
     applicationData.setStartTimeOnce(Instant.now());
     applicationData.setId("someId");
 
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("choosePrograms", Map.of("programs", programs)),
         // Show proof of income
         new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true"))),

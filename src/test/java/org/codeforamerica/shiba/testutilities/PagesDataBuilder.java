@@ -9,7 +9,7 @@ import org.codeforamerica.shiba.pages.data.PagesData;
 
 public class PagesDataBuilder {
 
-  public PagesData build(List<PageDataBuilder> pageDataBuilders) {
+  public static PagesData build(List<PageDataBuilder> pageDataBuilders) {
     return new PagesData(pageDataBuilders.stream().map(page -> Map.entry(
         page.getPageName(),
         page.getPageDataMap().entrySet().stream().reduce(

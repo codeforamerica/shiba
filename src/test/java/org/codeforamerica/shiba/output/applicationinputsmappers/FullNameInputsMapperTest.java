@@ -25,7 +25,6 @@ public class FullNameInputsMapperTest {
   private final ApplicationData applicationData = new ApplicationData();
   ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
   FullNameInputsMapper fullNameInputsMapper = new FullNameInputsMapper(applicationConfiguration);
-  PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
 
   @Test
   void mapsFullNamesForHouseholdAndJobIndividualsWithoutIdentifiers() {
@@ -42,12 +41,12 @@ public class FullNameInputsMapperTest {
     applicationConfiguration.setPageGroups(Map.of("jobs", jobsGroup));
 
     Subworkflow householdMember1Subworkflow = new Subworkflow();
-    householdMember1Subworkflow.add(pagesDataBuilder.build(List.of(
+    householdMember1Subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdSelectionForIncome", Map.of(
             "whoseJobIsIt", List.of("Fake Person applicant")
         ))
     )));
-    householdMember1Subworkflow.add(pagesDataBuilder.build(List.of(
+    householdMember1Subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdSelectionForIncome", Map.of(
             "whoseJobIsIt", List.of("Different Person some-random-guid-1234")
         )),
@@ -96,7 +95,7 @@ public class FullNameInputsMapperTest {
   @Test
   void returnsEmptyListWhenJobsSubworkflowIsntThere() {
     Subworkflow householdMember1Subworkflow = new Subworkflow();
-    householdMember1Subworkflow.add(pagesDataBuilder.build(List.of(
+    householdMember1Subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("otherPage", Map.of(
             "uselessInput", List.of("unimportantAnswer")
         ))

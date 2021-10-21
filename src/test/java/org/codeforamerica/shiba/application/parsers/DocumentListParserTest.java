@@ -16,13 +16,11 @@ import org.junit.jupiter.api.Test;
 
 class DocumentListParserTest {
 
-  PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-
   @Test
   void parseShouldIncludeCCAPWhenProgramsContainCCAP() {
     Application application = Application.builder().applicationData(new ApplicationData()).build();
     ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("choosePrograms", Map.of("programs", List.of("CCAP", "SNAP")))
     ));
     applicationData.setPagesData(pagesData);
@@ -35,7 +33,7 @@ class DocumentListParserTest {
     Application application = Application.builder().applicationData(new ApplicationData()).build();
     Subworkflows subworkflows = new Subworkflows();
     ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo", Map.of(
             "programs", List.of("SNAP", "CASH", "CCAP")
         ))
@@ -51,7 +49,7 @@ class DocumentListParserTest {
     Application application = Application.builder().applicationData(new ApplicationData()).build();
     Subworkflows subworkflows = new Subworkflows();
     ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo", Map.of(
             "programs", List.of("CCAP")
         ))
@@ -68,7 +66,7 @@ class DocumentListParserTest {
     Application application = Application.builder().applicationData(new ApplicationData()).build();
     Subworkflows subworkflows = new Subworkflows();
     ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo", Map.of(
             "programs", List.of("SNAP")
         ))

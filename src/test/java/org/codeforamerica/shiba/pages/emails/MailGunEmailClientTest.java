@@ -311,7 +311,7 @@ class MailGunEmailClientTest {
     var applicationData = new ApplicationData();
     var phoneNumber = "(603) 879-1111";
     var email = "jane@example.com";
-    var pagesData = new PagesDataBuilder().build(List.of(
+    var pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("matchInfo", Map.of(
             "firstName", List.of("Jane"),
             "lastName", List.of("Doe"),
@@ -440,7 +440,7 @@ class MailGunEmailClientTest {
     var applicationData = new ApplicationData();
     var phoneNumber = "(603) 879-1111";
     var email = "jane@example.com";
-    var pagesData = new PagesDataBuilder().build(List.of(
+    var pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("matchInfo", Map.of(
             "firstName", List.of("Jane"),
             "lastName", List.of("Doe"),

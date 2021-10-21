@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.*;
+import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -13,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
@@ -46,7 +47,6 @@ class CoverPageInputsMapperTest {
 
   private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private CoverPageInputsMapper coverPageInputsMapper;
-  private PagesDataBuilder pagesDataBuilder;
   private StaticMessageSource staticMessageSource;
   private PagesData pagesData;
   private ApplicationData applicationData;
@@ -60,7 +60,6 @@ class CoverPageInputsMapperTest {
 
     countyInstructionsMapping = new CountyMap<>();
     CountyMap<CountyRoutingDestination> countyInformationMapping = new CountyMap<>();
-    pagesDataBuilder = new PagesDataBuilder();
     staticMessageSource = new StaticMessageSource();
     pagesData = new PagesData();
     applicationData = new ApplicationData();
@@ -77,9 +76,11 @@ class CoverPageInputsMapperTest {
         .phoneNumber("555-123-4567")
         .folderId("someFolderId")
         .build();
-    when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class), any(Document.class)))
+    when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
+        any(Document.class)))
         .thenReturn(List.of(countyRoutingDestination));
-    when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(), any())).thenReturn("");
+    when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(),
+        any())).thenReturn("");
     countyInformationMapping.setDefaultValue(countyRoutingDestination);
     staticMessageSource
         .addMessage("county-to-instructions.default-client",
@@ -126,7 +127,7 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowProgramsInputWithCombinedProgramSelection() {
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo", Map.of(
             "programs", List.of("SNAP", "CASH"),
             "firstName", List.of("Jane"),
@@ -158,7 +159,7 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowFullNames() {
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo", Map.of(
             "programs", List.of("SNAP", "CASH"),
             "firstName", List.of("Jane"),

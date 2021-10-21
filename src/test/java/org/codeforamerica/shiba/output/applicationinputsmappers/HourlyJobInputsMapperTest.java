@@ -42,17 +42,16 @@ public class HourlyJobInputsMapperTest {
 
   @Test
   public void shouldCreateInputsForHourlyOnly() {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     ApplicationData applicationData = new ApplicationData();
     applicationData.setSubworkflows(
         new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
                 new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
                 new PageDataBuilder("incomePerPayPeriod",
                     Map.of("incomePerPayPeriod", List.of("1.1")))
             )),
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
                 new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("10"))),
                 new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("12")))
@@ -74,11 +73,10 @@ public class HourlyJobInputsMapperTest {
 
   @Test
   public void shouldCreateMultipleInputsForHourlyForCertainPops() {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     ApplicationData applicationData = new ApplicationData();
     applicationData.setSubworkflows(
         new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            pagesDataBuilder.build(
+            PagesDataBuilder.build(
                 List.of( // Hourly payPeriod iteration 0, nonSelfEmployed hourly pay period N/A
                     new PageDataBuilder("selfEmployment",
                         Map.of("selfEmployment", List.of("true"))),
@@ -86,14 +84,14 @@ public class HourlyJobInputsMapperTest {
                     new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("11"))),
                     new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("13")))
                 )),
-            pagesDataBuilder.build(List.of( // Hourly payPeriod N/A, nonSelfEmployed pay period 0
+            PagesDataBuilder.build(List.of( // Hourly payPeriod N/A, nonSelfEmployed pay period 0
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false"))),
                 new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
                 new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
                 new PageDataBuilder("incomePerPayPeriod",
                     Map.of("incomePerPayPeriod", List.of("1.1")))
             )),
-            pagesDataBuilder.build(List.of( // Hourly payPeriod 1, nonSelfEmployed pay period 1
+            PagesDataBuilder.build(List.of( // Hourly payPeriod 1, nonSelfEmployed pay period 1
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false"))),
                 new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
                 new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("10"))),

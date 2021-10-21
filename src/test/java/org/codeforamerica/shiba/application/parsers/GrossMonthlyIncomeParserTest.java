@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 class GrossMonthlyIncomeParserTest {
 
   private final GrossMonthlyIncomeParser grossMonthlyIncomeParser = new GrossMonthlyIncomeParser();
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
   private ApplicationData applicationData;
 
   @BeforeEach
@@ -30,12 +29,12 @@ class GrossMonthlyIncomeParserTest {
   @Test
   void shouldProvideHourlyJobInformation() {
     Subworkflow subworkflow = new Subworkflow();
-    subworkflow.add(pagesDataBuilder.build(List.of(
+    subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
         new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("12"))),
         new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("30")))
     )));
-    subworkflow.add(pagesDataBuilder.build(List.of(
+    subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
         new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("6"))),
         new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("45")))
@@ -56,13 +55,13 @@ class GrossMonthlyIncomeParserTest {
 
   @Test
   void shouldNotProvideJobInformationForJobsWithInsufficientInformationForCalculation() {
-    PagesData hourlyJobPagesData = pagesDataBuilder.build(List.of(
+    PagesData hourlyJobPagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
         new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of(""))),
         new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("")))
     ));
 
-    PagesData nonHourlyJobPagesData = pagesDataBuilder.build(List.of(
+    PagesData nonHourlyJobPagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
         new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of(""))),
         new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of(""))),
@@ -93,7 +92,7 @@ class GrossMonthlyIncomeParserTest {
   @Test
   void shouldProvideNonHourlyJobInformation() {
     Subworkflow subworkflow = new Subworkflow();
-    subworkflow.add(pagesDataBuilder.build(List.of(
+    subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
         new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
         new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
@@ -114,7 +113,7 @@ class GrossMonthlyIncomeParserTest {
   @Test
   void shouldReturnNonHourlyJobInformationIfHourlyJobPageIsNotAvailable() {
     Subworkflow subworkflow = new Subworkflow();
-    subworkflow.add(pagesDataBuilder.build(List.of(
+    subworkflow.add(PagesDataBuilder.build(List.of(
         new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
         new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
     )));

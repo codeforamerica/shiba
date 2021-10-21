@@ -18,9 +18,7 @@ public class PagesDataTest {
 
   @Test
   void scrubsInputsInPagesData() throws JsonProcessingException {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-
-    PagesData pagesData = pagesDataBuilder.build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("contactInfo", Map.of(
             "phoneNumber", List.of(),
             "firstName", List.of("Fake")
@@ -34,14 +32,14 @@ public class PagesDataTest {
         .registerModule(new SimpleModule().addSerializer(PageData.class, new MaskedSerializer()));
     assertThat(objectMapper.writeValueAsString(pagesData)).isEqualTo(
         "{\"" +
-            "contactInfo\":{" +
-            "\"firstName\":\"filled\"," +
-            "\"phoneNumber\":\"\"" +
-            "}," +
-            "\"choosePrograms\":" +
-            "{\"programs\":\"filled\"" +
-            "}" +
-            "}"
+        "contactInfo\":{" +
+        "\"firstName\":\"filled\"," +
+        "\"phoneNumber\":\"\"" +
+        "}," +
+        "\"choosePrograms\":" +
+        "{\"programs\":\"filled\"" +
+        "}" +
+        "}"
     );
   }
 }

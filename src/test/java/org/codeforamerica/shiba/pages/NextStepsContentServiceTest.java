@@ -186,7 +186,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     setPrograms(List.of("SNAP"));
 
     setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        new PagesDataBuilder().build(List.of(
+        PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("GRH", "EA")))))
     )))));
 

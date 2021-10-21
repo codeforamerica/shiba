@@ -30,7 +30,6 @@ class SubworkflowInputMapperTest {
   private final ApplicationData applicationData = new ApplicationData();
   private final Subworkflows subworkflows = new Subworkflows();
   private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
   SubworkflowInputMapper subworkflowInputMapper = new SubworkflowInputMapper(
       applicationConfiguration, Map.of());
 
@@ -59,21 +58,21 @@ class SubworkflowInputMapperTest {
     question2Page.setInputs(List.of(question1Input1));
     question2Workflow.setPageConfiguration(question2Page);
 
-    PagesData iteration1 = pagesDataBuilder.build(List.of(
+    PagesData iteration1 = PagesDataBuilder.build(List.of(
         new PageDataBuilder("question1", Map.of(
             "input1", List.of("string"),
             "input2", List.of("coolString")
         ))
     ));
 
-    PagesData iteration2 = pagesDataBuilder.build(List.of(
+    PagesData iteration2 = PagesDataBuilder.build(List.of(
         new PageDataBuilder("question1", Map.of(
             "input1", List.of("otherString"),
             "input2", List.of("weirdString")
         ))
     ));
 
-    PagesData iteration3 = pagesDataBuilder.build(List.of(
+    PagesData iteration3 = PagesDataBuilder.build(List.of(
         new PageDataBuilder("question2", Map.of(
             "input1", List.of("differentString")
         ))
@@ -241,7 +240,7 @@ class SubworkflowInputMapperTest {
 
     question2Page.setInputs(List.of(question2Input1));
 
-    PagesData iteration1 = pagesDataBuilder.build(List.of(
+    PagesData iteration1 = PagesDataBuilder.build(List.of(
         new PageDataBuilder("question1", Map.of(
             "input1", List.of("false"),
             "input2", List.of("coolString")
@@ -251,7 +250,7 @@ class SubworkflowInputMapperTest {
         ))
     ));
 
-    PagesData iteration2 = pagesDataBuilder.build(List.of(
+    PagesData iteration2 = PagesDataBuilder.build(List.of(
         new PageDataBuilder("question1", Map.of(
             "input1", List.of("true"),
             "input2", List.of("weirdString")

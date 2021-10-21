@@ -21,14 +21,13 @@ public class SelfEmploymentInputsMapperTest {
 
   @Test
   void shouldMapTrueIfSelfEmployedJobExists() {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     ApplicationData applicationData = new ApplicationData();
     applicationData.setSubworkflows(
         new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false")))
             )),
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("true")))
             ))
         )))));
@@ -55,14 +54,13 @@ public class SelfEmploymentInputsMapperTest {
 
   @Test
   void shouldMapFalseIfSelfEmployedJobDoesntExists() {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
     ApplicationData applicationData = new ApplicationData();
     applicationData.setSubworkflows(
         new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false")))
             )),
-            pagesDataBuilder.build(List.of(
+            PagesDataBuilder.build(List.of(
                 new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false")))
             ))
         )))));

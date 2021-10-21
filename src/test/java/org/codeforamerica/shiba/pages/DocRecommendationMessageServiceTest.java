@@ -139,7 +139,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
 
     // Proof of Income is only recommended for snap applications. Add SNAP for household member so it shows
     applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        new PagesDataBuilder().build(List.of(
+        PagesDataBuilder.build(List.of(
             new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("SNAP")))))
     )))));
 
@@ -198,6 +198,6 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
       }
     });
 
-    applicationData.setPagesData(new PagesDataBuilder().build(pagesData));
+    applicationData.setPagesData(PagesDataBuilder.build(pagesData));
   }
 }

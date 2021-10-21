@@ -96,7 +96,7 @@ class ResendFailedEmailControllerTest {
     when(pdfGenerator.generate(eq(confirmationId), eq(CAF), eq(CLIENT)))
         .thenReturn(new ApplicationFile(fileContent.getBytes(), fileName));
 
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("matchInfo", Map.of("email", List.of(recipientEmail))),
         new PageDataBuilder("choosePrograms", Map.of("programs", programs))
 
@@ -104,7 +104,7 @@ class ResendFailedEmailControllerTest {
     applicationData.setPagesData(pagesData);
 
     mockMvc.perform(get("/resend-confirmation-email/" + confirmationId)
-        .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
+            .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
         .andExpect(content()
             .string("Successfully resent confirmation email for application: " + confirmationId));
     verify(emailClient)

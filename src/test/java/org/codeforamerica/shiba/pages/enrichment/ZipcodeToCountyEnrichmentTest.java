@@ -21,7 +21,7 @@ class ZipcodeToCountyEnrichmentTest {
 
   @Test
   void shouldMapRecognizedZipcodeToCounty() {
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("identifyZipcode", Map.of(
             "zipCode", List.of("12345")
         ))
@@ -36,7 +36,7 @@ class ZipcodeToCountyEnrichmentTest {
 
   @Test
   void shouldMapUnrecognizedZipcodeToOther() {
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
+    PagesData pagesData = PagesDataBuilder.build(List.of(
         new PageDataBuilder("identifyZipcode", Map.of(
             "zipCode", List.of("00000")
         ))

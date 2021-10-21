@@ -55,7 +55,7 @@ class ApplicationDataEncryptorTest {
   @Test
   void encryptsApplicantSsn() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+    applicationData.setPagesData(PagesDataBuilder.build(List.of(
         new PageDataBuilder("personalInfo",
             Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-6789"))))
     )));
@@ -67,7 +67,7 @@ class ApplicationDataEncryptorTest {
   @Test
   void encryptsApplicantSsnInLaterDocs() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+    applicationData.setPagesData(PagesDataBuilder.build(List.of(
         new PageDataBuilder("matchInfo",
             Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-6789"))))
     )));
@@ -79,7 +79,7 @@ class ApplicationDataEncryptorTest {
   @Test
   void doNotEncryptApplicantSsnWhenBlank() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
+    applicationData.setPagesData(PagesDataBuilder.build(List.of(
         new PageDataBuilder("personalInfo",
             Map.of("ssn", new ArrayList<>(Collections.singleton(""))))))
     );
@@ -94,9 +94,9 @@ class ApplicationDataEncryptorTest {
         stringEncryptor);
     ApplicationData applicationData = new ApplicationData();
     applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo",
+        PagesDataBuilder.build(List.of(new PageDataBuilder("householdMemberInfo",
             Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-5678")))))),
-        new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo",
+        PagesDataBuilder.build(List.of(new PageDataBuilder("householdMemberInfo",
             Map.of("ssn", new ArrayList<>(Collections.singleton(""))))))
     )))));
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);

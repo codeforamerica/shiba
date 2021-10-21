@@ -20,8 +20,6 @@ public class HasCostForChildcareInputsMapperTest {
 
   private final HasCostForChildcareInputsMapper mapper = new HasCostForChildcareInputsMapper();
 
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-
   @Test
   public void shouldMapToTrueForApplicantLivingAlone() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
@@ -127,7 +125,7 @@ public class HasCostForChildcareInputsMapperTest {
 
   @NotNull
   private Subworkflow createHouseholdSubworkflow(String program) {
-    return new Subworkflow(List.of(pagesDataBuilder.build(List.of(
+    return new Subworkflow(List.of(PagesDataBuilder.build(List.of(
         new PageDataBuilder("householdMemberInfo",
             Map.of("firstName", List.of("Daria"),
                 "lastName", List.of("Agàta"),
