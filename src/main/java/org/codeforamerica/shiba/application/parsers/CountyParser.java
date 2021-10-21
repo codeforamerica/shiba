@@ -1,12 +1,7 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.GENERAL_DELIVERY_CITY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.NO_PERMANENT_ADDRESS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import org.codeforamerica.shiba.County;
@@ -30,11 +25,12 @@ public class CountyParser {
     this.cityInfoConfiguration = cityInfoConfiguration;
   }
 
+  // Take an applicationData and figure out what county the client lives in
   public County parse(ApplicationData applicationData) {
     String countyName = parseCountyInput(applicationData);
 
-    if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase())
-        == FeatureFlag.OFF) {
+    String countyConfigName = County.valueFor(countyName).name().toLowerCase();
+    if (featureFlagConfiguration.get("county-" + countyConfigName) == FeatureFlag.OFF) {
       return County.Other;
     }
     return County.valueFor(countyName);

@@ -347,11 +347,16 @@ public class PageController {
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
       // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-          applicationData, CAF);
+      List<RoutingDestination> routingDestinations =
+          routingDecisionService.getRoutingDestinations(applicationData, CAF);
+
+      List<String> routingDestinationNames = routingDestinations.stream()
+          .map(RoutingDestination::getName).toList();
+      applicationData.setRoutingDestinationNames(routingDestinationNames);
+      applicationRepository.save(application);
+
       String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
           application.getCounty(), true, routingDestinations);
-
       model.put("routingDestinationList", finalDestinationList);
     }
 
