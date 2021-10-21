@@ -5,57 +5,35 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 
 import java.util.List;
-import java.util.Map;
-import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class DocumentListParserTest {
 
   @Test
   void parseShouldIncludeCCAPWhenProgramsContainCCAP() {
-    Application application = Application.builder().applicationData(new ApplicationData()).build();
-    ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("choosePrograms", Map.of("programs", List.of("CCAP", "SNAP")))
-    ));
-    applicationData.setPagesData(pagesData);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP", "SNAP"))
+        .build();
 
     assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
   }
 
   @Test
   void parseShouldIncludeCCAPAndCAFWhenHouseholdMembersProgramsIncludeCCAPAndOtherPrograms() {
-    Application application = Application.builder().applicationData(new ApplicationData()).build();
-    Subworkflows subworkflows = new Subworkflows();
-    ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CASH", "CCAP")
-        ))
-    ));
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHouseholdMemberPrograms(List.of("SNAP", "CASH", "CCAP"))
+        .build();
 
     assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF, CCAP);
   }
 
   @Test
   void parseShouldIncludeOnlyCCAPIfCCAPIsOnlyProgramSelected() {
-    Application application = Application.builder().applicationData(new ApplicationData()).build();
-    Subworkflows subworkflows = new Subworkflows();
-    ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("CCAP")
-        ))
-    ));
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHouseholdMemberPrograms(List.of("CCAP"))
+        .build();
 
     assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CCAP);
 
@@ -63,16 +41,9 @@ class DocumentListParserTest {
 
   @Test
   void parseShouldOnlyIncludeCAFIfCCAPIsNotASelectedProgram() {
-    Application application = Application.builder().applicationData(new ApplicationData()).build();
-    Subworkflows subworkflows = new Subworkflows();
-    ApplicationData applicationData = application.getApplicationData();
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP")
-        ))
-    ));
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHouseholdMemberPrograms(List.of("SNAP"))
+        .build();
 
     assertThat(DocumentListParser.parse(applicationData)).containsExactlyInAnyOrder(CAF);
   }

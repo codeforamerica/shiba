@@ -16,10 +16,8 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,94 +34,45 @@ public class HourlyJobInputsMapperTest {
   void setUp() {
     jobGroup.setAddedScope(Map.of("nonSelfEmployment",
         new Condition("selfEmployment", "selfEmployment", "false", ValueMatcher.CONTAINS)));
-    when(applicationConfiguration.getPageGroups())
-        .thenReturn(Map.of("jobs", jobGroup));
+    when(applicationConfiguration.getPageGroups()).thenReturn(Map.of("jobs", jobGroup));
   }
 
   @Test
   public void shouldCreateInputsForHourlyOnly() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            PagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
-                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
-                new PageDataBuilder("incomePerPayPeriod",
-                    Map.of("incomePerPayPeriod", List.of("1.1")))
-            )),
-            PagesDataBuilder.build(List.of(
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("10"))),
-                new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("12")))
-            ))
-        )))));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("jobs",
+            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK").build(),
+            new PagesDataBuilder().withHourlyJob("false", "10", "12").build())
+        .build();
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, scopeTracker);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
-            "payPeriod",
-            "payPeriod",
-            List.of("Hourly"),
-            SINGLE_VALUE,
-            1
-        ));
+        new ApplicationInput("payPeriod", "payPeriod", List.of("Hourly"), SINGLE_VALUE, 1)
+    );
   }
 
   @Test
   public void shouldCreateMultipleInputsForHourlyForCertainPops() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of("jobs", new Subworkflow(List.of(
-            PagesDataBuilder.build(
-                List.of( // Hourly payPeriod iteration 0, nonSelfEmployed hourly pay period N/A
-                    new PageDataBuilder("selfEmployment",
-                        Map.of("selfEmployment", List.of("true"))),
-                    new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                    new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("11"))),
-                    new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("13")))
-                )),
-            PagesDataBuilder.build(List.of( // Hourly payPeriod N/A, nonSelfEmployed pay period 0
-                new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false"))),
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("false"))),
-                new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
-                new PageDataBuilder("incomePerPayPeriod",
-                    Map.of("incomePerPayPeriod", List.of("1.1")))
-            )),
-            PagesDataBuilder.build(List.of( // Hourly payPeriod 1, nonSelfEmployed pay period 1
-                new PageDataBuilder("selfEmployment", Map.of("selfEmployment", List.of("false"))),
-                new PageDataBuilder("paidByTheHour", Map.of("paidByTheHour", List.of("true"))),
-                new PageDataBuilder("hourlyWage", Map.of("hourlyWage", List.of("10"))),
-                new PageDataBuilder("hoursAWeek", Map.of("hoursAWeek", List.of("12")))
-            ))
-        )))));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("jobs",
+            // Hourly payPeriod iteration 0, nonSelfEmployed hourly pay period N/A
+            new PagesDataBuilder().withHourlyJob("true", "11", "13").build(),
+            // Hourly payPeriod N/A, nonSelfEmployed pay period 0
+            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK").build(),
+            // Hourly payPeriod 1, nonSelfEmployed pay period 1
+            new PagesDataBuilder().withHourlyJob("false", "10", "12").build())
+        .build();
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
         .build(), Document.CERTAIN_POPS, null, scopeTracker);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
-            "payPeriod",
-            "payPeriod",
-            "Hourly",
-            SINGLE_VALUE,
-            0
-        ),
-        new ApplicationInput(
-            "payPeriod",
-            "payPeriod",
-            "Hourly",
-            SINGLE_VALUE,
-            2
-        ),
-        new ApplicationInput(
-            "nonSelfEmployment_payPeriod",
-            "payPeriod",
-            "Hourly",
-            SINGLE_VALUE,
-            1
-        ));
+        new ApplicationInput("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 0),
+        new ApplicationInput("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 2),
+        new ApplicationInput("nonSelfEmployment_payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 1)
+    );
   }
 
   @Test

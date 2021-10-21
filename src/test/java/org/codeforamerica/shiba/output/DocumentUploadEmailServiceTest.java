@@ -17,7 +17,6 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,14 +96,13 @@ class DocumentUploadEmailServiceTest {
 
   private Application saveApplicationThatOptedOutOfEmails() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(
-        PagesDataBuilder.build(List.of(
-            new PageDataBuilder("contactInfo", Map.of(
-                "email", List.of(CLIENT_EMAIL),
-                "phoneOrEmail", List.of("PHONE"))),
-            new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true"))),
-            new PageDataBuilder("choosePrograms", Map.of("programs", List.of(SNAP, CASH)))
-        )));
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of(CLIENT_EMAIL),
+            "phoneOrEmail", List.of("PHONE")))
+        .withPageData("employmentStatus", "areYouWorking", "true")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
     Application app = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(20))
         .county(County.Anoka)
@@ -146,14 +144,13 @@ class DocumentUploadEmailServiceTest {
 
   private Application saveApplicationWithoutDocRecommendations() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(
-        PagesDataBuilder.build(List.of(
-            new PageDataBuilder("contactInfo", Map.of(
-                "email", List.of(CLIENT_EMAIL),
-                "phoneOrEmail", List.of("EMAIL"))),
-            new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("false"))),
-            new PageDataBuilder("choosePrograms", Map.of("programs", List.of(SNAP, CASH)))
-        )));
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of(CLIENT_EMAIL),
+            "phoneOrEmail", List.of("EMAIL")))
+        .withPageData("employmentStatus", "areYouWorking", "false")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
     Application app = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(20))
         .county(County.Anoka)
@@ -168,14 +165,13 @@ class DocumentUploadEmailServiceTest {
 
   private ApplicationData getApplicationDataWithEmailAndDocRecommendations() {
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(
-        PagesDataBuilder.build(List.of(
-            new PageDataBuilder("contactInfo", Map.of(
-                "email", List.of(CLIENT_EMAIL),
-                "phoneOrEmail", List.of("EMAIL"))),
-            new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true"))),
-            new PageDataBuilder("choosePrograms", Map.of("programs", List.of(SNAP, CASH)))
-        )));
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of(CLIENT_EMAIL),
+            "phoneOrEmail", List.of("EMAIL")))
+        .withPageData("employmentStatus", "areYouWorking", "true")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
     return applicationData;
   }
 

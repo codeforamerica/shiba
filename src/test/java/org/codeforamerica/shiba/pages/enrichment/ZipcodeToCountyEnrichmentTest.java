@@ -4,11 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -21,11 +19,9 @@ class ZipcodeToCountyEnrichmentTest {
 
   @Test
   void shouldMapRecognizedZipcodeToCounty() {
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("identifyZipcode", Map.of(
-            "zipCode", List.of("12345")
-        ))
-    ));
+    PagesData pagesData = new PagesDataBuilder()
+        .withPageData("identifyZipcode", "zipCode", "12345")
+        .build();
     countyZipCodeMap.put("12345", County.Olmsted);
 
     EnrichmentResult enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
@@ -36,11 +32,9 @@ class ZipcodeToCountyEnrichmentTest {
 
   @Test
   void shouldMapUnrecognizedZipcodeToOther() {
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("identifyZipcode", Map.of(
-            "zipCode", List.of("00000")
-        ))
-    ));
+    PagesData pagesData = new PagesDataBuilder()
+        .withPageData("identifyZipcode", "zipCode", "00000")
+        .build();
 
     EnrichmentResult enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
 
