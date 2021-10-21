@@ -1835,6 +1835,15 @@ pageDefinitions:
     inputs:
       - name: doYouNeedLongTermCare
         type: YES_NO
+  - &pastInjury
+    name: pastInjury
+    pageTitle: past-injury.title
+    headerKey: past-injury.are-you-getting-medical-care-for-an-accident-or-injury
+    contextFragment: pastInjuryFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: didYouHaveAPastInjury
+        type: YES_NO
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -3524,6 +3533,13 @@ workflow:
       - pageName: choosePrograms
   longTermCare:
     pageConfiguration: *longTermCare
+    nextPages:
+      - pageName: pastInjury
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  pastInjury:
+    pageConfiguration: *pastInjury
     nextPages:
       - pageName: introIncome
     skipCondition: *applicantDidNotChooseCERTAINPOPS?
