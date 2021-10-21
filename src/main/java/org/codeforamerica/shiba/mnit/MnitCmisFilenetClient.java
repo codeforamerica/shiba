@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -27,12 +28,17 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MimeTypeUtils;
 
-@Service
+import lombok.extern.slf4j.Slf4j;
+
+
+//Commenting out @Service so Spring doesn't auto-discover this component in prod mode and attempt the atompub connection in @PostConstruct. Remove test profile when we switch to this implementation.
+//@Service
+@Slf4j
 public class MnitCmisFilenetClient
 {
     private static final String PROGRAMS = "Programs";
@@ -121,13 +127,13 @@ public class MnitCmisFilenetClient
     	Folder filenetFolder = session.getRootFolder();
     	Document document = null;
     	try {
-    		document = filenetFolder.createDocument(properties, contentStream, VersioningState.NONE);
+    		document = filenetFolder.createDocument(properties, contentStream, VersioningState.MAJOR);
     	} catch(Exception e) {
-    		System.out.println("Filenet exception: " + e.getMessage());
+    		log.error("Filenet exception={}" , e);
     	}
     	if (document != null) {
 	        String docId = document.getId();
-	        System.out.println("filenet document ID: " + docId);
+	        log.info("filenet document ID: " + docId);
     	}
     }
     

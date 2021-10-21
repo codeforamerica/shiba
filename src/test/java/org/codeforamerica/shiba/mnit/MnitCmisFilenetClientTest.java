@@ -1,34 +1,23 @@
 package org.codeforamerica.shiba.mnit;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.xpath;
 import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
-import static org.springframework.ws.test.client.RequestMatchers.xpath;
-import static org.springframework.ws.test.client.ResponseCreators.withException;
-import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Base64;
-import java.util.Map;
-import javax.xml.soap.SOAPException;
+
 import javax.xml.transform.dom.DOMResult;
+
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,15 +25,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.test.client.MockWebServiceServer;
-import org.springframework.xml.namespace.SimpleNamespaceContext;
-import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Node;
-
+@Disabled
 @SpringBootTest
 @ActiveProfiles("test")
 class MnitCmisFilenetClientTest {

@@ -33,6 +33,7 @@ import org.codeforamerica.shiba.filenetwsdl.CmisPropertyBoolean;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertyId;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertyString;
 import org.codeforamerica.shiba.filenetwsdl.CreateDocument;
+import org.codeforamerica.shiba.filenetwsdl.ObjectFactory;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +52,9 @@ import org.springframework.ws.soap.saaj.SaajSoapMessage;
 @Slf4j
 public class MnitFilenetWebServiceClient {
 
-  private final WebServiceTemplate filenetWebServiceTemplate;
+  private static final String APPLICATION_PDF = "application/pdf";
+private static final String APPLICATION_XML = "application/xml";
+private final WebServiceTemplate filenetWebServiceTemplate;
   private final Clock clock;
   private final String username;
   private final String password;
@@ -199,16 +202,23 @@ public class MnitFilenetWebServiceClient {
 
   private void setContentStreamOnDocument(ApplicationFile applicationFile,
       CreateDocument createDocument) {
+	  
+      String fileName = applicationFile.getFileName();
+      String mimeType = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
+      if (fileName.toLowerCase().endsWith(".pdf")) {
+      	mimeType = APPLICATION_PDF;
+      } else if (fileName.toLowerCase().endsWith(".xml")) {
+      	mimeType = APPLICATION_XML;
+      }
+	  
     CmisContentStreamType contentStream = new CmisContentStreamType();
     contentStream.setLength(BigInteger.ZERO);
     contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
-        MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE)));
-    QName contentStreamQName = new QName(
-        "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd",
-        "cmisContentStreamType", "cmism");
-    JAXBElement<CmisContentStreamType> jaxbContentStream = new JAXBElement<CmisContentStreamType>(
-        contentStreamQName, CmisContentStreamType.class, contentStream);
-    createDocument.setContentStream(jaxbContentStream);
+        mimeType)));
+    
+    ObjectFactory ob  = new ObjectFactory();
+    JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(contentStream);
+	createDocument.setContentStream(jaxbContentStream);
   }
 
   @NotNull
