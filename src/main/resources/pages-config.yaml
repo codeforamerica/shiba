@@ -4443,13 +4443,12 @@ pageGroups:
     restartPage: addHouseholdMembers
     startingCount: 1
 landmarkPages:
-  startTimerPage:
+  startTimerPage: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
-    - prepareToApply
     - identifyCounty
-  landingPages:
+  landingPages: # the home page of the app
     - landing
-  postSubmitPages:
+  postSubmitPages: # pages which are accessible after submitting an application, also all pages of the laterdocs flow
     - addingDocuments
     - howToAddDocuments
     - documentRecommendation
@@ -4464,10 +4463,9 @@ landmarkPages:
     - documentsSent
     - identifyCounty
     - identifyCountyBeforeApplying
-    - prepareToApply
   nextStepsPage: nextSteps
-  terminalPage: success
-  laterDocsTerminalPage: documentsSent
+  terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
+  laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   submitPage: signThisApplication
   laterDocsIdPage: matchInfo # Page where confirmation number is generated for later docs (happens before submit)
   uploadDocumentsPage: uploadDocuments
