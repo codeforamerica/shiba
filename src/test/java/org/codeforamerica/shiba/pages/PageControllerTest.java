@@ -1,8 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,13 +18,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.*;
+import java.util.List;
 import java.util.Locale;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -30,6 +36,7 @@ import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +76,8 @@ class PageControllerTest {
   private PageEventPublisher pageEventPublisher;
   @MockBean
   private FeatureFlagConfiguration featureFlags;
+  @MockBean
+  private RoutingDecisionService routingDecisionService;
   @SpyBean
   private DocumentRepository documentRepository;
 
@@ -292,6 +301,37 @@ class PageControllerTest {
         .sentiment(Sentiment.HAPPY)
         .feedback(feedback)
         .build());
+  }
+
+  @Test
+  void shouldUpdateRoutingDestinationsInTheDatabaseOnTerminalPage() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("CASH", "CCAP"));
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(Anoka)
+        .build();
+
+    when(routingDecisionService.getRoutingDestinations(applicationData, CAF)).thenReturn(List.of(
+        new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe")
+    ));
+    when(routingDecisionService.getRoutingDestinations(applicationData, CCAP)).thenReturn(List.of(
+        new CountyRoutingDestination(Anoka, "folder", "dhsProviderId", "something@example.com",
+            "8675309")
+    ));
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/terminalPage"));
+
+    verify(applicationRepository).save(application);
+    assertThat(application.getApplicationData().getRoutingDestinationNames())
+        .containsExactlyInAnyOrder("Mille Lacs Band of Ojibwe", "Anoka");
   }
 
   @Test

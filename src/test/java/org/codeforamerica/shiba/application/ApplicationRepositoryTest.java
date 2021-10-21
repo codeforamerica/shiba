@@ -3,7 +3,10 @@ package org.codeforamerica.shiba.application;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.*;
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.County.StLouis;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
@@ -16,11 +19,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
@@ -90,8 +94,12 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     subworkflows.addIteration("someGroup", subflowIteration);
     applicationData.setSubworkflows(subworkflows);
 
-    MockMultipartFile image = new MockMultipartFile("image", "test".getBytes());
-    applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+    String contentType = "image/jpeg";
+    String originalFilename = "originalFilename";
+    MockMultipartFile image = new MockMultipartFile("image", originalFilename, contentType,
+        "test".getBytes());
+    applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", contentType);
+    applicationData.setRoutingDestinationNames(List.of("White Earth", "Olmsted"));
 
     Application application = Application.builder()
         .id("someid")
@@ -112,6 +120,16 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getCafApplicationStatus()).isNull();
     assertThat(savedApplication.getCcapApplicationStatus()).isNull();
     assertThat(savedApplication.getCertainPopsApplicationStatus()).isNull();
+
+    UploadedDocument uploadedDoc = savedApplication.getApplicationData().getUploadedDocs().get(0);
+    assertThat(uploadedDoc.getFilename()).isEqualTo(originalFilename);
+    assertThat(uploadedDoc.getS3Filepath()).isEqualTo("someS3FilePath");
+    assertThat(uploadedDoc.getThumbnailFilepath()).isEqualTo("someDataUrl");
+    assertThat(uploadedDoc.getType()).isEqualTo(contentType);
+    assertThat(uploadedDoc.getSize()).isEqualTo(4L);
+
+    assertThat(savedApplication.getApplicationData().getRoutingDestinationNames()).containsExactly(
+        "White Earth", "Olmsted");
   }
 
   @Test

@@ -38,6 +38,7 @@ public enum County {
     this.displayName = displayName;
   }
 
+  // This method is how we get our list of active counties
   public static County valueFor(String county) {
     return switch (county) {
       case "Anoka" -> Anoka;
