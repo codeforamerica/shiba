@@ -194,8 +194,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("didYouHaveAPastInjury", YES.getDisplayValue());
 
     //Retroactive Coverage
-    testPage.enter("retroActiveCoverageQuestion", YES.getDisplayValue());
-    
+    testPage.enter("retroactiveCoverageQuestion", YES.getDisplayValue());
+
 
     // Income & Employment
     // Certain Pops will increment milestone steps
