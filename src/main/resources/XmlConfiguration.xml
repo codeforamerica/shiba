@@ -43,6 +43,7 @@
                 <ns4:Gender>{{PERSONALINFO_SEX}}</ns4:Gender>
                 <ns4:MaritalStatus>{{PERSONALINFO_MARITALSTATUS}}</ns4:MaritalStatus>
                 <ns4:DOB>{{PERSONALINFO_DATE_OF_BIRTH}}</ns4:DOB>
+                <ns4:Relationship>Self</ns4:Relationship>
             </ns4:PersonalInfo>
             <ns4:ResidencyInfo>
                 <ns4:DateRecentMoveToMN>{{PERSONALINFO_MOVETOMNDATE}}</ns4:DateRecentMoveToMN>
@@ -201,6 +202,7 @@
                 <ns4:Gender>{{SEX_0}}</ns4:Gender>
                 <ns4:MaritalStatus>{{MARITALSTATUS_0}}</ns4:MaritalStatus>
                 <ns4:DOB>{{DATE_OF_BIRTH_0}}</ns4:DOB>
+                <ns4:Relationship>{{RELATIONSHIP_0}}</ns4:Relationship>
             </ns4:PersonalInfo>
             <ns4:ResidencyInfo>
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_0}}</ns4:DateRecentMoveToMN>
@@ -229,6 +231,7 @@
                 <ns4:Gender>{{SEX_1}}</ns4:Gender>
                 <ns4:MaritalStatus>{{MARITALSTATUS_1}}</ns4:MaritalStatus>
                 <ns4:DOB>{{DATE_OF_BIRTH_1}}</ns4:DOB>
+                <ns4:Relationship>{{RELATIONSHIP_1}}</ns4:Relationship>
             </ns4:PersonalInfo>
             <ns4:ResidencyInfo>
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_1}}</ns4:DateRecentMoveToMN>
@@ -257,6 +260,7 @@
                 <ns4:Gender>{{SEX_2}}</ns4:Gender>
                 <ns4:MaritalStatus>{{MARITALSTATUS_2}}</ns4:MaritalStatus>
                 <ns4:DOB>{{DATE_OF_BIRTH_2}}</ns4:DOB>
+                <ns4:relationship>{{RELATIONSHIP_2}}</ns4:relationship>
             </ns4:PersonalInfo>
             <ns4:ResidencyInfo>
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_2}}</ns4:DateRecentMoveToMN>
@@ -285,6 +289,7 @@
                 <ns4:Gender>{{SEX_3}}</ns4:Gender>
                 <ns4:MaritalStatus>{{MARITALSTATUS_3}}</ns4:MaritalStatus>
                 <ns4:DOB>{{DATE_OF_BIRTH_3}}</ns4:DOB>
+                <ns4:Relationship>{{RELATIONSHIP_3}}</ns4:Relationship>
             </ns4:PersonalInfo>
             <ns4:ResidencyInfo>
                 <ns4:DateRecentMoveToMN>{{MOVETOMNDATE_3}}</ns4:DateRecentMoveToMN>
