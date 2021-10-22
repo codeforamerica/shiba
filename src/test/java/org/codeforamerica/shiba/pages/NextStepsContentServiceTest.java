@@ -63,13 +63,46 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   private static Stream<Arguments> nextStepMessageTestCases() {
     return Stream.of(
         Arguments.of(
-            "Example 1 (Only Expedited SNAP)",
-            List.of(SNAP),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
-            List.of(
+            "Example 1 (Only Expedited SNAP)", // Title
+            List.of(SNAP), // List of programs
+            SnapExpeditedEligibility.ELIGIBLE, // Expedited Snap Eligibility
+            CcapExpeditedEligibility.NOT_ELIGIBLE, // Expedited CCAP Eligibility
+            List.of( // a list of expected next step paragraphs
                 "Within 24 hours, expect a call from your county about your food assistance application.",
                 "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        ),
+        Arguments.of(
+            "Example 2", // Title
+            List.of(SNAP, CCAP), // List of programs
+            SnapExpeditedEligibility.ELIGIBLE, // Expedited Snap Eligibility
+            CcapExpeditedEligibility.NOT_ELIGIBLE, // Expedited CCAP Eligibility
+            List.of( // a list of expected next step paragraphs
+                "Within 24 hours, expect a call from your county about your food assistance application.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your childcare application. The letter will explain your next steps.",
+                "If you don't hear from your county within 3 days or want an update on your case, please call your county."
+            )
+        ),
+        Arguments.of(
+            "Second section appears", // Title
+            List.of(SNAP, CCAP), // List of programs
+            SnapExpeditedEligibility.NOT_ELIGIBLE, // Expedited Snap Eligibility
+            CcapExpeditedEligibility.ELIGIBLE, // Expedited CCAP Eligibility
+            List.of( // a list of expected next step paragraphs
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your food support application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
+            )
+        ),
+        Arguments.of(
+            "Example 3", // Title
+            List.of(SNAP, CCAP, CASH, EA), // List of programs
+            SnapExpeditedEligibility.NOT_ELIGIBLE, // Expedited Snap Eligibility
+            CcapExpeditedEligibility.ELIGIBLE, // Expedited CCAP Eligibility
+            List.of( // a list of expected next step paragraphs
+                "Within 5 days, your county will determine your childcare assistance case and send you a letter in the mail.",
+                "In the next 7-10 days, expect to get a letter in the mail from your county about your food support, cash support and emergency assistance application. The letter will explain your next steps.",
+                "Call your county if you don’t hear from them in the time period we’ve noted."
             )
         )
     );
@@ -77,9 +110,11 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#nextStepMessageTestCases")
-  void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
+  void displaysCorrectSuccessMessageForApplicantPrograms(String testName,
+      List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
+      CcapExpeditedEligibility ccapExpeditedEligibility,
+      List<String> expectedMessages)
       throws Exception {
     PageData programsPage = new PageData();
     programsPage.put("programs", InputData.builder().value(programs).build());
