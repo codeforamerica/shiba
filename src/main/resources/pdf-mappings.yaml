@@ -109,6 +109,8 @@ mappings:
     doYouNeedLongTermCare: NEED_LONG_TERM_CARE
   pastInjury:
     didYouHaveAPastInjury: HAD_A_PAST_ACCIDENT_OR_INJURY
+  retroactiveCoverage:
+    retroactiveCoverageQuestion: RETROACTIVE_COVERAGE_HELP
   unearnedIncome:
     SOCIAL_SECURITY: SOCIAL_SECURITY
     SSI: SSI

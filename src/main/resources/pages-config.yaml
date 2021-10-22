@@ -1844,6 +1844,16 @@ pageDefinitions:
     inputs:
       - name: didYouHaveAPastInjury
         type: YES_NO
+  - &retroactiveCoverage
+    name: retroactiveCoverage
+    pageTitle: retroactive-coverage.title
+    headerKey: retroacvtive-coverage.help-paying-for-medical-bills-from-the-last-3-months
+    contextFragment: retroactiveCoverageFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: retroactiveCoverageQuestion
+        type: YES_NO
+        helpMessageKey: retroactive-coverage.you-might-be-eligible-for-retroactive-coverage
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -3541,6 +3551,13 @@ workflow:
       - pageName: choosePrograms
   pastInjury:
     pageConfiguration: *pastInjury
+    nextPages:
+      - pageName: retroactiveCoverage
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  retroactiveCoverage:
+    pageConfiguration: *retroactiveCoverage
     nextPages:
       - pageName: introIncome
     skipCondition: *applicantDidNotChooseCERTAINPOPS?
