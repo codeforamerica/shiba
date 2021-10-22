@@ -51,11 +51,12 @@ import org.w3c.dom.Node;
 @ActiveProfiles("test")
 class MnitFilenetWebServiceClientTest {
 
-  
+
   private final Map<String, String> namespaceMapping = Map
-	      .of("ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/", "ns3",
-	    	  "http://docs.oasis-open.org/ns/cmis/core/200908/",
-	    	  "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
+      .of("ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/", "ns3",
+          "http://docs.oasis-open.org/ns/cmis/core/200908/",
+          "cmism",
+          "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
   String fileContent = "fileContent";
   String fileName = "fileName";
   StringSource successResponse = new StringSource("" +
@@ -104,30 +105,47 @@ class MnitFilenetWebServiceClientTest {
   }
 
   //TODO: namespaces change order. Need to figure out how to use a wildcard in the xpath assertions.  
-  @Disabled
   @Test
   void sendsTheDocument() {
     mockWebServiceServer.expect(connectionTo(url))
         .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
             .evaluatesTo("Programs"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyBoolean[@propertyDefinitionId='Read']/ns3:value", namespaceMapping)
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyBoolean[@propertyDefinitionId='Read']/ns3:value",
+            namespaceMapping)
             .evaluatesTo(true))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='OriginalFileName']/ns3:value", namespaceMapping)
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='OriginalFileName']/ns3:value",
+            namespaceMapping)
             .evaluatesTo("fileName"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='FileType']/ns3:value", namespaceMapping)
-                .evaluatesTo("Misc"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='cmis:name']/ns3:value", namespaceMapping)
-                .evaluatesTo("fileName"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='NPI']/ns3:value", namespaceMapping)
-                .evaluatesTo("A000055800"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyId[@propertyDefinitionId='cmis:objectTypeId']/ns3:value", namespaceMapping)
-                .evaluatesTo("MNITSMailbox"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='MNITSMailboxTransactionType']/ns3:value", namespaceMapping)
-                .evaluatesTo("OLA"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Source']/ns3:value", namespaceMapping)
-                .evaluatesTo("MNITS"))
-        .andExpect(xpath("//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Flow']/ns3:value", namespaceMapping)
-                .evaluatesTo("Inbound"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='FileType']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("Misc"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='cmis:name']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("fileName"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='NPI']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("A000055800"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyId[@propertyDefinitionId='cmis:objectTypeId']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("MNITSMailbox"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='MNITSMailboxTransactionType']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("OLA"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Source']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("MNITS"))
+        .andExpect(xpath(
+            "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Flow']/ns3:value",
+            namespaceMapping)
+            .evaluatesTo("Inbound"))
         .andExpect(
             xpath("//ns2:createDocument/ns3:ContentStream/ns3:length", namespaceMapping)
                 .evaluatesTo(0))
@@ -153,7 +171,7 @@ class MnitFilenetWebServiceClientTest {
   @Test
   void sendingDocumentRetriesIfSOAPExceptionIsThrown() {
     mockWebServiceServer.expect(connectionTo(url))
-    .andRespond(withException(
+        .andRespond(withException(
             new RuntimeException(new SOAPException("soap exception ahhh"))));
 
     mockWebServiceServer.expect(connectionTo(url))
@@ -182,9 +200,9 @@ class MnitFilenetWebServiceClientTest {
             new RuntimeException(new WebServiceTransportException("retry 2 failure"))));
 
     RuntimeException exceptionToSend = new RuntimeException(
-            mock(SoapFaultClientException.class));
-        mockWebServiceServer.expect(connectionTo(url))
-            .andRespond(withException(exceptionToSend));
+        mock(SoapFaultClientException.class));
+    mockWebServiceServer.expect(connectionTo(url))
+        .andRespond(withException(exceptionToSend));
 
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
@@ -225,8 +243,8 @@ class MnitFilenetWebServiceClientTest {
                   namespaceContext,
                   Matchers.equalTo(password)));
           MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath(
-                  "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
-                  namespaceContext));
+              "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
+              namespaceContext));
         });
 
     mnitFilenetWebServiceClient.send(new ApplicationFile(

@@ -53,8 +53,8 @@ import org.springframework.ws.soap.saaj.SaajSoapMessage;
 public class MnitFilenetWebServiceClient {
 
   private static final String APPLICATION_PDF = "application/pdf";
-private static final String APPLICATION_XML = "application/xml";
-private final WebServiceTemplate filenetWebServiceTemplate;
+  private static final String APPLICATION_XML = "application/xml";
+  private final WebServiceTemplate filenetWebServiceTemplate;
   private final Clock clock;
   private final String username;
   private final String password;
@@ -202,23 +202,24 @@ private final WebServiceTemplate filenetWebServiceTemplate;
 
   private void setContentStreamOnDocument(ApplicationFile applicationFile,
       CreateDocument createDocument) {
-	  
-      String fileName = applicationFile.getFileName();
-      String mimeType = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
-      if (fileName.toLowerCase().endsWith(".pdf")) {
-      	mimeType = APPLICATION_PDF;
-      } else if (fileName.toLowerCase().endsWith(".xml")) {
-      	mimeType = APPLICATION_XML;
-      }
-	  
+
+    String fileName = applicationFile.getFileName();
+    String mimeType = MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
+    if (fileName.toLowerCase().endsWith(".pdf")) {
+      mimeType = APPLICATION_PDF;
+    } else if (fileName.toLowerCase().endsWith(".xml")) {
+      mimeType = APPLICATION_XML;
+    }
+
     CmisContentStreamType contentStream = new CmisContentStreamType();
     contentStream.setLength(BigInteger.ZERO);
     contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
         mimeType)));
-    
-    ObjectFactory ob  = new ObjectFactory();
-    JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(contentStream);
-	createDocument.setContentStream(jaxbContentStream);
+
+    ObjectFactory ob = new ObjectFactory();
+    JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(
+        contentStream);
+    createDocument.setContentStream(jaxbContentStream);
   }
 
   @NotNull
