@@ -4,71 +4,6 @@ on:
   workflow_dispatch:
     inputs: {}
 jobs:
-  deploy:
-    name: Deploy to Aptible production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch Latest Release
-        id: fetch-latest-release
-        uses: thebritican/fetch-latest-release@v2.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.fetch-latest-release.outputs.tag_name }}
-      - run: git fetch --prune --unshallow
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2.3.1
-        with:
-          key: ${{ secrets.APTIBLE_SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
-      - name: Generate Sentry release name from sha
-        id: generate-release
-        run: echo "::set-output name=RELEASE::$(git rev-parse HEAD)"
-      - name: Push to Aptible remote branch
-        run: git push -f git@beta.aptible.com:mn-shiba-prod/prod.git "${{ steps.fetch-latest-release.outputs.tag_name }}:${{ steps.fetch-latest-release.outputs.tag_name }}"
-      - name: Install Aptible CLI and deploy to Aptible
-        run: |
-          wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
-          sudo dpkg -i aptible-package
-          aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app prod --git-commitish ${{ steps.fetch-latest-release.outputs.tag_name }} SPRING_PROFILES_ACTIVE=production \
-          'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY_PRODUCTION }}' \
-          'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
-          'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
-          'CLIENT_KEYSTORE-PASSWORD=${{ secrets.CLIENT_KEYSTORE_PASSWORD_PRODUCTION}}' \
-          'CLIENT_TRUSTSTORE-PASSWORD=${{ secrets.CLIENT_TRUSTSTORE_PASSWORD_PRODUCTION}}' \
-          'MNIT-ESB_USERNAME=${{ secrets.MNIT_USERNAME_PRODUCTION }}' \
-          'MNIT-ESB_PASSWORD=${{ secrets.MNIT_PASSWORD_PRODUCTION }}' \
-          'SHIBA_USERNAME=${{ secrets.SHIBA_USERNAME }}' \
-          'SHIBA_PASSWORD=${{ secrets.SHIBA_PASSWORD }}' \
-          'ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY_PRODUCTION }}' \
-          'SENTRY_DSN=${{ secrets.SENTRY_DSN }}' \
-          'SENTRY_ENVIRONMENT=production' \
-          'SENTRY_RELEASE=${{ steps.generate-release.outputs.RELEASE }}' \
-          'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_PRODUCTION }}' \
-          'SSL_PROTOCOLS_OVERRIDE=TLSv1.2' \
-          'AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING_PRODUCTION }}' \
-          'AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME_PRODUCTION }}'
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: codeforamerica
-          SENTRY_PROJECT: shiba
-        with:
-          environment: production
-      - name: Announce on Slack
-        if: ${{ always() }}
-        uses: innocarpe/actions-slack@v1
-        with:
-          status: ${{ job.status }}
-          success_text: 'Deploy to Aptible production succeeded :smile: <!subteam^S0209RR14KB> <@U01DU77UREG> <@U019GSLR63H>'
-          failure_text: 'Deploy to Aptible production failed :frowning:'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-
   # Deploy to prod steps:
   # 1. find latest git release
   # 2. Login to openshift prod
@@ -82,7 +17,15 @@ jobs:
       id: fetch-latest-release
       uses: thebritican/fetch-latest-release@v2.0.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}        
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Sentry release
+      uses: getsentry/action-release@v1
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: codeforamerica
+        SENTRY_PROJECT: shiba
+      with:
+        environment: production
     - name: Authenticate and set context for prod
       uses: redhat-actions/oc-login@v1
       with:

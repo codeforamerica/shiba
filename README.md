@@ -62,10 +62,6 @@ jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
 - Create the database using the command line:
     - `$ createuser -s shiba`
     - `$ createdb shiba`
-    
-### Inspecting hosted databases
-- To generate an access string to our hosted dbs, run:`aptible db:tunnel <name of db>`
-- You can find all our db names by running `aptible db:list`
  
 ### Test:
 
