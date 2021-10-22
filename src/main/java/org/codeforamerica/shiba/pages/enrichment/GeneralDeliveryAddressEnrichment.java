@@ -61,12 +61,14 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
       zipcodeFromCity = postOfficeAddress.getZipcode();
 
       enrichedAddressLines.add("Main Post Office.");
+      enrichedAddressLines.add(addressFromCity);
+      enrichedAddressLines.add(postOfficeAddress.getCity() + ", MN " + zipcodeFromCity);
       callYourCounty += "-" + county.displayName().toLowerCase();
       tellCountyWorker += "-" + county.displayName().toLowerCase();
+    } else {
+      enrichedAddressLines.add(addressFromCity);
+      enrichedAddressLines.add(zipcodeFromCity);
     }
-
-    enrichedAddressLines.add(addressFromCity);
-    enrichedAddressLines.add(zipcodeFromCity);
 
     return new EnrichmentResult(Map.of(
         // For filling out application
