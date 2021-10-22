@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shiba
+    url: jdbc:postgresql://localhost:5432/shiba-interview
   session:
     store-type: jdbc
     jdbc:
@@ -9,9 +9,9 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 25MB
-    flyway:
-      baseline-version: 0
-      baseline-on-migrate: true
+  flyway:
+    baseline-version: 0
+    baseline-on-migrate: true
   security:
     oauth2:
       client:
