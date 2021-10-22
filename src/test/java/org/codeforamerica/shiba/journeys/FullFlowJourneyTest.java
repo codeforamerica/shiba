@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.journeys;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
@@ -397,7 +396,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
-        "Your application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300) on January 1, 2020.");
+        "Your application was submitted to Hennepin County (612-596-1300) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) on January 1, 2020.");
     applicationId = downloadPdfs(true, true);
 
     // CCAP fields

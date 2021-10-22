@@ -346,7 +346,7 @@ public class PageController {
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
       // Get all routing destinations for this application
-      Set<RoutingDestination> routingDestinations = new HashSet<>();
+      Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
       DocumentListParser.parse(applicationData).forEach(doc -> {
         List<RoutingDestination> routingDestinationsForThisDoc =
             routingDecisionService.getRoutingDestinations(applicationData, doc);
