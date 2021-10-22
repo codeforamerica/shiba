@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.testutilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -46,8 +47,12 @@ public class PagesDataBuilder {
     return withPageData(pageName, Map.of(inputName, value));
   }
 
-  public PagesDataBuilder withPageData(String pageName, Map<String, List<String>> pageData) {
-    pageDataBuilders.add(new PageDataBuilder(pageName, pageData));
+  @SuppressWarnings("unchecked")
+  public PagesDataBuilder withPageData(String pageName, Map<String, Object> pageData) {
+    Map<String, List<String>> mappedToList = new HashMap<>();
+    pageData.forEach((key, value) -> mappedToList.put(key,
+        value instanceof List ? (List<String>) value : List.of((String) value)));
+    pageDataBuilders.add(new PageDataBuilder(pageName, mappedToList));
     return this;
   }
 

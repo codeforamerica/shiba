@@ -30,9 +30,8 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -127,17 +126,14 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowProgramsInputWithCombinedProgramSelection() {
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CASH"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testuser")
-        ))
-    ));
+    new TestApplicationDataBuilder(applicationData)
+        .withSubworkflow("household", new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CASH"),
+                "firstName", List.of("Jane"),
+                "lastName", List.of("Testuser")
+            )));
 
-    Subworkflows subworkflows = new Subworkflows();
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)
@@ -159,16 +155,13 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowFullNames() {
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CASH"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testuser")
-        ))
-    ));
-    Subworkflows subworkflows = new Subworkflows();
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
+    new TestApplicationDataBuilder(applicationData)
+        .withSubworkflow("household", new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CASH"),
+                "firstName", List.of("Jane"),
+                "lastName", List.of("Testuser")
+            )));
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)

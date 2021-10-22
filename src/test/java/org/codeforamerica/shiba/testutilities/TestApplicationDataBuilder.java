@@ -145,14 +145,14 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withJobs() {
-    return withSubworkflow("jobs",
-        new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK"));
+    return withSubworkflow("jobs", new PagesDataBuilder()
+        .withNonHourlyJob("false", "1.1", "EVERY_WEEK"));
   }
 
   public TestApplicationDataBuilder withHouseholdMemberPrograms(List<String> programs) {
-    return withSubworkflow("household", (PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of("programs", programs)))
-    )));
+    return withSubworkflow("household", (new PagesDataBuilder()
+        .withPageData("householdMemberInfo", Map.of("programs", programs)))
+    );
   }
 
   public TestApplicationDataBuilder withHouseholdMember() {
