@@ -35,6 +35,34 @@ public class LivingSituationInputsMapperTest {
   }
 
   @Test
+  public void shouldMapPlaceNotMeantForHousingAndAddCounty() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("livingSituation", "livingSituation",
+            List.of("LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING"))
+        .withPageData("identifyCounty", "county", "Hennepin")
+        .build();
+
+    List<ApplicationInput> result = mapper.map(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null, null);
+
+    assertThat(result).containsOnly(
+        new ApplicationInput(
+            "livingSituation",
+            "derivedLivingSituation",
+            List.of("LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING"),
+            ApplicationInputType.ENUMERATED_SINGLE_VALUE
+        ),
+        new ApplicationInput(
+            "livingSituation",
+            "county",
+            List.of("Hennepin"),
+            ApplicationInputType.SINGLE_VALUE
+        )
+    );
+  }
+
+  @Test
   public void shouldMapUnansweredToUnknown() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("livingSituation", "livingSituation",

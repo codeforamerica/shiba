@@ -3294,6 +3294,7 @@ workflow:
       conditions:
         - *applicantDidNotChooseGRH?
         - *noOneChoseCCAP?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers

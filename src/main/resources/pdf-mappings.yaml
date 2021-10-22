@@ -3,8 +3,6 @@ mappings:
     spokenLanguage: APPLICANT_SPOKEN_LANGUAGE_PREFERENCE
     writtenLanguage: APPLICANT_WRITTEN_LANGUAGE_PREFERENCE
     needInterpreter: NEED_INTERPRETER
-  identifyCounty:
-    county: LIVING_SITUATION_COUNTY
   personalInfo:
     firstName: APPLICANT_FIRST_NAME
     lastName: APPLICANT_LAST_NAME
@@ -162,6 +160,7 @@ mappings:
     otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
   livingSituation:
     derivedLivingSituation: LIVING_SITUATION
+    county: LIVING_SITUATION_COUNTY
   livingWithFamilyOrFriendsYesNo:
     livingWithFamilyOrFriendsYesNo: LIVING_WITH_FAMILY_OR_FRIENDS
   futureIncome:

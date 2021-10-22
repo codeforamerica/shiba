@@ -764,7 +764,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       fillInPersonalInfoAndContactInfoAndAddress();
       postExpectingSuccess("livingSituation", "livingSituation",
-          "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE");
+          "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
 
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
@@ -810,7 +810,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICANT_HOME_COUNTY", "", pdf);
       assertPdfFieldEquals("APPLICANT_MAILING_COUNTY", "someCounty", pdf);
       assertPdfFieldEquals("LIVING_SITUATION_COUNTY", "Anoka", pdf);
-      assertPdfFieldEquals("LIVING_SITUATION", "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE",
+      assertPdfFieldEquals("LIVING_SITUATION", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING",
           pdf);
       assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
 
