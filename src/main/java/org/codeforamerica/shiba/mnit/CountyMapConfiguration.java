@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.County.*;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination.CountyRoutingDestinationBuilder;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -56,7 +57,8 @@ public class CountyMapConfiguration {
         "612-596-1300",
         "help+staging@mnbenefits.org",
         "45ed1eea-d045-48fe-9970-383e1b889ec5",
-        "A000027200");
+        "A000027200",
+        "100 S 1st St", "Minneapolis", "55401");
     addCounty(Morrison,
         "320-631-3599",
         "help+staging@mnbenefits.org",
@@ -144,7 +146,8 @@ public class CountyMapConfiguration {
         "612-596-1300",
         "help+staging@mnbenefits.org",
         "45ed1eea-d045-48fe-9970-383e1b889ec5",
-        "A000027200");
+        "A000027200",
+        "100 S 1st St", "Minneapolis", "55401");
     addCounty(Morrison,
         "320-631-3599",
         "help+staging@mnbenefits.org",
@@ -232,7 +235,8 @@ public class CountyMapConfiguration {
         "612-596-1300",
         "hhsews@hennepin.us",
         "39e0ea57-cc12-4cc1-a074-0ad3d7216d01",
-        "A000027200");
+        "A000027200",
+        "100 S 1st St", "Minneapolis", "55401");
     addCounty(Morrison,
         "320-631-3599",
         "callcenter@co.morrison.mn.us",
@@ -340,7 +344,8 @@ public class CountyMapConfiguration {
         "612-596-1300",
         "help+dev@mnbenefits.org",
         "5195b061-9bdc-4d31-9840-90a99902d329",
-        "A000027200");
+        "A000027200",
+        "100 S 1st St", "Minneapolis", "55401");
     addCounty(Houston, "507-725-5811");
     addCounty(Hubbard, "218-732-1451");
     addCounty(Isanti, "763-689-1711");
@@ -441,6 +446,18 @@ public class CountyMapConfiguration {
         "359cf4ee-7147-4c3c-bfc0-f29213b68fc0",
         "1124197249");
     addCounty(YellowMedicine, "320-564-2211");
+  }
+
+  private void addCounty(County county, String phoneNumber, String email, String folderId,
+      String dhsProviderId, String mailingStreetAddress, String mailingCity,
+      String mailingZipcode) {
+    addCounty(county, CountyRoutingDestination.builder()
+        .email(email)
+        .phoneNumber(phoneNumber)
+        .folderId(folderId).dhsProviderId(dhsProviderId)
+        .postOfficeAddress(
+            new Address(mailingStreetAddress, mailingCity, "MN", mailingZipcode, "",
+                county.displayName())));
   }
 
   private void addCounty(County county, String phoneNumber, String email, String folderId,

@@ -323,7 +323,7 @@ class PageControllerTest {
     ));
     when(routingDecisionService.getRoutingDestinations(applicationData, CCAP)).thenReturn(List.of(
         new CountyRoutingDestination(Anoka, "folder", "dhsProviderId", "something@example.com",
-            "8675309")
+            "8675309", null)
     ));
     when(applicationRepository.find(applicationId)).thenReturn(application);
 

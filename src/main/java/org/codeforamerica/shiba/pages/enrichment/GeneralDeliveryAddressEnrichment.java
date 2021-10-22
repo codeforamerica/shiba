@@ -14,6 +14,16 @@ import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
+/**
+ * This will provide some default information to display to the client on the General Delivery Info
+ * page as well as fill in mailing information on the pdf applications.
+ * <p>
+ * If the county has "postOfficeAddress" information configured, that will be used for delivery
+ * mailing address.
+ *
+ * @see org.codeforamerica.shiba.output.applicationinputsmappers.MailingAddressStreetMapper
+ * @see org.codeforamerica.shiba.mnit.CountyRoutingDestination
+ */
 @Component
 public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
@@ -36,7 +46,8 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
     String countyFromCity = cityInfo.get("county").replace(" ", "");
     String zipcodeFromCity = cityInfo.get("zipcode") + "-9999";
     County county = County.valueOf(countyFromCity);
-    String phoneNumber = countyMap.get(county).getPhoneNumber();
+    CountyRoutingDestination countyInfo = countyMap.get(county);
+    String phoneNumber = countyInfo.getPhoneNumber();
     String displayCounty = county.displayName() + " County";
     String addressFromCity = cityName + ", MN";
 
@@ -44,18 +55,21 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
     String callYourCounty = "general-delivery-address.call-your-county-to-get-the-exact-street-address";
     String tellCountyWorker = "general-delivery-address.tell-the-county-worker-you-submitted-an-application-on-MNbenefits";
 
-    if (county == County.Hennepin) {
+    Address postOfficeAddress = countyInfo.getPostOfficeAddress();
+    if (postOfficeAddress != null) {
+      addressFromCity = postOfficeAddress.getStreet();
+      zipcodeFromCity = postOfficeAddress.getZipcode();
+
       enrichedAddressLines.add("Main Post Office.");
-      enrichedAddressLines.add("100 S 1st St");
-      enrichedAddressLines.add(addressFromCity + " " + cityInfo.get("zipcode"));
-      callYourCounty += "-hennepin";
-      tellCountyWorker += "-hennepin";
-    } else {
-      enrichedAddressLines.add(addressFromCity);
-      enrichedAddressLines.add(zipcodeFromCity);
+      callYourCounty += "-" + county.displayName().toLowerCase();
+      tellCountyWorker += "-" + county.displayName().toLowerCase();
     }
 
+    enrichedAddressLines.add(addressFromCity);
+    enrichedAddressLines.add(zipcodeFromCity);
+
     return new EnrichmentResult(Map.of(
+        // For filling out application
         "enrichedCounty", new InputData(List.of(displayCounty)),
         "enrichedPhoneNumber", new InputData(List.of(phoneNumber)),
         "enrichedZipcode", new InputData(List.of(zipcodeFromCity)),
