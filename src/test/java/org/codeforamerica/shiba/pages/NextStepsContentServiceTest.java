@@ -11,21 +11,16 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -153,9 +148,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     applicationData.setStartTimeOnce(Instant.now());
     var id = "some-id";
     applicationData.setId(id);
-    PageData pageData = new PageData();
-    pageData.put("email", InputData.builder().value(List.of("test@example.com")).build());
-    applicationData.getPagesData().put("contactInfo", pageData);
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("contactInfo", "email", "test@example.com");
 
     Application application = Application.builder()
         .id(id)
@@ -183,12 +177,9 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
   @Test
   void displaysCorrectSuccessMessageForHouseholdMemberPrograms() throws Exception {
-    setPrograms(List.of("SNAP"));
-
-    setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        PagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("GRH", "EA")))))
-    )))));
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("SNAP"))
+        .withHouseholdMemberPrograms(List.of("GRH", "EA"));
 
     var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
@@ -204,9 +195,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   }
 
   private void setPrograms(List<String> programs) {
-    PageData programsPage = new PageData();
-    programsPage.put("programs", InputData.builder().value(programs).build());
-    applicationData.getPagesData().put("choosePrograms", programsPage);
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(programs);
   }
 
   private void assertCorrectMessage(SnapExpeditedEligibility snapExpeditedEligibility,

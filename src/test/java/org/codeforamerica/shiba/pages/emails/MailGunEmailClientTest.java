@@ -427,16 +427,16 @@ class MailGunEmailClientTest {
     var applicationData = new ApplicationData();
     var phoneNumber = "(603) 879-1111";
     var email = "jane@example.com";
-    var pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("matchInfo", Map.of(
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Doe"),
+    var pagesData = new PagesDataBuilder().
+        withPageData("matchInfo", Map.of(
+            "firstName", "Jane",
+            "lastName", "Doe",
             "dateOfBirth", List.of("10", "04", "2020"),
-            "ssn", List.of("123-45-6789"),
-            "phoneNumber", List.of(phoneNumber),
-            "email", List.of(email)
+            "ssn", "123-45-6789",
+            "phoneNumber", phoneNumber,
+            "email", email
         ))
-    ));
+        .build();
     applicationData.setPagesData(pagesData);
     UploadedDocument doc1 = new UploadedDocument(fileName, "", "", "", 1000);
     applicationData.setUploadedDocs(List.of(doc1));

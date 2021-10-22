@@ -156,8 +156,8 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withHouseholdMember() {
-    return withSubworkflow("household", PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo",
+    return withSubworkflow("household", new PagesDataBuilder()
+        .withPageData("householdMemberInfo",
             Map.of("firstName", List.of("Daria"),
                 "lastName", List.of("Agàta"),
                 "dateOfBirth", List.of("5", "6", "1978"),
@@ -166,7 +166,6 @@ public class TestApplicationDataBuilder {
                 "livedInMnWholeLife", List.of("Yes"),
                 "relationship", List.of("housemate"),
                 "programs", List.of("SNAP"),
-                "ssn", List.of("123121234"))))
-    ));
+                "ssn", List.of("123121234"))).build());
   }
 }

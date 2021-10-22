@@ -1,7 +1,5 @@
 package org.codeforamerica.shiba.pages.events;
 
-import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -12,9 +10,7 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -32,11 +28,8 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -168,8 +161,8 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(applicationData.isCAFApplication()).thenReturn(true);
-      when(applicationData.getPagesData()).thenReturn(PagesDataBuilder.build(List.of(
-          new PageDataBuilder("contactInfo", Map.of("phoneOrEmail", List.of("EMAIL"))))));
+      when(applicationData.getPagesData()).thenReturn(new PagesDataBuilder()
+          .withPageData("contactInfo", "phoneOrEmail", "EMAIL").build());
       when(snapExpeditedEligibilityDecider.decide(applicationData))
           .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
