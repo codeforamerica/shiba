@@ -34,9 +34,13 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
+import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
@@ -49,6 +53,16 @@ import org.springframework.stereotype.Component;
 public class MailingAddressStreetMapper implements ApplicationInputsMapper {
 
   private final static String GENERAL_DELIVERY = "General Delivery";
+
+  private final CityInfoConfiguration cityInfoConfiguration;
+  private final CountyMap<CountyRoutingDestination> countyMap;
+
+  public MailingAddressStreetMapper(
+      CityInfoConfiguration cityInfoConfiguration,
+      CountyMap<CountyRoutingDestination> countyMap) {
+    this.cityInfoConfiguration = cityInfoConfiguration;
+    this.countyMap = countyMap;
+  }
 
   @Override
   public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
@@ -81,11 +95,26 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
   }
 
   private List<ApplicationInput> createGeneralDeliveryAddressInputs(PagesData pagesData) {
+    // Default values if no post office provided
+    String streetAddress = GENERAL_DELIVERY;
+    String zipcode = getFirstValue(pagesData, GENERAL_DELIVERY_ZIPCODE);
+    String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+
+    // If post office information available, set mailing address application inputs to that
+    Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping()
+        .get(cityName);
+    String countyFromCity = cityInfo.get("county").replace(" ", "");
+    CountyRoutingDestination countyInfo = countyMap.get(County.valueOf(countyFromCity));
+    if (countyInfo.getPostOfficeAddress() != null) {
+      streetAddress = countyInfo.getPostOfficeAddress().getStreet();
+      zipcode = countyInfo.getPostOfficeAddress().getZipcode();
+      cityName = countyInfo.getPostOfficeAddress().getCity();
+    }
+
     return List.of(
-        createSingleMailingInput("selectedStreetAddress", GENERAL_DELIVERY),
-        createSingleMailingInput("selectedZipCode",
-            getFirstValue(pagesData, GENERAL_DELIVERY_ZIPCODE)),
-        createSingleMailingInput("selectedCity", getFirstValue(pagesData, GENERAL_DELIVERY_CITY)),
+        createSingleMailingInput("selectedStreetAddress", streetAddress),
+        createSingleMailingInput("selectedZipCode", zipcode),
+        createSingleMailingInput("selectedCity", cityName),
         createSingleMailingInput("selectedState", "MN"));
   }
 

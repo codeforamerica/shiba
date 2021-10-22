@@ -27,18 +27,45 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 import java.util.List;
+import java.util.Map;
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
+import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MailingAddressStreetMapperTest {
 
-  private final MailingAddressStreetMapper mapper = new MailingAddressStreetMapper();
+  private final CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
+  private final CityInfoConfiguration cityInfo = new CityInfoConfiguration();
+
+  private final MailingAddressStreetMapper mapper =
+      new MailingAddressStreetMapper(cityInfo, countyMap);
+
+  @BeforeEach
+  void setup() {
+    countyMap.getCounties().putAll(Map.of(
+        County.Hennepin,
+        new CountyRoutingDestination(County.Hennepin, null, null, null, "765-4321",
+            new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
+        County.OtterTail,
+        new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null)));
+
+    cityInfo.getCityToZipAndCountyMapping().putAll(Map.of(
+        "Ada",
+        Map.of("displayName", "Ada", "zipcode", "56515", "county", "OtterTail"),
+        "Plymouth",
+        Map.of("displayName", "Plymouth", "zipcode", "55555", "county", "Hennepin")));
+  }
 
   @Test
   void shouldMapSameAsHomeAddressEnriched() {
@@ -135,7 +162,7 @@ class MailingAddressStreetMapperTest {
   }
 
   @Test
-  void shouldMapForGeneralDelivery() {
+  void shouldMapForGeneralDeliveryNoPostOfficeShouldShowBlankStreet() {
     String expectedCityInput = "Ada";
     String expectedZipcodeInput = "12345";
     ApplicationData applicationData = new TestApplicationDataBuilder()
@@ -149,6 +176,28 @@ class MailingAddressStreetMapperTest {
 
     assertThat(map).containsOnly(
         createApplicationInput("selectedStreetAddress", "General Delivery"),
+        createApplicationInput("selectedCity", expectedCityInput),
+        createApplicationInput("selectedState", "MN"),
+        createApplicationInput("selectedZipCode", expectedZipcodeInput));
+  }
+
+  @Test
+  void shouldMapForGeneralDeliveryWithPostOfficeShouldShowPostOfficeForMailing() {
+    String expectedCityInput = "Minneapolis";
+    String expectedZipcodeInput = "55555";
+    String expectedStreetAddress = "123 hennepin st";
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .noPermamentAddress()
+        .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Plymouth")
+        .withPageData("cityForGeneralDelivery", "enrichedZipcode", "54321")
+        .withPageData("cityForGeneralDelivery", "enrichedStreetAddress", expectedStreetAddress)
+        .build();
+    Application application = Application.builder().applicationData(applicationData).build();
+
+    List<ApplicationInput> map = mapper.map(application, null, null, null);
+
+    assertThat(map).containsOnly(
+        createApplicationInput("selectedStreetAddress", expectedStreetAddress),
         createApplicationInput("selectedCity", expectedCityInput),
         createApplicationInput("selectedState", "MN"),
         createApplicationInput("selectedZipCode", expectedZipcodeInput));
