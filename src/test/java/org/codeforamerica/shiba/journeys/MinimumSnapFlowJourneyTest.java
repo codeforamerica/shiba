@@ -46,9 +46,24 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(testPage.getTitle()).isEqualTo("City for General Delivery");
     testPage.clickContinue(); // Error on "Continue" without selecting a city
     assertThat(testPage.hasErrorText("Make sure to provide a city")).isTrue();
-    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
+    testPage.selectFromDropdown("whatIsTheCity[]", "Minneapolis");
     testPage.clickContinue();
     assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
+    // Cities in Hennepin show physical address
+    String generalDeliveryText = testPage.getElementText("general-delivery");
+    assertThat(generalDeliveryText).contains("General Delivery");
+    assertThat(generalDeliveryText).contains("Main Post Office.");
+    assertThat(generalDeliveryText).contains("100 S 1st St");
+    assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
+
+    // Go back to General Delivery and select a different city
+    testPage.goBack();
+    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
+    testPage.clickContinue();
+    generalDeliveryText = testPage.getElementText("general-delivery");
+    assertThat(generalDeliveryText).contains("General Delivery");
+    assertThat(generalDeliveryText).contains("Ada, MN");
+    assertThat(generalDeliveryText).contains("56510-9999");
 
     // Let's review your info
     testPage.clickContinue();
