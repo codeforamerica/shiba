@@ -1,75 +1,82 @@
-<div th:fragment="reviewInfo">
-    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-        <div class="spacing-below-10">
-            <div class="inline">
-                <strong th:text="#{review-info.name}"></strong>
-            </div>
-            <div class="inline right">
-                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-            </div>
-        </div>
-        <p class="spacing-below-0"
-           th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
+<div th:fragment="reviewInfo"
+     th:with="noPermanentAddress=${data.get('homeAddress').get('isHomeless').value.contains('true')}">
+  <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+    <div class="spacing-below-10">
+      <div class="inline">
+        <strong th:text="#{review-info.name}"></strong>
+      </div>
+      <div class="inline right">
+        <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+      </div>
     </div>
-    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-        <div class="spacing-below-10">
-            <div class="inline">
-                <strong th:text="#{review-info.home-address}"></strong>
-            </div>
-            <div class="inline right">
-                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-            </div>
-        </div>
-        <th:block
-                th:if="${!data.get('homeAddress').get('isHomeless').value.contains('true')}"
-                th:with="useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
+    <p class="spacing-below-0"
+       th:text="|${data.get('personalInfo').get('firstName').value[0]} ${data.get('personalInfo').get('lastName').value[0]}|"></p>
+  </div>
+  <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+    <div class="spacing-below-10">
+      <div class="inline">
+        <strong th:text="#{review-info.home-address}"></strong>
+      </div>
+      <div class="inline right">
+        <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+      </div>
+    </div>
+    <th:block
+        th:if="${!noPermanentAddress}"
+        th:with="useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
                          useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
-            <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
-        </th:block>
-        <p class="spacing-below-0 spacing-above-10 italic"
-           th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
-           th:id="homeAddress-address_message"
-           th:text="#{review-info.no-permanent-address}"></p>
+      <div
+          th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
+    </th:block>
+    <p class="spacing-below-0 spacing-above-10 italic"
+       th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
+       th:id="homeAddress-address_message"
+       th:text="#{review-info.no-permanent-address}"></p>
+  </div>
+  <div class="bottom-horizontal-line spacing-below-25 review-info-section">
+    <div class="spacing-below-10">
+      <div class="inline">
+        <strong th:text="#{review-info.mailing-address}"></strong>
+      </div>
+      <div class="inline right">
+        <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+      </div>
     </div>
-    <div class="bottom-horizontal-line spacing-below-25 review-info-section">
-        <div class="spacing-below-10">
-            <div class="inline">
-                <strong th:text="#{review-info.mailing-address}"></strong>
-            </div>
-            <div class="inline right">
-                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-            </div>
-        </div>
-        <th:block th:with="sameMailingAddress=${'true'.equals(data.getPageInputFirstValue('mailingAddress','sameMailingAddress'))},
+    <th:block th:with="sameMailingAddress=${'true'.equals(data.getPageInputFirstValue('mailingAddress','sameMailingAddress'))},
                            useEnrichedInput=${data.get('mailingAddressValidation').get('useEnrichedAddress')},
                            useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')} ">
-            <div th:if="${sameMailingAddress}"
-                 th:id="mailingAddress-address_message"
-                 th:text="#{review-info.same-as-home-address}" class="italic"></div>
-            <th:block th:if="${!sameMailingAddress && data.getPageInputFirstValue('mailingAddress', 'streetAddress') != null}">
-                <div th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
-            </th:block>
-            <th:block th:if="${ data.get('homeAddress').get('isHomeless').value.contains('true') && data.getPageInputFirstValue('cityForGeneralDelivery', 'whatIsTheCity') != null}">
-                <div>
-                    <div>General Delivery</div>
-                    <div th:id="generalDelivery_streetAddress" th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedStreetAddress')}"></div>
-                    <div th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedZipcode')}"></div>
-                </div>
-            </th:block>
-        </th:block>
-    </div>
-    <div class="bottom-horizontal-line spacing-below-60 review-info-section">
-        <div class="spacing-below-10">
-            <div class="inline">
-                <strong th:text="#{review-info.contact-info}"></strong>
-            </div>
-            <div class="inline right">
-                <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
-            </div>
+      <div th:if="${sameMailingAddress}"
+           th:id="mailingAddress-address_message"
+           th:text="#{review-info.same-as-home-address}" class="italic"></div>
+      <th:block
+          th:if="${!sameMailingAddress && data.getPageInputFirstValue('mailingAddress', 'streetAddress') != null}">
+        <div
+            th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
+      </th:block>
+      <th:block
+          th:if="${ noPermanentAddress && data.getPageInputFirstValue('cityForGeneralDelivery', 'whatIsTheCity') != null}">
+        <div>
+          <div>General Delivery</div>
+          <div th:id="generalDelivery_streetAddress"
+               th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedStreetAddress')}"></div>
+          <div
+              th:text="${data.getPageInputFirstValue('cityForGeneralDelivery','enrichedZipcode')}"></div>
         </div>
-        <p class="spacing-below-0"
-           th:text="${data.get('contactInfo').get('phoneNumber').value[0]}"></p>
-        <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
-           th:text="${data.get('contactInfo').get('email').value[0]}"></p>
+      </th:block>
+    </th:block>
+  </div>
+  <div class="bottom-horizontal-line spacing-below-60 review-info-section">
+    <div class="spacing-below-10">
+      <div class="inline">
+        <strong th:text="#{review-info.contact-info}"></strong>
+      </div>
+      <div class="inline right">
+        <a href="#" style="display: none" th:text="#{review-info.edit}"></a>
+      </div>
     </div>
+    <p class="spacing-below-0"
+       th:text="${data.get('contactInfo').get('phoneNumber').value[0]}"></p>
+    <p class="spacing-below-0" th:if="${!data.get('contactInfo').get('email').value[0].isEmpty()}"
+       th:text="${data.get('contactInfo').get('email').value[0]}"></p>
+  </div>
 </div>
