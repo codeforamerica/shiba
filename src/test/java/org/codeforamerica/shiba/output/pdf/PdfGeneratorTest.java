@@ -12,11 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
-import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -27,23 +23,30 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class PdfGeneratorTest {
 
-  PdfGenerator pdfGenerator;
-  Application application;
-  String applicationId = "someApplicationId";
-  PdfFieldMapper pdfFieldMapper = mock(PdfFieldMapper.class);
-  PdfFieldFiller caseworkerFiller = mock(PdfFieldFiller.class);
-  PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
-  PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
-  Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers = Map.of(
-      CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
-      CLIENT, Map.of(Document.CAF, clientFiller, Document.CCAP, ccapFiller)
-  );
-  ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
-  ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-  FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+  private final String applicationId = "someApplicationId";
+  private PdfGenerator pdfGenerator;
+  private Application application;
+  private PdfFieldMapper pdfFieldMapper;
+  private PdfFieldFiller caseworkerFiller;
+  private ApplicationInputsMappers mappers;
+  private FileNameGenerator fileNameGenerator;
+  private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
 
   @BeforeEach
   void setUp() {
+    pdfFieldMapper = mock(PdfFieldMapper.class);
+    caseworkerFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
+    mappers = mock(ApplicationInputsMappers.class);
+    ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
+    fileNameGenerator = mock(FileNameGenerator.class);
+
+    pdfFieldFillers = Map.of(
+        CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
+        CLIENT, Map.of(Document.CAF, clientFiller, Document.CCAP, ccapFiller)
+    );
+
     application = Application.builder()
         .id(applicationId)
         .completedAt(null)
