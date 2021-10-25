@@ -32,11 +32,11 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
 
   @Override
   public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String fileName) {
-    PDFMergerUtility mergerer = new PDFMergerUtility();
+    PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
 
     byte[] fileContents = pdfs.stream()
         .map(pdfResource -> fillOutPdfs(fields, pdfResource))
-        .reduce(mergePdfs(mergerer))
+        .reduce(mergePdfs(pdfMergerUtility))
         .map(this::outputByteArray)
         .orElse(new byte[]{});
 
@@ -55,10 +55,10 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
   }
 
   @NotNull
-  private BinaryOperator<@NotNull PDDocument> mergePdfs(PDFMergerUtility mergerer) {
+  private BinaryOperator<@NotNull PDDocument> mergePdfs(PDFMergerUtility pdfMergerUtility) {
     return (pdDocument1, pdDocument2) -> {
       try {
-        mergerer.appendDocument(pdDocument1, pdDocument2);
+        pdfMergerUtility.appendDocument(pdDocument1, pdDocument2);
         pdDocument2.close();
       } catch (IOException e) {
         throw new RuntimeException(e);

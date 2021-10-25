@@ -90,7 +90,6 @@ class PdfGeneratorTest {
   @EnumSource(Recipient.class)
   void shouldUseFillerRespectToRecipient(Recipient recipient) {
     pdfGenerator.generate(applicationId, Document.CAF, recipient);
-
     verify(pdfFieldFillers.get(recipient).get(Document.CAF)).fill(any(), any(), any());
   }
 }
