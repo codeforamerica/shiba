@@ -201,6 +201,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     //Retroactive Coverage
     testPage.enter("retroactiveCoverageQuestion", YES.getDisplayValue());
 
+    //Medical Benefits in another state
+    testPage.enter("medicalInOtherState", YES.getDisplayValue());
+
     // Income & Employment
     // Certain Pops will increment milestone steps
     assertThat(testPage.getElementText("milestone-step")).isEqualTo("Step 4 of 7");
