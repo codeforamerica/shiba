@@ -48,7 +48,7 @@ public class FileNameGenerator {
   }
 
   public String generateXmlFileName(Application application) {
-    return getSharedApplicationPrefix(application) + getProgramCodes(application);
+    return getSharedApplicationPrefix(application) + getProgramCodes(application) + ".xml";
   }
 
   @NotNull

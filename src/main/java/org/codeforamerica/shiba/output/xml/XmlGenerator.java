@@ -60,7 +60,6 @@ public class XmlGenerator implements FileGenerator {
       String contentsAfterReplacement = applicationInputs.stream()
           .filter(input -> !input.getValue().isEmpty())
           .flatMap(input -> {
-
             String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
             return switch (input.getType()) {
               case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
@@ -95,9 +94,8 @@ public class XmlGenerator implements FileGenerator {
           );
       String finishedXML = contentsAfterReplacement
           .replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
-      return new ApplicationFile(
-          finishedXML.getBytes(),
-          String.format("%s.xml", fileNameGenerator.generateXmlFileName(application)));
+      return new ApplicationFile(finishedXML.getBytes(),
+          fileNameGenerator.generateXmlFileName(application));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

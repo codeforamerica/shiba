@@ -501,7 +501,7 @@ class XmlGeneratorTest {
   }
 
   @Test
-  void shouldAppendXMLExtensionToApplicationFileName() {
+  void shouldNotAppendXMLExtensionToApplicationFileName() {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
         "<ns:Root xmlns:ns='some-url'>\n" +
         "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
@@ -515,7 +515,7 @@ class XmlGeneratorTest {
         fileNameGenerator
     );
 
-    String fileName = "some file name";
+    String fileName = "some-file-name.xml";
     Application application = Application.builder()
         .id("")
         .completedAt(null)
@@ -528,7 +528,7 @@ class XmlGeneratorTest {
     String applicationId = "application-id";
     ApplicationFile applicationFile = subject.generate(applicationId, null, null);
 
-    assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".xml");
+    assertThat(applicationFile.getFileName()).isEqualTo(fileName);
   }
 
   private org.w3c.dom.Document byteArrayToDocument(byte[] bytes)
