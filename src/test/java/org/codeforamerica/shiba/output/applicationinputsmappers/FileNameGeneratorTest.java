@@ -25,14 +25,14 @@ import org.springframework.mock.web.MockMultipartFile;
 
 class FileNameGeneratorTest {
 
-  CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
-
-  FileNameGenerator fileNameGenerator = new FileNameGenerator(countyMap);
-
-  Application.ApplicationBuilder defaultApplicationBuilder;
+  private CountyMap<CountyRoutingDestination> countyMap;
+  private FileNameGenerator fileNameGenerator;
+  private Application.ApplicationBuilder defaultApplicationBuilder;
 
   @BeforeEach
   void setUp() {
+    countyMap = new CountyMap<>();
+    fileNameGenerator = new FileNameGenerator(countyMap);
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(emptyList()).build();
     countyMap.setDefaultValue(CountyRoutingDestination.builder()
