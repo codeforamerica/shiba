@@ -11,11 +11,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,7 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-@SpringBootTest()
+@SpringBootTest
 @ActiveProfiles("test")
 public class XmlGeneratorIntegrationTest {
 
@@ -65,8 +61,7 @@ public class XmlGeneratorIntegrationTest {
   private Clock clock;
 
   @Test
-  void shouldProduceAValidDocument()
-      throws IOException, SAXException, ParserConfigurationException {
+  void shouldProduceAValidDocument() throws Exception {
     String applicationId = applicationRepository.getNextId();
     Map<String, PageData> data = applicationConfiguration.getPageDefinitions().stream()
         .map(pageConfiguration -> {

@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class SecurityConfigurationTest {
   ApplicationRepository applicationRepository;
 
   @MockBean
-  FileNameGenerator fileNameGenerator;
+  FilenameGenerator fileNameGenerator;
 
   @BeforeEach
   void setUp() {
@@ -58,7 +58,7 @@ class SecurityConfigurationTest {
         .timeToComplete(null)
         .build()).when(applicationRepository).find(any());
     doReturn(emptyList()).when(mappers).map(any(), any(), any());
-    doReturn("").when(fileNameGenerator).generatePdfFileName(any(), any());
+    doReturn("").when(fileNameGenerator).generatePdfFilename(any(), any());
   }
 
   @Test

@@ -64,19 +64,18 @@ public class MnitDocumentConsumer {
 
     // Generate the CAF and CCAP PDFs to send in parallel so that one document isn't waiting on the
     // other to finish sending. pdfGenerator may not be thread-safe
-    DocumentListParser.parse(application.getApplicationData()).forEach(documentType -> {
-          threads.add(new Thread(new SendPDFRunnable(
-              documentType,
-              pdfGenerator.generate(id, documentType, CASEWORKER),
-              application)));
-        }
+    DocumentListParser.parse(application.getApplicationData()).forEach(
+        documentType -> threads.add(new Thread(new SendPDFRunnable(
+            documentType,
+            pdfGenerator.generate(id, documentType, CASEWORKER),
+            application)))
     );
 
     // Send the CAF and CCAP as PDFs in parallel
     threads.forEach(Thread::start);
 
     // Send the CAF as XML
-    sendApplication(application, CAF, xmlGenerator.generate(id, CAF, CASEWORKER));
+    sendFileToAllRoutingDestinations(application, CAF, xmlGenerator.generate(id, CAF, CASEWORKER));
 
     // Wait for everything to finish before returning
     threads.forEach(t -> {
@@ -121,7 +120,7 @@ public class MnitDocumentConsumer {
         emailClient.sendHennepinDocUploadsEmails(application, applicationFiles);
       } else {
         for (ApplicationFile fileToSend : applicationFiles) {
-          sendApplication(application, UPLOADED_DOC, fileToSend, rd, fileToSend.getFileName());
+          sendFileToRoutingDestination(application, UPLOADED_DOC, fileToSend, rd);
         }
       }
     }
@@ -129,23 +128,25 @@ public class MnitDocumentConsumer {
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
-  private void sendApplication(Application application, Document document, ApplicationFile file) {
+  private void sendFileToAllRoutingDestinations(Application application, Document document,
+      ApplicationFile file) {
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), document);
 
-    routingDestinations.forEach(rd -> {
-      String filename = document.name();
-      if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
-        filename = "XML";
-      }
-      sendApplication(application, document, file, rd, filename);
-    });
+    routingDestinations.forEach(
+        rd -> sendFileToRoutingDestination(application, document, file, rd));
   }
 
-  private void sendApplication(Application application, Document document, ApplicationFile file,
-      RoutingDestination rd, String filename) {
+  private void sendFileToRoutingDestination(Application application, Document document,
+      ApplicationFile file,
+      RoutingDestination rd) {
+    String documentName = document.name();
+    if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
+      documentName = "XML";
+    }
+    // This is where we want to generate the new filename
     log.info("Now sending %s to recipient %s for application %s".formatted(
-        filename,
+        documentName,
         rd.getName(),
         application.getId()));
     mnitClient.send(file, rd, application.getId(), document, application.getFlow());
@@ -168,7 +169,7 @@ public class MnitDocumentConsumer {
     public void run() {
       try {
         applicationRepository.updateStatus(application.getId(), documentType, SENDING);
-        sendApplication(application, documentType, applicationFile);
+        sendFileToAllRoutingDestinations(application, documentType, applicationFile);
       } catch (Exception e) {
         applicationRepository.updateStatus(application.getId(), documentType, DELIVERY_FAILED);
         log.error("Failed to send with error, ", e);

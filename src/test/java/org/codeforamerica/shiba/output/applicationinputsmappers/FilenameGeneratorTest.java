@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Olmsted;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -15,7 +16,7 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,16 +24,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
-class FileNameGeneratorTest {
+class FilenameGeneratorTest {
 
-  CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
-
-  FileNameGenerator fileNameGenerator = new FileNameGenerator(countyMap);
-
-  Application.ApplicationBuilder defaultApplicationBuilder;
+  private CountyMap<CountyRoutingDestination> countyMap;
+  private FilenameGenerator fileNameGenerator;
+  private Application.ApplicationBuilder defaultApplicationBuilder;
 
   @BeforeEach
   void setUp() {
+    countyMap = new CountyMap<>();
+    fileNameGenerator = new FilenameGenerator(countyMap);
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(emptyList()).build();
     countyMap.setDefaultValue(CountyRoutingDestination.builder()
@@ -50,15 +51,16 @@ class FileNameGeneratorTest {
   void shouldIncludeIdInFileNameForApplication() {
     String applicationId = "someId";
     Application application = defaultApplicationBuilder.id(applicationId).build();
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
     assertThat(fileName).contains(applicationId);
+    assertThat(fileName).contains(".pdf");
   }
 
   @Test
   void shouldIncludeSubmitDateInCentralTimeZone() {
     Application application = defaultApplicationBuilder.completedAt(
         ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC)).build();
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
     assertThat(fileName).contains("20070909");
   }
 
@@ -66,7 +68,7 @@ class FileNameGeneratorTest {
   void shouldIncludeSubmitTimeInCentralTimeZone() {
     Application application = defaultApplicationBuilder.completedAt(
         ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:05:59.00Z"), ZoneOffset.UTC)).build();
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
     assertThat(fileName).contains("230559");
   }
 
@@ -78,7 +80,7 @@ class FileNameGeneratorTest {
         .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
     Application application = defaultApplicationBuilder.county(county).build();
 
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
 
     assertThat(fileName).contains(countyNPI);
   }
@@ -93,7 +95,7 @@ class FileNameGeneratorTest {
         .withApplicantPrograms(programs).build();
     Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
 
     assertThat(fileName).contains("EKFC");
   }
@@ -106,7 +108,7 @@ class FileNameGeneratorTest {
 
     Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
 
     assertThat(fileName).contains("EKFC");
   }
@@ -116,9 +118,9 @@ class FileNameGeneratorTest {
     ApplicationData applicationData = new ApplicationData();
     Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
 
-    assertThat(fileName).endsWith("defaultId__CAF");
+    assertThat(fileName).endsWith("defaultId__CAF.pdf");
   }
 
   @Test
@@ -141,9 +143,9 @@ class FileNameGeneratorTest {
         .applicationData(applicationData)
         .build();
 
-    String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
+    String fileName = fileNameGenerator.generatePdfFilename(application, Document.CAF);
 
-    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s",
+    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s.pdf",
         countyNPI, "20070909", "235959", applicationId, "F", "CAF"));
   }
 
@@ -167,9 +169,9 @@ class FileNameGeneratorTest {
         .applicationData(applicationData)
         .build();
 
-    String fileName = fileNameGenerator.generateXmlFileName(application);
+    String fileName = fileNameGenerator.generateXmlFilename(application);
 
-    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s",
+    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s.xml",
         countyNPI, "20070909", "235959", applicationId, "F"));
   }
 
@@ -184,7 +186,7 @@ class FileNameGeneratorTest {
     applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
 
     String countyNPI = "someNPI";
-    County county = Hennepin;
+    County county = Olmsted;
     countyMap.getCounties()
         .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
     String applicationId = "someId";
@@ -201,9 +203,9 @@ class FileNameGeneratorTest {
     String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf");
 
     assertThat(imageName).isEqualTo(String
-        .format("%s_DOC_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
+        .format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
     assertThat(pdfName).isEqualTo(String
-        .format("%s_DOC_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+        .format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
   }
 
   @Test

@@ -20,7 +20,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
@@ -36,14 +36,14 @@ public class PdfGenerator implements FileGenerator {
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final ApplicationInputsMappers mappers;
-  private final FileNameGenerator fileNameGenerator;
+  private final FilenameGenerator fileNameGenerator;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       ApplicationInputsMappers mappers,
-      FileNameGenerator fileNameGenerator
+      FilenameGenerator fileNameGenerator
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
@@ -63,7 +63,7 @@ public class PdfGenerator implements FileGenerator {
     List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
     return pdfFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId(),
-        fileNameGenerator.generatePdfFileName(application, document));
+        fileNameGenerator.generatePdfFilename(application, document));
   }
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,

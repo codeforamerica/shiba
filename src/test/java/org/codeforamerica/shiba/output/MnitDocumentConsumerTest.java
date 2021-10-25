@@ -13,18 +13,9 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -34,7 +25,6 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.CountyMap;
@@ -45,7 +35,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -98,7 +88,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private ClientRegistrationRepository repository;
   @MockBean
-  private FileNameGenerator fileNameGenerator;
+  private FilenameGenerator fileNameGenerator;
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
@@ -115,7 +105,7 @@ class MnitDocumentConsumerTest {
 
   @BeforeEach
   void setUp() {
-    applicationData = new TestApplicationDataBuilder()
+    applicationData = new TestApplicationDataBuilder(applicationData)
         .withPersonalInfo()
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
@@ -137,14 +127,14 @@ class MnitDocumentConsumerTest {
         .flow(FULL)
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
-    when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+    when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
     doReturn(application).when(applicationRepository).find(any());
   }
 
   @AfterEach
   void afterEach() {
-    applicationData.setUploadedDocs(new ArrayList<>());
+    resetApplicationData(applicationData);
   }
 
   @Test
