@@ -52,6 +52,7 @@ class FileNameGeneratorTest {
     Application application = defaultApplicationBuilder.id(applicationId).build();
     String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
     assertThat(fileName).contains(applicationId);
+    assertThat(fileName).contains(".pdf");
   }
 
   @Test
@@ -118,7 +119,7 @@ class FileNameGeneratorTest {
 
     String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
-    assertThat(fileName).endsWith("defaultId__CAF");
+    assertThat(fileName).endsWith("defaultId__CAF.pdf");
   }
 
   @Test
@@ -143,7 +144,7 @@ class FileNameGeneratorTest {
 
     String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
 
-    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s",
+    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s.pdf",
         countyNPI, "20070909", "235959", applicationId, "F", "CAF"));
   }
 

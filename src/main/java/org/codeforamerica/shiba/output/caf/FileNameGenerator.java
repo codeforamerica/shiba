@@ -37,7 +37,7 @@ public class FileNameGenerator {
     var prefix = getSharedApplicationPrefix(application);
     var programs = getProgramCodes(application);
     var pdfType = document.toString();
-    return "%s%s_%s".formatted(prefix, programs, pdfType);
+    return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
