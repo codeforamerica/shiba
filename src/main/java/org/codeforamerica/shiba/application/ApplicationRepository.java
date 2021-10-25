@@ -58,6 +58,10 @@ public class ApplicationRepository {
   }
 
   public void save(Application application) {
+    save(application, false);
+  }
+
+  public void save(Application application, boolean isDocuments) {
     ApplicationData applicationData = application.getApplicationData();
     HashMap<String, Object> parameters = new HashMap<>(Map.of(
         "id", application.getId(),
@@ -77,15 +81,29 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    String cafStatus = applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    String cafStatus = "null", ccapStatus = "null", certainPopsStatus = "null";
+
+    if (isDocuments) {
+      if (application.getCafApplicationStatus() != null) {
+        cafStatus = application.getCafApplicationStatus().displayName();
+      }
+      if (application.getCcapApplicationStatus() != null) {
+        ccapStatus = application.getCcapApplicationStatus().displayName();
+      }
+      if (application.getCertainPopsApplicationStatus() != null) {
+        certainPopsStatus = application.getCertainPopsApplicationStatus().displayName();
+      }
+    } else {
+      cafStatus =
+          applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+      ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
+      List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
+      certainPopsStatus =
+          programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";
+    }
+
     parameters.put("cafStatus", cafStatus);
-
-    String ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
     parameters.put("ccapStatus", ccapStatus);
-
-    List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
-    final String certainPopsStatus =
-        programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";
     parameters.put("certainPopsStatus", certainPopsStatus);
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
