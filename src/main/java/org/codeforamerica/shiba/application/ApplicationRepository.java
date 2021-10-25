@@ -81,12 +81,18 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    String cafStatus, ccapStatus, certainPopsStatus;
+    String cafStatus = "null", ccapStatus = "null", certainPopsStatus = "null";
 
     if (isDocuments) {
-      cafStatus = application.getCafApplicationStatus().displayName();
-      ccapStatus = application.getCcapApplicationStatus().displayName();
-      certainPopsStatus = application.getCertainPopsApplicationStatus().displayName();
+      if (application.getCafApplicationStatus() != null) {
+        cafStatus = application.getCafApplicationStatus().displayName();
+      }
+      if (application.getCcapApplicationStatus() != null) {
+        ccapStatus = application.getCcapApplicationStatus().displayName();
+      }
+      if (application.getCertainPopsApplicationStatus() != null) {
+        certainPopsStatus = application.getCertainPopsApplicationStatus().displayName();
+      }
     } else {
       cafStatus =
           applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
