@@ -1854,6 +1854,15 @@ pageDefinitions:
       - name: retroactiveCoverageQuestion
         type: YES_NO
         helpMessageKey: retroactive-coverage.you-might-be-eligible-for-retroactive-coverage
+  - &medicalInOtherState
+    name: medicalInOtherState
+    pageTitle: medical-in-other-state.title
+    headerKey: medical-in-other-state.do-you-currently-have-medical-benefits-in-another-state
+    contextFragment: medicalInOtherStateFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: medicalInOtherState
+        type: YES_NO
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -3558,6 +3567,13 @@ workflow:
       - pageName: choosePrograms
   retroactiveCoverage:
     pageConfiguration: *retroactiveCoverage
+    nextPages:
+      - pageName: medicalInOtherState
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  medicalInOtherState:
+    pageConfiguration: *medicalInOtherState
     nextPages:
       - pageName: introIncome
     skipCondition: *applicantDidNotChooseCERTAINPOPS?

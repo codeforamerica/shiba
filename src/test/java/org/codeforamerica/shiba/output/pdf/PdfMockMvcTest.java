@@ -770,6 +770,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
       postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
       postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
+      postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
 
@@ -790,6 +791,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);
       assertPdfFieldEquals("HAD_A_PAST_ACCIDENT_OR_INJURY", "Yes", pdf);
       assertPdfFieldEquals("RETROACTIVE_COVERAGE_HELP", "Yes", pdf);
+      assertPdfFieldEquals("MEDICAL_IN_OTHER_STATE", "Yes", pdf);
+
       // Section 1
       assertPdfFieldEquals("APPLICANT_LAST_NAME", "Schrute", pdf);
       assertPdfFieldEquals("APPLICANT_FIRST_NAME", "Dwight", pdf);

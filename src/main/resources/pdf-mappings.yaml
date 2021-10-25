@@ -111,6 +111,8 @@ mappings:
     didYouHaveAPastInjury: HAD_A_PAST_ACCIDENT_OR_INJURY
   retroactiveCoverage:
     retroactiveCoverageQuestion: RETROACTIVE_COVERAGE_HELP
+  medicalInOtherState:
+    medicalInOtherState: MEDICAL_IN_OTHER_STATE
   unearnedIncome:
     SOCIAL_SECURITY: SOCIAL_SECURITY
     SSI: SSI
