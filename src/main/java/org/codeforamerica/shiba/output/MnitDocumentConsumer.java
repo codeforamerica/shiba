@@ -144,6 +144,7 @@ public class MnitDocumentConsumer {
     if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
       documentName = "XML";
     }
+    // This is where we want to generate the new filename
     log.info("Now sending %s to recipient %s for application %s".formatted(
         documentName,
         rd.getName(),

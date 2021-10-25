@@ -41,8 +41,7 @@ public class FilenameGenerator {
     String prefix = getSharedApplicationPrefix(application, document);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
-    String extension = "pdf";
-    return "%s%s_%s.%s".formatted(prefix, programs, pdfType, extension);
+    return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
@@ -55,8 +54,7 @@ public class FilenameGenerator {
   public String generateXmlFilename(Application application) {
     String prefix = getSharedApplicationPrefix(application, CAF);
     String programs = getProgramCodes(application);
-    String extension = "xml";
-    return "%s%s.%s".formatted(prefix, programs, extension);
+    return "%s%s.xml".formatted(prefix, programs);
   }
 
   @NotNull
@@ -94,7 +92,8 @@ public class FilenameGenerator {
       List<Iteration> householdIteration = application.getApplicationData().getSubworkflows()
           .get("household");
       householdIteration.stream().map(household -> household.getPagesData()
-          .safeGetPageInputValue("householdMemberInfo", "programs")).forEach(programs::addAll);
+              .safeGetPageInputValue("householdMemberInfo", "programs"))
+          .forEach(programs::addAll);
     }
     return programs;
   }
