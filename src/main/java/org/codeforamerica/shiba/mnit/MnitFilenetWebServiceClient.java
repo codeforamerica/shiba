@@ -219,6 +219,7 @@ public class MnitFilenetWebServiceClient {
     ObjectFactory ob = new ObjectFactory();
     JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(
         contentStream);
+    jaxbContentStream.getValue().setMimeType(mimeType);
     createDocument.setContentStream(jaxbContentStream);
   }
 
