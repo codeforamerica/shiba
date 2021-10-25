@@ -4,6 +4,7 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
@@ -61,17 +62,17 @@ public class FilenameGenerator {
   @NotNull
   private String getSharedApplicationPrefix(Application application,
       Document document) {
-    var dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
     String fileSource = "MNB";
     if (document == UPLOADED_DOC && application.getCounty() == County.Hennepin) {
       fileSource = "DOC";
     }
 
-    var date = DateTimeFormatter.ofPattern("yyyyMMdd")
-        .format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
-    var time = DateTimeFormatter.ofPattern("HHmmss")
-        .format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
-    var id = application.getId();
+    ZonedDateTime completedAtCentralTime =
+        application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"));
+    String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(completedAtCentralTime);
+    String time = DateTimeFormatter.ofPattern("HHmmss").format(completedAtCentralTime);
+    String id = application.getId();
     return "%s_%s_%s_%s_%s_".formatted(dhsProviderId, fileSource, date, time, id);
   }
 
