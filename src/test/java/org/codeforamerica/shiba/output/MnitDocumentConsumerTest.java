@@ -13,18 +13,9 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -34,7 +25,6 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.CountyMap;
@@ -115,7 +105,7 @@ class MnitDocumentConsumerTest {
 
   @BeforeEach
   void setUp() {
-    applicationData = new TestApplicationDataBuilder()
+    applicationData = new TestApplicationDataBuilder(applicationData)
         .withPersonalInfo()
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
@@ -144,7 +134,7 @@ class MnitDocumentConsumerTest {
 
   @AfterEach
   void afterEach() {
-    applicationData.setUploadedDocs(new ArrayList<>());
+    resetApplicationData(applicationData);
   }
 
   @Test
