@@ -19,7 +19,7 @@ class HomeAddressStreetMapperTest {
   @Test
   void shouldSayNotPermanentWhenClientDoesNotHaveAPermanentAddress() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .noPermamentAddress()
+        .noPermanentAddress()
         .withPageData("homeAddress", "streetAddress", List.of(""))
         .build();
     application.setApplicationData(applicationData);

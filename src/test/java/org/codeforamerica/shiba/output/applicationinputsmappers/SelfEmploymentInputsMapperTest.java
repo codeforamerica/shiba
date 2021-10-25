@@ -20,8 +20,8 @@ public class SelfEmploymentInputsMapperTest {
   void shouldMapTrueIfSelfEmployedJobExists() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
-            new PagesDataBuilder().withHourlyJob("false", "10", "10").build(),
-            new PagesDataBuilder().withNonHourlyJob("true", "10", "EVERY_WEEK").build())
+            new PagesDataBuilder().withHourlyJob("false", "10", "10"),
+            new PagesDataBuilder().withNonHourlyJob("true", "10", "EVERY_WEEK"))
         .build();
 
     Application application = Application.builder().applicationData(applicationData).build();
@@ -48,8 +48,8 @@ public class SelfEmploymentInputsMapperTest {
   void shouldMapFalseIfSelfEmployedJobDoesntExists() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
-            new PagesDataBuilder().withHourlyJob("false", "10", "10").build(),
-            new PagesDataBuilder().withNonHourlyJob("false", "10", "EVERY_WEEK").build())
+            new PagesDataBuilder().withHourlyJob("false", "10", "10"),
+            new PagesDataBuilder().withNonHourlyJob("false", "10", "EVERY_WEEK"))
         .build();
 
     Application application = Application.builder().applicationData(applicationData).build();

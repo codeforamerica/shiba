@@ -41,12 +41,12 @@ public class FullNameInputsMapperTest {
     new TestApplicationDataBuilder(applicationData)
         .withSubworkflow("jobs",
             new PagesDataBuilder()
-                .withPageData("householdSelectionForIncome",
-                    "whoseJobIsIt", "Fake Person applicant").build(),
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt",
+                    "Fake Person applicant"),
             new PagesDataBuilder()
                 .withPageData("householdSelectionForIncome",
                     "whoseJobIsIt", "Different Person some-random-guid-1234")
-                .withPageData("selfEmployment", "selfEmployment", "false").build()
+                .withPageData("selfEmployment", "selfEmployment", "false")
         ).build();
 
     Application application = Application.builder().applicationData(applicationData).build();

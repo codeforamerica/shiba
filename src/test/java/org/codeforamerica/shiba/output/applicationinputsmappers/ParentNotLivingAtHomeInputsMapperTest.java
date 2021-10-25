@@ -7,9 +7,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 public class ParentNotLivingAtHomeInputsMapperTest {
@@ -18,25 +16,17 @@ public class ParentNotLivingAtHomeInputsMapperTest {
 
   @Test
   void shouldCreateListOfParentNamesForCorrespondingChildren() {
-    ApplicationData applicationData = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    PageData childrenInNeedOfCarePage = new PageData();
-    childrenInNeedOfCarePage.put("whoNeedsChildCare", InputData.builder()
-        .value(List.of("childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
-            "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d",
-            "childCFirstName childCLastName b99f3f7e-d13a-4cf0-9093-4092384"))
-        .build());
-    PageData parentsNotLivingAtHome = new PageData();
-    parentsNotLivingAtHome.put("whatAreTheParentsNames", InputData.builder()
-        .value(List.of("parentAName", "parentCName"))
-        .build());
-    parentsNotLivingAtHome.put("childIdMap", InputData.builder()
-        .value(List.of("939dc33-d13a-4cf0-9093-309293k3", "b99f3f7e-d13a-4cf0-9093-4092384"))
-        .build());
-
-    pagesData.put("childrenInNeedOfCare", childrenInNeedOfCarePage);
-    pagesData.put("parentNotAtHomeNames", parentsNotLivingAtHome);
-    applicationData.setPagesData(pagesData);
+    List<String> childrenInNeedOfCare = List.of(
+        "childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
+        "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d",
+        "childCFirstName childCLastName b99f3f7e-d13a-4cf0-9093-4092384");
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("childrenInNeedOfCare", "whoNeedsChildCare", childrenInNeedOfCare)
+        .withPageData("parentNotAtHomeNames", "whatAreTheParentsNames",
+            List.of("parentAName", "parentCName"))
+        .withPageData("parentNotAtHomeNames", "childIdMap",
+            List.of("939dc33-d13a-4cf0-9093-309293k3", "b99f3f7e-d13a-4cf0-9093-4092384"))
+        .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
@@ -73,17 +63,12 @@ public class ParentNotLivingAtHomeInputsMapperTest {
 
   @Test
   void shouldCreateEmptyListWhenPageDataIsNull() {
-    ApplicationData applicationData = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    PageData childrenInNeedOfCarePage = new PageData();
-    childrenInNeedOfCarePage.put("whoNeedsChildCare", InputData.builder()
-        .value(List.of("childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
-            "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d",
-            "childCFirstName childCLastName b99f3f7e-d13a-4cf0-9093-4092384"))
-        .build());
-
-    pagesData.put("childrenInNeedOfCare", childrenInNeedOfCarePage);
-    applicationData.setPagesData(pagesData);
+    List<String> childrenInNeedOfCare = List.of(
+        "childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
+        "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d",
+        "childCFirstName childCLastName b99f3f7e-d13a-4cf0-9093-4092384");
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("childrenInNeedOfCare", "whoNeedsChildCare", childrenInNeedOfCare).build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)

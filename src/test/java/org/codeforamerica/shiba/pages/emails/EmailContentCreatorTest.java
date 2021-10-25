@@ -13,17 +13,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -207,25 +203,19 @@ class EmailContentCreatorTest {
     programs = List.of(CCAP, SNAP, CASH, EA, GRH);
 
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setSubworkflows(new Subworkflows());
-    applicationData.setPagesData(new PagesData());
     applicationData.setStartTimeOnce(Instant.now());
     applicationData.setId("someId");
 
-    PagesData pagesData = PagesDataBuilder.build(List.of(
-        new PageDataBuilder("choosePrograms", Map.of("programs", programs)),
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("choosePrograms", "programs", programs)
         // Show proof of income
-        new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true"))),
+        .withPageData("employmentStatus", "areYouWorking", "true")
         // Sow proof of housing cost
-        new PageDataBuilder("homeExpenses", Map.of("homeExpenses", List.of("RENT"))),
+        .withPageData("homeExpenses", "homeExpenses", "RENT")
         // Show proof of job loss
-        new PageDataBuilder("workSituation", Map.of("hasWorkSituation", List.of("true"))),
+        .withPageData("workSituation", "hasWorkSituation", "true")
         // Show proof of medical expenses
-        new PageDataBuilder("medicalExpenses",
-            Map.of("medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS")))
-    ));
-
-    applicationData.setPagesData(pagesData);
+        .withPageData("medicalExpenses", "medicalExpenses", "MEDICAL_INSURANCE_PREMIUMS");
 
     String confirmationEmail = emailContentCreator.createFullClientConfirmationEmail(
         applicationData,

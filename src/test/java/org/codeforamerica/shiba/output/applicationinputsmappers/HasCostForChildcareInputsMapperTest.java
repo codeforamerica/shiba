@@ -10,7 +10,6 @@ import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -80,13 +79,12 @@ public class HasCostForChildcareInputsMapperTest {
 
   @Test
   public void shouldMapTrueForApplicantInHousehold() {
-    Subworkflow household = createHouseholdSubworkflow("SNAP");
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("goingToSchool", "goingToSchool", List.of("true"))
         .withPageData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of("some name applicant"))
         .withApplicantPrograms(List.of("CCAP"))
+        .withSubworkflow("household", createHouseholdSubworkflowBuilder("SNAP"))
         .build();
-    applicationData.setSubworkflows(new Subworkflows(Map.of("household", household)));
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
@@ -97,13 +95,12 @@ public class HasCostForChildcareInputsMapperTest {
 
   @Test
   public void shouldMapEmptyForHousehold() {
-    Subworkflow household = createHouseholdSubworkflow("CCAP");
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("goingToSchool", "goingToSchool", List.of("true"))
         .withPageData("whoIsGoingToSchool", "whoIsGoingToSchool", List.of("some name applicant"))
         .withApplicantPrograms(List.of("SNAP"))
+        .withSubworkflow("household", createHouseholdSubworkflowBuilder("CCAP"))
         .build();
-    applicationData.setSubworkflows(new Subworkflows(Map.of("household", household)));
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
@@ -125,17 +122,22 @@ public class HasCostForChildcareInputsMapperTest {
 
   @NotNull
   private Subworkflow createHouseholdSubworkflow(String program) {
-    return new Subworkflow(List.of(PagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo",
-            Map.of("firstName", List.of("Daria"),
-                "lastName", List.of("Agàta"),
+    return new Subworkflow(List.of(createHouseholdSubworkflowBuilder(program).build()));
+  }
+
+  @NotNull
+  private PagesDataBuilder createHouseholdSubworkflowBuilder(String program) {
+    return new PagesDataBuilder()
+        .withPageData("householdMemberInfo",
+            Map.of("firstName", "Daria",
+                "lastName", "Agàta",
                 "dateOfBirth", List.of("5", "6", "1978"),
-                "maritalStatus", List.of("Never married"),
-                "sex", List.of("Female"),
-                "livedInMnWholeLife", List.of("Yes"),
-                "relationship", List.of("housemate"),
-                "programs", List.of(program),
-                "ssn", List.of("123121234")))))));
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "housemate",
+                "programs", program,
+                "ssn", "123121234"));
   }
 
 

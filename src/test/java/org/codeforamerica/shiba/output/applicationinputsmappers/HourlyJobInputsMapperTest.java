@@ -41,8 +41,8 @@ public class HourlyJobInputsMapperTest {
   public void shouldCreateInputsForHourlyOnly() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
-            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK").build(),
-            new PagesDataBuilder().withHourlyJob("false", "10", "12").build())
+            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK"),
+            new PagesDataBuilder().withHourlyJob("false", "10", "12"))
         .build();
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)
@@ -58,11 +58,11 @@ public class HourlyJobInputsMapperTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
             // Hourly payPeriod iteration 0, nonSelfEmployed hourly pay period N/A
-            new PagesDataBuilder().withHourlyJob("true", "11", "13").build(),
+            new PagesDataBuilder().withHourlyJob("true", "11", "13"),
             // Hourly payPeriod N/A, nonSelfEmployed pay period 0
-            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK").build(),
+            new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK"),
             // Hourly payPeriod 1, nonSelfEmployed pay period 1
-            new PagesDataBuilder().withHourlyJob("false", "10", "12").build())
+            new PagesDataBuilder().withHourlyJob("false", "10", "12"))
         .build();
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)

@@ -29,6 +29,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -81,18 +82,11 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void shouldSaveApplication() {
-    ApplicationData applicationData = new ApplicationData();
-    PageData pageData = new PageData();
-    pageData.put("someInput", InputData.builder().value(emptyList()).build());
-    applicationData.setPagesData(new PagesData(Map.of("somePage", pageData)));
-    Subworkflows subworkflows = new Subworkflows();
-    PagesData subflowIteration = new PagesData();
-    PageData groupedPage = new PageData();
-    groupedPage.put("someGroupedPageInput",
-        InputData.builder().value(List.of("someGroupedPageValue")).build());
-    subflowIteration.put("someGroupedPage", groupedPage);
-    subworkflows.addIteration("someGroup", subflowIteration);
-    applicationData.setSubworkflows(subworkflows);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("somePage", "someInput", emptyList())
+        .withSubworkflow("someGroup", new PagesDataBuilder()
+            .withPageData("someGroupedPage", "someGroupedPageInput", "someGroupedPageValue"))
+        .build();
 
     String contentType = "image/jpeg";
     String originalFilename = "originalFilename";
@@ -134,9 +128,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void shouldSaveApplicationWithOptionalFieldsPopulated() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of("somePage",
-        new PageData(Map.of("someInput", InputData.builder().value(emptyList()).build())))));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("somePage", "someInput", emptyList()).build();
 
     Application application = Application.builder()
         .id("someid")
@@ -159,11 +152,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void shouldUpdateExistingApplication() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of(
-        "somePage",
-        new PageData(Map.of("someInput", InputData.builder().value(emptyList()).build()))
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("somePage", "someInput", emptyList()).build();
 
     String applicationId = "someid";
     Application application = Application.builder()
@@ -178,11 +168,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
     applicationRepository.save(application);
 
-    ApplicationData updatedApplicationData = new ApplicationData();
-    updatedApplicationData.setPagesData(new PagesData(Map.of(
-        "someUpdatedPage",
-        new PageData(Map.of("someUpdatedInput", InputData.builder().value(emptyList()).build()))
-    )));
+    ApplicationData updatedApplicationData = new TestApplicationDataBuilder()
+        .withPageData("someUpdatedPage", "someUpdatedInput", emptyList()).build();
     ZonedDateTime completedAt = ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS);
     Application updatedApplication = Application.builder()
         .id(application.getId())
@@ -366,8 +353,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
       String actualEncryptedData = jdbcTemplate.queryForObject(
           "SELECT application_data " +
-              "FROM applications " +
-              "WHERE id = 'someid'", String.class);
+          "FROM applications " +
+          "WHERE id = 'someid'", String.class);
       assertThat(actualEncryptedData).isEqualTo(jsonData);
     }
 
@@ -382,9 +369,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
           .county(Olmsted)
           .timeToComplete(Duration.ofSeconds(1))
           .build();
-      ApplicationData decryptedApplicationData = new ApplicationData();
-      decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage",
-          new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
+      ApplicationData decryptedApplicationData = new TestApplicationDataBuilder()
+          .withPageData("somePage", "someInput", "CASH").build();
       when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
 
       applicationRepositoryWithMockEncryptor.save(application);
@@ -406,9 +392,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
           .county(Olmsted)
           .timeToComplete(Duration.ofSeconds(1))
           .build();
-      ApplicationData decryptedApplicationData = new ApplicationData();
-      decryptedApplicationData.setPagesData(new PagesData(Map.of("somePage",
-          new PageData(Map.of("someInput", InputData.builder().value(List.of("CASH")).build())))));
+      ApplicationData decryptedApplicationData = new TestApplicationDataBuilder()
+          .withPageData("somePage", "someInput", "CASH").build();
 
       when(mockEncryptor.decrypt(any())).thenReturn(decryptedApplicationData);
 

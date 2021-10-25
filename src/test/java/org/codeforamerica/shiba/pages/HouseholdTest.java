@@ -18,11 +18,9 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
 
@@ -68,25 +66,20 @@ public class HouseholdTest extends AbstractPageControllerTest {
         .build();
     when(applicationRepository.find(any())).thenReturn(application);
 
-    PageData personalInfoPage = new PageData();
-    personalInfoPage.put("firstName", InputData.builder().value(List.of("The")).build());
-    personalInfoPage.put("lastName", InputData.builder().value(List.of("Applicant")).build());
-    applicationData.getPagesData().put("personalInfo", personalInfoPage);
-    applicationData.getSubworkflows()
-        .addIteration("household", PagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of(
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("personalInfo", "firstName", "The")
+        .withPageData("personalInfo", "lastName", "Applicant")
+        .withSubworkflow("household", new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
                 "programs", List.of("SNAP", "CCAP"),
                 "firstName", List.of("First"),
                 "lastName", List.of("HouseholdMember")
-            ))
-        )));
-    applicationData.getSubworkflows()
-        .addIteration("household", PagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of(
+            )), new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
                 "programs", List.of("SNAP"),
                 "firstName", List.of("Second"),
                 "lastName", List.of("HouseholdMember")
             ))
-        )));
+        );
   }
 }

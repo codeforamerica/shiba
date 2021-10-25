@@ -83,9 +83,9 @@ class ApplicationDataEncryptorTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("household",
             new PagesDataBuilder()
-                .withPageData("householdMemberInfo", "ssn", "123-45-5678").build(),
+                .withPageData("householdMemberInfo", "ssn", "123-45-5678"),
             new PagesDataBuilder()
-                .withPageData("householdMemberInfo", "ssn", "").build())
+                .withPageData("householdMemberInfo", "ssn", ""))
         .build();
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
     assertThat(encryptedApp).contains(

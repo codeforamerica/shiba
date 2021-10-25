@@ -8,9 +8,8 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class HouseholdUsCitizenMapperTest {
@@ -20,18 +19,13 @@ class HouseholdUsCitizenMapperTest {
   @Test
   void shouldParseTrueOrFalseForHouseholdMemberUsCitizenship() {
     ApplicationData applicationData = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    PagesData householdMember = new PagesData();
-    applicationData.getSubworkflows().addIteration("household", householdMember);
+    applicationData.getSubworkflows().addIteration("household", new PagesData());
     UUID householdMemberID = applicationData.getSubworkflows().get("household").get(0).getId();
 
-    PageData whoIsUsCitizenPage = new PageData();
-    whoIsUsCitizenPage.put("whoIsNonCitizen", InputData.builder()
-        .value(List.of("personAFirstName personALastName applicant",
-            "personBFirstName personBLastName " + householdMemberID))
-        .build());
-    pagesData.put("whoIsNonCitizen", whoIsUsCitizenPage);
-    applicationData.setPagesData(pagesData);
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("whoIsNonCitizen", "whoIsNonCitizen",
+            List.of("personAFirstName personALastName applicant",
+                "personBFirstName personBLastName " + householdMemberID));
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)

@@ -15,16 +15,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -138,10 +135,7 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
         List.of(proofOfJobLoss, proofOfIncome, proofOfHousingCost));
 
     // Proof of Income is only recommended for snap applications. Add SNAP for household member so it shows
-    applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        PagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of("programs", List.of("SNAP")))))
-    )))));
+    new TestApplicationDataBuilder(applicationData).withHouseholdMemberPrograms(List.of("SNAP"));
 
     mockMvc.perform(get("/pages/documentRecommendation").session(new MockHttpSession()))
         .andExpect(status().isOk())
@@ -177,27 +171,22 @@ public class DocRecommendationMessageServiceTest extends AbstractPageControllerT
   }
 
   private void setPageInformation(List<String> programs, List<String> recommendations) {
-    var pagesData = new ArrayList<PageDataBuilder>();
-    pagesData.add(new PageDataBuilder("choosePrograms", Map.of("programs", programs)));
+    var pagesDataBuilder = new PagesDataBuilder()
+        .withPageData("choosePrograms", "programs", programs);
 
     recommendations.forEach(recommendation -> {
-      PageDataBuilder pageDataBuilder;
       switch (recommendation) {
-        case proofOfIncome -> pageDataBuilder = new PageDataBuilder("employmentStatus",
-            Map.of("areYouWorking", List.of("true")));
-        case proofOfHousingCost -> pageDataBuilder = new PageDataBuilder("homeExpenses",
-            Map.of("homeExpenses", List.of("RENT")));
-        case proofOfJobLoss -> pageDataBuilder = new PageDataBuilder("workSituation",
-            Map.of("hasWorkSituation", List.of("true")));
-        case proofOfMedicalExpenses -> pageDataBuilder = new PageDataBuilder("medicalExpenses",
-            Map.of("medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS")));
-        default -> pageDataBuilder = null;
-      }
-      if (pageDataBuilder != null) {
-        pagesData.add(pageDataBuilder);
+        case proofOfIncome -> pagesDataBuilder
+            .withPageData("employmentStatus", "areYouWorking", "true");
+        case proofOfHousingCost -> pagesDataBuilder
+            .withPageData("homeExpenses", "homeExpenses", "RENT");
+        case proofOfJobLoss -> pagesDataBuilder
+            .withPageData("workSituation", "hasWorkSituation", "true");
+        case proofOfMedicalExpenses -> pagesDataBuilder
+            .withPageData("medicalExpenses", "medicalExpenses", "MEDICAL_INSURANCE_PREMIUMS");
       }
     });
 
-    applicationData.setPagesData(PagesDataBuilder.build(pagesData));
+    applicationData.setPagesData(pagesDataBuilder.build());
   }
 }

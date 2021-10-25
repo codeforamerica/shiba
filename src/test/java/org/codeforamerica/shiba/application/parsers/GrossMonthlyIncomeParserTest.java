@@ -19,8 +19,8 @@ class GrossMonthlyIncomeParserTest {
   void shouldProvideHourlyJobInformation() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
-            new PagesDataBuilder().withHourlyJob("false", "12", "30").build(),
-            new PagesDataBuilder().withHourlyJob("false", "6", "45").build())
+            new PagesDataBuilder().withHourlyJob("false", "12", "30"),
+            new PagesDataBuilder().withHourlyJob("false", "6", "45"))
         .build();
 
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
@@ -38,8 +38,8 @@ class GrossMonthlyIncomeParserTest {
   void shouldNotProvideJobInformationForJobsWithInsufficientInformationForCalculation() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
-            new PagesDataBuilder().withHourlyJob("false", "", "").build(),
-            new PagesDataBuilder().withNonHourlyJob("false", "", "").build())
+            new PagesDataBuilder().withHourlyJob("false", "", ""),
+            new PagesDataBuilder().withNonHourlyJob("false", "", ""))
         .build();
 
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
@@ -60,7 +60,7 @@ class GrossMonthlyIncomeParserTest {
   void shouldProvideNonHourlyJobInformation() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs", new PagesDataBuilder()
-            .withNonHourlyJob("false", "1.1", "EVERY_WEEK").build())
+            .withNonHourlyJob("false", "1.1", "EVERY_WEEK"))
         .build();
 
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
@@ -76,7 +76,7 @@ class GrossMonthlyIncomeParserTest {
   void shouldReturnNonHourlyJobInformationIfHourlyJobPageIsNotAvailable() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs", new PagesDataBuilder()
-            .withNonHourlyJob("false", "1.1", "EVERY_WEEK").build())
+            .withNonHourlyJob("false", "1.1", "EVERY_WEEK"))
         .build();
 
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser

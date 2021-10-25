@@ -9,15 +9,11 @@ import static org.mockito.Mockito.when;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,26 +21,19 @@ class ApplicationFactoryTest {
 
   Clock clock = mock(Clock.class);
 
-  @SuppressWarnings("unchecked")
   CountyParser countyParser = mock(CountyParser.class);
   MonitoringService monitoringService = mock(MonitoringService.class);
   ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser,
       monitoringService);
   ApplicationData applicationData = new ApplicationData();
   ZoneOffset zoneOffset = ZoneOffset.UTC;
-  PagesData pagesData;
 
   @BeforeEach
   void setUp() {
-    pagesData = new PagesData();
-    PageData homeAddress = new PageData();
-    homeAddress.put("zipCode", InputData.builder().value(List.of("something")).build());
-    pagesData.put("homeAddress", homeAddress);
-    applicationData.setPagesData(pagesData);
-    Subworkflows subworkflows = new Subworkflows();
-    subworkflows.addIteration("someGroup", new PagesData(Map.of("somePage", new PageData(
-        Map.of("someInput", InputData.builder().value(List.of("someValue")).build())))));
-    applicationData.setSubworkflows(subworkflows);
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("homeAddress", "zipCode", "something")
+        .withSubworkflow("someGroup", new PagesDataBuilder()
+            .withPageData("somePage", "someInput", "someValue"));
     applicationData.setFlow(FlowType.FULL);
     applicationData.setStartTimeOnce(Instant.EPOCH);
 

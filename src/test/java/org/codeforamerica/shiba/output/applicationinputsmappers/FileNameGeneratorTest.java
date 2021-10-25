@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
@@ -18,9 +17,7 @@ import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FileNameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -36,12 +33,8 @@ class FileNameGeneratorTest {
 
   @BeforeEach
   void setUp() {
-    PagesData pagesData = new PagesData();
-    ApplicationData applicationData = new ApplicationData();
-    PageData chooseProgramsData = new PageData();
-    chooseProgramsData.put("programs", InputData.builder().value(emptyList()).build());
-    pagesData.put("choosePrograms", chooseProgramsData);
-    applicationData.setPagesData(pagesData);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(emptyList()).build();
     countyMap.setDefaultValue(CountyRoutingDestination.builder()
         .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
@@ -92,14 +85,12 @@ class FileNameGeneratorTest {
 
   @Test
   void shouldIncludeProgramCodes() {
-    PageData chooseProgramsData = new PageData();
     List<String> programs = new ArrayList<>(List.of(
         "SNAP", "CASH", "GRH", "EA", "CCAP"
     ));
     Collections.shuffle(programs);
-    chooseProgramsData.put("programs", InputData.builder().value(programs).build());
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(programs).build();
     Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
     String fileName = fileNameGenerator.generatePdfFileName(application, Document.CAF);
@@ -109,13 +100,9 @@ class FileNameGeneratorTest {
 
   @Test
   void shouldIncludeProgramCodesForHouseholdMembers() {
-    ApplicationData applicationData = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    PageData householdMemberProgramsPage = new PageData();
-    householdMemberProgramsPage.put("programs",
-        InputData.builder().value(List.of("SNAP", "CASH", "GRH", "EA", "CCAP")).build());
-    pagesData.put("householdMemberInfo", householdMemberProgramsPage);
-    applicationData.getSubworkflows().addIteration("household", pagesData);
+    List<String> programs = List.of("SNAP", "CASH", "GRH", "EA", "CCAP");
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withHouseholdMemberPrograms(programs).build();
 
     Application application = defaultApplicationBuilder.applicationData(applicationData).build();
 
@@ -136,10 +123,8 @@ class FileNameGeneratorTest {
 
   @Test
   void shouldArrangeNameCorrectlyForPdf() {
-    PageData chooseProgramsData = new PageData(
-        Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("SNAP")).build();
 
     String countyNPI = "someNPI";
     County county = Hennepin;
@@ -164,10 +149,8 @@ class FileNameGeneratorTest {
 
   @Test
   void shouldArrangeNameCorrectlyForXML() {
-    PageData chooseProgramsData = new PageData(
-        Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("SNAP")).build();
 
     String countyNPI = "someNPI";
     County county = Hennepin;
@@ -225,10 +208,8 @@ class FileNameGeneratorTest {
 
   @Test
   void shouldBeDocInsteadOfMnbIfCountyIsHennepin() {
-    PageData chooseProgramsData = new PageData(
-        Map.of("programs", InputData.builder().value(List.of("SNAP")).build()));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesData(Map.of("choosePrograms", chooseProgramsData)));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("SNAP")).build();
 
     String hennepinCountyNPI = "hennepinNPI";
     County hennepinCounty = Hennepin;

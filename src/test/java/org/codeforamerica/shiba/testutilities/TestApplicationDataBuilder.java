@@ -45,7 +45,7 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withPersonalInfo() {
-    PageData personalInfo = new PageData();
+    PageData personalInfo = getPageData("personalInfo");
     personalInfo.put("firstName", new InputData(List.of("Jane")));
     personalInfo.put("lastName", new InputData(List.of("Doe")));
     personalInfo.put("otherName", new InputData(List.of("")));
@@ -54,29 +54,25 @@ public class TestApplicationDataBuilder {
     personalInfo.put("sex", new InputData(List.of("FEMALE")));
     personalInfo.put("maritalStatus", new InputData(List.of("NEVER_MARRIED")));
     personalInfo.put("livedInMnWholeLife", new InputData(List.of("true")));
-    applicationData.getPagesData().put("personalInfo", personalInfo);
     return this;
   }
 
   public TestApplicationDataBuilder withContactInfo() {
-    PageData pageData = new PageData();
+    PageData pageData = getPageData("contactInfo");
     pageData.put("phoneNumber", new InputData(List.of("(603) 879-1111")));
     pageData.put("email", new InputData(List.of("jane@example.com")));
     pageData.put("phoneOrEmail", new InputData(List.of("PHONE")));
-    applicationData.getPagesData().put("contactInfo", pageData);
     return this;
   }
 
-  public TestApplicationDataBuilder noPermamentAddress() {
-    PageData homeAddress = new PageData();
-    homeAddress.put("isHomeless", new InputData(List.of("true")));
-    applicationData.getPagesData().put("homeAddress", homeAddress);
+  public TestApplicationDataBuilder noPermanentAddress() {
+    PageData pageData = getPageData("homeAddress");
+    pageData.put("isHomeless", new InputData(List.of("true")));
     return this;
   }
 
   public TestApplicationDataBuilder withHomeAddress() {
-    applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("homeAddress");
+    PageData pageData = getPageData("homeAddress");
     pageData.put("streetAddress", new InputData(List.of("street")));
     pageData.put("city", new InputData(List.of("city")));
     pageData.put("state", new InputData(List.of("CA")));
@@ -86,8 +82,7 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withEnrichedHomeAddress() {
-    applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("homeAddress");
+    PageData pageData = getPageData("homeAddress");
     pageData
         .put("enrichedStreetAddress", new InputData(List.of("smarty street")));
     pageData.put("enrichedCity", new InputData(List.of("smarty city")));
@@ -98,8 +93,7 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withMailingAddress() {
-    applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("mailingAddress");
+    PageData pageData = getPageData("mailingAddress");
     pageData.put("streetAddress", new InputData(List.of("street")));
     pageData.put("city", new InputData(List.of("city")));
     pageData.put("state", new InputData(List.of("CA")));
@@ -109,8 +103,7 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withEnrichedMailingAddress() {
-    applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("mailingAddress");
+    PageData pageData = getPageData("mailingAddress");
     pageData.put("enrichedStreetAddress", new InputData(List.of("smarty street")));
     pageData.put("enrichedCity", new InputData(List.of("smarty city")));
     pageData.put("enrichedState", new InputData(List.of("CA")));
@@ -125,9 +118,8 @@ public class TestApplicationDataBuilder {
 
   public TestApplicationDataBuilder withPageData(String pageName, String input,
       List<String> values) {
-    PagesData pagesData = applicationData.getPagesData();
-    pagesData.putIfAbsent(pageName, new PageData());
-    pagesData.get(pageName).put(input, new InputData(values));
+    PageData pageData = getPageData(pageName);
+    pageData.put(input, new InputData(values));
     return this;
   }
 
@@ -137,10 +129,12 @@ public class TestApplicationDataBuilder {
     return this;
   }
 
+  // Will overwrite existing subworkflows data
   public TestApplicationDataBuilder withSubworkflow(String pageGroup,
-      PagesDataBuilder pagesDataBuilder) {
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of(pageGroup, new Subworkflow(List.of(pagesDataBuilder.build())))));
+      PagesDataBuilder... pagesDataBuilder) {
+    List<PagesData> pagesDataList = Arrays.stream(pagesDataBuilder)
+        .map(PagesDataBuilder::build).toList();
+    applicationData.getSubworkflows().put(pageGroup, new Subworkflow(pagesDataList));
     return this;
   }
 
@@ -150,22 +144,31 @@ public class TestApplicationDataBuilder {
   }
 
   public TestApplicationDataBuilder withHouseholdMemberPrograms(List<String> programs) {
-    return withSubworkflow("household", (new PagesDataBuilder()
-        .withPageData("householdMemberInfo", Map.of("programs", programs)))
+    return withSubworkflow("household", new PagesDataBuilder()
+        .withPageData("householdMemberInfo", "programs", programs)
     );
   }
 
   public TestApplicationDataBuilder withHouseholdMember() {
     return withSubworkflow("household", new PagesDataBuilder()
         .withPageData("householdMemberInfo",
-            Map.of("firstName", List.of("Daria"),
-                "lastName", List.of("Agàta"),
+            Map.of("firstName", "Daria",
+                "lastName", "Agàta",
                 "dateOfBirth", List.of("5", "6", "1978"),
-                "maritalStatus", List.of("Never married"),
-                "sex", List.of("Female"),
-                "livedInMnWholeLife", List.of("Yes"),
-                "relationship", List.of("housemate"),
-                "programs", List.of("SNAP"),
-                "ssn", List.of("123121234"))).build());
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "housemate",
+                "programs", "SNAP",
+                "ssn", "123121234")));
+  }
+
+  /**
+   * Gets the PageData for the given pageName - if it doesn't exist, add it and return the new
+   * PageData object.
+   */
+  private PageData getPageData(String pageName) {
+    applicationData.getPagesData().putIfAbsent(pageName, new PageData());
+    return applicationData.getPagesData().get(pageName);
   }
 }

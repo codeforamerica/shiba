@@ -27,9 +27,9 @@ public class PagesDataBuilder {
   public static PagesData build(List<PageDataBuilder> pageDataBuilders) {
     PagesData result = new PagesData();
     pageDataBuilders.forEach(page -> {
-      result.putIfAbsent(page.getPageName(), new PageData());
-      PageData pageData = result.get(page.getPageName());
-      page.getPageDataMap().forEach(
+      result.putIfAbsent(page.pageName(), new PageData());
+      PageData pageData = result.get(page.pageName());
+      page.pageDataMap().forEach(
           (inputName, value) -> pageData.put(inputName, new InputData(value)));
     });
     return result;
@@ -68,5 +68,12 @@ public class PagesDataBuilder {
         .withPageData("paidByTheHour", "paidByTheHour", "false")
         .withPageData("payPeriod", "payPeriod", payPeriod)
         .withPageData("incomePerPayPeriod", "incomePerPayPeriod", wage);
+  }
+
+  /**
+   * Represents a (pageName, pageData) pair.
+   */
+  public static record PageDataBuilder(String pageName, Map<String, List<String>> pageDataMap) {
+
   }
 }

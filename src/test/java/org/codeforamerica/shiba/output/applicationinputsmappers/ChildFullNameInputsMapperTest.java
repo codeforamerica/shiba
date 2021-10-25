@@ -7,9 +7,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 public class ChildFullNameInputsMapperTest {
@@ -18,15 +16,11 @@ public class ChildFullNameInputsMapperTest {
 
   @Test
   void shouldCreateListOfChildFullNames() {
-    ApplicationData applicationData = new ApplicationData();
-    PagesData pagesData = new PagesData();
-    PageData childrenInNeedOfCarePage = new PageData();
-    childrenInNeedOfCarePage.put("whoNeedsChildCare", InputData.builder()
-        .value(List.of("childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
-            "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
-        .build());
-    pagesData.put("childrenInNeedOfCare", childrenInNeedOfCarePage);
-    applicationData.setPagesData(pagesData);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("childrenInNeedOfCare", "whoNeedsChildCare",
+            List.of("childAFirstName childALastName 939dc33-d13a-4cf0-9093-309293k3",
+                "childBFirstName childBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
+        .build();
 
     List<ApplicationInput> result = mapper.map(Application.builder()
         .applicationData(applicationData)

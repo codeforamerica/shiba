@@ -75,14 +75,14 @@ public class XmlGeneratorIntegrationTest {
                   FormInput::getName,
                   input -> {
                     if (input.getReadOnly() && input.getDefaultValue() != null) {
-                      return InputData.builder().value(List.of(input.getDefaultValue())).build();
+                      return new InputData(List.of(input.getDefaultValue()));
                     }
                     @NotNull List<String> value = switch (input.getType()) {
                       case RADIO, SELECT -> List.of(input.getOptions().getSelectableOptions().get(
-                          new Random().nextInt(input.getOptions().getSelectableOptions().size()))
+                              new Random().nextInt(input.getOptions().getSelectableOptions().size()))
                           .getValue());
                       case CHECKBOX -> input.getOptions().getSelectableOptions().subList(0,
-                          new Random().nextInt(input.getOptions().getSelectableOptions().size())
+                              new Random().nextInt(input.getOptions().getSelectableOptions().size())
                               + 1).stream()
                           .map(Option::getValue)
                           .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class XmlGeneratorIntegrationTest {
                           })
                           .orElse(List.of("some-value"));
                     };
-                    return InputData.builder().value(value).build();
+                    return new InputData(value);
                   }
               ));
           return Map.entry(pageConfiguration.getName(), new PageData(inputDataMap));

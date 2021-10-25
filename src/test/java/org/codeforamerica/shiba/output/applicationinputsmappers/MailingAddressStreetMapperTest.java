@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.OtterTail;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_CITY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ENRICHED_HOME_COUNTY;
@@ -28,7 +30,6 @@ import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
@@ -53,12 +54,14 @@ class MailingAddressStreetMapperTest {
 
   @BeforeEach
   void setup() {
+    Address hennepinPostOfficeAddress = new Address("123 hennepin st", "Minneapolis", "MN", "55555",
+        null, "Hennepin");
     countyMap.getCounties().putAll(Map.of(
-        County.Hennepin,
-        new CountyRoutingDestination(County.Hennepin, null, null, null, "765-4321",
-            new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
-        County.OtterTail,
-        new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null)));
+        Hennepin, CountyRoutingDestination.builder()
+            .county(Hennepin).phoneNumber("765-4321")
+            .postOfficeAddress(hennepinPostOfficeAddress).build(),
+        OtterTail, CountyRoutingDestination.builder()
+            .county(OtterTail).phoneNumber("123-4567").build()));
 
     cityInfo.getCityToZipAndCountyMapping().putAll(Map.of(
         "Ada",
@@ -166,7 +169,7 @@ class MailingAddressStreetMapperTest {
     String expectedCityInput = "Ada";
     String expectedZipcodeInput = "12345";
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .noPermamentAddress()
+        .noPermanentAddress()
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", expectedCityInput)
         .withPageData("cityForGeneralDelivery", "enrichedZipcode", expectedZipcodeInput)
         .build();
@@ -187,7 +190,7 @@ class MailingAddressStreetMapperTest {
     String expectedZipcodeInput = "55555";
     String expectedStreetAddress = "123 hennepin st";
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .noPermamentAddress()
+        .noPermanentAddress()
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Plymouth")
         .withPageData("cityForGeneralDelivery", "enrichedZipcode", "54321")
         .withPageData("cityForGeneralDelivery", "enrichedStreetAddress", expectedStreetAddress)
