@@ -52,7 +52,6 @@ public class MnitEsbWebServiceClient {
   private final Clock clock;
   private final String username;
   private final String password;
-  private final CountyMap<CountyRoutingDestination> countyMap;
   private final ApplicationRepository applicationRepository;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -67,7 +66,6 @@ public class MnitEsbWebServiceClient {
     this.clock = clock;
     this.username = username;
     this.password = password;
-    this.countyMap = countyMap;
     this.applicationRepository = applicationRepository;
   }
 
