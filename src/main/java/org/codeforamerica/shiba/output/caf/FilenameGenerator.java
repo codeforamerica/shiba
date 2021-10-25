@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.output.caf;
 
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -34,43 +37,36 @@ public class FilenameGenerator {
   }
 
   public String generatePdfFilename(Application application, Document document) {
-    String prefix = getSharedApplicationPrefix(application);
+    String prefix = getSharedApplicationPrefix(application, document);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
     String extension = "pdf";
-    return ("%s%s_%s.%s").formatted(prefix, programs, pdfType, extension);
+    return "%s%s_%s.%s".formatted(prefix, programs, pdfType, extension);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
     int size = application.getApplicationData().getUploadedDocs().size();
     index = index + 1;
-    String prefix = getUploadedDocumentPrefix(application);
+    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
   public String generateXmlFilename(Application application) {
-    String prefix = getSharedApplicationPrefix(application);
+    String prefix = getSharedApplicationPrefix(application, CAF);
     String programs = getProgramCodes(application);
     String extension = "xml";
     return "%s%s.%s".formatted(prefix, programs, extension);
   }
 
   @NotNull
-  private String getSharedApplicationPrefix(Application application) {
+  private String getSharedApplicationPrefix(Application application,
+      Document document) {
     var dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
-    var date = DateTimeFormatter.ofPattern("yyyyMMdd")
-        .format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
-    var time = DateTimeFormatter.ofPattern("HHmmss")
-        .format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
-    var id = application.getId();
-    return "%s_MNB_%s_%s_%s_".formatted(dhsProviderId, date, time, id);
-  }
+    String fileSource = "MNB";
+    if (document == UPLOADED_DOC && application.getCounty() == County.Hennepin) {
+      fileSource = "DOC";
+    }
 
-  @NotNull
-  private String getUploadedDocumentPrefix(Application application) {
-    var dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
-    County county = application.getCounty();
-    String fileSource = county == County.Hennepin ? "DOC" : "MNB";
     var date = DateTimeFormatter.ofPattern("yyyyMMdd")
         .format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
     var time = DateTimeFormatter.ofPattern("HHmmss")

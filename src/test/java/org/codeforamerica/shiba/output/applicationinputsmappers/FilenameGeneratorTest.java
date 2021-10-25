@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Olmsted;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -185,7 +186,7 @@ class FilenameGeneratorTest {
     applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
 
     String countyNPI = "someNPI";
-    County county = Hennepin;
+    County county = Olmsted;
     countyMap.getCounties()
         .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
     String applicationId = "someId";
@@ -202,9 +203,9 @@ class FilenameGeneratorTest {
     String pdfName = fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf");
 
     assertThat(imageName).isEqualTo(String
-        .format("%s_DOC_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
+        .format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
     assertThat(pdfName).isEqualTo(String
-        .format("%s_DOC_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+        .format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
   }
 
   @Test
