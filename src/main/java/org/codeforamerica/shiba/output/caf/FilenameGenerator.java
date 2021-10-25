@@ -34,21 +34,25 @@ public class FilenameGenerator {
   }
 
   public String generatePdfFilename(Application application, Document document) {
-    var prefix = getSharedApplicationPrefix(application);
-    var programs = getProgramCodes(application);
-    var pdfType = document.toString();
-    return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
+    String prefix = getSharedApplicationPrefix(application);
+    String programs = getProgramCodes(application);
+    String pdfType = document.toString();
+    String extension = "pdf";
+    return ("%s%s_%s.%s").formatted(prefix, programs, pdfType, extension);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
     int size = application.getApplicationData().getUploadedDocs().size();
     index = index + 1;
-    var prefix = getUploadedDocumentPrefix(application);
+    String prefix = getUploadedDocumentPrefix(application);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
   public String generateXmlFilename(Application application) {
-    return getSharedApplicationPrefix(application) + getProgramCodes(application) + ".xml";
+    String prefix = getSharedApplicationPrefix(application);
+    String programs = getProgramCodes(application);
+    String extension = "xml";
+    return "%s%s.%s".formatted(prefix, programs, extension);
   }
 
   @NotNull
