@@ -8,6 +8,8 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -18,9 +20,12 @@ class GeneralDeliveryAddressEnrichmentTest {
 
   private final CountyMap<CountyRoutingDestination> countyZipCodeMap = new CountyMap<>();
   private final CityInfoConfiguration cityInfoConfiguration = new CityInfoConfiguration();
+  private final FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(
+      Map.of("use-county-selection", FeatureFlag.OFF));
 
   private final GeneralDeliveryAddressEnrichment generalDeliveryAddressEnrichment =
-      new GeneralDeliveryAddressEnrichment(cityInfoConfiguration, countyZipCodeMap);
+      new GeneralDeliveryAddressEnrichment(cityInfoConfiguration, countyZipCodeMap,
+          featureFlagConfiguration);
 
   @BeforeEach
   void setup() {
@@ -30,7 +35,9 @@ class GeneralDeliveryAddressEnrichmentTest {
             new CountyRoutingDestination(County.Hennepin, null, null, null, "765-4321",
                 new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
             County.OtterTail,
-            new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null)));
+              new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null),
+            County.Anoka,
+              new CountyRoutingDestination(County.Anoka, null, null, null, "555-5555", null)));
 
     cityInfoConfiguration.getCityToZipAndCountyMapping().putAll(Map.of(
         "Battle Lake",
@@ -76,5 +83,26 @@ class GeneralDeliveryAddressEnrichmentTest {
     assertThat(enrichmentResult)
         .containsEntry("enrichedStreetAddress", new InputData(List.of("123 hennepin st")));
 
+  }
+
+  @Test
+  void shouldMapCityInfoAndCountyPhoneNumberIfUseCountySelectionIsOn() {
+    featureFlagConfiguration.put("use-county-selection", FeatureFlag.ON);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("identifyCounty", "county", "Anoka")
+        .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Battle Lake")
+        .build();
+
+    EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment
+        .process(applicationData.getPagesData());
+
+    assertThat(enrichmentResult).containsEntry("enrichedCounty",
+        new InputData(List.of(County.Anoka.displayName() + " County")));
+    assertThat(enrichmentResult)
+        .containsEntry("enrichedZipcode", new InputData(List.of("56515-9999")));
+    assertThat(enrichmentResult)
+        .containsEntry("enrichedPhoneNumber", new InputData(List.of("555-5555")));
+    assertThat(enrichmentResult)
+        .containsEntry("enrichedStreetAddress", new InputData(List.of("Battle Lake, MN")));
   }
 }
