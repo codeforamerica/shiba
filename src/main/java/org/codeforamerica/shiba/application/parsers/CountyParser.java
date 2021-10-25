@@ -47,6 +47,11 @@ public class CountyParser {
     if (applicationData.getFlow() == FlowType.LATER_DOCS ||
         featureFlagConfiguration.get("use-county-selection") == FeatureFlag.ON) {
       countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY);
+    } else if (shouldUseGeneralDeliveryCityToCountyMap(applicationData)) {
+      var cityToCountyMap = cityInfoConfiguration.getCityToZipAndCountyMapping();
+      String city = applicationData.getPagesData()
+          .getPageInputFirstValue("cityForGeneralDelivery", "whatIsTheCity");
+      countyName = cityToCountyMap.get(city).get("county");
     } else {
       countyName = parseCountyNameFromFullApplication(applicationData);
     }
