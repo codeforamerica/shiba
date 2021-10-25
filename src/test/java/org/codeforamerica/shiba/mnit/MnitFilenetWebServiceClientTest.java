@@ -146,12 +146,6 @@ class MnitFilenetWebServiceClientTest {
             "//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Flow']/ns3:value",
             namespaceMapping)
             .evaluatesTo("Inbound"))
-        .andExpect(
-            xpath("//ns2:createDocument/ns3:ContentStream/ns3:length", namespaceMapping)
-                .evaluatesTo(0))
-        .andExpect(
-            xpath("//ns2:createDocument/ns3:contentStream/ns3:stream", namespaceMapping)
-                .evaluatesTo(Base64.getEncoder().encodeToString(fileContent.getBytes())))
         .andRespond(withSoapEnvelope(successResponse));
 
     RoutingDestination routingDestination = new CountyRoutingDestination();
