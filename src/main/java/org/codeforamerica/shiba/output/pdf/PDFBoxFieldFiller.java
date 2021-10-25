@@ -34,16 +34,13 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
   public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String fileName) {
     PDFMergerUtility mergerer = new PDFMergerUtility();
 
-    return pdfs.stream()
+    byte[] fileContents = pdfs.stream()
         .map(pdfResource -> fillOutPdfs(fields, pdfResource))
         .reduce(mergePdfs(mergerer))
         .map(this::outputByteArray)
-        .map(bytes -> new ApplicationFile(
-            bytes,
-            String.format("%s.pdf", fileName)))
-        .orElse(new ApplicationFile(
-            new byte[]{},
-            String.format("%s.pdf", fileName)));
+        .orElse(new byte[]{});
+
+    return new ApplicationFile(fileContents, fileName);
   }
 
   private byte[] outputByteArray(PDDocument pdDocument) {
