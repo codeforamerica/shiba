@@ -31,8 +31,8 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
   }
 
   @Override
-  public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String fileName) {
-    PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+  public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String filename) {
+    PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();/**/
 
     byte[] fileContents = pdfs.stream()
         .map(pdfResource -> fillOutPdfs(fields, pdfResource))
@@ -40,7 +40,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
         .map(this::outputByteArray)
         .orElse(new byte[]{});
 
-    return new ApplicationFile(fileContents, fileName);
+    return new ApplicationFile(fileContents, filename);
   }
 
   private byte[] outputByteArray(PDDocument pdDocument) {

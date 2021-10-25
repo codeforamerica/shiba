@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -88,7 +88,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private ClientRegistrationRepository repository;
   @MockBean
-  private FileNameGenerator fileNameGenerator;
+  private FilenameGenerator fileNameGenerator;
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
@@ -127,7 +127,7 @@ class MnitDocumentConsumerTest {
         .flow(FULL)
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
-    when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+    when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
     doReturn(application).when(applicationRepository).find(any());
   }

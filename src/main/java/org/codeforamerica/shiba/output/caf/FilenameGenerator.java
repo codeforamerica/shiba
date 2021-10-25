@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FileNameGenerator {
+public class FilenameGenerator {
 
   public static final Map<String, Set<String>> LETTER_TO_PROGRAMS = Map.of(
       "E", Set.of("EA"),
@@ -29,11 +29,11 @@ public class FileNameGenerator {
   private final CountyMap<CountyRoutingDestination> countyMap;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public FileNameGenerator(CountyMap<CountyRoutingDestination> countyMap) {
+  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap) {
     this.countyMap = countyMap;
   }
 
-  public String generatePdfFileName(Application application, Document document) {
+  public String generatePdfFilename(Application application, Document document) {
     var prefix = getSharedApplicationPrefix(application);
     var programs = getProgramCodes(application);
     var pdfType = document.toString();
@@ -47,7 +47,7 @@ public class FileNameGenerator {
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
-  public String generateXmlFileName(Application application) {
+  public String generateXmlFilename(Application application) {
     return getSharedApplicationPrefix(application) + getProgramCodes(application) + ".xml";
   }
 

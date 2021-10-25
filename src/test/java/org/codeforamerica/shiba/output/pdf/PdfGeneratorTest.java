@@ -14,7 +14,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class PdfGeneratorTest {
   private PdfFieldMapper pdfFieldMapper;
   private PdfFieldFiller caseworkerFiller;
   private ApplicationInputsMappers mappers;
-  private FileNameGenerator fileNameGenerator;
+  private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
 
   @BeforeEach
@@ -40,7 +40,7 @@ class PdfGeneratorTest {
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
     mappers = mock(ApplicationInputsMappers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-    fileNameGenerator = mock(FileNameGenerator.class);
+    fileNameGenerator = mock(FilenameGenerator.class);
 
     pdfFieldFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
@@ -71,7 +71,7 @@ class PdfGeneratorTest {
             ApplicationInputType.SINGLE_VALUE));
     List<PdfField> pdfFields = List.of(new SimplePdfField("someName", "someValue"));
     String fileName = "some file name";
-    when(fileNameGenerator.generatePdfFileName(application, Document.CAF)).thenReturn(fileName);
+    when(fileNameGenerator.generatePdfFilename(application, Document.CAF)).thenReturn(fileName);
     Recipient recipient = CASEWORKER;
     when(mappers.map(application, Document.CAF, recipient)).thenReturn(applicationInputs);
     when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);

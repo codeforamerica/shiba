@@ -18,7 +18,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class XmlGenerator implements FileGenerator {
   private final Map<String, String> enumMappings;
   private final ApplicationRepository applicationRepository;
   private final ApplicationInputsMappers mappers;
-  private final FileNameGenerator fileNameGenerator;
+  private final FilenameGenerator fileNameGenerator;
   private final BinaryOperator<String> UNUSED_IN_SEQUENTIAL_STREAM = (s1, s2) -> "";
   private final Function<String, String> tokenFormatter = (token) -> Pattern
       .quote(String.format("{{%s}}", token));
@@ -42,7 +42,7 @@ public class XmlGenerator implements FileGenerator {
       Map<String, String> xmlEnum,
       ApplicationRepository applicationRepository,
       ApplicationInputsMappers mappers,
-      FileNameGenerator fileNameGenerator) {
+      FilenameGenerator fileNameGenerator) {
     this.xmlConfiguration = xmlConfiguration;
     this.config = xmlConfigMap;
     this.enumMappings = xmlEnum;
@@ -95,7 +95,7 @@ public class XmlGenerator implements FileGenerator {
       String finishedXML = contentsAfterReplacement
           .replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
       return new ApplicationFile(finishedXML.getBytes(),
-          fileNameGenerator.generateXmlFileName(application));
+          fileNameGenerator.generateXmlFilename(application));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
