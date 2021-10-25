@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.testutilities.PercyTestPage;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,10 @@ import org.openqa.selenium.support.ui.Select;
 
 @Tag("fullFlowJourney")
 public class FullFlowJourneyTest extends JourneyTest {
+
+  protected void initTestPage() {
+    testPage = new PercyTestPage(driver);
+  }
 
   @Test
   void fullApplicationWithDocumentUploads() {
@@ -195,7 +200,6 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     //Retroactive Coverage
     testPage.enter("retroactiveCoverageQuestion", YES.getDisplayValue());
-
 
     // Income & Employment
     // Certain Pops will increment milestone steps
