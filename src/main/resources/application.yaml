@@ -68,6 +68,7 @@ feature-flag:
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
+  use-county-selection: on
   county-anoka: on
   county-beltrami: on
   county-carver: on
