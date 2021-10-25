@@ -65,6 +65,8 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
     String callYourCounty = "general-delivery-address.call-your-county-to-get-the-exact-street-address";
     String tellCountyWorker = "general-delivery-address.tell-the-county-worker-you-submitted-an-application-on-MNbenefits";
 
+    // This will show Hennepin specific post office information if the client selected Hennepin County
+    // Even if the client selects a city outside of Hennepin from the city selection screen
     Address postOfficeAddress = countyInfo.getPostOfficeAddress();
     if (postOfficeAddress != null) {
       addressFromCity = postOfficeAddress.getStreet();
