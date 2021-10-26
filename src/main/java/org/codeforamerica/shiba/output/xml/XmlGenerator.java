@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output.xml;
 
+import static org.apache.commons.text.StringEscapeUtils.escapeXml10;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -73,10 +76,12 @@ public class XmlGenerator implements FileGenerator {
           );
       String finishedXML = contentsAfterReplacement.replaceAll(
           "\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
-      return new ApplicationFile(finishedXML.getBytes(),
-          fileNameGenerator.generateXmlFilename(application));
+      return new ApplicationFile(
+          finishedXML.getBytes(),
+          fileNameGenerator.generateXmlFilename(application)
+      );
     } catch (IOException e) {
-      // TODO never, ever, ever cast a checked exception to a runtime exception
+      // TODO never, ever, ever convert a checked exception to a runtime exception
       throw new RuntimeException(e);
     }
   }
@@ -94,23 +99,26 @@ public class XmlGenerator implements FileGenerator {
     final String singleValueXmlToken = getXmlToken(input, config.get(defaultXmlConfigKey));
 
     return switch (input.getType()) {
-      case DATE_VALUE -> {
-        String escapedInputValue = input.getValue().stream().map(StringEscapeUtils::escapeXml10)
-            .collect(Collectors.joining("/"));
-        yield Stream.of(new XmlEntry(singleValueXmlToken, escapedInputValue));
-      }
+      case DATE_VALUE -> Stream.of(new XmlEntry(singleValueXmlToken, dateToXmlString(input)));
       case ENUMERATED_SINGLE_VALUE -> {
         yield Optional.ofNullable(enumMappings.get(input.getValue(0)))
-            .map(value -> new XmlEntry(singleValueXmlToken, StringEscapeUtils.escapeXml10(value)))
+            .map(value -> new XmlEntry(singleValueXmlToken, escapeXml10(value)))
             .stream();
       }
       case ENUMERATED_MULTI_VALUE -> input.getValue().stream().map(value -> new XmlEntry(
               getXmlToken(input, config.get(
-                  String.join(".", defaultXmlConfigKey, StringEscapeUtils.escapeXml10(value)))),
+                  String.join(".", defaultXmlConfigKey, escapeXml10(value)))),
               enumMappings.get(value)))
           .filter(entry -> entry.escapedInputValue() != null);
-      default -> Stream.of(
-          new XmlEntry(singleValueXmlToken, StringEscapeUtils.escapeXml10(input.getValue(0))));
+      default -> {
+        yield Stream.of(new XmlEntry(singleValueXmlToken, escapeXml10(input.getValue(0))));
+      }
     };
+  }
+
+  @NotNull
+  private String dateToXmlString(ApplicationInput input) {
+    return input.getValue().stream().map(StringEscapeUtils::escapeXml10)
+        .collect(Collectors.joining("/"));
   }
 }
