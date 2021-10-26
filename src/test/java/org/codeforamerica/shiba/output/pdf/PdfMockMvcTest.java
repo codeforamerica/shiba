@@ -624,11 +624,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", originalZipCode, ccap);
       }
 
-      @Test
-      void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Anoka", "55303",
-            "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-      }
 
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
