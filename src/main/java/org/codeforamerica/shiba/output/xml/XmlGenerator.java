@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.output.xml;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,46 +56,27 @@ public class XmlGenerator implements FileGenerator {
     List<ApplicationInput> applicationInputs = mappers.map(application, null, recipient);
 
     try {
-      String contentsAfterReplacement = applicationInputs.stream()
+      var applicationInputsToTokenValues = applicationInputs.stream()
           .filter(input -> !input.getValue().isEmpty())
-          .flatMap(input -> {
-            String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
-            return switch (input.getType()) {
-              case DATE_VALUE -> Stream.of(new AbstractMap.SimpleEntry<>(
-                  getXmlToken(input, config.get(defaultXmlConfigKey)),
-                  String.join("/", input.getValue().stream().map(StringEscapeUtils::escapeXml10)
-                      .collect(Collectors.toList()))));
-              case ENUMERATED_SINGLE_VALUE -> Optional
-                  .ofNullable(enumMappings.get(input.getValue(0)))
-                  .map(mappedValue -> new AbstractMap.SimpleEntry<>(
-                      getXmlToken(input, config.get(defaultXmlConfigKey)),
-                      StringEscapeUtils.escapeXml10(mappedValue)))
-                  .stream();
-              case ENUMERATED_MULTI_VALUE -> input.getValue().stream()
-                  .map(value -> new AbstractMap.SimpleEntry<>(
-                      getXmlToken(input, config.get(String
-                          .join(".", defaultXmlConfigKey, StringEscapeUtils.escapeXml10(value)))),
-                      enumMappings.get(value)))
-                  .filter(entry -> entry.getValue() != null);
-              default -> Stream.of(new AbstractMap.SimpleEntry<>(
-                  getXmlToken(input, config.get(defaultXmlConfigKey)),
-                  StringEscapeUtils.escapeXml10(input.getValue(0))));
-            };
-          })
-          .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.getKey() != null)
+          .toList();
+
+      String contentsAfterReplacement = applicationInputsToTokenValues.stream()
+          .flatMap(this::ApplicationInputToTokenValuePairs)
+          .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.xmlToken() != null)
           .reduce(
               new String(xmlConfiguration.getInputStream().readAllBytes()),
               (partiallyReplacedContent, tokenToValueEntry) ->
-                  partiallyReplacedContent
-                      .replaceAll(tokenFormatter.apply(tokenToValueEntry.getKey()),
-                          tokenToValueEntry.getValue()),
+                  partiallyReplacedContent.replaceAll(
+                      tokenFormatter.apply(tokenToValueEntry.xmlToken()),
+                      tokenToValueEntry.escapedInputValue()),
               UNUSED_IN_SEQUENTIAL_STREAM
           );
-      String finishedXML = contentsAfterReplacement
-          .replaceAll("\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
+      String finishedXML = contentsAfterReplacement.replaceAll(
+          "\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
       return new ApplicationFile(finishedXML.getBytes(),
           fileNameGenerator.generateXmlFilename(application));
     } catch (IOException e) {
+      // TODO never, ever, ever cast a checked exception to a runtime exception
       throw new RuntimeException(e);
     }
   }
@@ -105,4 +85,32 @@ public class XmlGenerator implements FileGenerator {
     return input.getIteration() != null ? xmlToken + "_" + input.getIteration() : xmlToken;
   }
 
+  private record XmlEntry(String xmlToken, String escapedInputValue) {
+
+  }
+
+  private Stream<XmlEntry> ApplicationInputToTokenValuePairs(ApplicationInput input) {
+    String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
+    final String singleValueXmlToken = getXmlToken(input, config.get(defaultXmlConfigKey));
+
+    return switch (input.getType()) {
+      case DATE_VALUE -> {
+        String escapedInputValue = input.getValue().stream().map(StringEscapeUtils::escapeXml10)
+            .collect(Collectors.joining("/"));
+        yield Stream.of(new XmlEntry(singleValueXmlToken, escapedInputValue));
+      }
+      case ENUMERATED_SINGLE_VALUE -> {
+        yield Optional.ofNullable(enumMappings.get(input.getValue(0)))
+            .map(value -> new XmlEntry(singleValueXmlToken, StringEscapeUtils.escapeXml10(value)))
+            .stream();
+      }
+      case ENUMERATED_MULTI_VALUE -> input.getValue().stream().map(value -> new XmlEntry(
+              getXmlToken(input, config.get(
+                  String.join(".", defaultXmlConfigKey, StringEscapeUtils.escapeXml10(value)))),
+              enumMappings.get(value)))
+          .filter(entry -> entry.escapedInputValue() != null);
+      default -> Stream.of(
+          new XmlEntry(singleValueXmlToken, StringEscapeUtils.escapeXml10(input.getValue(0))));
+    };
+  }
 }
