@@ -16,6 +16,7 @@ import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepa
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import static org.mockito.Mockito.*;
 =======
 import static org.mockito.Mockito.any;
@@ -31,6 +32,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 >>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
+=======
+import static org.mockito.Mockito.*;
+>>>>>>> 53e0e3c0 (Reformatting and removing filenet test)
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -471,12 +475,15 @@ class MnitDocumentConsumerTest {
         application.getId(), CAF, FULL);
     verify(mnitFilenetClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
         application.getId(), CAF, FULL);
-    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CAF,
         FULL);
-    verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+    verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CAF,
         FULL);
     // CCAP never goes to Mille Lacs
-    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CCAP,
         FULL);
     verifyNoInteractions(mnitClient);
   }
