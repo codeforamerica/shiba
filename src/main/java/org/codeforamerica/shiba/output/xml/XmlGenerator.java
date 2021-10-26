@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.output.xml;
 import static org.apache.commons.text.StringEscapeUtils.escapeXml10;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,27 +61,34 @@ public class XmlGenerator implements FileGenerator {
     List<ApplicationInput> applicationInputs = mappers.map(application, null, recipient);
 
     try {
-      var applicationInputsToTokenValues = applicationInputs.stream()
+      List<ApplicationInput> nonEmptyApplicationInputs = applicationInputs.stream()
           .filter(input -> !input.getValue().isEmpty())
           .toList();
 
-      String contentsAfterReplacement = applicationInputsToTokenValues.stream()
-          .flatMap(this::ApplicationInputToTokenValuePairs)
-          .filter(xmlTokenToInputValueEntry -> xmlTokenToInputValueEntry.xmlToken() != null)
-          .reduce(
-              new String(xmlConfiguration.getInputStream().readAllBytes()),
-              (partiallyReplacedContent, tokenToValueEntry) ->
-                  partiallyReplacedContent.replaceAll(
-                      tokenFormatter.apply(tokenToValueEntry.xmlToken()),
-                      tokenToValueEntry.escapedInputValue()),
-              UNUSED_IN_SEQUENTIAL_STREAM
+      List<XmlEntry> xmlEntries = new ArrayList<>();
+      for (ApplicationInput applicationInput : nonEmptyApplicationInputs) {
+        List<XmlEntry> entriesForThisInput = convertApplicationInputToXmlEntries(
+            applicationInput);
+        xmlEntries.addAll(entriesForThisInput);
+      }
+
+      String contentsAfterReplacement;
+      try (InputStream xmlConfigInputStream = xmlConfiguration.getInputStream()) {
+        String partiallyReplacedContent = new String(xmlConfigInputStream.readAllBytes());
+        for (XmlEntry entry : xmlEntries) {
+          partiallyReplacedContent = partiallyReplacedContent.replaceAll(
+              tokenFormatter.apply(entry.xmlToken()),
+              entry.escapedInputValue()
           );
+        }
+        contentsAfterReplacement = partiallyReplacedContent;
+      }
+
       String finishedXML = contentsAfterReplacement.replaceAll(
           "\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
-      return new ApplicationFile(
-          finishedXML.getBytes(),
-          fileNameGenerator.generateXmlFilename(application)
-      );
+      byte[] fileContent = finishedXML.getBytes();
+      String filename = fileNameGenerator.generateXmlFilename(application);
+      return new ApplicationFile(fileContent, filename);
     } catch (IOException e) {
       // TODO never, ever, ever convert a checked exception to a runtime exception
       throw new RuntimeException(e);
@@ -94,26 +103,23 @@ public class XmlGenerator implements FileGenerator {
 
   }
 
-  private Stream<XmlEntry> ApplicationInputToTokenValuePairs(ApplicationInput input) {
+  private List<XmlEntry> convertApplicationInputToXmlEntries(ApplicationInput input) {
     String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
     final String singleValueXmlToken = getXmlToken(input, config.get(defaultXmlConfigKey));
 
-    return switch (input.getType()) {
+    Stream<XmlEntry> xmlEntryStream = switch (input.getType()) {
       case DATE_VALUE -> Stream.of(new XmlEntry(singleValueXmlToken, dateToXmlString(input)));
-      case ENUMERATED_SINGLE_VALUE -> {
-        yield Optional.ofNullable(enumMappings.get(input.getValue(0)))
-            .map(value -> new XmlEntry(singleValueXmlToken, escapeXml10(value)))
-            .stream();
-      }
+      case ENUMERATED_SINGLE_VALUE -> Optional.ofNullable(enumMappings.get(input.getValue(0)))
+          .map(value -> new XmlEntry(singleValueXmlToken, escapeXml10(value)))
+          .stream();
       case ENUMERATED_MULTI_VALUE -> input.getValue().stream().map(value -> new XmlEntry(
               getXmlToken(input, config.get(
                   String.join(".", defaultXmlConfigKey, escapeXml10(value)))),
               enumMappings.get(value)))
           .filter(entry -> entry.escapedInputValue() != null);
-      default -> {
-        yield Stream.of(new XmlEntry(singleValueXmlToken, escapeXml10(input.getValue(0))));
-      }
+      default -> Stream.of(new XmlEntry(singleValueXmlToken, escapeXml10(input.getValue(0))));
     };
+    return xmlEntryStream.filter(entry -> entry.xmlToken() != null).toList();
   }
 
   @NotNull
