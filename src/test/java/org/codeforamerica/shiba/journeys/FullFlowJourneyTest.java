@@ -387,6 +387,10 @@ public class FullFlowJourneyTest extends JourneyTest {
         .sendKeys("I need you to contact my work for proof of termination");
     testPage.clickContinue();
 
+    //Can we ask about your race and ethnicity?
+    testPage.clickLink("Yes, continue");
+
+
     // The legal stuff.
     testPage.enter("agreeToTerms", "I agree");
     testPage.enter("drugFelony", NO.getDisplayValue());
