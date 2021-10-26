@@ -29,11 +29,11 @@ public class CountyParser {
   public County parse(ApplicationData applicationData) {
     String countyName = parseCountyInput(applicationData);
 
-    String countyConfigName = County.valueFor(countyName).name().toLowerCase();
+    String countyConfigName = County.getCountyForName(countyName).name().toLowerCase();
     if (featureFlagConfiguration.get("county-" + countyConfigName) == FeatureFlag.OFF) {
       return County.Other;
     }
-    return County.valueFor(countyName);
+    return County.getCountyForName(countyName);
   }
 
   /**

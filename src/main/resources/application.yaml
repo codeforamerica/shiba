@@ -74,6 +74,7 @@ feature-flag:
   county-carver: on
   county-clay: on
   county-cook: on
+  county-dakota: off
   county-dodge: on
   county-hennepin: on
   county-morrison: on

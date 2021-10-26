@@ -2867,101 +2867,17 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: prepareToApply
-        flag: county-anoka
         condition:
           pageName: identifyCounty
           input: county
-          value: Anoka
+          matcher: DOES_NOT_CONTAIN
+          value: Dakota
       - pageName: prepareToApply
-        flag: county-beltrami
+        flag: county-dakota
         condition:
           pageName: identifyCounty
           input: county
-          value: Beltrami
-      - pageName: prepareToApply
-        flag: county-carver
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Carver
-      - pageName: prepareToApply
-        flag: county-clay
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Clay
-      - pageName: prepareToApply
-        flag: county-cook
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Cook
-      - pageName: prepareToApply
-        flag: county-dodge
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Dodge
-      - pageName: prepareToApply
-        flag: county-hennepin
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Hennepin
-      - pageName: prepareToApply
-        flag: county-morrison
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Morrison
-      - pageName: prepareToApply
-        flag: county-olmsted
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Olmsted
-      - pageName: prepareToApply
-        flag: county-ottertail
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: OtterTail
-      - pageName: prepareToApply
-        flag: county-sherburne
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Sherburne
-      - pageName: prepareToApply
-        flag: county-steele
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Steele
-      - pageName: prepareToApply
-        flag: county-stlouis
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: StLouis
-      - pageName: prepareToApply
-        flag: county-wabasha
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wabasha
-      - pageName: prepareToApply
-        flag: county-waseca
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Waseca
-      - pageName: prepareToApply
-        flag: county-wright
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wright
+          value: Dakota
       - pageName: goToApplyMn
     subtleLinkTargetPage: identifyZipcodeBeforeApplying
   identifyZipcodeBeforeApplying:
