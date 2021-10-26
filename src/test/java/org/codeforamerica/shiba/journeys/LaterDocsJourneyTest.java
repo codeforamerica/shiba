@@ -15,8 +15,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");

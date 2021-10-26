@@ -69,24 +69,6 @@ feature-flag:
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
   use-county-selection: on
-  county-anoka: on
-  county-beltrami: on
-  county-carver: on
-  county-clay: on
-  county-cook: on
-  county-dakota: off
-  county-dodge: on
-  county-hennepin: on
-  county-morrison: on
-  county-olmsted: on
-  county-ottertail: on
-  county-sherburne: on
-  county-steele: on
-  county-stlouis: on
-  county-wabasha: on
-  county-wadena: on
-  county-waseca: on
-  county-wright: on
 
 document-upload:
   max-files-uploaded: 20
