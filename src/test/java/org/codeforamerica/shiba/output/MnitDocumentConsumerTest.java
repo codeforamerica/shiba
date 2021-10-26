@@ -15,7 +15,22 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
+<<<<<<< HEAD
 import static org.mockito.Mockito.*;
+=======
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+>>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -35,7 +50,12 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+<<<<<<< HEAD
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+=======
+import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
+import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+>>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -77,6 +97,8 @@ class MnitDocumentConsumerTest {
   private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
   private MnitEsbWebServiceClient mnitClient;
+  @MockBean
+  private MnitFilenetWebServiceClient mnitFilenetClient;
   @MockBean
   private EmailClient emailClient;
   @MockBean
@@ -129,6 +151,7 @@ class MnitDocumentConsumerTest {
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
     doReturn(application).when(applicationRepository).find(any());
   }
 
@@ -422,6 +445,40 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+  }
+
+  @Test
+  void sendThroughFilenetClientWhenFilenetFeatureIsOn() {
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.ON);
+
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
+        .build());
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(mnitFilenetClient, times(5)).send(any(), any(), any(), any(), any());
+    verify(mnitFilenetClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitFilenetClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+    verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+    // CCAP never goes to Mille Lacs
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+        FULL);
+    verifyNoInteractions(mnitClient);
   }
 
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,

@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import static java.util.Objects.requireNonNull;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -9,6 +10,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
@@ -31,7 +33,6 @@ import org.springframework.stereotype.Component;
 public class MnitDocumentConsumer {
 
   private final MnitEsbWebServiceClient mnitClient;
-  private final MnitFilenetWebServiceClient mnitFilenetClient;
   private final EmailClient emailClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
@@ -39,10 +40,14 @@ public class MnitDocumentConsumer {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
+<<<<<<< HEAD
+=======
+  private final MnitFilenetWebServiceClient mnitFilenetClient;
+>>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
-      XmlGenerator xmlGenerator,
       EmailClient emailClient,
+      XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
@@ -50,14 +55,18 @@ public class MnitDocumentConsumer {
       FeatureFlagConfiguration featureFlagConfiguration,
       MnitFilenetWebServiceClient mnitFilenetClient) {
     this.mnitClient = mnitClient;
-    this.mnitFilenetClient = mnitFilenetClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
+<<<<<<< HEAD
     this.featureFlagConfiguration = featureFlagConfiguration;
+=======
+>>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
     this.emailClient = emailClient;
+    this.featureFlagConfiguration = featureFlagConfiguration;
+    this.mnitFilenetClient = mnitFilenetClient;
   }
 
   public void processCafAndCcap(Application application) {
@@ -153,10 +162,17 @@ public class MnitDocumentConsumer {
         documentName,
         rd.getName(),
         application.getId()));
+<<<<<<< HEAD
     if (featureFlagConfiguration.get("filenet").isOff()) {
       mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     } else {
       mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
+=======
+    if (featureFlagConfiguration.get("filenet").isOn()) {
+      mnitFilenetClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
+    } else {
+      mnitClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
+>>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
     }
 
   }
