@@ -67,18 +67,24 @@ public class MnitDocumentConsumer {
     List<Thread> threads = new ArrayList<>();
 
     // Generate the CAF and CCAP PDFs to send in parallel so that one document isn't waiting on the
-    // other to finish sending. pdfGenerator may not be thread-safe
-    DocumentListParser.parse(application.getApplicationData()).forEach(
-        documentType -> threads.add(new Thread(new SendPDFRunnable(
-            documentType,
-            pdfGenerator.generate(id, documentType, CASEWORKER),
-            application)))
-    );
+    // other to finish sending.
+    for (Document doc : DocumentListParser.parse(application.getApplicationData())) {
+      List<RoutingDestination> routingDestinations =
+          routingDecisionService.getRoutingDestinations(application.getApplicationData(), doc);
+
+      // add a thread for each routing destination
+      for (RoutingDestination routingDestination : routingDestinations) {
+        ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, routingDestination);
+        Thread thread = new Thread(new SendPDFRunnable(doc, pdf, application, routingDestination));
+        threads.add(thread);
+      }
+    }
 
     // Send the CAF and CCAP as PDFs in parallel
     threads.forEach(Thread::start);
 
     // Send the CAF as XML
+    // TODO THIS
     sendFileToAllRoutingDestinations(application, CAF, xmlGenerator.generate(id, CAF, CASEWORKER));
 
     // Wait for everything to finish before returning
@@ -134,6 +140,7 @@ public class MnitDocumentConsumer {
 
   private void sendFileToAllRoutingDestinations(Application application, Document document,
       ApplicationFile file) {
+
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), document);
 
@@ -142,8 +149,8 @@ public class MnitDocumentConsumer {
   }
 
   private void sendFileToRoutingDestination(Application application, Document document,
-      ApplicationFile file,
-      RoutingDestination rd) {
+      ApplicationFile file, RoutingDestination routingDestination) {
+
     String documentName = document.name();
     if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
       documentName = "XML";
@@ -151,12 +158,12 @@ public class MnitDocumentConsumer {
     // This is where we want to generate the new filename
     log.info("Now sending %s to recipient %s for application %s".formatted(
         documentName,
-        rd.getName(),
+        routingDestination.getName(),
         application.getId()));
     if (featureFlagConfiguration.get("filenet").isOn()) {
-      mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
+      mnitFilenetClient.send(file, routingDestination, application.getId(), document, application.getFlow());
     } else {
-      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
+      mnitClient.send(file, routingDestination, application.getId(), document, application.getFlow());
     }
 
   }
@@ -166,19 +173,23 @@ public class MnitDocumentConsumer {
     private final Document documentType;
     private final ApplicationFile applicationFile;
     private final Application application;
+    private final RoutingDestination routingDestination;
 
     public SendPDFRunnable(Document documentType, ApplicationFile applicationFile,
-        Application application) {
+        Application application,
+        RoutingDestination routingDestination) {
       this.documentType = documentType;
       this.applicationFile = applicationFile;
       this.application = application;
+      this.routingDestination = routingDestination;
     }
 
     @Override
     public void run() {
       try {
         applicationRepository.updateStatus(application.getId(), documentType, SENDING);
-        sendFileToAllRoutingDestinations(application, documentType, applicationFile);
+        sendFileToRoutingDestination(application, documentType, applicationFile,
+            routingDestination);
       } catch (Exception e) {
         applicationRepository.updateStatus(application.getId(), documentType, DELIVERY_FAILED);
         log.error("Failed to send with error, ", e);

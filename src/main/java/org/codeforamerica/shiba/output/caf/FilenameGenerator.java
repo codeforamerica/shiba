@@ -16,6 +16,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,14 @@ public class FilenameGenerator {
   }
 
   public String generatePdfFilename(Application application, Document document) {
+    String prefix = getSharedApplicationPrefix(application, document);
+    String programs = getProgramCodes(application);
+    String pdfType = document.toString();
+    return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
+  }
+
+  public String generatePdfFilenameForRoutingDestination(Application application, Document document,
+      RoutingDestination routingDestination) {
     String prefix = getSharedApplicationPrefix(application, document);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
