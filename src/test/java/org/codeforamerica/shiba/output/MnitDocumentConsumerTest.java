@@ -15,26 +15,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import static org.mockito.Mockito.*;
-=======
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
->>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
-=======
-import static org.mockito.Mockito.*;
->>>>>>> 53e0e3c0 (Reformatting and removing filenet test)
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -54,12 +35,8 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-<<<<<<< HEAD
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
-=======
 import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
->>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;

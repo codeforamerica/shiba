@@ -40,10 +40,7 @@ public class MnitDocumentConsumer {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
-<<<<<<< HEAD
-=======
   private final MnitFilenetWebServiceClient mnitFilenetClient;
->>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
 
   public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
       EmailClient emailClient,
@@ -60,10 +57,6 @@ public class MnitDocumentConsumer {
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationRepository = applicationRepository;
-<<<<<<< HEAD
-    this.featureFlagConfiguration = featureFlagConfiguration;
-=======
->>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
     this.emailClient = emailClient;
     this.featureFlagConfiguration = featureFlagConfiguration;
     this.mnitFilenetClient = mnitFilenetClient;
@@ -162,17 +155,10 @@ public class MnitDocumentConsumer {
         documentName,
         rd.getName(),
         application.getId()));
-<<<<<<< HEAD
-    if (featureFlagConfiguration.get("filenet").isOff()) {
-      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
-    } else {
-      mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
-=======
     if (featureFlagConfiguration.get("filenet").isOn()) {
       mnitFilenetClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
     } else {
       mnitClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
->>>>>>> dc227091 (Add test for filenet MnitDocumentConsumerTest + bring in new rebase code correctly)
     }
 
   }
