@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.output;
 
-import static java.util.Objects.requireNonNull;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -10,7 +9,6 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
@@ -156,9 +154,9 @@ public class MnitDocumentConsumer {
         rd.getName(),
         application.getId()));
     if (featureFlagConfiguration.get("filenet").isOn()) {
-      mnitFilenetClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
+      mnitFilenetClient.send(file, rd, application.getId(), document, application.getFlow());
     } else {
-      mnitClient.send(requireNonNull(file), rd, application.getId(), document, application.getFlow());
+      mnitClient.send(file, rd, application.getId(), document, application.getFlow());
     }
 
   }
