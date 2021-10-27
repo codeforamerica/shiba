@@ -25,10 +25,19 @@ mail-gun:
   max-attachment-size: 1000000 # 1MB
 
 feature-flag:
+  filenet: on
   submit-docs-via-email-for-hennepin: on
   county-ottertail: on
 
 mnit-esb:
+  max-attempts: 4
+  delay: 1
+  multiplier: 1
+  max-delay: 1
+  url: some-url
+  username: someUsername
+  password: somePassword
+mnit-filenet:
   max-attempts: 4
   delay: 1
   multiplier: 1
