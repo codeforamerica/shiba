@@ -103,7 +103,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");
-    testPage.enter("county", "Morrison");
+    testPage.enter("county", "Dakota");
     testPage.clickContinue();
 
     // should allow me to enter personal info and continue the flow if my county is supported

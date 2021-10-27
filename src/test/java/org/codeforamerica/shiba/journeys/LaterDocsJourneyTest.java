@@ -37,7 +37,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");
-    testPage.enter("county", "Morrison");
+    testPage.enter("county", "Dakota");
     testPage.clickContinue();
     assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
 
