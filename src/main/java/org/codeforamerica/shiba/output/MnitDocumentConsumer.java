@@ -15,8 +15,8 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
+import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
+import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MnitDocumentConsumer {
 
-  private final MnitEsbWebServiceClient mnitClient;
+  private final AlfrescoWebServiceClient mnitClient;
   private final EmailClient emailClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
@@ -38,9 +38,9 @@ public class MnitDocumentConsumer {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationRepository applicationRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
-  private final MnitFilenetWebServiceClient mnitFilenetClient;
+  private final FilenetWebServiceClient mnitFilenetClient;
 
-  public MnitDocumentConsumer(MnitEsbWebServiceClient mnitClient,
+  public MnitDocumentConsumer(AlfrescoWebServiceClient mnitClient,
       EmailClient emailClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
@@ -48,7 +48,7 @@ public class MnitDocumentConsumer {
       RoutingDecisionService routingDecisionService,
       ApplicationRepository applicationRepository,
       FeatureFlagConfiguration featureFlagConfiguration,
-      MnitFilenetWebServiceClient mnitFilenetClient) {
+      FilenetWebServiceClient mnitFilenetClient) {
     this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;

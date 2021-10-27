@@ -10,18 +10,10 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
 import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Base64;
+import java.time.*;
 import java.util.Map;
-
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
-
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -30,7 +22,6 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,12 +40,13 @@ import org.w3c.dom.Node;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class MnitFilenetWebServiceClientTest {
+class FilenetWebServiceClientTest {
+
   @Autowired
   @Qualifier("filenetWebServiceTemplate")
   private WebServiceTemplate webServiceTemplate;
   @Autowired
-  private MnitFilenetWebServiceClient mnitFilenetWebServiceClient;
+  private FilenetWebServiceClient filenetWebServiceClient;
   @MockBean
   private Clock clock;
   @Value("${mnit-filenet.url}")
@@ -72,11 +64,10 @@ class MnitFilenetWebServiceClientTest {
 
   private RoutingDestination olmsted;
   private RoutingDestination hennepin;
-  private final Map<String, String> namespaceMapping = Map
-      .of("ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/", "ns3",
-          "http://docs.oasis-open.org/ns/cmis/core/200908/",
-          "cmism",
-          "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
+  private final Map<String, String> namespaceMapping = Map.of(
+      "ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/",
+      "ns3", "http://docs.oasis-open.org/ns/cmis/core/200908/",
+      "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
   String fileContent = "fileContent";
   String fileName = "fileName";
   StringSource successResponse = new StringSource("" +
@@ -150,7 +141,7 @@ class MnitFilenetWebServiceClientTest {
     routingDestination.setDhsProviderId("A000055800");
     routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 
-    mnitFilenetWebServiceClient.send(
+    filenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
         routingDestination, "someId", Document.CAF, FlowType.FULL
     );
@@ -169,7 +160,7 @@ class MnitFilenetWebServiceClientTest {
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(withSoapEnvelope(successResponse));
 
-    mnitFilenetWebServiceClient
+    filenetWebServiceClient
         .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
             Document.CAF, any());
@@ -198,7 +189,7 @@ class MnitFilenetWebServiceClientTest {
 
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
-    mnitFilenetWebServiceClient
+    filenetWebServiceClient
         .send(applicationFile, olmsted, "someId", Document.CAF, any());
 
     mockWebServiceServer.verify();
@@ -239,7 +230,7 @@ class MnitFilenetWebServiceClientTest {
               namespaceContext));
         });
 
-    mnitFilenetWebServiceClient.send(new ApplicationFile(
+    filenetWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
         "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 

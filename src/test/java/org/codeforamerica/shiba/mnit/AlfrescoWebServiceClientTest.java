@@ -10,12 +10,7 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
 import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Base64;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
@@ -44,7 +39,7 @@ import org.w3c.dom.Node;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class MnitEsbWebServiceClientTest {
+class AlfrescoWebServiceClientTest {
 
   private final Map<String, String> namespaceMapping = Map
       .of("ns2", "http://www.cmis.org/2008/05");
@@ -52,15 +47,15 @@ class MnitEsbWebServiceClientTest {
   String fileName = "fileName";
   StringSource successResponse = new StringSource(
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV='http://schemas.xmlsoap.org/soap/envelope/'>" +
-      "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
-      "<createDocumentResponse></createDocumentResponse>" +
-      "</SOAP-ENV:Body>" +
-      "</SOAP-ENV:Envelope>"
+          "<SOAP-ENV:Body xmlns='http://www.cmis.org/2008/05'>" +
+          "<createDocumentResponse></createDocumentResponse>" +
+          "</SOAP-ENV:Body>" +
+          "</SOAP-ENV:Envelope>"
   );
   @Autowired
-  private WebServiceTemplate webServiceTemplate;
+  private WebServiceTemplate alfrescoWebServiceTemplate;
   @Autowired
-  private MnitEsbWebServiceClient mnitEsbWebServiceClient;
+  private AlfrescoWebServiceClient alfrescoWebServiceClient;
   @MockBean
   private Clock clock;
   @Value("${mnit-esb.url}")
@@ -80,7 +75,7 @@ class MnitEsbWebServiceClientTest {
   void setUp() {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
-    mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
+    mockWebServiceServer = MockWebServiceServer.createServer(alfrescoWebServiceTemplate);
     olmsted = new CountyRoutingDestination();
     olmsted.setDhsProviderId("A000055800");
     olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
@@ -121,7 +116,7 @@ class MnitEsbWebServiceClientTest {
     routingDestination.setDhsProviderId("A000055800");
     routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 
-    mnitEsbWebServiceClient.send(
+    alfrescoWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
         routingDestination, "someId", Document.CAF, FlowType.FULL
     );
@@ -140,7 +135,7 @@ class MnitEsbWebServiceClientTest {
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(withSoapEnvelope(successResponse));
 
-    mnitEsbWebServiceClient
+    alfrescoWebServiceClient
         .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
             Document.CAF, any());
@@ -169,7 +164,7 @@ class MnitEsbWebServiceClientTest {
 
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
-    mnitEsbWebServiceClient
+    alfrescoWebServiceClient
         .send(applicationFile, olmsted, "someId", Document.CAF, FlowType.MINIMUM);
 
     mockWebServiceServer.verify();
@@ -210,7 +205,7 @@ class MnitEsbWebServiceClientTest {
               namespaceContext));
         });
 
-    mnitEsbWebServiceClient.send(new ApplicationFile(
+    alfrescoWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
         "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 

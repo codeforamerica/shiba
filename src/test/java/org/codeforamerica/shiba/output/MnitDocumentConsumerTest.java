@@ -33,10 +33,10 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
+import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
-import org.codeforamerica.shiba.mnit.MnitFilenetWebServiceClient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -77,9 +77,9 @@ class MnitDocumentConsumerTest {
   @Autowired
   private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
-  private MnitEsbWebServiceClient mnitClient;
+  private AlfrescoWebServiceClient mnitClient;
   @MockBean
-  private MnitFilenetWebServiceClient mnitFilenetClient;
+  private FilenetWebServiceClient mnitFilenetClient;
   @MockBean
   private EmailClient emailClient;
   @MockBean

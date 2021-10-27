@@ -21,7 +21,20 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 @Configuration
-public class MnitFilenetWebServiceTemplateConfiguration {
+public class EsbWebServiceTemplateConfiguration {
+
+  @Bean
+  WebServiceTemplate alfrescoWebServiceTemplate(WebServiceTemplateBuilder webServiceTemplateBuilder,
+      SSLContextBuilder sslContextBuilder,
+      @Value("${mnit-esb.username}") String username,
+      @Value("${mnit-esb.password}") String password,
+      @Value("${mnit-esb.jaxb-context-path}") String jaxbContextPath,
+      @Value("${mnit-esb.url}") String url,
+      @Value("${mnit-esb.timeout-seconds}") long timeoutSeconds)
+      throws KeyManagementException, NoSuchAlgorithmException {
+    return buildWebServiceTemplate(webServiceTemplateBuilder, sslContextBuilder, username, password,
+        jaxbContextPath, url, timeoutSeconds);
+  }
 
   @Bean
   WebServiceTemplate filenetWebServiceTemplate(WebServiceTemplateBuilder webServiceTemplateBuilder,
@@ -30,8 +43,17 @@ public class MnitFilenetWebServiceTemplateConfiguration {
       @Value("${mnit-filenet.password}") String password,
       @Value("${mnit-filenet.jaxb-context-path}") String jaxbContextPath,
       @Value("${mnit-filenet.url}") String url,
-      @Value("${mnit-filenet.timeout-seconds}") long timeoutSeconds )
+      @Value("${mnit-filenet.timeout-seconds}") long timeoutSeconds)
       throws KeyManagementException, NoSuchAlgorithmException {
+    return buildWebServiceTemplate(webServiceTemplateBuilder, sslContextBuilder, username, password,
+        jaxbContextPath, url, timeoutSeconds);
+  }
+
+  static WebServiceTemplate buildWebServiceTemplate(
+      WebServiceTemplateBuilder webServiceTemplateBuilder, SSLContextBuilder sslContextBuilder,
+      String username, String password, String jaxbContextPath, String url, long timeoutSeconds)
+      throws NoSuchAlgorithmException, KeyManagementException {
+
     Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
     jaxb2Marshaller.setContextPath(jaxbContextPath);
     String auth = username + ":" + password;
