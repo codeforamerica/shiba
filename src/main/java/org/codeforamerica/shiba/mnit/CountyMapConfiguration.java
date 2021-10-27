@@ -105,7 +105,7 @@ public class CountyMapConfiguration {
         "ed3aaedd-d315-43b5-8c31-c5c762d69d09",
         "A000081700");
     addCounty(Wright,
-        "763-682-7414",
+        "763-682-7400",
         "help+staging@mnbenefits.org",
         "c4aea212-5139-4323-a28d-fbd97f80540c",
         "1124197249");
@@ -194,7 +194,7 @@ public class CountyMapConfiguration {
         "ed3aaedd-d315-43b5-8c31-c5c762d69d09",
         "A000081700");
     addCounty(Wright,
-        "763-682-7414",
+        "763-682-7400",
         "help+staging@mnbenefits.org",
         "c4aea212-5139-4323-a28d-fbd97f80540c",
         "1124197249");
@@ -283,7 +283,7 @@ public class CountyMapConfiguration {
         "f8fcee94-ae6e-4a1c-9b97-1e1bcf683249",
         "A000081700");
     addCounty(Wright,
-        "763-682-7414",
+        "763-682-7400",
         "HSFSPrograms@co.wright.mn.us",
         "644cae25-1cd5-481a-8f71-19446b83d3e1",
         "1124197249");
@@ -441,7 +441,7 @@ public class CountyMapConfiguration {
     addCounty(Wilkin, "218-643-7161");
     addCounty(Winona, "507-457-6200");
     addCounty(Wright,
-        "763-682-7414",
+        "763-682-7400",
         "help+dev@mnbenefits.org",
         "359cf4ee-7147-4c3c-bfc0-f29213b68fc0",
         "1124197249");
