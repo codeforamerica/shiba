@@ -252,7 +252,7 @@ public class ApplicationRepository {
             .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
             .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
             .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
-            .county(County.valueFor(resultSet.getString("county")))
+            .county(County.getCountyForName(resultSet.getString("county")))
             .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
             .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
                 .map(Sentiment::valueOf)

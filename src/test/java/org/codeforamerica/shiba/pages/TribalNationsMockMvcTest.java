@@ -81,7 +81,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForMFIP");
 
     assertThat(routingDecisionService.getRoutingDestinations(applicationData, CAF))
-        .containsExactly(countyMap.get(County.valueFor(county)));
+        .containsExactly(countyMap.get(County.getCountyForName(county)));
   }
 
   @ParameterizedTest

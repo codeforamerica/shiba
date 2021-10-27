@@ -22,7 +22,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @SuppressWarnings("DanglingJavadoc")
@@ -40,20 +39,17 @@ public class RoutingDecisionService {
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
-  private final MessageSource messageSource;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
-      FeatureFlagConfiguration featureFlagConfiguration,
-      MessageSource messageSource) {
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
     this.featureFlagConfiguration = featureFlagConfiguration;
-    this.messageSource = messageSource;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,

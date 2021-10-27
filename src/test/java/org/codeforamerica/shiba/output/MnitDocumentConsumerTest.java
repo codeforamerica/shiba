@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
@@ -49,6 +50,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,7 +73,7 @@ class MnitDocumentConsumerTest {
   public static final byte[] FILE_BYTES = new byte[10];
 
   @MockBean
-  FeatureFlagConfiguration featureFlagConfig;
+  private FeatureFlagConfiguration featureFlagConfig;
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
@@ -112,6 +115,7 @@ class MnitDocumentConsumerTest {
         .withPersonalInfo()
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -132,7 +136,9 @@ class MnitDocumentConsumerTest {
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfig.get("use-county-selection")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
+
     doReturn(application).when(applicationRepository).find(any());
   }
 
@@ -156,6 +162,39 @@ class MnitDocumentConsumerTest {
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
         FULL);
     verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "YellowMedicine,YellowMedicine",
+      "Aitkin,Aitkin",
+      "LakeOfTheWoods,LakeOfTheWoods",
+      "StLouis,StLouis",
+      "LacQuiParle,LacQuiParle"})
+  void sendsTheGeneratedXmlAndPdfToNewCounty(String countyName, County expectedCounty) {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("homeAddress", "county", List.of(countyName))
+        .withPageData("identifyCounty", "county", countyName)
+        .build());
+    application.setCounty(expectedCounty);
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), application.getId(),
+        CAF,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), application.getId(),
+        CAF,
         FULL);
   }
 
@@ -193,6 +232,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -219,6 +259,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -252,6 +293,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -366,6 +408,7 @@ class MnitDocumentConsumerTest {
     application.setCounty(Hennepin);
     new TestApplicationDataBuilder(application.getApplicationData())
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("identifyCounty", "county", Hennepin.name())
         .withPageData("selectTheTribe", "selectedTribe", "Bois Forte")
         .withPageData("homeAddress", "enrichedCounty", "Hennepin")
         .withPageData("homeAddress", "county", "Hennepin");
@@ -394,6 +437,7 @@ class MnitDocumentConsumerTest {
   void uploadedDocumentsAreSentToHennepinViaApiWhenFlagIsOff() throws IOException {
     application.setCounty(Hennepin);
     new TestApplicationDataBuilder(application.getApplicationData())
+        .withPageData("identifyCounty", "county", Hennepin.name())
         .withPageData("homeAddress", "enrichedCounty", Hennepin.name())
         .withPageData("homeAddress", "county", Hennepin.name());
 
@@ -441,6 +485,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("identifyCounty", "county", Olmsted.name())
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());

@@ -10,22 +10,5 @@ feature-flag:
   filenet: on
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
-  county-anoka: on
-  county-beltrami: on
-  county-carver: on
-  county-clay: on
-  county-cook: on
-  county-dodge: on
-  county-hennepin: on
-  county-morrison: on
-  county-olmsted: on
-  county-ottertail: on
-  county-sherburne: on
-  county-steele: on
-  county-stlouis: on
-  county-wabasha: on
-  county-wadena: on
-  county-waseca: on
-  county-wright: on
 
 demo-banner: true

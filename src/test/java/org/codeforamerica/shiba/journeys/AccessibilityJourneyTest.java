@@ -16,11 +16,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -76,8 +72,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");
@@ -108,7 +103,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");
-    testPage.enter("county", "Morrison");
+    testPage.enter("county", "Dakota");
     testPage.clickContinue();
 
     // should allow me to enter personal info and continue the flow if my county is supported

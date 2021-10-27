@@ -15,8 +15,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");
@@ -38,7 +37,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");
-    testPage.enter("county", "Morrison");
+    testPage.enter("county", "Dakota");
     testPage.clickContinue();
     assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
 
