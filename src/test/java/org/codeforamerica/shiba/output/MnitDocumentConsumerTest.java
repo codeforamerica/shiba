@@ -485,6 +485,7 @@ class MnitDocumentConsumerTest {
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("identifyCounty", "county", Olmsted.name())
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
         .build());
