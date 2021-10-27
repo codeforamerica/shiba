@@ -50,7 +50,7 @@ public class CountyMapConfiguration {
         "67518013-afce-43cf-b9e8-d7d5bc91fe2f",
         "A000004300");
     addCounty(Benton,
-        "",
+        "800-530-6254",
         "help+staging@mnbenefits.org",
         "89cd5377-3971-47ce-aafd-a8bff39b038c",
         "1174697148");
@@ -298,8 +298,8 @@ public class CountyMapConfiguration {
     addCounty(Norman,
         "218-784-5400",
         "help+staging@mnbenefits.org",
-        "",
-        "");
+        "84c8baa2-1e32-4ddc-b17f-2061dba38624",
+        "A000054000");
     addCounty(Olmsted,
         "507-328-6500",
         "help+staging@mnbenefits.org",
@@ -368,8 +368,8 @@ public class CountyMapConfiguration {
     addCounty(Roseau,
         "866-255-2932",
         "help+staging@mnbenefits.org",
-        "",
-        "");
+        "db6c0052-1b08-4c69-ab35-1bcea2e3f68a",
+        "A000068000");
     addCounty(Scott,
         "952-496-8686",
         "help+staging@mnbenefits.org",
@@ -566,8 +566,8 @@ public class CountyMapConfiguration {
     addCounty(Dakota,
         "888-850-9419",
         "eeadocs@co.dakota.mn.us",
-        "",
-        "");
+        "cb1db222-a612-475a-9fc5-0a0b5466cb79",
+        "1427127620");
     addCounty(Dodge,
         "507-923-2900",
         "OSS@MNPrairie.org",
