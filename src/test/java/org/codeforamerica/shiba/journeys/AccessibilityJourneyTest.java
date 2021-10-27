@@ -82,24 +82,24 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(testPage.selectHasInputError("county")).isTrue();
     assertThat(testPage.getSelectAriaLabel("county")).isEqualTo("Error county");
     assertThat(testPage.getSelectAriaDescribedBy("county")).isEqualTo("county-error-message-1");
-    testPage.clickLink("Enter my zip code instead.");
-
-    // Check that the input is valid, then intentially throw an error and check it is invalid
-    assertThat(testPage.inputIsValid("zipCode")).isTrue();
-    testPage.enter("zipCode", "11");
-    testPage.clickContinue();
-    assertThat(testPage.hasInputError("zipCode")).isTrue();
-    assertThat(testPage.inputIsValid("zipCode")).isFalse();
-    assertThat(testPage.getInputAriaLabel("zipCode")).isEqualTo("Error zipCode");
-    assertThat(testPage.getInputAriaDescribedBy("zipCode")).isEqualTo("zipCode-error-message-1");
-    // should direct me to email the county if my zipcode is unrecognized or unsupported
-    testPage.enter("zipCode", "11111");
-    testPage.clickContinue();
-
-    // should allow me to proceed with the flow if I enter a zip code for an active county
-    testPage.clickLink("< Go Back");
-    testPage.enter("zipCode", "55444");
-    testPage.clickContinue();
+//    testPage.clickLink("Enter my zip code instead.");
+//
+//    // Check that the input is valid, then intentially throw an error and check it is invalid
+//    assertThat(testPage.inputIsValid("zipCode")).isTrue();
+//    testPage.enter("zipCode", "11");
+//    testPage.clickContinue();
+//    assertThat(testPage.hasInputError("zipCode")).isTrue();
+//    assertThat(testPage.inputIsValid("zipCode")).isFalse();
+//    assertThat(testPage.getInputAriaLabel("zipCode")).isEqualTo("Error zipCode");
+//    assertThat(testPage.getInputAriaDescribedBy("zipCode")).isEqualTo("zipCode-error-message-1");
+//    // should direct me to email the county if my zipcode is unrecognized or unsupported
+//    testPage.enter("zipCode", "11111");
+//    testPage.clickContinue();
+//
+//    // should allow me to proceed with the flow if I enter a zip code for an active county
+//    testPage.clickLink("< Go Back");
+//    testPage.enter("zipCode", "55444");
+//    testPage.clickContinue();
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");

@@ -1579,7 +1579,7 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
-    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
+#    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
   - &identifyZipcode
     name: identifyZipcode
     headerKey: identify-zipcode.what-is-your-zip-code
