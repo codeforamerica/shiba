@@ -19,12 +19,11 @@ import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@Tag("a11y")
+//@Tag("a11y")
 public class AccessibilityJourneyTest extends JourneyTest {
 
   protected static List<Rule> resultsList = new ArrayList<>();
@@ -349,6 +348,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     driver.findElement(By.id("additionalInfo"))
         .sendKeys("Some additional information about my application");
+    testPage.clickContinue();
+    testPage.clickLink("Yes, continue");
+    testPage.enter("raceAndEthnicity", List.of("Asian", "White"));
     testPage.clickContinue();
     testPage.enter("agreeToTerms", "I agree");
     testPage.enter("drugFelony", NO.getDisplayValue());
