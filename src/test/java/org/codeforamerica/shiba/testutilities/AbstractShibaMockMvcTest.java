@@ -86,7 +86,6 @@ public class AbstractShibaMockMvcTest {
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(locationClient.validateAddress(any())).thenReturn(Optional.empty());
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-    when(featureFlagConfiguration.get("county-anoka")).thenReturn(FeatureFlag.OFF);
   }
 
   @AfterEach

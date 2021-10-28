@@ -30,7 +30,7 @@ public class Utils {
     try (FileOutputStream fos = new FileOutputStream(filename)) {
       fos.write(fileBytes);
     } catch (IOException e) {
-      log.error("Failed to close FileOutputStream");
+      log.error("Error while attempting to write byte array to file: " + filename, e);
     }
   }
 }

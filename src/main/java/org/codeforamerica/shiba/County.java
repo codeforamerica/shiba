@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba;
 
+import java.util.List;
+
 public enum County {
   Aitkin("Aitkin"), Anoka("Anoka"), Becker("Becker"),
   Beltrami("Beltrami"), Benton("Benton"), BigStone("Big Stone"),
@@ -38,28 +40,14 @@ public enum County {
     this.displayName = displayName;
   }
 
-  // This method is how we get our list of active counties
-  public static County valueFor(String county) {
-    return switch (county) {
-      case "Anoka" -> Anoka;
-      case "Beltrami" -> Beltrami;
-      case "Carver" -> Carver;
-      case "Clay" -> Clay;
-      case "Cook" -> Cook;
-      case "Dodge" -> Dodge;
-      case "Hennepin" -> Hennepin;
-      case "Morrison" -> Morrison;
-      case "Olmsted" -> Olmsted;
-      case "Otter Tail", "OtterTail" -> OtterTail;
-      case "Sherburne" -> Sherburne;
-      case "Steele" -> Steele;
-      case "St. Louis", "Saint Louis", "StLouis" -> StLouis;
-      case "Wabasha" -> Wabasha;
-      case "Wadena" -> Wadena;
-      case "Waseca" -> Waseca;
-      case "Wright" -> Wright;
-      default -> Other;
-    };
+  // Given a county name, return the corresponding County object
+  public static County getCountyForName(String countyName) {
+    if (List.of("St. Louis", "Saint Louis", "StLouis").contains(countyName)) {
+      return StLouis;
+    }
+
+    String countyNameWithoutSpaces = countyName.replace(" ", "");
+    return County.valueOf(countyNameWithoutSpaces);
   }
 
   public String displayName() {

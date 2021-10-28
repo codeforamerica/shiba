@@ -51,6 +51,18 @@ mnit-esb:
   multiplier: 2
   max-delay: 10800000 # 3 hours
   timeout-seconds: 300
+mnit-filenet:
+  username: ${MNIT-FILENET_USERNAME}
+  password: ${MNIT-FILENET_PASSWORD}
+  url:  https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
+# future endpoint for atompub/chemistry implementation:
+# url: https://test-svcs.dhs.mn.gov/fncmis/resources/Service
+  jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
+  max-attempts: 4
+  delay: 5400000 # 1.5 hours
+  multiplier: 2
+  max-delay: 10800000 # 3 hours
+  timeout-seconds: 300
 
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
@@ -65,27 +77,11 @@ mail-gun:
 
 feature-flag:
   certain-pops: on
+  filenet: off
   submit-via-api: off
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
   use-county-selection: on
-  county-anoka: on
-  county-beltrami: on
-  county-carver: on
-  county-clay: on
-  county-cook: on
-  county-dodge: on
-  county-hennepin: on
-  county-morrison: on
-  county-olmsted: on
-  county-ottertail: on
-  county-sherburne: on
-  county-steele: on
-  county-stlouis: on
-  county-wabasha: on
-  county-wadena: on
-  county-waseca: on
-  county-wright: on
 
 document-upload:
   max-files-uploaded: 20

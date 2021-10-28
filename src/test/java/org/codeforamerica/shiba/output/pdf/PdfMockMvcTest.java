@@ -624,11 +624,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", originalZipCode, ccap);
       }
 
-      @Test
-      void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Anoka", "55303",
-            "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-      }
 
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
@@ -658,14 +653,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       void shouldMapCoverPageCountyInstructionsCorrectlyForCountiesThatUseTheGenericInstructions()
           throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345",
-            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (320-631-3599).");
+            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
       }
 
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForOtherCountiesThatUseTheGenericInstructions()
           throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
-            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-431-5600).");
+            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
 
       @Test
