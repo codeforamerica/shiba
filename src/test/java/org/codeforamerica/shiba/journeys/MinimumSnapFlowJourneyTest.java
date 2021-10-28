@@ -84,6 +84,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     driver.findElement(By.id("additionalInfo")).sendKeys(additionalInfo);
     testPage.enter("caseNumber", caseNumber);
     testPage.clickContinue();
+    testPage.clickLink("No, skip this question");
 
     // Legal Stuff
     assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
