@@ -1,0 +1,17 @@
+<div th:fragment="canWeAsk">
+  <div class="grid__item address-validation spacing-below-60" id="general-delivery">
+    <div class="notice left-aligned">
+      <p th:text="#{can-we-ask.providing-your-race-and-ethnicity-is-optional}"></p>
+      <p th:text="#{can-we-ask.we-will-use-this-information-to-evaluate-the-fairness-of-mnbenefits}"></p>
+    </div>
+
+    <div class="spacing-above-60">
+      <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+         th:text="#{can-we-ask.yes-continue}"></a>
+    </div>
+    <div>
+      <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+         th:text="#{can-we-ask.no-skip-this-question}"></a>
+    </div>
+
+</div>

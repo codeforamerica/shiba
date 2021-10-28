@@ -387,6 +387,13 @@ public class FullFlowJourneyTest extends JourneyTest {
         .sendKeys("I need you to contact my work for proof of termination");
     testPage.clickContinue();
 
+    // Can we ask about your race and ethnicity?
+    testPage.clickLink("Yes, continue");
+
+    // What races or ethnicities do you identify with?
+    testPage.enter("raceAndEthnicity", List.of("Black or African American"));
+    testPage.clickContinue();
+
     // The legal stuff.
     testPage.enter("agreeToTerms", "I agree");
     testPage.enter("drugFelony", NO.getDisplayValue());
@@ -528,6 +535,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
     assertCcapFieldEquals("ADDITIONAL_APPLICATION_INFO",
         "I need you to contact my work for proof of termination");
+    assertCcapFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
+    assertCcapFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
 
     // CAF
     assertCafFieldEquals("APPLICATION_ID", applicationId);
@@ -662,6 +671,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
     assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
+    assertCafFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
+    assertCafFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
 
     assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
   }

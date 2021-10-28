@@ -345,6 +345,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     driver.findElement(By.id("additionalInfo"))
         .sendKeys("Some additional information about my application");
     testPage.clickContinue();
+    testPage.clickLink("Yes, continue");
+    testPage.enter("raceAndEthnicity", List.of("Asian", "White"));
+    testPage.clickContinue();
     testPage.enter("agreeToTerms", "I agree");
     testPage.enter("drugFelony", NO.getDisplayValue());
     testPage.clickContinue();

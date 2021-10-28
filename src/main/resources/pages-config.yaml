@@ -2858,6 +2858,49 @@ pageDefinitions:
         type: CUSTOM
         customInputFragment: caseNumberImages
     pageTitle: additional-info.title
+  - &canWeAsk
+    name: canWeAsk
+    pageTitle: can-we-ask.title
+    headerKey: can-we-ask.can-we-ask-about-your-race-and-ethnicity
+    contextFragment: raceAndEthnicityFragment
+    hasPrimaryButton: false
+  - &raceAndEthnicity
+    name: raceAndEthnicity
+    pageTitle: race-and-ethnicity.title
+    headerKey: race-and-ethnicity.what-races-or-ethnicities-do-you-identify-with
+    headerHelpMessageKey: race-and-ethnicity.select-all-that-apply
+    contextFragment: raceAndEthnicityFragment
+    inputs:
+      - name: raceAndEthnicity
+        type: CHECKBOX
+        validators:
+            - validation: SELECT_AT_LEAST_ONE
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: AMERICAN_INDIAN_OR_ALASKA_NATIVE
+              messageKey: race-and-ethnicity.american-indian-or-alaska-native
+            - value: ASIAN
+              messageKey: race-and-ethnicity.asian
+            - value: BLACK_OR_AFRICAN_AMERICAN
+              messageKey: race-and-ethnicity.black-or-african-american
+            - value: HISPANIC_LATINO_OR_SPANISH
+              messageKey: race-and-ethnicity.hispanic-latino-or-spanish
+            - value: MIDDLE_EASTERN_OR_NORTH_AFRICAN
+              messageKey: race-and-ethnicity.middle-eastern-or-north-african
+            - value: NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER
+              messageKey: race-and-ethnicity.native-hawaiian-or-pacific-islander
+            - value: WHITE
+              messageKey: race-and-ethnicity.white
+            - value: SOME_OTHER_RACE_OR_ETHNICITY
+              messageKey: race-and-ethnicity.some-other-race
+        followUpValues:
+          - SOME_OTHER_RACE_OR_ETHNICITY
+        followUps:
+          - name: otherRaceOrEthnicity
+            type: TEXT
+            promptMessage:
+              promptMessageKey: race-and-ethnicity.write-your-race-or-ethnicity
 workflow:
   landing:
     pageConfiguration: *landing
@@ -3973,6 +4016,15 @@ workflow:
       - pageName: legalStuff
   additionalInfo:
     pageConfiguration: *additionalInfo
+    nextPages:
+      - pageName: canWeAsk
+  canWeAsk:
+    pageConfiguration: *canWeAsk
+    nextPages:
+      - pageName: raceAndEthnicity
+      - pageName: legalStuff
+  raceAndEthnicity:
+    pageConfiguration: *raceAndEthnicity
     nextPages:
       - pageName: legalStuff
   legalStuff:
