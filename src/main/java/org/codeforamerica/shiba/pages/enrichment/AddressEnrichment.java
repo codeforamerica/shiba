@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
 public abstract class AddressEnrichment implements Enrichment {
@@ -15,10 +16,10 @@ public abstract class AddressEnrichment implements Enrichment {
   protected abstract Address parseAddress(PagesData pagesData);
 
   @Override
-  public EnrichmentResult process(PagesData pagesData) {
+  public PageData process(PagesData pagesData) {
     Address address = parseAddress(pagesData);
     if (address.getStreet() == null) {
-      return new EnrichmentResult();
+      return new PageData();
     }
     return locationClient.validateAddress(address)
         .map(validatedAddress -> Map.of(
@@ -30,10 +31,10 @@ public abstract class AddressEnrichment implements Enrichment {
             new InputData(List.of(validatedAddress.getApartmentNumber())),
             "enrichedCounty", new InputData(List.of(validatedAddress.getCounty()))
         ))
-        .map(EnrichmentResult::new)
+        .map(PageData::new)
         .orElseGet(() -> Optional.ofNullable(countyZipCodeMap.get(address.getZipcode()))
             .map(county -> Map.of("enrichedCounty", new InputData(List.of(county.name()))))
-            .map(EnrichmentResult::new)
-            .orElse(new EnrichmentResult()));
+            .map(PageData::new)
+            .orElse(new PageData()));
   }
 }

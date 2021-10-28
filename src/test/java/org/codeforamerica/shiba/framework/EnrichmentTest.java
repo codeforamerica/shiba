@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.enrichment.Enrichment;
-import org.codeforamerica.shiba.pages.enrichment.EnrichmentResult;
 import org.codeforamerica.shiba.testutilities.AbstractFrameworkTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,12 +45,12 @@ public class EnrichmentTest extends AbstractFrameworkTest {
   static class TestEnrichment implements Enrichment {
 
     @Override
-    public EnrichmentResult process(PagesData pagesData) {
+    public PageData process(PagesData pagesData) {
       String pageInputValue = pagesData
           .get("testEnrichmentPage")
           .get("someTextInput")
           .getValue().get(0);
-      return new EnrichmentResult(Map.of(
+      return new PageData(Map.of(
           "someEnrichmentInput", new InputData(List.of(pageInputValue + "-someEnrichmentValue"))
       ));
     }

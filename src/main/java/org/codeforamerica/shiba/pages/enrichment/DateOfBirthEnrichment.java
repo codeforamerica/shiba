@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
 public abstract class DateOfBirthEnrichment implements Enrichment {
@@ -17,14 +18,14 @@ public abstract class DateOfBirthEnrichment implements Enrichment {
    */
   private static String formatDateOfBirth(List<String> dateOfBirth) {
     return StringUtils.leftPad(dateOfBirth.get(0), 2, '0') + '/' +
-        StringUtils.leftPad(dateOfBirth.get(1), 2, '0') + '/' +
-        dateOfBirth.get(2);
+           StringUtils.leftPad(dateOfBirth.get(1), 2, '0') + '/' +
+           dateOfBirth.get(2);
   }
 
   @Override
-  public EnrichmentResult process(PagesData pagesData) {
+  public PageData process(PagesData pagesData) {
     String dobString = formatDateOfBirth(parseDateOfBirth(pagesData));
-    return new EnrichmentResult(Map.of("dobAsDate", new InputData(List.of(dobString))));
+    return new PageData(Map.of("dobAsDate", new InputData(List.of(dobString))));
   }
 
   protected abstract List<String> parseDateOfBirth(PagesData pagesData);

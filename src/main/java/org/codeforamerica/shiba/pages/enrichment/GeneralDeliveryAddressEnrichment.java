@@ -14,6 +14,7 @@ import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
   }
 
   @Override
-  public EnrichmentResult process(PagesData pagesData) {
+  public PageData process(PagesData pagesData) {
     String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
     Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping()
         .get(cityName);
@@ -82,7 +83,7 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
       enrichedAddressLines.add(zipcodeFromCity);
     }
 
-    return new EnrichmentResult(Map.of(
+    return new PageData(Map.of(
         // For filling out application
         "enrichedCounty", new InputData(List.of(displayCounty)),
         "enrichedPhoneNumber", new InputData(List.of(phoneNumber)),

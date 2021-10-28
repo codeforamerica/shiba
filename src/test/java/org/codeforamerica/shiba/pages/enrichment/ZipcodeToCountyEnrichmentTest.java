@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class ZipcodeToCountyEnrichmentTest {
         .build();
     countyZipCodeMap.put("12345", County.Olmsted);
 
-    EnrichmentResult enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
+    PageData enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
 
     assertThat(enrichmentResult)
         .containsEntry("mappedCounty", new InputData(List.of(County.Olmsted.name())));
@@ -36,7 +37,7 @@ class ZipcodeToCountyEnrichmentTest {
         .withPageData("identifyZipcode", "zipCode", "00000")
         .build();
 
-    EnrichmentResult enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
+    PageData enrichmentResult = zipcodeToCountyEnrichment.process(pagesData);
 
     assertThat(enrichmentResult)
         .containsEntry("mappedCounty", new InputData(List.of(County.Other.name())));

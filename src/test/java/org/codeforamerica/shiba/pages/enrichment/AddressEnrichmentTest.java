@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -43,7 +44,7 @@ class AddressEnrichmentTest {
         null);
     when(locationClient.validateAddress(address)).thenReturn(Optional.of(expectedAddress));
 
-    EnrichmentResult enrichmentResult = homeAddressValidationQuery
+    PageData enrichmentResult = homeAddressValidationQuery
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedStreetAddress",
@@ -68,7 +69,7 @@ class AddressEnrichmentTest {
     Address address = new Address("street", "city", "CA", zipCode, "", null);
     when(locationClient.validateAddress(address)).thenReturn(empty());
 
-    EnrichmentResult enrichmentResult = homeAddressValidationQuery
+    PageData enrichmentResult = homeAddressValidationQuery
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult)
@@ -81,7 +82,7 @@ class AddressEnrichmentTest {
     Address address = new Address("street", "city", "CA", "02103", "", null);
     when(locationClient.validateAddress(address)).thenReturn(empty());
 
-    EnrichmentResult enrichmentResult = homeAddressValidationQuery
+    PageData enrichmentResult = homeAddressValidationQuery
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).isEmpty();

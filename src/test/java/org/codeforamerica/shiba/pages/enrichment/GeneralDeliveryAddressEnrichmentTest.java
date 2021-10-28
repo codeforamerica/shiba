@@ -12,6 +12,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +36,9 @@ class GeneralDeliveryAddressEnrichmentTest {
             new CountyRoutingDestination(County.Hennepin, null, null, null, "765-4321",
                 new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
             County.OtterTail,
-              new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null),
+            new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null),
             County.Anoka,
-              new CountyRoutingDestination(County.Anoka, null, null, null, "555-5555", null)));
+            new CountyRoutingDestination(County.Anoka, null, null, null, "555-5555", null)));
 
     cityInfoConfiguration.getCityToZipAndCountyMapping().putAll(Map.of(
         "Battle Lake",
@@ -52,7 +53,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Battle Lake")
         .build();
 
-    EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment
+    PageData enrichmentResult = generalDeliveryAddressEnrichment
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
@@ -71,7 +72,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Minneapolis")
         .build();
 
-    EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment
+    PageData enrichmentResult = generalDeliveryAddressEnrichment
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
@@ -93,7 +94,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Battle Lake")
         .build();
 
-    EnrichmentResult enrichmentResult = generalDeliveryAddressEnrichment
+    PageData enrichmentResult = generalDeliveryAddressEnrichment
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
