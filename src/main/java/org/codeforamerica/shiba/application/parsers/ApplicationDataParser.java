@@ -171,6 +171,7 @@ public class ApplicationDataParser {
         .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("matchInfo", "firstName"));
     coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("matchInfo", "lastName"));
 
+    coordinatesMap.put(Field.RACE_AND_ETHNICITY, new ParsingCoordinate("raceAndEthnicity", "raceAndEthnicity"));
     groupCoordinatesMap.put(Group.JOBS, "jobs");
     groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
 
@@ -308,8 +309,9 @@ public class ApplicationDataParser {
 
     MATCH_INFO_DOB,
     MATCH_INFO_FIRST_NAME(""),
-    MATCH_INFO_LAST_NAME("");
+    MATCH_INFO_LAST_NAME(""),
 
+    RACE_AND_ETHNICITY;
     @Getter
     private final String defaultValue;
 

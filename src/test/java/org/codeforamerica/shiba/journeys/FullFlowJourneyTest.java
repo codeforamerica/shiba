@@ -535,6 +535,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
     assertCcapFieldEquals("ADDITIONAL_APPLICATION_INFO",
         "I need you to contact my work for proof of termination");
+    assertCcapFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
+    assertCcapFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes");
 
     // CAF
     assertCafFieldEquals("APPLICATION_ID", applicationId);
