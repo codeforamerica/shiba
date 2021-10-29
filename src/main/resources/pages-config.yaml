@@ -1337,9 +1337,6 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: legal-stuff.has-anyone-been-convicted-of-drug-felony
         helpMessageKey: legal-stuff.if-yes-you-can-still-get-benefits
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
         options:
           selectableOptions:
             - value: "true"
