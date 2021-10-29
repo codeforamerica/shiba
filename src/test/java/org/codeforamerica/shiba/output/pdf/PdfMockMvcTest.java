@@ -626,30 +626,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 
       @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Minneapolis", "55401",
-            "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County at 612-596-1300.");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForOlmsted() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Oronoco", "55960",
-            "This application was submitted to Olmsted County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Olmsted County at 507-328-6500.");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForWabasha() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Wabasha", "55981",
-            "We have received your application that you submitted through MNbenefits.mn.gov. Processing your application in a timely fashion is our highest priority. We have submitted your application to an Eligibility Worker who will contact you no later than the end of the next business day to discuss your application. For questions or concerns, please contact us at 651.565.3351(collect calls accepted), toll free at 1.888.315.8815 or email us at imuinterview@co.wabasha.mn.us. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. Thank you and have a great day!");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForWright() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390",
-            "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7400.");
-      }
-
-      @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForCountiesThatUseTheGenericInstructions()
           throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345",
