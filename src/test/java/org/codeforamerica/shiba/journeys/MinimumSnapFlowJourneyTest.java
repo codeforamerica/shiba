@@ -97,7 +97,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted to Norman County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Norman County (218-784-5400).");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("DRUG_FELONY", "No");
@@ -179,7 +179,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testFeedbackScreen();
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300."
+);
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("DRUG_FELONY", "Yes");
@@ -209,11 +210,10 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   }
 
 
-  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
+  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId, String countyInstructions) {
     // Page 1
     assertCafFieldEquals("APPLICATION_ID", applicationId);
-    assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
+    assertCafFieldEquals("COUNTY_INSTRUCTIONS", countyInstructions);
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");
