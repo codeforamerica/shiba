@@ -70,7 +70,6 @@ public class MnitDocumentConsumer {
 
     // Send the CAF, CCAP, and XML files in parallel
     List<Thread> threads = createThreadsForSendingThisApplication(application, id);
-    threads.forEach(Thread::start);
 
     // Wait for everything to finish before returning
     threads.forEach(thread -> {
@@ -99,14 +98,18 @@ public class MnitDocumentConsumer {
 
       for (RoutingDestination rd : routingDestinations) {
         ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
-        threads.add(new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd)));
+        Thread thread = new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd));
+        thread.start();
+        threads.add(thread);
       }
     });
 
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      threads.add(new Thread(() -> sendFile(application, CAF, xml, rd)));
+      Thread thread = new Thread(() -> sendFile(application, CAF, xml, rd));
+      thread.start();
+      threads.add(thread);
     });
     return threads;
   }
