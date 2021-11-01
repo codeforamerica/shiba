@@ -8,7 +8,9 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
@@ -65,25 +67,26 @@ public class MnitDocumentConsumer {
     monitoringService.setApplicationId(id);
 
     List<Thread> threads = new ArrayList<>();
-
-    // Generate the CAF and CCAP PDFs to send in parallel so that one document isn't waiting on the
-    // other to finish sending.
+    // Generate the CAF and CCAP PDFs and the CAF xml. Send them in parallel so that one
+    // document isn't waiting on the other to finish sending.
+    Set<RoutingDestination> allRoutingDestinations = new HashSet<>();
     for (Document doc : DocumentListParser.parse(application.getApplicationData())) {
       List<RoutingDestination> routingDestinations =
           routingDecisionService.getRoutingDestinations(application.getApplicationData(), doc);
+      allRoutingDestinations.addAll(routingDestinations);
 
       // add a thread to send the pdf for each routing destination
-      for (RoutingDestination routingDestination : routingDestinations) {
-        ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, routingDestination);
-        threads.add(new Thread(new SendFileRunnable(doc, pdf, application, routingDestination)));
-
-        // also add xml if this document is the CAF
-        if (doc.equals(CAF)) {
-          ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-          threads.add(new Thread(new SendFileRunnable(doc, xml, application, routingDestination)));
-        }
+      for (RoutingDestination rd : routingDestinations) {
+        ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
+        threads.add(new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd)));
       }
     }
+
+    // send xmls to all routing destinations
+    allRoutingDestinations.forEach(rd -> {
+      ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
+      threads.add(new Thread(() -> sendFile(application, CAF, xml, rd)));
+    });
 
     // Send the CAF, CCAP, and XML files in parallel
     threads.forEach(Thread::start);
@@ -131,7 +134,7 @@ public class MnitDocumentConsumer {
         emailClient.sendHennepinDocUploadsEmails(application, applicationFiles);
       } else {
         for (ApplicationFile fileToSend : applicationFiles) {
-          sendFileToRoutingDestination(application, UPLOADED_DOC, fileToSend, rd);
+          sendFile(application, UPLOADED_DOC, fileToSend, rd);
         }
       }
     }
@@ -139,9 +142,23 @@ public class MnitDocumentConsumer {
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
+  private void sendFileAndUpdateStatus(Application application, Document documentType,
+      ApplicationFile applicationFile, RoutingDestination routingDestination) {
 
-  private void sendFileToRoutingDestination(Application application, Document document,
-      ApplicationFile file, RoutingDestination routingDestination) {
+    String id = application.getId();
+    try {
+      applicationRepository.updateStatus(id, documentType, SENDING);
+      sendFile(application, documentType, applicationFile,
+          routingDestination);
+    } catch (Exception e) {
+      applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
+      log.error("Failed to send document %s to recipient %s for application %s with error, "
+          .formatted(documentType, routingDestination.getName(), id), e);
+    }
+  }
+
+  private void sendFile(Application application, Document document, ApplicationFile file,
+      RoutingDestination routingDestination) {
 
     String documentName = document.name();
     if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
@@ -158,38 +175,6 @@ public class MnitDocumentConsumer {
     } else {
       mnitClient.send(file, routingDestination, application.getId(), document,
           application.getFlow());
-    }
-  }
-
-  class SendFileRunnable implements Runnable {
-
-    private final Document documentType;
-    private final ApplicationFile applicationFile;
-    private final Application application;
-    private final RoutingDestination routingDestination;
-
-    public SendFileRunnable(Document documentType, ApplicationFile applicationFile,
-        Application application,
-        RoutingDestination routingDestination) {
-      this.documentType = documentType;
-      this.applicationFile = applicationFile;
-      this.application = application;
-      this.routingDestination = routingDestination;
-    }
-
-    @Override
-    public void run() {
-      String id = application.getId();
-      try {
-        applicationRepository.updateStatus(id, documentType, SENDING);
-        sendFileToRoutingDestination(application, documentType, applicationFile,
-            routingDestination);
-      } catch (Exception e) {
-        applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
-        log.error(
-            "Failed to send document %s to recipient %s for application %s with error, ".formatted(
-                documentType, routingDestination.getName(), id), e);
-      }
     }
   }
 }
