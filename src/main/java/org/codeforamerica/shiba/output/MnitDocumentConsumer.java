@@ -24,8 +24,10 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -66,39 +68,47 @@ public class MnitDocumentConsumer {
     String id = application.getId();
     monitoringService.setApplicationId(id);
 
-    List<Thread> threads = new ArrayList<>();
-    // Generate the CAF and CCAP PDFs and the CAF xml. Send them in parallel so that one
-    // document isn't waiting on the other to finish sending.
-    Set<RoutingDestination> allRoutingDestinations = new HashSet<>();
-    for (Document doc : DocumentListParser.parse(application.getApplicationData())) {
-      List<RoutingDestination> routingDestinations =
-          routingDecisionService.getRoutingDestinations(application.getApplicationData(), doc);
-      allRoutingDestinations.addAll(routingDestinations);
-
-      // add a thread to send the pdf for each routing destination
-      for (RoutingDestination rd : routingDestinations) {
-        ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
-        threads.add(new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd)));
-      }
-    }
-
-    // send xmls to all routing destinations
-    allRoutingDestinations.forEach(rd -> {
-      ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      threads.add(new Thread(() -> sendFile(application, CAF, xml, rd)));
-    });
-
     // Send the CAF, CCAP, and XML files in parallel
+    List<Thread> threads = createThreadsForSendingThisApplication(application, id);
     threads.forEach(Thread::start);
 
     // Wait for everything to finish before returning
-    threads.forEach(t -> {
+    threads.forEach(thread -> {
       try {
-        t.join();
+        thread.join();
       } catch (InterruptedException e) {
         log.error("Thread interrupted", e);
       }
     });
+  }
+
+  @NotNull
+  private List<Thread> createThreadsForSendingThisApplication(Application application, String id) {
+    List<Thread> threads = new ArrayList<>();
+    Set<RoutingDestination> allRoutingDestinations = new HashSet<>();
+
+    ApplicationData applicationData = application.getApplicationData();
+
+    // Create threads for sending CAF & CCAP pdfs to each recipient
+    DocumentListParser.parse(applicationData).forEach(doc -> {
+      List<RoutingDestination> routingDestinations =
+          routingDecisionService.getRoutingDestinations(applicationData, doc);
+
+      // Keep track of routing destinations so we know who to send the XML to later
+      allRoutingDestinations.addAll(routingDestinations);
+
+      for (RoutingDestination rd : routingDestinations) {
+        ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
+        threads.add(new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd)));
+      }
+    });
+
+    // Create threads for sending the xml to each recipient who also received a PDF
+    allRoutingDestinations.forEach(rd -> {
+      ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
+      threads.add(new Thread(() -> sendFile(application, CAF, xml, rd)));
+    });
+    return threads;
   }
 
   public void processUploadedDocuments(Application application) {
