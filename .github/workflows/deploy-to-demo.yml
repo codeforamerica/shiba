@@ -76,7 +76,7 @@ jobs:
           'MNIT-FILENET_USERNAME=${{ secrets.MNIT_FILENET_USERNAME_ATST }}' \
           'MNIT-FILENET_PASSWORD=${{ secrets.MNIT_FILENET_PASSWORD_ATST }}'
       - name: Create Sentry release
-        uses: getsentry/action-release@v1.16
+        uses: getsentry/action-release@v1.1.6
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: codeforamerica
