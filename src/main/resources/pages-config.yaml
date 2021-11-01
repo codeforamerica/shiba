@@ -1486,7 +1486,7 @@ pageDefinitions:
               messageKey: identify-county-lincoln
             - value: Lyon
               messageKey: identify-county-lyon
-            - value: Mcleod
+            - value: McLeod
               messageKey: identify-county-mcleod
             - value: Mahnomen
               messageKey: identify-county-mahnomen
@@ -1516,7 +1516,7 @@ pageDefinitions:
               messageKey: identify-county-otter-tail
             - value: Pennington
               messageKey: identify-county-pennington
-            - value: PineCounty
+            - value: Pine
               messageKey: identify-county-pine
             - value: Pipestone
               messageKey: identify-county-pipestone
