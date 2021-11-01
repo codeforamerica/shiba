@@ -83,7 +83,7 @@ jobs:
           SENTRY_PROJECT: shiba
         with:
           environment: demo
-          version: ${{ jobs.draft-release.outputs.tag_name }}
+          version: ${{ needs.draft-release.outputs.tag_name }}
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1
