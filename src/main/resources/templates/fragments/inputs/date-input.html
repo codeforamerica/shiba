@@ -23,7 +23,7 @@
                    th:id="${input.name}+'-year-label'"
                    th:text="#{general.year}"></label>
         </p>
-        <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
+        <input type="text" inputmode="numeric" maxlength="2" class="text-input form-width--2-character dob-input"
                th:id="${input.name}+'-month'" th:name="${formInputName}"
                th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}"
                th:placeholder="mm"
@@ -31,7 +31,7 @@
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
         &nbsp;/&nbsp;
-        <input type="text" maxlength="2" class="text-input form-width--2-character dob-input"
+        <input type="text" inputmode="numeric" maxlength="2" class="text-input form-width--2-character dob-input"
                th:id="${input.name}+'-day'"
                th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}"
                th:placeholder="dd"
@@ -39,7 +39,7 @@
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
         &nbsp;/&nbsp;
-        <input type="text" maxlength="4" class="text-input form-width--4-character dob-input"
+        <input type="text" inputmode="numeric" maxlength="4" class="text-input form-width--4-character dob-input"
                th:id="${input.name}+'-year'"
                th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}"
                th:placeholder="yyyy"
