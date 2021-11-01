@@ -6,9 +6,10 @@ on:
 jobs:
   # Deploy to prod steps:
   # 1. find latest git release
-  # 2. Login to openshift prod
-  # 3. Import image tagged with the git release tag from non-prod to prod
-  # 4. Rollout updated image
+  # 2. Set release in sentry
+  # 3. Login to openshift prod
+  # 4. Import image tagged with the git release tag from non-prod to prod
+  # 5. Rollout updated image
   mnitdeploy:
     name: deploy to MNIT prod
     runs-on: ubuntu-latest
@@ -18,17 +19,15 @@ jobs:
       uses: thebritican/fetch-latest-release@v2.0.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ steps.fetch-latest-release.outputs.tag_name }}
     - name: Create Sentry release
-      uses: getsentry/action-release@v1
+      uses: getsentry/action-release@v1.1.6
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         SENTRY_ORG: codeforamerica
         SENTRY_PROJECT: shiba
       with:
         environment: production
+        version: ${{ steps.fetch-latest-release.outputs.tag_name }}
     - name: Authenticate and set context for prod
       uses: redhat-actions/oc-login@v1
       with:

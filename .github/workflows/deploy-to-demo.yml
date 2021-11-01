@@ -76,13 +76,14 @@ jobs:
           'MNIT-FILENET_USERNAME=${{ secrets.MNIT_FILENET_USERNAME_ATST }}' \
           'MNIT-FILENET_PASSWORD=${{ secrets.MNIT_FILENET_PASSWORD_ATST }}'
       - name: Create Sentry release
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v1.16
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: codeforamerica
           SENTRY_PROJECT: shiba
         with:
           environment: demo
+          version: ${{ jobs.draft-release.outputs.tag_name }}
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1
