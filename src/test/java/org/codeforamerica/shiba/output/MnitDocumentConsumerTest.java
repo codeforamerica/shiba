@@ -251,10 +251,25 @@ class MnitDocumentConsumerTest {
 
   @Test
   void sendsToBothTribalNationAndCounty() {
-    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
-    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    // set up county caf mock
+    CountyRoutingDestination countyDestination = countyMap.get(Olmsted);
+    ApplicationFile countycaf = new ApplicationFile("mycaf".getBytes(), "countycaf.pdf");
+    doReturn(countycaf).when(pdfGenerator)
+        .generate(anyString(), eq(CAF), any(), eq(countyDestination));
+
+    // set up tribal nation caf mock
+    TribalNationRoutingDestination nationDestination = tribalNations.get(
+        MILLE_LACS_BAND_OF_OJIBWE);
+    ApplicationFile nationCaf = new ApplicationFile("mycaf".getBytes(), "tribalNationCaf.pdf");
+    doReturn(nationCaf).when(pdfGenerator)
+        .generate(anyString(), eq(CAF), any(), eq(nationDestination));
+
+    // set up ccap mock
+    ApplicationFile ccap = new ApplicationFile("myccap".getBytes(), "ccap.pdf");
+    doReturn(ccap).when(pdfGenerator).generate(anyString(), eq(CCAP), any(), eq(countyDestination));
+
+    ApplicationFile xmlFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
@@ -267,20 +282,19 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, countyDestination);
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, nationDestination);
+    verify(pdfGenerator).generate(application.getId(), CCAP, CASEWORKER, countyDestination);
+    verify(xmlGenerator, times(2)).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-        application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-        application.getId(), CAF, FULL);
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+    verify(mnitClient).send(nationCaf, nationDestination, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlFile, nationDestination, application.getId(), CAF,
         FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+    verify(mnitClient).send(countycaf, countyDestination, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlFile, countyDestination, application.getId(), CAF,
         FULL);
     // CCAP never goes to Mille Lacs
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
-        FULL);
+    verify(mnitClient).send(ccap, countyDestination, application.getId(), CCAP, FULL);
   }
 
   @Test

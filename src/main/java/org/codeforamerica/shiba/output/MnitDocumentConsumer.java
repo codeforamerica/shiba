@@ -72,20 +72,21 @@ public class MnitDocumentConsumer {
       List<RoutingDestination> routingDestinations =
           routingDecisionService.getRoutingDestinations(application.getApplicationData(), doc);
 
-      // add a thread for each routing destination
+      // add a thread to send the pdf for each routing destination
       for (RoutingDestination routingDestination : routingDestinations) {
         ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, routingDestination);
-        Thread thread = new Thread(new SendPDFRunnable(doc, pdf, application, routingDestination));
-        threads.add(thread);
+        threads.add(new Thread(new SendFileRunnable(doc, pdf, application, routingDestination)));
+
+        // also add xml if this document is the CAF
+        if (doc.equals(CAF)) {
+          ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
+          threads.add(new Thread(new SendFileRunnable(doc, xml, application, routingDestination)));
+        }
       }
     }
 
-    // Send the CAF and CCAP as PDFs in parallel
+    // Send the CAF, CCAP, and XML files in parallel
     threads.forEach(Thread::start);
-
-    // Send the CAF as XML
-    // TODO THIS
-    sendFileToAllRoutingDestinations(application, CAF, xmlGenerator.generate(id, CAF, CASEWORKER));
 
     // Wait for everything to finish before returning
     threads.forEach(t -> {
@@ -138,15 +139,6 @@ public class MnitDocumentConsumer {
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
-  private void sendFileToAllRoutingDestinations(Application application, Document document,
-      ApplicationFile file) {
-
-    List<RoutingDestination> routingDestinations = routingDecisionService
-        .getRoutingDestinations(application.getApplicationData(), document);
-
-    routingDestinations.forEach(
-        rd -> sendFileToRoutingDestination(application, document, file, rd));
-  }
 
   private void sendFileToRoutingDestination(Application application, Document document,
       ApplicationFile file, RoutingDestination routingDestination) {
@@ -161,21 +153,22 @@ public class MnitDocumentConsumer {
         routingDestination.getName(),
         application.getId()));
     if (featureFlagConfiguration.get("filenet").isOn()) {
-      mnitFilenetClient.send(file, routingDestination, application.getId(), document, application.getFlow());
+      mnitFilenetClient.send(file, routingDestination, application.getId(), document,
+          application.getFlow());
     } else {
-      mnitClient.send(file, routingDestination, application.getId(), document, application.getFlow());
+      mnitClient.send(file, routingDestination, application.getId(), document,
+          application.getFlow());
     }
-
   }
 
-  class SendPDFRunnable implements Runnable {
+  class SendFileRunnable implements Runnable {
 
     private final Document documentType;
     private final ApplicationFile applicationFile;
     private final Application application;
     private final RoutingDestination routingDestination;
 
-    public SendPDFRunnable(Document documentType, ApplicationFile applicationFile,
+    public SendFileRunnable(Document documentType, ApplicationFile applicationFile,
         Application application,
         RoutingDestination routingDestination) {
       this.documentType = documentType;
@@ -186,13 +179,16 @@ public class MnitDocumentConsumer {
 
     @Override
     public void run() {
+      String id = application.getId();
       try {
-        applicationRepository.updateStatus(application.getId(), documentType, SENDING);
+        applicationRepository.updateStatus(id, documentType, SENDING);
         sendFileToRoutingDestination(application, documentType, applicationFile,
             routingDestination);
       } catch (Exception e) {
-        applicationRepository.updateStatus(application.getId(), documentType, DELIVERY_FAILED);
-        log.error("Failed to send with error, ", e);
+        applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
+        log.error(
+            "Failed to send document %s to recipient %s for application %s with error, ".formatted(
+                documentType, routingDestination.getName(), id), e);
       }
     }
   }
