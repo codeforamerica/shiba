@@ -72,7 +72,9 @@ jobs:
           'MIXPANEL_API-KEY=${{ secrets.MIXPANEL_API_KEY_STAGING }}' \
           'SSL_PROTOCOLS_OVERRIDE=TLSv1.2' \
           'AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING_STAGING }}' \
-          'AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME_DEMO }}'
+          'AZURE_CONTAINER_NAME=${{ secrets.AZURE_CONTAINER_NAME_DEMO }}' \
+          'MNIT-FILENET_USERNAME=${{ secrets.MNIT_FILENET_USERNAME_ATST }}' \
+          'MNIT-FILENET_PASSWORD=${{ secrets.MNIT_FILENET_PASSWORD_ATST }}'
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
