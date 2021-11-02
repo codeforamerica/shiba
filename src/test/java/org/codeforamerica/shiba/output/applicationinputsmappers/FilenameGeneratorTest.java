@@ -52,7 +52,7 @@ class FilenameGeneratorTest {
         .id("defaultId")
         .applicationData(applicationData)
         .completedAt(ZonedDateTime.now(ZoneOffset.UTC));
-    filenameGenerator = new FilenameGenerator(countyMap, tribalNations);
+    filenameGenerator = new FilenameGenerator(countyMap);
   }
 
   @Test
