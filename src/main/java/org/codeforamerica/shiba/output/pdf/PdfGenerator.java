@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -67,6 +70,10 @@ public class PdfGenerator implements FileGenerator {
     String filename = fileNameGenerator.generatePdfFilenameForRoutingDestination(application,
         document, routingDestination);
     return generateWithFilename(application, document, recipient, filename);
+  }
+
+  public byte[] generateCoverPageForUploadedDocs(Application application) {
+    return generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
   }
 
   public ApplicationFile generate(Application application, Document document, Recipient recipient) {

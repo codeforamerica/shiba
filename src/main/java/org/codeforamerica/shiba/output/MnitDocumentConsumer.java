@@ -120,7 +120,7 @@ public class MnitDocumentConsumer {
     List<ApplicationFile> applicationFiles = new ArrayList<>();
 
     // General files to send
-    byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
+    byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
       ApplicationFile fileToSend = pdfGenerator.generateForUploadedDocument(uploadedDocument, i,
@@ -130,8 +130,8 @@ public class MnitDocumentConsumer {
         applicationFiles.add(fileToSend);
       } else {
         // This should only happen in a dev environment
-        log.error(
-            "Skipped uploading file " + uploadedDocument.getFilename() + " because it was empty.");
+        log.error("Skipped uploading file %s because it was empty.".formatted(
+            uploadedDocument.getFilename()));
       }
     }
 
