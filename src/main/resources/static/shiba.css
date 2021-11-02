@@ -334,6 +334,10 @@ form .drag-and-drop-box-compact {
   .right-on-desktop {
     float: right;
   }
+
+  .splash {
+    max-width: none;
+  }
 }
 
 @media screen and (max-width: 600px) {
@@ -464,7 +468,6 @@ form .drag-and-drop-box-compact {
 }
 
 .splash {
-  max-width: none;
   margin-top: 74px;
 }
 
