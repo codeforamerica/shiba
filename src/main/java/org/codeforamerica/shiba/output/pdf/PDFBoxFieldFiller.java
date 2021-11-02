@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,6 +21,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 
+@Slf4j
 public class PDFBoxFieldFiller implements PdfFieldFiller {
 
   private final List<Resource> pdfs;
@@ -49,7 +51,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
       pdDocument.save(outputStream);
       pdDocument.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("Unable to save output", e);
     }
     return outputStream.toByteArray();
   }
@@ -79,7 +81,6 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
       fillAcroForm(fields, acroForm, fontName);
       return loadedDoc;
     } catch (IOException e) {
-      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }
