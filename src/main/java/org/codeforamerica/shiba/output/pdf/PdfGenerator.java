@@ -60,21 +60,25 @@ public class PdfGenerator implements FileGenerator {
     return generate(application, document, recipient);
   }
 
+  // Generates a pdf and gives it a filename corresponding to a specific routing destination
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient,
       RoutingDestination routingDestination) {
     Application application = applicationRepository.find(applicationId);
-    ApplicationFile pdf = generate(application, document, recipient);
-    // todo yuck
-    String newFilename = fileNameGenerator.generatePdfFilenameForRoutingDestination(application,
+    String filename = fileNameGenerator.generatePdfFilenameForRoutingDestination(application,
         document, routingDestination);
-    return new ApplicationFile(pdf.getFileBytes(), newFilename);
+    return generateWithFilename(application, document, recipient, filename);
   }
 
   public ApplicationFile generate(Application application, Document document, Recipient recipient) {
+    String filename = fileNameGenerator.generatePdfFilename(application, document);
+    return generateWithFilename(application, document, recipient, filename);
+  }
+
+  private ApplicationFile generateWithFilename(Application application, Document document,
+      Recipient recipient, String filename) {
     List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
     List<PdfField> fields = pdfFieldMapper.map(applicationInputs);
-    String filename = fileNameGenerator.generatePdfFilename(application, document);
     return pdfFiller.fill(fields, application.getId(), filename);
   }
 

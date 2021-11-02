@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -32,14 +33,18 @@ public class FilenameGenerator {
       "C", Set.of("CCAP")
   );
   private final CountyMap<CountyRoutingDestination> countyMap;
+  private final Map<String, TribalNationRoutingDestination> tribalNations;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap) {
+  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap,
+      Map<String, TribalNationRoutingDestination> tribalNations) {
     this.countyMap = countyMap;
+    this.tribalNations = tribalNations;
   }
 
   public String generatePdfFilename(Application application, Document document) {
-    String prefix = getSharedApplicationPrefix(application, document);
+    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String prefix = getSharedApplicationPrefix(application, document, dhsProviderId);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
     return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
@@ -47,7 +52,8 @@ public class FilenameGenerator {
 
   public String generatePdfFilenameForRoutingDestination(Application application, Document document,
       RoutingDestination routingDestination) {
-    String prefix = getSharedApplicationPrefix(application, document);
+    String dhsProviderId = routingDestination.getDhsProviderId();
+    String prefix = getSharedApplicationPrefix(application, document, dhsProviderId);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
     return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
@@ -56,20 +62,23 @@ public class FilenameGenerator {
   public String generateUploadedDocumentName(Application application, int index, String extension) {
     int size = application.getApplicationData().getUploadedDocs().size();
     index = index + 1;
-    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC);
+    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
+        dhsProviderId);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
   public String generateXmlFilename(Application application) {
-    String prefix = getSharedApplicationPrefix(application, CAF);
+    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String prefix = getSharedApplicationPrefix(application, CAF,
+        dhsProviderId);
     String programs = getProgramCodes(application);
     return "%s%s.xml".formatted(prefix, programs);
   }
 
   @NotNull
   private String getSharedApplicationPrefix(Application application,
-      Document document) {
-    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+      Document document, String dhsProviderId) {
     String fileSource = "MNB";
     if (document == UPLOADED_DOC && application.getCounty() == County.Hennepin) {
       fileSource = "DOC";
