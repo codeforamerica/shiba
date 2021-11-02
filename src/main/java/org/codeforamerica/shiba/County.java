@@ -1,7 +1,5 @@
 package org.codeforamerica.shiba;
 
-import java.util.List;
-
 public enum County {
   Aitkin("Aitkin"), Anoka("Anoka"), Becker("Becker"),
   Beltrami("Beltrami"), Benton("Benton"), BigStone("Big Stone"),
@@ -42,8 +40,8 @@ public enum County {
 
   // Given a county name, return the corresponding County object
   public static County getCountyForName(String countyName) {
-    if (List.of("St. Louis", "Saint Louis", "StLouis").contains(countyName)) {
-      return StLouis;
+    if (countyName.equals("")) {
+      return Other;
     }
 
     String countyNameWithoutSpaces = countyName.replace(" ", "");
