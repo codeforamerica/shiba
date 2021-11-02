@@ -1,8 +1,11 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,13 +18,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.*;
+import java.util.List;
 import java.util.Locale;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -30,6 +36,7 @@ import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +76,8 @@ class PageControllerTest {
   private PageEventPublisher pageEventPublisher;
   @MockBean
   private FeatureFlagConfiguration featureFlags;
+  @MockBean
+  private RoutingDecisionService routingDecisionService;
   @SpyBean
   private DocumentRepository documentRepository;
 
@@ -107,12 +116,12 @@ class PageControllerTest {
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
     mockMvc.perform(post("/submit")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        .param("foo[]", "some value"))
-        .andExpect(redirectedUrl("/pages/firstPage/navigation"));
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .param("foo[]", "some value"))
+        .andExpect(redirectedUrl("/pages/secondPage/navigation"));
 
-    PageData firstPage = applicationData.getPagesData().getPage("firstPage");
-    assertThat(firstPage.get("foo").getValue()).contains("some value");
+    PageData secondPage = applicationData.getPagesData().getPage("secondPage");
+    assertThat(secondPage.get("foo").getValue()).contains("some value");
   }
 
   @Test
@@ -170,7 +179,7 @@ class PageControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-    inOrder.verify(applicationRepository).save(application);
+    inOrder.verify(applicationRepository).save(application, true);
     inOrder.verify(pageEventPublisher)
         .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
   }
@@ -211,7 +220,7 @@ class PageControllerTest {
     assertThat(application.getCompletedAt()).isNotNull();
     assertThat(application.getTimeToComplete()).isNotNull();
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-    inOrder.verify(applicationRepository).save(application);
+    inOrder.verify(applicationRepository).save(application, true);
     inOrder.verify(pageEventPublisher)
         .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
   }
@@ -229,7 +238,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    mockMvc.perform(post("/pages/firstPage")
+    mockMvc.perform(post("/pages/secondPage")
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
@@ -280,10 +289,10 @@ class PageControllerTest {
 
     String feedback = "this was awesome!";
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("sentiment", "HAPPY")
-        .param("feedback", feedback))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("sentiment", "HAPPY")
+            .param("feedback", feedback))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
 
@@ -292,6 +301,37 @@ class PageControllerTest {
         .sentiment(Sentiment.HAPPY)
         .feedback(feedback)
         .build());
+  }
+
+  @Test
+  void shouldUpdateRoutingDestinationsInTheDatabaseOnTerminalPage() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("CASH", "CCAP"));
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(Anoka)
+        .build();
+
+    when(routingDecisionService.getRoutingDestinations(applicationData, CAF)).thenReturn(List.of(
+        new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe")
+    ));
+    when(routingDecisionService.getRoutingDestinations(applicationData, CCAP)).thenReturn(List.of(
+        new CountyRoutingDestination(Anoka, "folder", "dhsProviderId", "something@example.com",
+            "8675309", null)
+    ));
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/terminalPage"));
+
+    verify(applicationRepository).save(application);
+    assertThat(application.getApplicationData().getRoutingDestinationNames())
+        .containsExactlyInAnyOrder("Mille Lacs Band of Ojibwe", "Anoka");
   }
 
   @Test
@@ -310,9 +350,9 @@ class PageControllerTest {
 
     String feedback = "this was awesome!";
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("feedback", feedback))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("feedback", feedback))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(successMessage)));
 
@@ -340,9 +380,9 @@ class PageControllerTest {
     when(applicationRepository.find(applicationId)).thenReturn(application);
 
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .locale(locale)
-        .param("sentiment", "HAPPY"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(locale)
+            .param("sentiment", "HAPPY"))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackSuccess", equalTo(ratingSuccessMessage)));
 
@@ -355,9 +395,9 @@ class PageControllerTest {
   @Test
   void shouldFailToSubmitFeedbackIfIdIsNotSet() throws Exception {
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .param("sentiment", "HAPPY")
-        .param("feedback", "this was awesome!"))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("sentiment", "HAPPY")
+            .param("feedback", "this was awesome!"))
         .andExpect(redirectedUrl("/pages/terminalPage"));
 
     verify(applicationRepository, never()).save(any());
@@ -375,9 +415,9 @@ class PageControllerTest {
     applicationData.setId(applicationId);
 
     mockMvc.perform(post("/submit-feedback")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .param("feedback", "")
-        .locale(locale))
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("feedback", "")
+            .locale(locale))
         .andExpect(redirectedUrl("/pages/terminalPage"))
         .andExpect(flash().attribute("feedbackFailure", equalTo(failureMessage)));
 
@@ -420,6 +460,31 @@ class PageControllerTest {
     when(documentRepository.get(any())).thenThrow(RuntimeException.class);
 
     mockMvc.perform(get("/pages/uploadDocuments")).andExpect(status().isOk());
+  }
+
+  /**
+   * If an applicant completes and application and wants to submit a second application from the
+   * same device then they should be able to navigate back to the beginning of the application and
+   * continue through the application process.
+   */
+  @Test
+  void shouldHandleMultipleApplicationsSequentially() throws Exception {
+    // Start with a completed application
+    String applicationId = "14356236";
+    applicationData.setId(applicationId);
+    applicationData.setStartTimeOnce(Instant.now());
+    applicationData.setSubmitted(true);
+    Application application = Application.builder()
+        .id("14356236")
+        .completedAt(ZonedDateTime.now())
+        .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    // Should bump back to landing page to invalidate the session and start a new application
+    mockMvc.perform(get("/pages/firstPage")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .locale(Locale.GERMAN))
+        .andExpect(redirectedUrl("/pages/landingPage"));
   }
 
   @Test

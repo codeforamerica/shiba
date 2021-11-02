@@ -87,7 +87,7 @@ public class ResubmissionService {
         applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
       }
     }));
-    MDC.remove("applicationId");
+    MDC.clear();
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,

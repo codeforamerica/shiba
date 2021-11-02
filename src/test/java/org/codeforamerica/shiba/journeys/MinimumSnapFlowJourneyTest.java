@@ -46,9 +46,24 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(testPage.getTitle()).isEqualTo("City for General Delivery");
     testPage.clickContinue(); // Error on "Continue" without selecting a city
     assertThat(testPage.hasErrorText("Make sure to provide a city")).isTrue();
-    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
+    testPage.selectFromDropdown("whatIsTheCity[]", "Minneapolis");
     testPage.clickContinue();
     assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
+    // Cities in Hennepin show physical address
+    String generalDeliveryText = testPage.getElementText("general-delivery");
+    assertThat(generalDeliveryText).contains("General Delivery");
+    assertThat(generalDeliveryText).contains("Main Post Office.");
+    assertThat(generalDeliveryText).contains("100 S 1st St");
+    assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
+
+    // Go back to General Delivery and select a different city
+    testPage.goBack();
+    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
+    testPage.clickContinue();
+    generalDeliveryText = testPage.getElementText("general-delivery");
+    assertThat(generalDeliveryText).contains("General Delivery");
+    assertThat(generalDeliveryText).contains("Ada, MN");
+    assertThat(generalDeliveryText).contains("56510-9999");
 
     // Let's review your info
     testPage.clickContinue();
@@ -69,6 +84,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     driver.findElement(By.id("additionalInfo")).sendKeys(additionalInfo);
     testPage.enter("caseNumber", caseNumber);
     testPage.clickContinue();
+    testPage.clickLink("No, skip this question");
 
     // Legal Stuff
     assertThat(testPage.getTitle()).isEqualTo("Legal Stuff");
@@ -81,7 +97,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted to Norman County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Norman County (218-784-5400).");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("DRUG_FELONY", "No");
@@ -163,7 +179,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testFeedbackScreen();
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId);
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300."
+);
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("DRUG_FELONY", "Yes");
@@ -193,11 +210,10 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   }
 
 
-  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId) {
+  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId, String countyInstructions) {
     // Page 1
     assertCafFieldEquals("APPLICATION_ID", applicationId);
-    assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
+    assertCafFieldEquals("COUNTY_INSTRUCTIONS", countyInstructions);
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("APPLICANT_EMAIL", "some@example.com");

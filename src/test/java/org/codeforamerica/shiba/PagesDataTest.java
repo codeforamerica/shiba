@@ -10,7 +10,6 @@ import java.util.Map;
 import org.codeforamerica.shiba.pages.data.MaskedSerializer;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -18,30 +17,25 @@ public class PagesDataTest {
 
   @Test
   void scrubsInputsInPagesData() throws JsonProcessingException {
-    PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-
-    PagesData pagesData = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("contactInfo", Map.of(
+    PagesData pagesData = new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
             "phoneNumber", List.of(),
-            "firstName", List.of("Fake")
-        )),
-        new PageDataBuilder("choosePrograms", Map.of(
-            "programs", List.of("SNAP", "GRH", "EA", "CCAP")
-        ))
-    ));
+            "firstName", List.of("Fake")))
+        .withPageData("choosePrograms", "programs", List.of("SNAP", "GRH", "EA", "CCAP"))
+        .build();
 
     ObjectMapper objectMapper = new ObjectMapper()
         .registerModule(new SimpleModule().addSerializer(PageData.class, new MaskedSerializer()));
     assertThat(objectMapper.writeValueAsString(pagesData)).isEqualTo(
         "{\"" +
-            "contactInfo\":{" +
-            "\"firstName\":\"filled\"," +
-            "\"phoneNumber\":\"\"" +
-            "}," +
-            "\"choosePrograms\":" +
-            "{\"programs\":\"filled\"" +
-            "}" +
-            "}"
+        "contactInfo\":{" +
+        "\"firstName\":\"filled\"," +
+        "\"phoneNumber\":\"\"" +
+        "}," +
+        "\"choosePrograms\":" +
+        "{\"programs\":\"filled\"" +
+        "}" +
+        "}"
     );
   }
 }

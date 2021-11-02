@@ -2,21 +2,18 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.Iteration;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SubworkflowIterationScopeTrackerTest {
 
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
   private PageGroupConfiguration group1;
 
   @BeforeEach
@@ -35,12 +32,11 @@ class SubworkflowIterationScopeTrackerTest {
 
   @Test
   public void testDuplicateScopeDoesNotIncreaseIterationIndex() {
-    Iteration iteration = new Iteration(pagesDataBuilder.build(List.of(
-        new PageDataBuilder("page1", Map.of(
-            "input1", List.of("true"),
-            "input2", List.of("coolString")
-        ))
-    )));
+    Iteration iteration = new Iteration(new PagesDataBuilder()
+        .withPageData("page1", Map.of(
+            "input1", "true",
+            "input2", "coolString"))
+        .build());
 
     SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
     IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(group1, iteration);

@@ -10,24 +10,18 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class AdultRequestingChildcareInputsMapperTest {
 
   AdultRequestingChildcareInputsMapper adultRequestingChildcareInputsMapper = new AdultRequestingChildcareInputsMapper();
-  PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
-
 
   @Test
   void shouldReturnEmptyListWhenLivingAlone() {
-    ApplicationData appData = new ApplicationData();
-    appData.setPagesData(new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("addHouseholdMembers", Map.of("addHouseholdMembers", List.of("false")))
-    )));
+    ApplicationData appData = new TestApplicationDataBuilder()
+        .withPageData("addHouseholdMembers", "addHouseholdMembers", "false").build();
 
     Application application = Application.builder().applicationData(appData).build();
     assertThat(new AdultRequestingChildcareInputsMapper()
@@ -47,33 +41,27 @@ class AdultRequestingChildcareInputsMapperTest {
 
   @Test
   void shouldReturnListOfAdultsRequestingChildcareWhoAreWorking() {
-    ApplicationData applicationData = new ApplicationData();
-    Subworkflows subworkflows = applicationData.getSubworkflows();
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("John"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
-    subworkflows.addIteration("jobs", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdSelectionForIncome",
-            Map.of("whoseJobIsIt", List.of("John Testerson 939dc33-d13a-4cf0-9093-309293k3"))),
-        new PageDataBuilder("employersName", Map.of("employersName", List.of("John's Job"))))
-    ));
-    subworkflows.addIteration("jobs", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdSelectionForIncome",
-            Map.of("whoseJobIsIt", List.of("Jane Testerson 939dc44-d14a-3cf0-9094-409294k4"))),
-        new PageDataBuilder("employersName", Map.of("employersName", List.of("Jane's Job"))))
-    ));
-    applicationData.setSubworkflows(subworkflows);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", "Jane",
+                "lastName", "Testerson")),
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", "John",
+                "lastName", "Testerson")))
+        .withSubworkflow("jobs",
+            new PagesDataBuilder()
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt",
+                    "John Testerson 939dc33-d13a-4cf0-9093-309293k3")
+                .withPageData("employersName", "employersName", "John's Job"),
+            new PagesDataBuilder()
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt",
+                    "Jane Testerson 939dc44-d14a-3cf0-9094-409294k4")
+                .withPageData("employersName", Map.of("employersName", "Jane's Job")))
+        .build();
+
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<ApplicationInput> result = adultRequestingChildcareInputsMapper
@@ -113,32 +101,21 @@ class AdultRequestingChildcareInputsMapperTest {
 
   @Test
   void shouldReturnListOfAdultsRequestingChildcareWhoAreLookingForWork() {
-    ApplicationData applicationData = new ApplicationData();
-    Subworkflows subworkflows = applicationData.getSubworkflows();
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("John"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", "Jane",
+                "lastName", "Testerson")),
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", "John",
+                "lastName", "Testerson")))
+        .withPageData("whoIsLookingForAJob", "whoIsLookingForAJob",
+            List.of("John Testerson 939dc33-d13a-4cf0-9093-309293k3",
+                "Jane Testerson 939dc4-d13a-3cf0-9094-409293k4"))
+        .build();
 
-    PagesData pagesData = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("whoIsLookingForAJob", Map.of(
-            "whoIsLookingForAJob", List.of("John Testerson 939dc33-d13a-4cf0-9093-309293k3",
-                "Jane Testerson 939dc4-d13a-3cf0-9094-409293k4")
-        ))
-    ));
-
-    applicationData.setSubworkflows(subworkflows);
-    applicationData.setPagesData(pagesData);
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<ApplicationInput> result = adultRequestingChildcareInputsMapper
@@ -164,32 +141,21 @@ class AdultRequestingChildcareInputsMapperTest {
 
   @Test
   void shouldReturnListOfAdultsRequestingChildcareWhoAreGoingToSchool() {
-    ApplicationData applicationData = new ApplicationData();
-    Subworkflows subworkflows = applicationData.getSubworkflows();
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
-    subworkflows.addIteration("household", pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CCAP"),
-            "firstName", List.of("John"),
-            "lastName", List.of("Testerson")
-        ))
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", List.of("Jane"),
+                "lastName", List.of("Testerson"))),
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CCAP"),
+                "firstName", List.of("John"),
+                "lastName", List.of("Testerson"))))
+        .withPageData("whoIsGoingToSchool", "whoIsGoingToSchool",
+            List.of("John Testerson 939dc33-d13a-4cf0-9093-309293k3",
+                "Jane Testerson 939dc4-d13a-3cf0-9094-409293k4"))
+        .build();
 
-    PagesData pagesData = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("whoIsGoingToSchool", Map.of(
-            "whoIsGoingToSchool", List.of("John Testerson 939dc33-d13a-4cf0-9093-309293k3",
-                "Jane Testerson 939dc4-d13a-3cf0-9094-409293k4")
-        ))
-    ));
-
-    applicationData.setSubworkflows(subworkflows);
-    applicationData.setPagesData(pagesData);
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<ApplicationInput> result = adultRequestingChildcareInputsMapper

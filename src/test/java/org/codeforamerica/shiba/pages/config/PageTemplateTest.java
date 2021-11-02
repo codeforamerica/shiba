@@ -11,6 +11,7 @@ class PageTemplateTest {
   private String headerKey;
   private String headerHelpMessageKey;
   private String subtleLinkTextKey;
+  private String cardFooterTextKey;
   private AlertBox alertBox;
 
   @BeforeEach
@@ -18,6 +19,7 @@ class PageTemplateTest {
     headerKey = "aHeaderKey";
     headerHelpMessageKey = "aHeaderHelpMessageKey";
     subtleLinkTextKey = "aSubtleLinkTextKey";
+    cardFooterTextKey = "aCardFooterTextKey";
   }
 
   @Test
@@ -47,6 +49,15 @@ class PageTemplateTest {
     assertThat(makePageTemplate().hasSubtleLinkTextKey()).isFalse();
   }
 
+  @Test
+  void hasCardFooterTextKey() {
+    assertThat(makePageTemplate().hasCardFooterTextKey()).isTrue();
+    cardFooterTextKey = "";
+    assertThat(makePageTemplate().hasCardFooterTextKey()).isFalse();
+    cardFooterTextKey = null;
+    assertThat(makePageTemplate().hasCardFooterTextKey()).isFalse();
+  }
+
   private PageTemplate makePageTemplate() {
     return new PageTemplate(
         List.of(),
@@ -57,6 +68,7 @@ class PageTemplateTest {
         "aPrimaryButtonTextKey",
         subtleLinkTextKey,
         "aSubtleLinkTargetPage",
+        cardFooterTextKey,
         true,
         "context-frag",
         alertBox

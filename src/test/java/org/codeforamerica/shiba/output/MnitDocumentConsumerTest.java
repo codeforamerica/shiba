@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
@@ -12,17 +13,9 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -32,27 +25,33 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.MnitEsbWebServiceClient;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,12 +70,21 @@ import org.springframework.test.context.ContextConfiguration;
 @Tag("db")
 class MnitDocumentConsumerTest {
 
+  public static final byte[] FILE_BYTES = new byte[10];
+
+  @MockBean
+  private FeatureFlagConfiguration featureFlagConfig;
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
   private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
-  private MnitEsbWebServiceClient mnitClient;
+  private AlfrescoWebServiceClient mnitClient;
+  @MockBean
+  private FilenetWebServiceClient mnitFilenetClient;
+  @MockBean
+  private EmailClient emailClient;
   @MockBean
   private XmlGenerator xmlGenerator;
   @MockBean
@@ -86,7 +94,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private ClientRegistrationRepository repository;
   @MockBean
-  private FileNameGenerator fileNameGenerator;
+  private FilenameGenerator fileNameGenerator;
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
@@ -103,10 +111,11 @@ class MnitDocumentConsumerTest {
 
   @BeforeEach
   void setUp() {
-    applicationData = new TestApplicationDataBuilder()
+    applicationData = new TestApplicationDataBuilder(applicationData)
         .withPersonalInfo()
         .withContactInfo()
         .withApplicantPrograms(List.of("SNAP"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -125,13 +134,17 @@ class MnitDocumentConsumerTest {
         .flow(FULL)
         .build();
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
-    when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+    when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
+    when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfig.get("use-county-selection")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
+
     doReturn(application).when(applicationRepository).find(any());
   }
 
   @AfterEach
   void afterEach() {
-    applicationData.setUploadedDocs(new ArrayList<>());
+    resetApplicationData(applicationData);
   }
 
   @Test
@@ -149,6 +162,39 @@ class MnitDocumentConsumerTest {
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
         FULL);
     verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+        FULL);
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+      "YellowMedicine,YellowMedicine",
+      "Aitkin,Aitkin",
+      "LakeOfTheWoods,LakeOfTheWoods",
+      "StLouis,StLouis",
+      "LacQuiParle,LacQuiParle"})
+  void sendsTheGeneratedXmlAndPdfToNewCounty(String countyName, County expectedCounty) {
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA"))
+        .withPageData("homeAddress", "county", List.of(countyName))
+        .withPageData("identifyCounty", "county", countyName)
+        .build());
+    application.setCounty(expectedCounty);
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), application.getId(),
+        CAF,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), application.getId(),
+        CAF,
         FULL);
   }
 
@@ -186,6 +232,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
         .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -212,6 +259,7 @@ class MnitDocumentConsumerTest {
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -245,6 +293,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
         .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
@@ -252,7 +301,11 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
+    // Send CCAP and XML (but not CAF)
+    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+        FULL);
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
         FULL);
   }
 
@@ -335,6 +388,7 @@ class MnitDocumentConsumerTest {
     String extension = "jpg";
     byte[] fileBytes = null;
     when(documentRepository.get("")).thenReturn(fileBytes);
+
     applicationData.addUploadedDoc(
         new MockMultipartFile(uploadedDocFilename, s3filepath + extension, contentType, fileBytes),
         "",
@@ -342,10 +396,63 @@ class MnitDocumentConsumerTest {
         MediaType.IMAGE_JPEG_VALUE);
     when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
         "pdf1of2.pdf");
+
     documentConsumer.processUploadedDocuments(application);
-    ApplicationFile pdfApplicationFile = new ApplicationFile(null, "someFile.pdf");
-    verify(mnitClient, never()).send(pdfApplicationFile, countyMap.get(Olmsted),
-        application.getId(), CCAP, FULL);
+
+    verify(mnitClient, never()).send(any(), any(), any(), any(), any());
+  }
+
+  @Test
+  void uploadedDocumentsAreSentToMilleLacsViaApiAndHennepinViaEmail() throws IOException {
+    // Set county to Hennepin and tribal nation to Bois Forte
+    application.setCounty(Hennepin);
+    new TestApplicationDataBuilder(application.getApplicationData())
+        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("identifyCounty", "county", Hennepin.name())
+        .withPageData("selectTheTribe", "selectedTribe", "Bois Forte")
+        .withPageData("homeAddress", "enrichedCounty", "Hennepin")
+        .withPageData("homeAddress", "county", "Hennepin");
+
+    mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+    ApplicationFile testFile = new ApplicationFile(FILE_BYTES, "doc1of1.pdf");
+    doReturn(testFile).when(pdfGenerator)
+        .generate(anyString(), eq(UPLOADED_DOC), eq(CASEWORKER));
+    doReturn(testFile).when(pdfGenerator)
+        .generateForUploadedDocument(any(), anyInt(), eq(application), any());
+    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
+        "pdf1of1.pdf");
+
+    documentConsumer.processUploadedDocuments(application);
+
+    // Assert that only email is sent for Hennepin and api for Mille Lacs
+    verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
+    verify(mnitClient, never()).send(any(), eq(countyMap.get(Hennepin)),
+        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+    verify(mnitClient).send(any(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
+        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+    verify(emailClient, times(1)).sendHennepinDocUploadsEmails(eq(application), any());
+  }
+
+  @Test
+  void uploadedDocumentsAreSentToHennepinViaApiWhenFlagIsOff() throws IOException {
+    application.setCounty(Hennepin);
+    new TestApplicationDataBuilder(application.getApplicationData())
+        .withPageData("identifyCounty", "county", Hennepin.name())
+        .withPageData("homeAddress", "enrichedCounty", Hennepin.name())
+        .withPageData("homeAddress", "county", Hennepin.name());
+
+    mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+    when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.OFF);
+    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
+        "pdf1of1.pdf");
+
+    documentConsumer.processUploadedDocuments(application);
+
+    // Assert that only api is sent for Hennepin
+    verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
+    verify(mnitClient).send(any(), eq(countyMap.get(Hennepin)), eq(application.getId()),
+        eq(UPLOADED_DOC), eq(FULL));
+    verify(emailClient, never()).sendHennepinDocUploadsEmails(eq(application), any());
   }
 
   @Test
@@ -363,6 +470,44 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+  }
+
+  @Test
+  void sendThroughFilenetClientWhenFilenetFeatureIsOn() {
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.ON);
+
+    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
+    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any());
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    application.setApplicationData(new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
+        .withPageData("homeAddress", "county", List.of("Olmsted"))
+        .withPageData("identifyCounty", "county", Olmsted.name())
+        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
+        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
+        .build());
+
+    documentConsumer.processCafAndCcap(application);
+
+    verify(mnitFilenetClient, times(5)).send(any(), any(), any(), any(), any());
+    verify(mnitFilenetClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitFilenetClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        application.getId(), CAF, FULL);
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CAF,
+        FULL);
+    verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CAF,
+        FULL);
+    // CCAP never goes to Mille Lacs
+    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+        CCAP,
+        FULL);
+    verifyNoInteractions(mnitClient);
   }
 
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,

@@ -69,10 +69,9 @@ class PDFBoxFieldFillerTest {
   @Test
   void shouldReturnTheAppropriateFilename() {
     String applicationId = "applicationId";
-    String fileName = "fileName";
+    String fileName = "fileName.pdf";
     ApplicationFile applicationFile = PDFBoxFieldFiller.fill(emptyList(), applicationId, fileName);
-
-    assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".pdf");
+    assertThat(applicationFile.getFileName()).isEqualTo(fileName);
   }
 
   @Test

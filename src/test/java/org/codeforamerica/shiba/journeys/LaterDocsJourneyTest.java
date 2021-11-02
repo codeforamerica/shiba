@@ -15,30 +15,29 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("county-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("county-morrison")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");
 
     assertThat(driver.getTitle()).isEqualTo("Identify County");
-    testPage.clickLink("Enter my zip code instead.");
-    assertThat(driver.getTitle()).isEqualTo("Identify zip");
-
-    // should direct me to email the county if my zipcode is unrecognized or unsupported
-    testPage.enter("zipCode", "11111");
-    testPage.clickContinue();
-    assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
-
-    // should allow me to proceed with the flow if I enter a zip code for an active county
-    testPage.clickLink("< Go Back");
-    testPage.enter("zipCode", "55444");
-    testPage.clickContinue();
-    assertThat(driver.getTitle()).isEqualTo("Match Info");
-
-    // should direct me to email docs to my county if my county is not supported
-    navigateTo("identifyCounty");
-    testPage.enter("county", "Morrison");
+//    testPage.clickLink("Enter my zip code instead.");
+//    assertThat(driver.getTitle()).isEqualTo("Identify zip");
+//
+//    // should direct me to email the county if my zipcode is unrecognized or unsupported
+//    testPage.enter("zipCode", "11111");
+//    testPage.clickContinue();
+//    assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
+//
+//    // should allow me to proceed with the flow if I enter a zip code for an active county
+//    testPage.clickLink("< Go Back");
+//    testPage.enter("zipCode", "55444");
+//    testPage.clickContinue();
+//    assertThat(driver.getTitle()).isEqualTo("Match Info");
+//
+//    // should direct me to email docs to my county if my county is not supported
+//    navigateTo("identifyCounty");
+    testPage.enter("county", "Dakota");
     testPage.clickContinue();
     assertThat(driver.getTitle()).isEqualTo("Email Docs To Your County");
 

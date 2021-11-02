@@ -15,15 +15,12 @@ import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class OneToOneApplicationInputsMapperTest {
 
   ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  PagesData data = new PagesData();
   OneToOneApplicationInputsMapper oneToOneApplicationInputsMapper = new OneToOneApplicationInputsMapper(
       applicationConfiguration, Map.of());
 
@@ -41,11 +38,9 @@ class OneToOneApplicationInputsMapperTest {
     applicationConfiguration.setPageDefinitions(List.of(page));
 
     List<String> input1Value = List.of("input1Value");
-    data.putPage(pageName,
-        new PageData(Map.of(input1Name, InputData.builder().value(input1Value).build())));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData(pageName, input1Name, input1Value).build();
 
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(data);
     Application application = Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now())
@@ -80,12 +75,8 @@ class OneToOneApplicationInputsMapperTest {
     page.setName(pageName);
     applicationConfiguration.setPageDefinitions(List.of(page));
 
-    data.putPage(pageName, new PageData(Map.of(
-        input1Name, InputData.builder()
-            .value(List.of("input1Value"))
-            .build())));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(data);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData(pageName, input1Name, "input1Value").build();
 
     Application application = Application.builder()
         .id("someId")
@@ -122,12 +113,8 @@ class OneToOneApplicationInputsMapperTest {
     page.setName(pageName);
     applicationConfiguration.setPageDefinitions(List.of(page));
 
-    data.putPage(pageName, new PageData(Map.of(
-        input1Name, InputData.builder()
-            .value(List.of(""))
-            .build())));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(data);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData(pageName, input1Name, "").build();
 
     Application application = Application.builder()
         .id("someId")
@@ -164,12 +151,8 @@ class OneToOneApplicationInputsMapperTest {
     applicationConfiguration.setPageDefinitions(List.of(page));
 
     List<String> input1Value = List.of("input1Value");
-    data.putPage(pageName, new PageData(Map.of(
-        input1Name, InputData.builder()
-            .value(input1Value)
-            .build())));
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(data);
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData(pageName, input1Name, input1Value).build();
 
     Application application = Application.builder()
         .id("someId")
@@ -209,13 +192,11 @@ class OneToOneApplicationInputsMapperTest {
 
     List<String> input2Value = List.of("input2Value");
     List<String> input3Value = List.of("input3Value");
-    data.putPage(pageName, new PageData(Map.of(
-        input2Name, InputData.builder().value(input2Value).build(),
-        input3Name, InputData.builder().value(input3Value).build()
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData(pageName, input2Name, input2Value)
+        .withPageData(pageName, input3Name, input3Value)
+        .build();
 
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(data);
     Application application = Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now())

@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class ApplicationDataSerializationTest {
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
-  private FileNameGenerator fileNameGenerator;
+  private FilenameGenerator fileNameGenerator;
   @MockBean
   private DocumentRepository documentRepository;
   @Autowired
@@ -62,7 +62,7 @@ class ApplicationDataSerializationTest {
      */
     serializedApplicationDataFromOldSession = getFileContentsAsByteArray(
         "sessionApplicationDataFixture.txt");
-    when(fileNameGenerator.generatePdfFileName(any(), any())).thenReturn("some-file.pdf");
+    when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
 
     var image = getFileContentsAsByteArray("shiba+file.jpg");
     when(documentRepository.get(anyString())).thenReturn(image);

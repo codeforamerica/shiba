@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.journeys;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.testutilities.PercyTestPage;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,10 @@ import org.openqa.selenium.support.ui.Select;
 
 @Tag("fullFlowJourney")
 public class FullFlowJourneyTest extends JourneyTest {
+
+  protected void initTestPage() {
+    testPage = new PercyTestPage(driver);
+  }
 
   @Test
   void fullApplicationWithDocumentUploads() {
@@ -76,7 +80,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Add a spouse and assert spouse is no longer an option then delete -- Household member 2
     testPage.clickLink("Add a person");
-    testPage.clickContinue();
+
     testPage.enter("firstName", "householdMember2");
     testPage.enter("lastName", householdMemberLastName);
     testPage.enter("dateOfBirth", "10/15/1950");
@@ -86,18 +90,13 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("relationship", "My spouse (ex: wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
-    
-    // Flaky spot - sometimes the test doesn't get passed the Add Householdmember page
-    String inputError = testPage.getFirstInputError();
-    if (inputError != null) {
-      takeSnapShot("input_error.png");
-      fail("Unexpected validation error: " + inputError);
-    }
 
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
-    Select relationshipSelectWithRemovedSpouseOption = new Select(driver.findElementById("relationship"));
-    assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream().noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    Select relationshipSelectWithRemovedSpouseOption = new Select(
+        driver.findElementById("relationship"));
+    assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream()
+        .noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
     testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
@@ -106,7 +105,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Check that My Spouse is now an option again after deleting the spouse
     testPage.clickLink("Add a person");
     Select relationshipSelectWithSpouseOption = new Select(driver.findElementById("relationship"));
-    assertThat(relationshipSelectWithSpouseOption.getOptions().stream().anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+    assertThat(relationshipSelectWithSpouseOption.getOptions().stream()
+        .anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
     testPage.goBack();
     testPage.clickButton("Yes, that's everyone");
 
@@ -189,7 +189,24 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Tribal TANF Confirmation screen
     testPage.clickContinue();
 
+    // Medical Care Milestone
+    testPage.clickContinue();
+
+    // Long Term Care
+    testPage.enter("doYouNeedLongTermCare", YES.getDisplayValue());
+
+    //Past Injury
+    testPage.enter("didYouHaveAPastInjury", YES.getDisplayValue());
+
+    //Retroactive Coverage
+    testPage.enter("retroactiveCoverageQuestion", YES.getDisplayValue());
+
+    //Medical Benefits in another state
+    testPage.enter("medicalInOtherState", YES.getDisplayValue());
+
     // Income & Employment
+    // Certain Pops will increment milestone steps
+    assertThat(testPage.getElementText("milestone-step")).isEqualTo("Step 4 of 7");
     testPage.clickContinue();
 
     // Is anyone in your household making money from a job?
@@ -370,6 +387,13 @@ public class FullFlowJourneyTest extends JourneyTest {
         .sendKeys("I need you to contact my work for proof of termination");
     testPage.clickContinue();
 
+    // Can we ask about your race and ethnicity?
+    testPage.clickLink("Yes, continue");
+
+    // What races or ethnicities do you identify with?
+    testPage.enter("raceAndEthnicity", List.of("Black or African American"));
+    testPage.clickContinue();
+
     // The legal stuff.
     testPage.enter("agreeToTerms", "I agree");
     testPage.enter("drugFelony", NO.getDisplayValue());
@@ -390,7 +414,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
-        "Your application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300) on January 1, 2020.");
+        "Your application was submitted to Hennepin County (612-596-1300) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) on January 1, 2020.");
     applicationId = downloadPdfs(true, true);
 
     // CCAP fields
@@ -511,6 +535,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
     assertCcapFieldEquals("ADDITIONAL_APPLICATION_INFO",
         "I need you to contact my work for proof of termination");
+    assertCcapFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
+    assertCcapFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
 
     // CAF
     assertCafFieldEquals("APPLICATION_ID", applicationId);
@@ -645,6 +671,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCafFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
     assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
+    assertCafFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
+    assertCafFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
 
     assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
   }

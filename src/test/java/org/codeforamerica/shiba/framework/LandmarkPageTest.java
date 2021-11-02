@@ -41,15 +41,22 @@ public class LandmarkPageTest extends AbstractStaticMessageSourceFrameworkTest {
 
   @Test
   void shouldRedirectToTerminalPageWhenUserBacksFromTerminalPage() throws Exception {
-    getPage("thirdPage").andExpect(status().isOk()); // start timer page
+    getPage("secondPage").andExpect(status().isOk()); // start timer page
     submitThirdPage();
     // "Go back"
     getPageAndExpectRedirect("thirdPage", "fourthPage");
   }
 
   @Test
+  void shouldRedirectToLandingPageWhenUserBacksToStartTimerPageFromTerminalPage() throws Exception {
+    getPage("secondPage").andExpect(status().isOk()); // start timer page
+    submitThirdPage();
+    getPageAndExpectRedirect("secondPage", "testStaticLandingPage");
+  }
+
+  @Test
   void shouldNotRedirectWhenUserNavigatesToALandingPage() throws Exception {
-    getPage("thirdPage").andExpect(status().isOk()); // start timer page
+    getPage("secondPage").andExpect(status().isOk()); // start timer page
     submitThirdPage();
     var page = getFormPage("testStaticLandingPage");
     assertThat(page.getTitle()).isEqualTo(firstPageTitle);

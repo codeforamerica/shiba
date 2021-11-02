@@ -4,7 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
@@ -22,10 +21,8 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
-import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,8 +45,8 @@ public class MailGunEmailClient implements EmailClient {
   private final String mailGunApiKey;
   private final EmailContentCreator emailContentCreator;
   private final boolean shouldCC;
+  private final int maxAttachmentSize;
   private final WebClient webClient;
-  private final PdfGenerator pdfGenerator;
   private final String activeProfile;
   private final ApplicationRepository applicationRepository;
   private final MessageSource messageSource;
@@ -62,7 +59,7 @@ public class MailGunEmailClient implements EmailClient {
       @Value("${mail-gun.api-key}") String mailGunApiKey,
       EmailContentCreator emailContentCreator,
       @Value("${mail-gun.shouldCC}") boolean shouldCC,
-      PdfGenerator pdfGenerator,
+      @Value("${mail-gun.max-attachment-size}") int maxAttachmentSize,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
       ApplicationRepository applicationRepository,
       MessageSource messageSource
@@ -74,8 +71,8 @@ public class MailGunEmailClient implements EmailClient {
     this.mailGunApiKey = mailGunApiKey;
     this.emailContentCreator = emailContentCreator;
     this.shouldCC = shouldCC;
+    this.maxAttachmentSize = maxAttachmentSize;
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
-    this.pdfGenerator = pdfGenerator;
     this.activeProfile = activeProfile;
     this.applicationRepository = applicationRepository;
     this.messageSource = messageSource;
@@ -147,7 +144,8 @@ public class MailGunEmailClient implements EmailClient {
   }
 
   @Override
-  public void sendHennepinDocUploadsEmails(Application application) {
+  public void sendHennepinDocUploadsEmails(Application application,
+      List<ApplicationFile> filesToSend) {
     PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
     PageData contactInfo = application.getApplicationData().getPageData("contactInfo");
 
@@ -164,22 +162,25 @@ public class MailGunEmailClient implements EmailClient {
     String emailBody = emailContentCreator.createHennepinDocUploadsHTML(
         getEmailContentArgsForHennepinDocUploads(personalInfo, contactInfo, fullName));
 
-    // Generate Uploaded Doc PDFs
-    List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-    byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
-    for (int i = 0; i < uploadedDocs.size(); i++) {
-      UploadedDocument uploadedDocument = uploadedDocs.get(i);
-      ApplicationFile fileToSend = pdfGenerator
-          .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
+    // Check total filesize
+    long totalAttachmentSize = filesToSend.stream()
+        .mapToLong(fileToSend -> fileToSend.getFileBytes().length).sum();
 
-      if (fileToSend.getFileBytes().length > 0) {
-        log.info("Now attaching: %s original filename: %s".formatted(
-            fileToSend.getFileName(),
-            uploadedDocument.getFilename()));
-        sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody, List.of(fileToSend),
-            true);
+    if (totalAttachmentSize >= maxAttachmentSize) {
+      log.info("Exceeded max attachment size. Sending separately.");
+      for (ApplicationFile fileToSend : filesToSend) {
+        if (fileToSend.getFileBytes().length >= maxAttachmentSize) {
+          // Let's see how often this happens
+          log.warn("File might be too big to send.");
+        }
+        sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
+            List.of(fileToSend), true);
       }
+    } else if (!filesToSend.isEmpty()) {
+      sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
+          filesToSend, true);
     }
+
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
   }
 

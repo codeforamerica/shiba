@@ -86,7 +86,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       var principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
       var email = principal.getAttributes().get("email");
       boolean isAuthorized = email != null && ADMIN_EMAILS.contains((String) email);
-      log.info(String.format("Admin login for %s is %s", email, isAuthorized ? "authorized" : "not authorized"));
+      if (isAuthorized) {
+        log.info(String.format("Admin login for %s is authorized", email));
+      } else {
+        log.warn(String.format("Admin login for %s is not authorized", email));
+      }
       return isAuthorized;
     }
   }

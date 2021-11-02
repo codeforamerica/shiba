@@ -70,7 +70,7 @@ public class DocumentUploadEmailService {
     }
 
     applications.forEach(this::sendDocumentUploadEmail);
-    MDC.remove("applicationId");
+    MDC.clear();
   }
 
   private List<Application> getApplicationsThatNeedDocumentUploadEmails() {

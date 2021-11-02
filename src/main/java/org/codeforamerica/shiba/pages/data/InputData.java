@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.Builder;
 import lombok.Value;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.jetbrains.annotations.NotNull;
 
 @Value
-@Builder
 public class InputData implements Serializable {
 
   @Serial
@@ -39,8 +37,8 @@ public class InputData implements Serializable {
 
   public Boolean valid(PageData pageData) {
     return validators.stream().filter(
-        validator -> validator.getCondition() == null || validator.getCondition()
-            .satisfies(pageData)).map(Validator::getValidation)
+            validator -> validator.getCondition() == null || validator.getCondition()
+                .satisfies(pageData)).map(Validator::getValidation)
         .allMatch(validation -> validation.apply(value));
   }
 
@@ -48,7 +46,7 @@ public class InputData implements Serializable {
     return validators.stream()
         .filter(validator ->
             (validator.getCondition() == null || validator.getCondition().satisfies(pageData))
-                && !validator.getValidation().apply(value))
+            && !validator.getValidation().apply(value))
         .map(Validator::getErrorMessageKey).collect(Collectors.toList());
   }
 

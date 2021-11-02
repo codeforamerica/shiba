@@ -27,8 +27,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     super.setUp();
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("identifyCountyBeforeApplying", "county", "Hennepin");
-    postExpectingSuccess("languagePreferences",
-        Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
+    postExpectingSuccess("languagePreferences", Map.of(
+        "writtenLanguage", List.of("ENGLISH"),
+        "spokenLanguage", List.of("ENGLISH"),
+        "needInterpreter", List.of("true"))
     );
 
     postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
@@ -622,48 +624,19 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", originalZipCode, ccap);
       }
 
-      @Test
-      void shouldMapDefaultCoverPageCountyInstructionsIfCountyIsFlaggedOff() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Anoka", "55303",
-            "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForHennepin() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Minneapolis", "55401",
-            "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County at 612-596-1300.");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForOlmsted() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Oronoco", "55960",
-            "This application was submitted to Olmsted County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Olmsted County at 507-328-6500.");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForWabasha() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Wabasha", "55981",
-            "We have received your application that you submitted through MNbenefits.mn.gov. Processing your application in a timely fashion is our highest priority. We have submitted your application to an Eligibility Worker who will contact you no later than the end of the next business day to discuss your application. For questions or concerns, please contact us at 651.565.3351(collect calls accepted), toll free at 1.888.315.8815 or email us at imuinterview@co.wabasha.mn.us. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. Thank you and have a great day!");
-      }
-
-      @Test
-      void shouldMapCoverPageCountyInstructionsCorrectlyForWright() throws Exception {
-        testThatCorrectCountyInstructionsAreDisplayed("Waverly", "55390",
-            "This application was submitted to Wright County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Wright County at 763-682-7414.");
-      }
 
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForCountiesThatUseTheGenericInstructions()
           throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345",
-            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (320-631-3599).");
+            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
       }
 
       @Test
       void shouldMapCoverPageCountyInstructionsCorrectlyForOtherCountiesThatUseTheGenericInstructions()
           throws Exception {
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
-            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-431-5600).");
+            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
 
       @Test
@@ -752,23 +725,97 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void allFieldsDoGetWrittenToPDF() throws Exception {
       fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
       selectPrograms("CERTAIN_POPS");
-      postExpectingSuccess("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER",
-          "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE",
-          "SSI_OR_RSDI", "HELP_WITH_MEDICARE"));
+      postExpectingRedirect("basicCriteria",
+          "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "introBasicInfo");
+
+      fillInPersonalInfoAndContactInfoAndAddress();
+      postExpectingSuccess("livingSituation", "livingSituation",
+          "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
+
+      postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+      postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
+      postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
+      postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
+      postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
+      addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
+      addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
+
+      completeHelperWorkflow(true);
 
       submitApplication();
-      var certainPops = downloadCertainPops(applicationData.getId());
+      var pdf = downloadCertainPops(applicationData.getId());
 
       // Assert that cover page is present
-      assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", certainPops);
-      assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), certainPops);
+      assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", pdf);
+      assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), pdf);
 
-      // Actual fields get filled
-      assertPdfFieldEquals("BLIND", "Yes", certainPops);
-      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", certainPops);
-      assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", certainPops);
-      assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", certainPops);
+      // Basic Criteria Questions
+      assertPdfFieldEquals("BLIND", "Yes", pdf);
+      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", pdf);
+      assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
+      assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
+      assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);
+      assertPdfFieldEquals("HAD_A_PAST_ACCIDENT_OR_INJURY", "Yes", pdf);
+      assertPdfFieldEquals("RETROACTIVE_COVERAGE_HELP", "Yes", pdf);
+      assertPdfFieldEquals("MEDICAL_IN_OTHER_STATE", "Yes", pdf);
+
+      // Section 1
+      assertPdfFieldEquals("APPLICANT_LAST_NAME", "Schrute", pdf);
+      assertPdfFieldEquals("APPLICANT_FIRST_NAME", "Dwight", pdf);
+      assertPdfFieldEquals("DATE_OF_BIRTH", "01/12/1928", pdf);
+      assertPdfFieldEquals("APPLICANT_SSN", "123456789", pdf);
+      assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED", pdf);
+      assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", pdf);
+      assertPdfFieldEquals("NEED_INTERPRETER", "Yes", pdf);
+
+      // Section 2
+      assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_CITY", "someCity", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_STATE", "MN", pdf);
+      assertPdfFieldEquals("APPLICANT_HOME_ZIPCODE", "12345", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "smarty street", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_CITY", "City", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_STATE", "CA", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104", pdf);
+
+      // Section 3
+      assertPdfFieldEquals("APPLICANT_HOME_COUNTY", "", pdf);
+      assertPdfFieldEquals("APPLICANT_MAILING_COUNTY", "someCounty", pdf);
+      assertPdfFieldEquals("LIVING_SITUATION_COUNTY", "Anoka", pdf);
+      assertPdfFieldEquals("LIVING_SITUATION", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING",
+          pdf);
+      assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
+
+      // Section 7 & appendix B: Authorized Rep
+      assertPdfFieldEquals("WANT_AUTHORIZED_REP", "Yes", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_NAME", "My Helpful Friend", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_ADDRESS", "helperStreetAddress", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_CITY", "helperCity", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_ZIP_CODE", "54321", pdf);
+      assertPdfFieldEquals("AUTHORIZED_REP_PHONE_NUMBER", "7234561111", pdf);
+      assertPdfFieldEquals("APPLICANT_SIGNATURE", "Human McPerson", pdf);
+      assertPdfFieldEquals("CREATED_DATE", "2020-01-01", pdf);
+
+      // Section 9
+      assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "Dwight Schrute",
+          pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "", pdf);
+
+      // Section 10
+      assertPdfFieldEquals("IS_WORKING", "Yes", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0",
+          "Dwight Schrute", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
     }
   }
 }

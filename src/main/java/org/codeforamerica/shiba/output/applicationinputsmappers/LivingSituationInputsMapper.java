@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_SITUATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
@@ -37,19 +38,28 @@ public class LivingSituationInputsMapper implements ApplicationInputsMapper {
 
     // Answer was left blank
     if (livingSituation == null) {
-      return createApplicationInput("UNKNOWN");
+      return List.of(createApplicationInput("UNKNOWN"));
     }
 
     if (TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OPTIONS.contains(livingSituation)) {
-      return createApplicationInput("TEMPORARILY_WITH_FRIENDS_OR_FAMILY");
+      return List.of(createApplicationInput("TEMPORARILY_WITH_FRIENDS_OR_FAMILY"));
     }
-    return createApplicationInput(livingSituation);
+
+    if ("LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING".equals(livingSituation)) {
+      return List.of(
+          createApplicationInput(livingSituation),
+          new ApplicationInput("livingSituation", "county",
+              getFirstValue(pagesData, IDENTIFY_COUNTY), ApplicationInputType.SINGLE_VALUE)
+      );
+    }
+
+    return List.of(createApplicationInput(livingSituation));
   }
 
   @NotNull
-  private List<ApplicationInput> createApplicationInput(String value) {
-    return List.of(new ApplicationInput("livingSituation", "derivedLivingSituation",
+  private ApplicationInput createApplicationInput(String value) {
+    return new ApplicationInput("livingSituation", "derivedLivingSituation",
         List.of(value),
-        ApplicationInputType.ENUMERATED_SINGLE_VALUE));
+        ApplicationInputType.ENUMERATED_SINGLE_VALUE);
   }
 }

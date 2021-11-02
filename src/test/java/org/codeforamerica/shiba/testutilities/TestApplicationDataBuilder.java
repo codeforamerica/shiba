@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.testutilities;
 
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -16,8 +17,15 @@ import org.codeforamerica.shiba.pages.data.Subworkflows;
  */
 public class TestApplicationDataBuilder {
 
-  private final ApplicationData applicationData = new ApplicationData();
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
+  private final ApplicationData applicationData;
+
+  public TestApplicationDataBuilder() {
+    applicationData = new ApplicationData();
+  }
+
+  public TestApplicationDataBuilder(ApplicationData applicationData) {
+    this.applicationData = applicationData;
+  }
 
   public ApplicationData build() {
     return applicationData;
@@ -31,126 +39,136 @@ public class TestApplicationDataBuilder {
 
   public TestApplicationDataBuilder withApplicantPrograms(List<String> programs) {
     PageData programPage = new PageData();
-    programPage.put("programs", InputData.builder().value(programs).build());
+    programPage.put("programs", new InputData(programs));
     applicationData.getPagesData().put("choosePrograms", programPage);
     return this;
   }
 
   public TestApplicationDataBuilder withPersonalInfo() {
-    PageData personalInfo = new PageData();
-    personalInfo.put("firstName", InputData.builder().value(List.of("Jane")).build());
-    personalInfo.put("lastName", InputData.builder().value(List.of("Doe")).build());
-    personalInfo.put("otherName", InputData.builder().value(List.of("")).build());
-    personalInfo.put("dateOfBirth", InputData.builder().value(List.of("10", "04", "2020")).build());
-    personalInfo.put("ssn", InputData.builder().value(List.of("123-45-6789")).build());
-    personalInfo.put("sex", InputData.builder().value(List.of("FEMALE")).build());
-    personalInfo.put("maritalStatus", InputData.builder().value(List.of("NEVER_MARRIED")).build());
-    personalInfo.put("livedInMnWholeLife", InputData.builder().value(List.of("true")).build());
-    applicationData.getPagesData().put("personalInfo", personalInfo);
+    PageData personalInfo = getPageData("personalInfo");
+    personalInfo.put("firstName", new InputData(List.of("Jane")));
+    personalInfo.put("lastName", new InputData(List.of("Doe")));
+    personalInfo.put("otherName", new InputData(List.of("")));
+    personalInfo.put("dateOfBirth", new InputData(List.of("10", "04", "2020")));
+    personalInfo.put("ssn", new InputData(List.of("123-45-6789")));
+    personalInfo.put("sex", new InputData(List.of("FEMALE")));
+    personalInfo.put("maritalStatus", new InputData(List.of("NEVER_MARRIED")));
+    personalInfo.put("livedInMnWholeLife", new InputData(List.of("true")));
     return this;
   }
 
   public TestApplicationDataBuilder withContactInfo() {
-    PageData pageData = new PageData();
-    pageData.put("phoneNumber", InputData.builder().value(List.of("(603) 879-1111")).build());
-    pageData.put("email", InputData.builder().value(List.of("jane@example.com")).build());
-    pageData.put("phoneOrEmail", InputData.builder().value(List.of("PHONE")).build());
-    applicationData.getPagesData().put("contactInfo", pageData);
+    PageData pageData = getPageData("contactInfo");
+    pageData.put("phoneNumber", new InputData(List.of("(603) 879-1111")));
+    pageData.put("email", new InputData(List.of("jane@example.com")));
+    pageData.put("phoneOrEmail", new InputData(List.of("PHONE")));
     return this;
   }
 
-  public TestApplicationDataBuilder noPermamentAddress() {
-    PageData homeAddress = new PageData();
-    homeAddress.put("isHomeless", InputData.builder().value(List.of("true")).build());
-    applicationData.getPagesData().put("homeAddress", homeAddress);
+  public TestApplicationDataBuilder noPermanentAddress() {
+    PageData pageData = getPageData("homeAddress");
+    pageData.put("isHomeless", new InputData(List.of("true")));
     return this;
   }
 
   public TestApplicationDataBuilder withHomeAddress() {
-    applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("homeAddress");
-    pageData.put("streetAddress", InputData.builder().value(List.of("street")).build());
-    pageData.put("city", InputData.builder().value(List.of("city")).build());
-    pageData.put("state", InputData.builder().value(List.of("CA")).build());
-    pageData.put("zipCode", InputData.builder().value(List.of("02103")).build());
-    pageData.put("apartmentNumber", InputData.builder().value(List.of("ste 123")).build());
+    PageData pageData = getPageData("homeAddress");
+    pageData.put("streetAddress", new InputData(List.of("street")));
+    pageData.put("city", new InputData(List.of("city")));
+    pageData.put("state", new InputData(List.of("CA")));
+    pageData.put("zipCode", new InputData(List.of("02103")));
+    pageData.put("apartmentNumber", new InputData(List.of("ste 123")));
     return this;
   }
 
   public TestApplicationDataBuilder withEnrichedHomeAddress() {
-    applicationData.getPagesData().putIfAbsent("homeAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("homeAddress");
+    PageData pageData = getPageData("homeAddress");
     pageData
-        .put("enrichedStreetAddress", InputData.builder().value(List.of("smarty street")).build());
-    pageData.put("enrichedCity", InputData.builder().value(List.of("smarty city")).build());
-    pageData.put("enrichedState", InputData.builder().value(List.of("CA")).build());
-    pageData.put("enrichedZipCode", InputData.builder().value(List.of("02103-9999")).build());
-    pageData.put("enrichedApartmentNumber", InputData.builder().value(List.of("apt 123")).build());
+        .put("enrichedStreetAddress", new InputData(List.of("smarty street")));
+    pageData.put("enrichedCity", new InputData(List.of("smarty city")));
+    pageData.put("enrichedState", new InputData(List.of("CA")));
+    pageData.put("enrichedZipCode", new InputData(List.of("02103-9999")));
+    pageData.put("enrichedApartmentNumber", new InputData(List.of("apt 123")));
     return this;
   }
 
   public TestApplicationDataBuilder withMailingAddress() {
-    applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("mailingAddress");
-    pageData.put("streetAddress", InputData.builder().value(List.of("street")).build());
-    pageData.put("city", InputData.builder().value(List.of("city")).build());
-    pageData.put("state", InputData.builder().value(List.of("CA")).build());
-    pageData.put("zipCode", InputData.builder().value(List.of("02103")).build());
-    pageData.put("apartmentNumber", InputData.builder().value(List.of("ste 123")).build());
+    PageData pageData = getPageData("mailingAddress");
+    pageData.put("streetAddress", new InputData(List.of("street")));
+    pageData.put("city", new InputData(List.of("city")));
+    pageData.put("state", new InputData(List.of("CA")));
+    pageData.put("zipCode", new InputData(List.of("02103")));
+    pageData.put("apartmentNumber", new InputData(List.of("ste 123")));
     return this;
   }
 
   public TestApplicationDataBuilder withEnrichedMailingAddress() {
-    applicationData.getPagesData().putIfAbsent("mailingAddress", new PageData());
-    PageData pageData = applicationData.getPagesData().get("mailingAddress");
-    pageData
-        .put("enrichedStreetAddress", InputData.builder().value(List.of("smarty street")).build());
-    pageData.put("enrichedCity", InputData.builder().value(List.of("smarty city")).build());
-    pageData.put("enrichedState", InputData.builder().value(List.of("CA")).build());
-    pageData.put("enrichedZipCode", InputData.builder().value(List.of("02103-9999")).build());
-    pageData.put("enrichedApartmentNumber", InputData.builder().value(List.of("apt 123")).build());
+    PageData pageData = getPageData("mailingAddress");
+    pageData.put("enrichedStreetAddress", new InputData(List.of("smarty street")));
+    pageData.put("enrichedCity", new InputData(List.of("smarty city")));
+    pageData.put("enrichedState", new InputData(List.of("CA")));
+    pageData.put("enrichedZipCode", new InputData(List.of("02103-9999")));
+    pageData.put("enrichedApartmentNumber", new InputData(List.of("apt 123")));
     return this;
+  }
+
+  public TestApplicationDataBuilder withPageData(String pageName, String input, String value) {
+    return withPageData(pageName, input, List.of(value));
   }
 
   public TestApplicationDataBuilder withPageData(String pageName, String input,
       List<String> values) {
-    PagesData pagesData = applicationData.getPagesData();
-    pagesData.putIfAbsent(pageName, new PageData());
-    pagesData.get(pageName).put(input, InputData.builder().value(values).build());
+    PageData pageData = getPageData(pageName);
+    pageData.put(input, new InputData(values));
+    return this;
+  }
+
+  public TestApplicationDataBuilder withSubworkflow(String pageGroup, PagesData... pagesData) {
+    applicationData.setSubworkflows(
+        new Subworkflows(Map.of(pageGroup, new Subworkflow(Arrays.asList(pagesData)))));
+    return this;
+  }
+
+  // Will overwrite existing subworkflows data
+  public TestApplicationDataBuilder withSubworkflow(String pageGroup,
+      PagesDataBuilder... pagesDataBuilder) {
+    List<PagesData> pagesDataList = Arrays.stream(pagesDataBuilder)
+        .map(PagesDataBuilder::build).toList();
+    applicationData.getSubworkflows().put(pageGroup, new Subworkflow(pagesDataList));
     return this;
   }
 
   public TestApplicationDataBuilder withJobs() {
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of("jobs", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
-            new PageDataBuilder("payPeriod", Map.of("payPeriod", List.of("EVERY_WEEK"))),
-            new PageDataBuilder("incomePerPayPeriod", Map.of("incomePerPayPeriod", List.of("1.1")))
-        )))))));
-    return this;
+    return withSubworkflow("jobs", new PagesDataBuilder()
+        .withNonHourlyJob("false", "1.1", "EVERY_WEEK"));
   }
 
   public TestApplicationDataBuilder withHouseholdMemberPrograms(List<String> programs) {
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo", Map.of("programs", programs)))
-        ))))));
-    return this;
+    return withSubworkflow("household", new PagesDataBuilder()
+        .withPageData("householdMemberInfo", "programs", programs)
+    );
   }
 
   public TestApplicationDataBuilder withHouseholdMember() {
-    applicationData.setSubworkflows(
-        new Subworkflows(Map.of("household", new Subworkflow(List.of(pagesDataBuilder.build(List.of(
-            new PageDataBuilder("householdMemberInfo",
-                Map.of("firstName", List.of("Daria"),
-                    "lastName", List.of("Agàta"),
-                    "dateOfBirth", List.of("5", "6", "1978"),
-                    "maritalStatus", List.of("Never married"),
-                    "sex", List.of("Female"),
-                    "livedInMnWholeLife", List.of("Yes"),
-                    "relationship", List.of("housemate"),
-                    "programs", List.of("SNAP"),
-                    "ssn", List.of("123121234"))))
-        ))))));
-    return this;
+    return withSubworkflow("household", new PagesDataBuilder()
+        .withPageData("householdMemberInfo",
+            Map.of("firstName", "Daria",
+                "lastName", "Agàta",
+                "dateOfBirth", List.of("5", "6", "1978"),
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "housemate",
+                "programs", "SNAP",
+                "ssn", "123121234")));
+  }
+
+  /**
+   * Gets the PageData for the given pageName - if it doesn't exist, add it and return the new
+   * PageData object.
+   */
+  private PageData getPageData(String pageName) {
+    applicationData.getPagesData().putIfAbsent(pageName, new PageData());
+    return applicationData.getPagesData().get(pageName);
   }
 }

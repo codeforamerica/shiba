@@ -11,11 +11,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,7 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-@SpringBootTest()
+@SpringBootTest
 @ActiveProfiles("test")
 public class XmlGeneratorIntegrationTest {
 
@@ -65,8 +61,7 @@ public class XmlGeneratorIntegrationTest {
   private Clock clock;
 
   @Test
-  void shouldProduceAValidDocument()
-      throws IOException, SAXException, ParserConfigurationException {
+  void shouldProduceAValidDocument() throws Exception {
     String applicationId = applicationRepository.getNextId();
     Map<String, PageData> data = applicationConfiguration.getPageDefinitions().stream()
         .map(pageConfiguration -> {
@@ -75,14 +70,14 @@ public class XmlGeneratorIntegrationTest {
                   FormInput::getName,
                   input -> {
                     if (input.getReadOnly() && input.getDefaultValue() != null) {
-                      return InputData.builder().value(List.of(input.getDefaultValue())).build();
+                      return new InputData(List.of(input.getDefaultValue()));
                     }
                     @NotNull List<String> value = switch (input.getType()) {
                       case RADIO, SELECT -> List.of(input.getOptions().getSelectableOptions().get(
-                          new Random().nextInt(input.getOptions().getSelectableOptions().size()))
+                              new Random().nextInt(input.getOptions().getSelectableOptions().size()))
                           .getValue());
                       case CHECKBOX -> input.getOptions().getSelectableOptions().subList(0,
-                          new Random().nextInt(input.getOptions().getSelectableOptions().size())
+                              new Random().nextInt(input.getOptions().getSelectableOptions().size())
                               + 1).stream()
                           .map(Option::getValue)
                           .collect(Collectors.toList());
@@ -99,7 +94,7 @@ public class XmlGeneratorIntegrationTest {
                           })
                           .orElse(List.of("some-value"));
                     };
-                    return InputData.builder().value(value).build();
+                    return new InputData(value);
                   }
               ));
           return Map.entry(pageConfiguration.getName(), new PageData(inputDataMap));

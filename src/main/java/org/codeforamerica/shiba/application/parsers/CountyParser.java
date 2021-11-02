@@ -1,14 +1,10 @@
 package org.codeforamerica.shiba.application.parsers;
 
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.GENERAL_DELIVERY_CITY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.NO_PERMANENT_ADDRESS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
@@ -19,6 +15,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class CountyParser {
 
   private final FeatureFlagConfiguration featureFlagConfiguration;
@@ -30,14 +27,16 @@ public class CountyParser {
     this.cityInfoConfiguration = cityInfoConfiguration;
   }
 
+  // Take an applicationData and figure out what county the client lives in
   public County parse(ApplicationData applicationData) {
     String countyName = parseCountyInput(applicationData);
 
-    if (featureFlagConfiguration.get("county-" + County.valueFor(countyName).name().toLowerCase())
-        == FeatureFlag.OFF) {
+    try {
+      return County.getCountyForName(countyName);
+    } catch (Exception e) {
+      log.error("Could not retrieve County object corresponding to county name: " + countyName, e);
       return County.Other;
     }
-    return County.valueFor(countyName);
   }
 
   /**
@@ -48,7 +47,8 @@ public class CountyParser {
    */
   public String parseCountyInput(ApplicationData applicationData) {
     String countyName;
-    if (applicationData.getFlow() == FlowType.LATER_DOCS) {
+    if (applicationData.getFlow() == FlowType.LATER_DOCS ||
+        featureFlagConfiguration.get("use-county-selection") == FeatureFlag.ON) {
       countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY);
     } else if (shouldUseGeneralDeliveryCityToCountyMap(applicationData)) {
       var cityToCountyMap = cityInfoConfiguration.getCityToZipAndCountyMapping();

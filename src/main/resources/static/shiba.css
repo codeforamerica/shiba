@@ -138,6 +138,10 @@
   background-color: #E9F6FF;
 }
 
+.slab--white {
+  background-color: #FFFFFF;
+}
+
 .slab--minnesota-sky-blue {
   background-color: rgba(155, 203, 235, 0.25);
 }
@@ -564,11 +568,23 @@ input[id='sad']:checked + .feedback-buttons {
 }
 
 .word-wrap-break-word {
-  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .spacing-above-45 {
   margin-top: 45px;
+}
+
+.padding-left-20 {
+  padding-left: 20px;
+}
+
+.padding-top-1rem {
+  padding-top: 1rem;
+}
+
+.padding-bottom-3rem {
+  padding-bottom: 3rem;
 }
 
 /* MaterialIcons that haven't been added to honeycrisp variables.scss */
@@ -1509,4 +1525,9 @@ legend.form-question {
 .doc-rec-icon svg {
   position: relative;
   top: 10px;
+}
+
+#card-footer {
+  color: #5F5854;
+  font-size: 1.6rem;
 }

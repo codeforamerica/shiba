@@ -61,12 +61,14 @@ mappings:
     selectedState: APPLICANT_HOME_STATE
     selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
     streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
+    selectedCounty: APPLICANT_HOME_COUNTY
   mailingAddress:
     selectedZipCode: APPLICANT_MAILING_ZIPCODE
     selectedCity: APPLICANT_MAILING_CITY
     selectedState: APPLICANT_MAILING_STATE
     selectedStreetAddress: APPLICANT_MAILING_STREET_ADDRESS
     selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
+    selectedCounty: APPLICANT_MAILING_COUNTY
   liquidAssets:
     liquidAssets: EXPEDITED_QUESTION_2
   utilityPayments:
@@ -103,6 +105,14 @@ mappings:
     snapExpeditedEligibility: SNAP_EXPEDITED_ELIGIBILITY
   ccapExpeditedEligibility:
     ccapExpeditedEligibility: CCAP_EXPEDITED_ELIGIBILITY
+  longTermCare:
+    doYouNeedLongTermCare: NEED_LONG_TERM_CARE
+  pastInjury:
+    didYouHaveAPastInjury: HAD_A_PAST_ACCIDENT_OR_INJURY
+  retroactiveCoverage:
+    retroactiveCoverageQuestion: RETROACTIVE_COVERAGE_HELP
+  medicalInOtherState:
+    medicalInOtherState: MEDICAL_IN_OTHER_STATE
   unearnedIncome:
     SOCIAL_SECURITY: SOCIAL_SECURITY
     SSI: SSI
@@ -154,6 +164,7 @@ mappings:
     otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
   livingSituation:
     derivedLivingSituation: LIVING_SITUATION
+    county: LIVING_SITUATION_COUNTY
   livingWithFamilyOrFriendsYesNo:
     livingWithFamilyOrFriendsYesNo: LIVING_WITH_FAMILY_OR_FRIENDS
   futureIncome:
@@ -207,6 +218,8 @@ mappings:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
     registerToVoteSelection: REGISTER_TO_VOTE
+  helper:
+    helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRep:
     communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
   speakToCounty:
@@ -224,6 +237,7 @@ mappings:
     grossMonthlyIncome: GROSS_MONTHLY_INCOME
     selfEmployed: SELF_EMPLOYED
     selfEmployedGrossMonthlyEarnings: SELF_EMPLOYED_GROSS_MONTHLY_EARNINGS
+    selfEmployedApplicantName: SELF_EMPLOYMENT_APPLICANT_NAME
   nonSelfEmployment_employersName:
     employersName: NON_SELF_EMPLOYMENT_EMPLOYERS_NAME
   nonSelfEmployment_employee:
@@ -276,6 +290,14 @@ mappings:
   additionalInfo:
     additionalInfo: ADDITIONAL_APPLICATION_INFO
     caseNumber: ADDITIONAL_INFO_CASE_NUMBER
+  raceAndEthnicity:
+    ASIAN: ASIAN
+    AMERICAN_INDIAN_OR_ALASKA_NATIVE: AMERICAN_INDIAN_OR_ALASKA_NATIVE
+    BLACK_OR_AFRICAN_AMERICAN: BLACK_OR_AFRICAN_AMERICAN
+    NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER: NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER
+    WHITE: WHITE
+    HISPANIC_LATINO_OR_SPANISH: HISPANIC_LATINO_OR_SPANISH
+    HISPANIC_LATINO_OR_SPANISH_NO: HISPANIC_LATINO_OR_SPANISH_NO
   legalStuff:
     drugFelony: DRUG_FELONY
   applyForTribalTANF:

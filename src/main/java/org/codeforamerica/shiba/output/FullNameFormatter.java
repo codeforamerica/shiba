@@ -1,10 +1,14 @@
 package org.codeforamerica.shiba.output;
 
+import static java.util.Optional.ofNullable;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.jetbrains.annotations.NotNull;
 
 public class FullNameFormatter {
@@ -42,6 +46,29 @@ public class FullNameFormatter {
         .map(pageData -> pageData.get(inputName))
         .map(InputData::getValue)
         .orElse(List.of(""));
+  }
+
+
+  public static String getFullName(Application application) {
+    var pageName = application.getFlow() == LATER_DOCS ? "matchInfo" : "personalInfo";
+    return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
+        .map(FullNameFormatter::getFullNameString)
+        .orElse(null);
+  }
+
+  @NotNull
+  private static String getFullNameString(PageData pageData) {
+    var firstName = getValueOrEmptyString(pageData, "firstName");
+    var lastName = getValueOrEmptyString(pageData, "lastName");
+    return firstName + " " + lastName;
+  }
+
+  @NotNull
+  private static String getValueOrEmptyString(PageData pageData, String firstName) {
+    return ofNullable(pageData.get(firstName))
+        .map(InputData::getValue)
+        .map(val -> String.join("", val))
+        .orElse("");
   }
 
 }

@@ -1,7 +1,5 @@
 package org.codeforamerica.shiba.pages.events;
 
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.util.ArrayList;
@@ -24,8 +22,8 @@ import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.slf4j.MDC;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -68,6 +66,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
       Application application = getApplicationFromEvent(event);
       mnitDocumentConsumer.processCafAndCcap(application);
     }
+    MDC.clear();
   }
 
   @Async
@@ -99,5 +98,6 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
             snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
       }
     });
+    MDC.clear();
   }
 }

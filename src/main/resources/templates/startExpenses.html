@@ -1,10 +1,11 @@
 <div th:fragment="startExpenses"
      th:with="
+     step=${totalMilestones.equals('7') ? '5' : '4'},
      contentHeaders=${ {'general.well-ask-about'} },
      contentItems=${ {
        'start-expenses.household-payments',
        'start-expenses.savings',
        'start-expenses.assets'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-money-and-cards', '4', 'start-expenses.expenses-and-deductions', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="milestoneTemplate :: milestoneTemplate('milestone-money-and-cards', ${step}, 'start-expenses.expenses-and-deductions', ${contentHeaders}, ${contentItems})"></div>
 </div>

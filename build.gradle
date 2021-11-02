@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.5.5"
+    id("org.springframework.boot") version "2.5.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.0"
@@ -63,9 +63,48 @@ task genJaxb {
     }
 }
 
+task genJaxbFilenet {
+    ext.sourcesDir = "${buildDir}/generated-sources/jaxbFilenet"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "src/main/resources/FileNetService.wsdl"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema,
+                    package: "org.codeforamerica.shiba.filenetwsdl") {
+                arg(value: "-wsdl")
+                arg(value: "-extension")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
+                    debugLevel: "lines,vars,source",
+                    includeantruntime: false,
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+}
+
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.session:spring-session-bom:2021.0.2")
+        mavenBom("org.springframework.session:spring-session-bom:2021.0.3")
     }
 }
 
@@ -79,13 +118,20 @@ dependencies {
         }
     }
 
+    implementation(files(genJaxbFilenet.classesDir).builtBy(genJaxbFilenet))
+    jaxb(
+            'org.glassfish.jaxb:jaxb-runtime',
+            'org.glassfish.jaxb:jaxb-xjc',
+            'org.glassfish.jaxb:jaxb-jxc'
+    )
+
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.springframework.session:spring-session-jdbc")
-    implementation("io.sentry:sentry-spring-boot-starter:5.2.2")
+    implementation("io.sentry:sentry-spring-boot-starter:5.3.0")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services") {
@@ -102,11 +148,11 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.apache.httpcomponents:httpclient")
-    implementation("io.sentry:sentry-logback:5.2.2")
+    implementation("io.sentry:sentry-logback:5.3.0")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.google.crypto.tink:tink:1.6.1")
-    implementation("org.flywaydb:flyway-core:8.0.0")
+    implementation("org.flywaydb:flyway-core:8.0.2")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.mixpanel:mixpanel-java:1.5.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -120,8 +166,10 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.2.0")
     implementation("ch.qos.logback:logback-classic:1.2.0")
     implementation("net.logstash.logback:logstash-logback-encoder:6.6")
-    implementation("net.javacrumbs.shedlock:shedlock-spring:4.28.0")
-    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.28.0")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:4.29.0")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.29.0")
+    implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
+    implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
 
     implementation("org.springframework.ws:spring-ws-core")
     implementation(files(genJaxb.classesDir).builtBy(genJaxb))
@@ -154,6 +202,7 @@ dependencies {
 compileJava {
     dependsOn(generateGitProperties)
     dependsOn(genJaxb)
+    dependsOn(genJaxbFilenet)
     inputs.files(processResources)
 }
 

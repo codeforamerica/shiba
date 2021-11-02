@@ -1,18 +1,14 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -20,11 +16,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.config.NextPage;
-import org.codeforamerica.shiba.pages.config.PageDatasource;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.config.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +38,7 @@ public class ApplicationData implements Serializable {
   private Subworkflows subworkflows = new Subworkflows();
   private Map<String, PagesData> incompleteIterations = new HashMap<>();
   private List<UploadedDocument> uploadedDocs = new ArrayList<>();
+  private List<String> routingDestinationNames = new ArrayList<>(); // just informational, not used by application
 
   public void setStartTimeOnce(Instant instant) {
     if (startTime == null) {
@@ -72,7 +65,7 @@ public class ApplicationData implements Serializable {
     return datasources.stream()
         .filter(datasource -> datasource.getGroupName() != null)
         .allMatch(datasource -> datasource.isOptional()
-            || getSubworkflows().get(datasource.getGroupName()) != null);
+                                || getSubworkflows().get(datasource.getGroupName()) != null);
   }
 
   public NextPage getNextPageName(
@@ -118,7 +111,8 @@ public class ApplicationData implements Serializable {
   }
 
   public boolean isCAFApplication() {
-    return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA"));
+    return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA")) ||
+           getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
   }
 
   public boolean isApplicationWith(List<String> programs) {

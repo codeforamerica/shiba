@@ -3,12 +3,7 @@ package org.codeforamerica.shiba;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -56,10 +51,13 @@ public class SessionLogFilter implements Filter {
     if (httpReq.getUserPrincipal() instanceof OAuth2AuthenticationToken token) {
       String email = token.getPrincipal().getAttribute("email");
       MDC.put("admin", email);
+    } else {
+      MDC.remove("admin");
     }
     log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
     monitoringService.setSessionId(httpReq.getSession().getId());
 
     chain.doFilter(request, response);
+    MDC.clear();
   }
 }

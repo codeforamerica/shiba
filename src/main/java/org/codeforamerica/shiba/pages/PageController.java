@@ -4,7 +4,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
@@ -301,18 +301,19 @@ public class PageController {
       model.put("pageNameContext", pageName);
     }
 
+    Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
+    if (!programs.isEmpty()) {
+      model.put("programs", String.join(", ", programs));
+    }
+
     model.put("county", countyParser.parse(applicationData));
     model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
+    model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
 
     List<String> zipCode = applicationData.getPagesData()
         .safeGetPageInputValue("homeAddress", "zipCode");
     if (!zipCode.isEmpty()) {
       model.put("zipCode", zipCode.get(0));
-    }
-
-    Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
-    if (!programs.isEmpty()) {
-      model.put("programs", String.join(", ", programs));
     }
 
     var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
@@ -344,12 +345,25 @@ public class PageController {
       boolean hasHealthcare = "YES".equalsIgnoreCase(inputData);
       model.put("doesNotHaveHealthcare", !hasHealthcare);
 
-      // Passing this CAF will generate the full phrase regardless of whether its routing destinations are county, tribal nation or both
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-          applicationData, CAF);
-      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
-          application.getCounty(), true, routingDestinations);
+      // Get all routing destinations for this application
+      Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
+      DocumentListParser.parse(applicationData).forEach(doc -> {
+        List<RoutingDestination> routingDestinationsForThisDoc =
+            routingDecisionService.getRoutingDestinations(applicationData, doc);
+        routingDestinations.addAll(routingDestinationsForThisDoc);
+      });
 
+      // set the routing destination names for the application in the database
+      List<String> routingDestinationNames =
+          routingDestinations.stream().map(RoutingDestination::getName).toList();
+      application.getApplicationData().setRoutingDestinationNames(routingDestinationNames);
+      applicationRepository.save(application);
+
+      // Generate human-readable list of routing destinations for success page
+      String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
+          application.getCounty(),
+          true,
+          new ArrayList<>(routingDestinations));
       model.put("routingDestinationList", finalDestinationList);
     }
 
@@ -409,16 +423,21 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
-    return !landmarkPagesConfiguration.isLandingPage(pageName)
-           && applicationData.getStartTime() == null;
+    boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
+                        && applicationData.getStartTime() == null;
+    // If they are restarting the application process after submitting
+    boolean restarted =
+        applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
+    return unstarted || restarted;
   }
 
   private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
-    // If not on post-submit page and application is already submitted
+    // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
            !landmarkPagesConfiguration.isLandingPage(pageName) &&
+           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
            applicationData.isSubmitted();
   }
 
@@ -628,7 +647,7 @@ public class PageController {
     if (applicationData.getFlow() == LATER_DOCS) {
       application.setCompletedAtTime(clock);
     }
-    applicationRepository.save(application);
+    applicationRepository.save(application, true);
     if (featureFlags.get("submit-via-api").isOn()) {
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),

@@ -81,7 +81,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "applyForMFIP");
 
     assertThat(routingDecisionService.getRoutingDestinations(applicationData, CAF))
-        .containsExactly(countyMap.get(County.valueFor(county)));
+        .containsExactly(countyMap.get(County.getCountyForName(county)));
   }
 
   @ParameterizedTest
@@ -118,6 +118,45 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithEA();
     goThroughShortTribalTanfFlow(nationName, county, "true", EA, CCAP, GRH, SNAP);
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, "Mille Lacs Band of Ojibwe", county);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, "Mille Lacs Band of Ojibwe",
+        county);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+  }
+
+  @ParameterizedTest
+  @CsvSource(value = {
+      "Bois Forte,Hennepin",
+      "Fond Du Lac,Hennepin",
+      "Grand Portage,Hennepin",
+      "Leech Lake,Hennepin",
+      "Mille Lacs Band of Ojibwe,Hennepin",
+      "White Earth,Hennepin",
+      "Bois Forte,Anoka",
+      "Fond Du Lac,Anoka",
+      "Grand Portage,Anoka",
+      "Leech Lake,Anoka",
+      "Mille Lacs Band of Ojibwe,Anoka",
+      "White Earth,Anoka",
+      "Bois Forte,Ramsey",
+      "Fond Du Lac,Ramsey",
+      "Grand Portage,Ramsey",
+      "Leech Lake,Ramsey",
+      "Mille Lacs Band of Ojibwe,Ramsey",
+      "White Earth,Ramsey",
+      "Mille Lacs Band of Ojibwe,Ramsey",
+      "Mille Lacs Band of Ojibwe,Aitkin",
+      "Mille Lacs Band of Ojibwe,Benton",
+      "Mille Lacs Band of Ojibwe,Crow Wing",
+      "Mille Lacs Band of Ojibwe,Morrison",
+      "Mille Lacs Band of Ojibwe,Mille Lacs",
+      "Mille Lacs Band of Ojibwe,Pine"
+  })
+  void shouldAddTribalTanfAndRouteCAFToMilleLacsAndCCAPToCounty(
+      String nationName, String county)
+      throws Exception {
+    addHouseholdMembersWithCCAP();
+    goThroughShortTribalTanfFlow(nationName, county, "true", CCAP);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, "Mille Lacs Band of Ojibwe");
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, "Mille Lacs Band of Ojibwe",
         county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);

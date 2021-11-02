@@ -7,15 +7,9 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -54,11 +48,9 @@ class ApplicationDataEncryptorTest {
 
   @Test
   void encryptsApplicantSsn() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("personalInfo",
-            Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-6789"))))
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("personalInfo", "ssn", "123-45-6789")
+        .build();
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
     assertThat(encryptedApp)
         .contains("\"pagesData\":{\"personalInfo\":{\"ssn\":{\"value\":[\"encryptedSsn\"]}}}");
@@ -66,11 +58,9 @@ class ApplicationDataEncryptorTest {
 
   @Test
   void encryptsApplicantSsnInLaterDocs() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("matchInfo",
-            Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-6789"))))
-    )));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("matchInfo", "ssn", "123-45-6789")
+        .build();
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
     assertThat(encryptedApp)
         .contains("\"pagesData\":{\"matchInfo\":{\"ssn\":{\"value\":[\"encryptedSsn\"]}}}");
@@ -78,11 +68,9 @@ class ApplicationDataEncryptorTest {
 
   @Test
   void doNotEncryptApplicantSsnWhenBlank() {
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setPagesData(new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("personalInfo",
-            Map.of("ssn", new ArrayList<>(Collections.singleton(""))))))
-    );
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("personalInfo", "ssn", "")
+        .build();
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
     assertThat(encryptedApp)
         .contains("\"pagesData\":{\"personalInfo\":{\"ssn\":{\"value\":[\"\"]}}}");
@@ -92,13 +80,13 @@ class ApplicationDataEncryptorTest {
   void encryptSsnForHouseholdMembersWhenFilledOut() {
     ApplicationDataEncryptor applicationDataEncryptor = new ApplicationDataEncryptor(objectMapper,
         stringEncryptor);
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setSubworkflows(new Subworkflows(Map.of("household", new Subworkflow(List.of(
-        new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo",
-            Map.of("ssn", new ArrayList<>(Collections.singleton("123-45-5678")))))),
-        new PagesDataBuilder().build(List.of(new PageDataBuilder("householdMemberInfo",
-            Map.of("ssn", new ArrayList<>(Collections.singleton(""))))))
-    )))));
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withSubworkflow("household",
+            new PagesDataBuilder()
+                .withPageData("householdMemberInfo", "ssn", "123-45-5678"),
+            new PagesDataBuilder()
+                .withPageData("householdMemberInfo", "ssn", ""))
+        .build();
     String encryptedApp = applicationDataEncryptor.encrypt(applicationData);
     assertThat(encryptedApp).contains(
         "\"pagesData\":{\"householdMemberInfo\":{\"ssn\":{\"value\":[\"encryptedSsn\"]}}}");

@@ -1,19 +1,19 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.*;
+import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
@@ -26,12 +26,8 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,9 +42,6 @@ class CoverPageInputsMapperTest {
 
   private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private CoverPageInputsMapper coverPageInputsMapper;
-  private PagesDataBuilder pagesDataBuilder;
-  private StaticMessageSource staticMessageSource;
-  private PagesData pagesData;
   private ApplicationData applicationData;
   @MockBean
   private RoutingDecisionService routingDecisionService;
@@ -56,15 +49,12 @@ class CoverPageInputsMapperTest {
   private RoutingDestinationMessageService routingDestinationMessageService;
 
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() {
 
     countyInstructionsMapping = new CountyMap<>();
     CountyMap<CountyRoutingDestination> countyInformationMapping = new CountyMap<>();
-    pagesDataBuilder = new PagesDataBuilder();
-    staticMessageSource = new StaticMessageSource();
-    pagesData = new PagesData();
+    StaticMessageSource staticMessageSource = new StaticMessageSource();
     applicationData = new ApplicationData();
-    applicationData.setPagesData(pagesData);
     coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping,
         countyInformationMapping, staticMessageSource, routingDecisionService,
         routingDestinationMessageService);
@@ -77,9 +67,11 @@ class CoverPageInputsMapperTest {
         .phoneNumber("555-123-4567")
         .folderId("someFolderId")
         .build();
-    when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class), any(Document.class)))
+    when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
+        any(Document.class)))
         .thenReturn(List.of(countyRoutingDestination));
-    when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(), any())).thenReturn("");
+    when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(),
+        any())).thenReturn("");
     countyInformationMapping.setDefaultValue(countyRoutingDestination);
     staticMessageSource
         .addMessage("county-to-instructions.default-client",
@@ -103,10 +95,8 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeProgramsInputWithCombinedProgramSelection() {
-    pagesData.put("choosePrograms",
-        new PageData(Map.of("programs", InputData.builder()
-            .value(List.of("SNAP", "CASH"))
-            .build())));
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("SNAP", "CASH"));
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)
@@ -126,17 +116,14 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowProgramsInputWithCombinedProgramSelection() {
-    PagesData pagesData = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CASH"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testuser")
-        ))
-    ));
+    new TestApplicationDataBuilder(applicationData)
+        .withSubworkflow("household", new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CASH"),
+                "firstName", List.of("Jane"),
+                "lastName", List.of("Testuser")
+            )));
 
-    Subworkflows subworkflows = new Subworkflows();
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)
@@ -158,16 +145,13 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeSubworkflowFullNames() {
-    PagesData pagesData = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("householdMemberInfo", Map.of(
-            "programs", List.of("SNAP", "CASH"),
-            "firstName", List.of("Jane"),
-            "lastName", List.of("Testuser")
-        ))
-    ));
-    Subworkflows subworkflows = new Subworkflows();
-    subworkflows.addIteration("household", pagesData);
-    applicationData.setSubworkflows(subworkflows);
+    new TestApplicationDataBuilder(applicationData)
+        .withSubworkflow("household", new PagesDataBuilder()
+            .withPageData("householdMemberInfo", Map.of(
+                "programs", List.of("SNAP", "CASH"),
+                "firstName", List.of("Jane"),
+                "lastName", List.of("Testuser")
+            )));
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)
@@ -187,7 +171,7 @@ class CoverPageInputsMapperTest {
   }
 
   @Test
-  void shouldNotIncludeProgramsInput_whenThereAreNoChosenPrograms() {
+  void shouldNotIncludeProgramsOrFullNameInputsWhenThereIsNoProgramsOrPersonalInfoData() {
     Application application = Application.builder()
         .applicationData(applicationData)
         .county(Other)
@@ -199,20 +183,6 @@ class CoverPageInputsMapperTest {
         .collect(Collectors.toList());
 
     assertThat(appInputNames).doesNotContain("programs");
-  }
-
-  @Test
-  void shouldNotIncludeFullNameInput_whenThereIsNoPersonalInfo() {
-    Application application = Application.builder()
-        .applicationData(applicationData)
-        .county(Other)
-        .build();
-
-    List<String> appInputNames = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null).stream()
-        .map(ApplicationInput::getName)
-        .collect(Collectors.toList());
-
     assertThat(appInputNames).doesNotContain("fullName");
   }
 
@@ -249,8 +219,8 @@ class CoverPageInputsMapperTest {
             ApplicationInputType.SINGLE_VALUE
         ));
 
-    pagesData.put("languagePreferences", new PageData(
-        Map.of("writtenLanguage", InputData.builder().value(List.of("SPANISH")).build())));
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
     applicationInputs = coverPageInputsMapper.map(application, CAF, Recipient.CLIENT, null);
     assertThat(applicationInputs).contains(
         new ApplicationInput(
@@ -263,11 +233,9 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeCombinedFirstNameAndLastNameInput() {
-    pagesData.put(
-        "personalInfo", new PageData(Map.of(
-            "firstName", InputData.builder().value(List.of("someFirstName")).build(),
-            "lastName", InputData.builder().value(List.of("someLastName")).build()))
-    );
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("personalInfo", "firstName", "someFirstName")
+        .withPageData("personalInfo", "lastName", "someLastName");
     Application application = Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now())
@@ -287,11 +255,9 @@ class CoverPageInputsMapperTest {
 
   @Test
   void shouldIncludeCombinedFirstNameAndLastNameInputForLaterDocs() {
-    pagesData.put(
-        "matchInfo", new PageData(Map.of(
-            "firstName", InputData.builder().value(List.of("someFirstName")).build(),
-            "lastName", InputData.builder().value(List.of("someLastName")).build()))
-    );
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("matchInfo", "firstName", "someFirstName")
+        .withPageData("matchInfo", "lastName", "someLastName");
     Application application = Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now())

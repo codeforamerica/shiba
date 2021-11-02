@@ -13,17 +13,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -80,7 +76,7 @@ class EmailContentCreatorTest {
 
   @ParameterizedTest
   @CsvSource(value = {
-      "ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>Within 24 hours, <strong>expect a call</strong> from your county or tribal servicing agency about your food assistance application.<br><br>If you don't hear from your county or tribal servicing agency within 3 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
+      "ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>Within 24 hours, <strong>expect a call</strong> from your county or tribal servicing agency about your food assistance application.<br><br>If you don't hear from your county or tribal servicing agency within 7 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
       "NOT_ELIGIBLE,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
       "UNDETERMINED,<html><body>We received your Minnesota Benefits application.<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county</a> if you don’t hear from them in the time period we’ve noted. <br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>",
   })
@@ -207,25 +203,19 @@ class EmailContentCreatorTest {
     programs = List.of(CCAP, SNAP, CASH, EA, GRH);
 
     ApplicationData applicationData = new ApplicationData();
-    applicationData.setSubworkflows(new Subworkflows());
-    applicationData.setPagesData(new PagesData());
     applicationData.setStartTimeOnce(Instant.now());
     applicationData.setId("someId");
 
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("choosePrograms", Map.of("programs", programs)),
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("choosePrograms", "programs", programs)
         // Show proof of income
-        new PageDataBuilder("employmentStatus", Map.of("areYouWorking", List.of("true"))),
+        .withPageData("employmentStatus", "areYouWorking", "true")
         // Sow proof of housing cost
-        new PageDataBuilder("homeExpenses", Map.of("homeExpenses", List.of("RENT"))),
+        .withPageData("homeExpenses", "homeExpenses", "RENT")
         // Show proof of job loss
-        new PageDataBuilder("workSituation", Map.of("hasWorkSituation", List.of("true"))),
+        .withPageData("workSituation", "hasWorkSituation", "true")
         // Show proof of medical expenses
-        new PageDataBuilder("medicalExpenses",
-            Map.of("medicalExpenses", List.of("MEDICAL_INSURANCE_PREMIUMS")))
-    ));
-
-    applicationData.setPagesData(pagesData);
+        .withPageData("medicalExpenses", "medicalExpenses", "MEDICAL_INSURANCE_PREMIUMS");
 
     String confirmationEmail = emailContentCreator.createFullClientConfirmationEmail(
         applicationData,

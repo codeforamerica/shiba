@@ -1,8 +1,8 @@
 pageDefinitions: [ ]
 workflow:
-  firstPage:
+  secondPage:
     pageConfiguration:
-      name: firstPage
+      name: secondPage
       pageTitle: first-page-title
       inputs:
         - name: foo
@@ -19,6 +19,10 @@ workflow:
       inputs:
         - name: foo
           type: TEXT
+  firstPage:
+    pageConfiguration:
+      name: firstPage
+      pageTitle: first-page-title
   uploadDocuments:
     pageConfiguration:
       name: uploadDocuments
@@ -43,6 +47,8 @@ workflow:
 landmarkPages:
   landingPages:
     - landingPage
+  startTimerPage:
+    - firstPage
   terminalPage: terminalPage
-  submitPage: firstPage
+  submitPage: secondPage
   uploadDocumentsPage: uploadDocuments

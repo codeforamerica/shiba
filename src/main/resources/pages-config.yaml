@@ -68,6 +68,10 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantChoseCERTAINPOPS?
+    pageName: choosePrograms
+    value: CERTAIN_POPS
+    input: programs
   - &someoneChoseCASH?
     logicalOperator: OR
     conditions:
@@ -92,6 +96,9 @@ conditionDefinitions:
   - &applicantDidNotChooseGRH?
     <<: *applicantDidNotChooseProgram?
     value: GRH
+  - &applicantDidNotChooseCERTAINPOPS?
+    <<: *applicantDidNotChooseProgram?
+    value: CERTAIN_POPS
   - &householdMemberDidNotChooseProgram?
     pageName: householdMemberInfo
     input: programs
@@ -145,8 +152,7 @@ conditionDefinitions:
   - &noOneChoseGRH?
     logicalOperator: AND
     conditions:
-      - <<: *applicantDidNotChooseProgram?
-        value: GRH
+      - *applicantDidNotChooseGRH?
       - logicalOperator: OR
         conditions:
           - <<: *householdMemberDidNotChooseProgram?
@@ -376,7 +382,7 @@ pageDefinitions:
     name: personalInfo
     pageTitle: personal-info.title
     headerKey: personal-info.tell-us-about-yourself
-    contextFragment: personalInfoContextFragment
+    contextFragment: personContextFragment
     inputs:
       - name: firstName
         type: TEXT
@@ -487,7 +493,6 @@ pageDefinitions:
     name: contactInfo
     pageTitle: contact-info.title
     headerKey: contact-info.how-can-we-stay-in-touch-with-you
-    headerHelpMessageKey: contact-info.most-of-our-communication-will-be-through-mail
     contextFragment: contactInfoContextFragment
     inputs:
       - name: phoneNumber
@@ -497,8 +502,14 @@ pageDefinitions:
         validators:
           - validation: PHONE_STARTS_WITH_ONE
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
+            condition:
+              input: phoneNumber
+              matcher: NOT_EMPTY
           - validation: PHONE
             errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+            condition:
+              input: phoneNumber
+              matcher: NOT_EMPTY
       - name: email
         type: TEXT
         promptMessage:
@@ -529,6 +540,7 @@ pageDefinitions:
               messageKey: contact-info.text-me
             - value: EMAIL
               messageKey: contact-info.email-me
+    cardFooterTextKey: contact-info.the-department-of-human-services
   - &homeAddress
     name: homeAddress
     headerKey: home-address.where-are-you-currently-living
@@ -692,6 +704,7 @@ pageDefinitions:
     name: householdMemberInfo
     pageTitle: household-member-info.title
     headerKey: household-member-info.add-a-person-who-lives-with-you
+    contextFragment: personContextFragment
     inputs:
       - name: firstName
         type: TEXT
@@ -868,6 +881,7 @@ pageDefinitions:
     name: householdList
     pageTitle: household-list.title
     primaryButtonTextKey: household-list.yes-thats-everyone
+    contextFragment: householdContextFragment
   - &noProgramsSelected
     name: noProgramsSelected
     pageTitle: no-programs-selected.title
@@ -926,6 +940,7 @@ pageDefinitions:
     pageTitle: preparing-meals-together.title
     headerKey: preparing-meals-together.header
     hasPrimaryButton: false
+    contextFragment: groceriesContextFragment
     inputs:
       - name: isPreparingMealsTogether
         type: YES_NO
@@ -938,6 +953,7 @@ pageDefinitions:
         - value: going-to-school.header
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: schoolContextFragment
     inputs:
       - name: goingToSchool
         type: YES_NO
@@ -945,6 +961,7 @@ pageDefinitions:
     name: whoIsGoingToSchool
     pageTitle: who-is-going-to-school.title
     headerKey: who-is-going-to-school.who-is-going-to-school
+    contextFragment: schoolContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsGoingToSchool
@@ -962,6 +979,7 @@ pageDefinitions:
         - value: pregnant.are-you-pregnant
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: pregnantContextFragment
     inputs:
       - name: isPregnant
         type: YES_NO
@@ -970,6 +988,7 @@ pageDefinitions:
     pageTitle: who-is-pregnant.title
     headerKey: who-is-pregnant.header
     headerHelpMessageKey: general.check-all-that-apply
+    contextFragment: pregnantContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsPregnant
@@ -988,6 +1007,7 @@ pageDefinitions:
           condition: *livesAlone?
     headerHelpMessageKey: us-citizen.most-immigrants-are-still-eligible-for-food-and-cash-benefits
     hasPrimaryButton: false
+    contextFragment: passportContextFragment
     inputs:
       - name: isUsCitizen
         type: YES_NO
@@ -996,6 +1016,7 @@ pageDefinitions:
     pageTitle: who-is-non-citizen.title
     headerKey: who-is-non-citizen.header
     headerHelpMessageKey: general.check-all-that-apply
+    contextFragment: passportContextFragment
     inputs:
       - type: CUSTOM
         name: whoIsNonCitizen
@@ -1287,6 +1308,7 @@ pageDefinitions:
         - value: expedited-migrant-farm-worker.header-one-person
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: wheatContextFragment
     inputs:
       - name: migrantOrSeasonalFarmWorker
         type: YES_NO
@@ -1315,9 +1337,6 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: legal-stuff.has-anyone-been-convicted-of-drug-felony
         helpMessageKey: legal-stuff.if-yes-you-can-still-get-benefits
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
         options:
           selectableOptions:
             - value: "true"
@@ -1467,7 +1486,7 @@ pageDefinitions:
               messageKey: identify-county-lincoln
             - value: Lyon
               messageKey: identify-county-lyon
-            - value: Mcleod
+            - value: McLeod
               messageKey: identify-county-mcleod
             - value: Mahnomen
               messageKey: identify-county-mahnomen
@@ -1497,7 +1516,7 @@ pageDefinitions:
               messageKey: identify-county-otter-tail
             - value: Pennington
               messageKey: identify-county-pennington
-            - value: PineCounty
+            - value: Pine
               messageKey: identify-county-pine
             - value: Pipestone
               messageKey: identify-county-pipestone
@@ -1557,7 +1576,7 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
-    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
+#    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
   - &identifyZipcode
     name: identifyZipcode
     headerKey: identify-zipcode.what-is-your-zip-code
@@ -1707,6 +1726,7 @@ pageDefinitions:
         - value: work-situation.in-the-last-2-months-did-you-do-any-of-these-things
           condition: *livesAlone?
     hasPrimaryButton: false
+    contextFragment: briefcaseContextFragment
     inputs:
       - name: hasWorkSituation
         type: YES_NO
@@ -1799,6 +1819,47 @@ pageDefinitions:
     name: introIncome
     pageTitle: intro-income.title
     hasPrimaryButton: false
+  - &medicalCareMilestone
+    name: medicalCareMilestone
+    pageTitle: medical-care-milestone.title
+    hasPrimaryButton: false
+  - &longTermCare
+    name: longTermCare
+    pageTitle: long-term-care.title
+    headerKey: long-term-care.help-staying-in-your-home-or-help-paying-for-care-in-a-long-term-care-facility
+    contextFragment: homeCareContextFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: doYouNeedLongTermCare
+        type: YES_NO
+  - &pastInjury
+    name: pastInjury
+    pageTitle: past-injury.title
+    headerKey: past-injury.are-you-getting-medical-care-for-an-accident-or-injury
+    contextFragment: pastInjuryFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: didYouHaveAPastInjury
+        type: YES_NO
+  - &retroactiveCoverage
+    name: retroactiveCoverage
+    pageTitle: retroactive-coverage.title
+    headerKey: retroacvtive-coverage.help-paying-for-medical-bills-from-the-last-3-months
+    contextFragment: retroactiveCoverageFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: retroactiveCoverageQuestion
+        type: YES_NO
+        helpMessageKey: retroactive-coverage.you-might-be-eligible-for-retroactive-coverage
+  - &medicalInOtherState
+    name: medicalInOtherState
+    pageTitle: medical-in-other-state.title
+    headerKey: medical-in-other-state.do-you-currently-have-medical-benefits-in-another-state
+    contextFragment: medicalInOtherStateFragment
+    hasPrimaryButton: false
+    inputs:
+      - name: medicalInOtherState
+        type: YES_NO
   - &employmentStatus
     name: employmentStatus
     pageTitle: employment-status.title
@@ -2794,6 +2855,49 @@ pageDefinitions:
         type: CUSTOM
         customInputFragment: caseNumberImages
     pageTitle: additional-info.title
+  - &canWeAsk
+    name: canWeAsk
+    pageTitle: can-we-ask.title
+    headerKey: can-we-ask.can-we-ask-about-your-race-and-ethnicity
+    contextFragment: raceAndEthnicityFragment
+    hasPrimaryButton: false
+  - &raceAndEthnicity
+    name: raceAndEthnicity
+    pageTitle: race-and-ethnicity.title
+    headerKey: race-and-ethnicity.what-races-or-ethnicities-do-you-identify-with
+    headerHelpMessageKey: race-and-ethnicity.select-all-that-apply
+    contextFragment: raceAndEthnicityFragment
+    inputs:
+      - name: raceAndEthnicity
+        type: CHECKBOX
+        validators:
+            - validation: SELECT_AT_LEAST_ONE
+              errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: AMERICAN_INDIAN_OR_ALASKA_NATIVE
+              messageKey: race-and-ethnicity.american-indian-or-alaska-native
+            - value: ASIAN
+              messageKey: race-and-ethnicity.asian
+            - value: BLACK_OR_AFRICAN_AMERICAN
+              messageKey: race-and-ethnicity.black-or-african-american
+            - value: HISPANIC_LATINO_OR_SPANISH
+              messageKey: race-and-ethnicity.hispanic-latino-or-spanish
+            - value: MIDDLE_EASTERN_OR_NORTH_AFRICAN
+              messageKey: race-and-ethnicity.middle-eastern-or-north-african
+            - value: NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER
+              messageKey: race-and-ethnicity.native-hawaiian-or-pacific-islander
+            - value: WHITE
+              messageKey: race-and-ethnicity.white
+            - value: SOME_OTHER_RACE_OR_ETHNICITY
+              messageKey: race-and-ethnicity.some-other-race
+        followUpValues:
+          - SOME_OTHER_RACE_OR_ETHNICITY
+        followUps:
+          - name: otherRaceOrEthnicity
+            type: TEXT
+            promptMessage:
+              promptMessageKey: race-and-ethnicity.write-your-race-or-ethnicity
 workflow:
   landing:
     pageConfiguration: *landing
@@ -2803,101 +2907,17 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: prepareToApply
-        flag: county-anoka
         condition:
           pageName: identifyCounty
           input: county
-          value: Anoka
+          matcher: DOES_NOT_CONTAIN
+          value: Dakota
       - pageName: prepareToApply
-        flag: county-beltrami
+        flag: county-dakota
         condition:
           pageName: identifyCounty
           input: county
-          value: Beltrami
-      - pageName: prepareToApply
-        flag: county-carver
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Carver
-      - pageName: prepareToApply
-        flag: county-clay
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Clay
-      - pageName: prepareToApply
-        flag: county-cook
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Cook
-      - pageName: prepareToApply
-        flag: county-dodge
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Dodge
-      - pageName: prepareToApply
-        flag: county-hennepin
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Hennepin
-      - pageName: prepareToApply
-        flag: county-morrison
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Morrison
-      - pageName: prepareToApply
-        flag: county-olmsted
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Olmsted
-      - pageName: prepareToApply
-        flag: county-ottertail
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: OtterTail
-      - pageName: prepareToApply
-        flag: county-sherburne
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Sherburne
-      - pageName: prepareToApply
-        flag: county-steele
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Steele
-      - pageName: prepareToApply
-        flag: county-stlouis
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: StLouis
-      - pageName: prepareToApply
-        flag: county-wabasha
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wabasha
-      - pageName: prepareToApply
-        flag: county-waseca
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Waseca
-      - pageName: prepareToApply
-        flag: county-wright
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wright
+          value: Dakota
       - pageName: goToApplyMn
     subtleLinkTargetPage: identifyZipcodeBeforeApplying
   identifyZipcodeBeforeApplying:
@@ -2905,101 +2925,23 @@ workflow:
     enrichment: zipcodeToCountyEnrichment
     nextPages:
       - pageName: prepareToApply
-        flag: county-anoka
         condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Anoka
+          logicalOperator: AND
+          conditions:
+            - pageName: identifyZipcode
+              input: mappedCounty
+              matcher: DOES_NOT_CONTAIN
+              value: Dakota
+            - pageName: identifyZipcode
+              input: mappedCounty
+              matcher: DOES_NOT_CONTAIN
+              value: Other
       - pageName: prepareToApply
-        flag: county-beltrami
+        flag: county-dakota
         condition:
           pageName: identifyZipcode
           input: mappedCounty
-          value: Beltrami
-      - pageName: prepareToApply
-        flag: county-carver
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Carver
-      - pageName: prepareToApply
-        flag: county-clay
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Clay
-      - pageName: prepareToApply
-        flag: county-cook
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Cook
-      - pageName: prepareToApply
-        flag: county-dodge
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Dodge
-      - pageName: prepareToApply
-        flag: county-hennepin
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Hennepin
-      - pageName: prepareToApply
-        flag: county-morrison
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Morrison
-      - pageName: prepareToApply
-        flag: county-olmsted
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Olmsted
-      - pageName: prepareToApply
-        flag: county-ottertail
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: OtterTail
-      - pageName: prepareToApply
-        flag: county-sherburne
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Sherburne
-      - pageName: prepareToApply
-        flag: county-steele
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Steele
-      - pageName: prepareToApply
-        flag: county-stlouis
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: StLouis
-      - pageName: prepareToApply
-        flag: county-wabasha
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Wabasha
-      - pageName: prepareToApply
-        flag: county-waseca
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Waseca
-      - pageName: prepareToApply
-        flag: county-wright
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Wright
+          value: Dakota
       - pageName: goToApplyMn
     subtleLinkTargetPage: identifyCountyBeforeApplying
   goToApplyMn:
@@ -3058,7 +3000,6 @@ workflow:
     subtleLinkTargetPage: cityForGeneralDelivery
     nextPages:
       - pageName: mailingAddress
-      - pageName: cityForGeneralDelivery
   cityForGeneralDelivery:
     pageConfiguration: *cityForGeneralDelivery
     enrichment: generalDeliveryAddressEnrichment
@@ -3250,6 +3191,7 @@ workflow:
       conditions:
         - *applicantDidNotChooseGRH?
         - *noOneChoseCCAP?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
@@ -3347,9 +3289,13 @@ workflow:
           pageName: tribalNationMember
           input: isTribalNationMember
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
     skipCondition: *livesAlone?
     datasources:
+      - pageName: choosePrograms
       - pageName: addHouseholdMembers
   selectTheTribe:
     pageConfiguration: *selectTheTribe
@@ -3379,6 +3325,14 @@ workflow:
                 - pageName: identifyCounty
                   input: county
                   matcher: IS_MILLE_LACS_RURAL_COUNTY
+      - pageName: medicalCareMilestone
+        condition:
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - pageName: nationsBoundary
+              input: livingInNationBoundary
+              value: "false"
+        flag: certain-pops
       - pageName: introIncome
         condition:
           pageName: nationsBoundary
@@ -3414,6 +3368,7 @@ workflow:
           input: selectedTribe
           value: Federally recognized tribe outside of MN
     datasources:
+      - pageName: choosePrograms
       - pageName: addHouseholdMembers
       - pageName: selectTheTribe
       - pageName: tribalNationMember
@@ -3426,7 +3381,12 @@ workflow:
           pageName: applyForTribalTANF
           input: applyForTribalTANF
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
@@ -3435,6 +3395,9 @@ workflow:
           pageName: applyForMFIP
           input: applyForMFIP
           value: "true"
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
     skipCondition: *someoneChoseCASH?
     datasources:
@@ -3444,11 +3407,56 @@ workflow:
   tribalTANFConfirmation:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
   applyForMFIPConfirmation:
     pageConfiguration: *applyForMFIPConfirmation
     nextPages:
+      - pageName: medicalCareMilestone
+        condition: *applicantChoseCERTAINPOPS?
+        flag: certain-pops
       - pageName: introIncome
+    datasources:
+      - pageName: choosePrograms
+  medicalCareMilestone:
+    pageConfiguration: *medicalCareMilestone
+    nextPages:
+      - pageName: longTermCare
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  longTermCare:
+    pageConfiguration: *longTermCare
+    nextPages:
+      - pageName: pastInjury
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  pastInjury:
+    pageConfiguration: *pastInjury
+    nextPages:
+      - pageName: retroactiveCoverage
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  retroactiveCoverage:
+    pageConfiguration: *retroactiveCoverage
+    nextPages:
+      - pageName: medicalInOtherState
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+  medicalInOtherState:
+    pageConfiguration: *medicalInOtherState
+    nextPages:
+      - pageName: introIncome
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
   introIncome:
     pageConfiguration: *introIncome
     nextPages:
@@ -4006,6 +4014,15 @@ workflow:
   additionalInfo:
     pageConfiguration: *additionalInfo
     nextPages:
+      - pageName: canWeAsk
+  canWeAsk:
+    pageConfiguration: *canWeAsk
+    nextPages:
+      - pageName: raceAndEthnicity
+      - pageName: legalStuff
+  raceAndEthnicity:
+    pageConfiguration: *raceAndEthnicity
+    nextPages:
       - pageName: legalStuff
   legalStuff:
     pageConfiguration: *legalStuff
@@ -4120,95 +4137,17 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: matchInfo
-        flag: county-anoka
         condition:
           pageName: identifyCounty
           input: county
-          value: Anoka
+          matcher: DOES_NOT_CONTAIN
+          value: Dakota
       - pageName: matchInfo
-        flag: county-carver
+        flag: county-dakota
         condition:
           pageName: identifyCounty
           input: county
-          value: Carver
-      - pageName: matchInfo
-        flag: county-clay
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Clay
-      - pageName: matchInfo
-        flag: county-cook
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Cook
-      - pageName: matchInfo
-        flag: county-dodge
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Dodge
-      - pageName: matchInfo
-        flag: county-hennepin
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Hennepin
-      - pageName: matchInfo
-        flag: county-morrison
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Morrison
-      - pageName: matchInfo
-        flag: county-olmsted
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Olmsted
-      - pageName: matchInfo
-        flag: county-ottertail
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: OtterTail
-      - pageName: matchInfo
-        flag: county-sherburne
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Sherburne
-      - pageName: matchInfo
-        flag: county-steele
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Steele
-      - pageName: matchInfo
-        flag: county-stlouis
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: StLouis
-      - pageName: matchInfo
-        flag: county-wabasha
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wabasha
-      - pageName: matchInfo
-        flag: county-waseca
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Waseca
-      - pageName: matchInfo
-        flag: county-wright
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Wright
+          value: Dakota
       - pageName: emailDocsToYourCounty
     subtleLinkTargetPage: identifyZipcode
   identifyZipcode:
@@ -4216,95 +4155,23 @@ workflow:
     enrichment: zipcodeToCountyEnrichment
     nextPages:
       - pageName: matchInfo
-        flag: county-anoka
         condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Anoka
+          logicalOperator: AND
+          conditions:
+            - pageName: identifyZipcode
+              input: mappedCounty
+              matcher: DOES_NOT_CONTAIN
+              value: Dakota
+            - pageName: identifyZipcode
+              input: mappedCounty
+              matcher: DOES_NOT_CONTAIN
+              value: Other
       - pageName: matchInfo
-        flag: county-carver
+        flag: county-dakota
         condition:
           pageName: identifyZipcode
           input: mappedCounty
-          value: Carver
-      - pageName: matchInfo
-        flag: county-clay
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Clay
-      - pageName: matchInfo
-        flag: county-cook
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Cook
-      - pageName: matchInfo
-        flag: county-dodge
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Dodge
-      - pageName: matchInfo
-        flag: county-hennepin
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Hennepin
-      - pageName: matchInfo
-        flag: county-morrison
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Morrison
-      - pageName: matchInfo
-        flag: county-olmsted
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Olmsted
-      - pageName: matchInfo
-        flag: county-ottertail
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: OtterTail
-      - pageName: matchInfo
-        flag: county-sherburne
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Sherburne
-      - pageName: matchInfo
-        flag: county-steele
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Steele
-      - pageName: matchInfo
-        flag: county-stlouis
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: StLouis
-      - pageName: matchInfo
-        flag: county-wabasha
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Wabasha
-      - pageName: matchInfo
-        flag: county-waseca
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Waseca
-      - pageName: matchInfo
-        flag: county-wright
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          value: Wright
+          value: Dakota
       - pageName: emailDocsToYourCounty
     subtleLinkTargetPage: identifyCounty
   matchInfo:
@@ -4363,13 +4230,12 @@ pageGroups:
     restartPage: addHouseholdMembers
     startingCount: 1
 landmarkPages:
-  startTimerPage:
+  startTimerPage: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
-    - prepareToApply
     - identifyCounty
-  landingPages:
+  landingPages: # the home page of the app
     - landing
-  postSubmitPages:
+  postSubmitPages: # pages which are accessible after submitting an application, also all pages of the laterdocs flow
     - addingDocuments
     - howToAddDocuments
     - documentRecommendation
@@ -4384,10 +4250,9 @@ landmarkPages:
     - documentsSent
     - identifyCounty
     - identifyCountyBeforeApplying
-    - prepareToApply
   nextStepsPage: nextSteps
-  terminalPage: success
-  laterDocsTerminalPage: documentsSent
+  terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
+  laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   submitPage: signThisApplication
   laterDocsIdPage: matchInfo # Page where confirmation number is generated for later docs (happens before submit)
   uploadDocumentsPage: uploadDocuments

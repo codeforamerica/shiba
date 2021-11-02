@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -42,7 +43,9 @@ public class TestUtils {
   }
 
   public static void assertPdfFieldEquals(String fieldName, String expectedVal, PDAcroForm pdf) {
-    var pdfFieldText = pdf.getField(fieldName).getValueAsString();
+    PDField field = pdf.getField(fieldName);
+    assertThat(field).isNotNull();
+    String pdfFieldText = field.getValueAsString();
     assertThat(pdfFieldText).isEqualTo(expectedVal);
   }
 
@@ -60,6 +63,7 @@ public class TestUtils {
     applicationData.setUploadedDocs(new ArrayList<>());
     applicationData.setFlow(FlowType.UNDETERMINED);
     applicationData.setSubmitted(false);
+    applicationData.setRoutingDestinationNames(new ArrayList<>());
   }
 
   @NotNull

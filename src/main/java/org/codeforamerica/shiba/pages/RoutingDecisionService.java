@@ -22,7 +22,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @SuppressWarnings("DanglingJavadoc")
@@ -40,20 +39,17 @@ public class RoutingDecisionService {
   private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
-  private final MessageSource messageSource;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
   public RoutingDecisionService(CountyParser countyParser,
       Map<String, TribalNationRoutingDestination> tribalNations,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
-      FeatureFlagConfiguration featureFlagConfiguration,
-      MessageSource messageSource) {
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.countyParser = countyParser;
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
     this.featureFlagConfiguration = featureFlagConfiguration;
-    this.messageSource = messageSource;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
@@ -70,7 +66,7 @@ public class RoutingDecisionService {
             programs, applicationData, document, county);
         case RED_LAKE -> routeRedLakeClients(programs, applicationData, county);
         case OTHER_FEDERALLY_RECOGNIZED_TRIBE -> routeClientsInOtherFederallyRecognizedTribe(
-            programs, applicationData, document, county);
+            county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
     }
@@ -80,7 +76,7 @@ public class RoutingDecisionService {
   }
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
-      Set<String> programs, ApplicationData applicationData, Document document, County county) {
+      County county) {
     if (!county.equals(County.Beltrami) ||
         featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
       return List.of(countyRoutingDestinations.get(county));
@@ -107,7 +103,7 @@ public class RoutingDecisionService {
 
   private boolean isOnlyApplyingForGrh(Set<String> programs, ApplicationData applicationData) {
     return programs.size() == 1 && programs.contains(GRH) &&
-        !isApplyingForTribalTanf(applicationData.getPagesData());
+           !isApplyingForTribalTanf(applicationData.getPagesData());
   }
 
   private List<RoutingDestination> routeWhiteEarthClients(Set<String> programs,
@@ -132,8 +128,8 @@ public class RoutingDecisionService {
 
   private boolean livesInCountyServicedByWhiteEarth(County county, String selectedTribeName) {
     return selectedTribeName != null
-        && selectedTribeName.equals(WHITE_EARTH)
-        && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
+           && selectedTribeName.equals(WHITE_EARTH)
+           && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
   }
 
   private boolean isApplyingForTribalTanf(PagesData pagesData) {
@@ -155,9 +151,11 @@ public class RoutingDecisionService {
   private boolean shouldSendToCounty(Set<String> programs, ApplicationData applicationData,
       Document document) {
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
+    boolean isApplicableForCcap = programs.contains(CCAP) &&
+                                  (document == Document.CCAP || document == Document.UPLOADED_DOC);
     return !shouldSendToMilleLacs
-        || programs.contains(SNAP) || programs.contains(CASH)
-        || programs.contains(GRH) || programs.contains(CCAP);
+           || isApplicableForCcap
+           || programs.contains(SNAP) || programs.contains(CASH) || programs.contains(GRH);
   }
 
   private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document) {
@@ -166,9 +164,9 @@ public class RoutingDecisionService {
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
     return selectedTribeName != null
-        && tribalNations.get(selectedTribeName) != null
-        && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
-        && !Document.CCAP.equals(document);
+           && tribalNations.get(selectedTribeName) != null
+           && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
+           && !Document.CCAP.equals(document);
   }
 }
 

@@ -21,7 +21,6 @@ import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +29,6 @@ class SubworkflowInputMapperTest {
   private final ApplicationData applicationData = new ApplicationData();
   private final Subworkflows subworkflows = new Subworkflows();
   private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  private final PagesDataBuilder pagesDataBuilder = new PagesDataBuilder();
   SubworkflowInputMapper subworkflowInputMapper = new SubworkflowInputMapper(
       applicationConfiguration, Map.of());
 
@@ -59,25 +57,22 @@ class SubworkflowInputMapperTest {
     question2Page.setInputs(List.of(question1Input1));
     question2Workflow.setPageConfiguration(question2Page);
 
-    PagesData iteration1 = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("question1", Map.of(
-            "input1", List.of("string"),
-            "input2", List.of("coolString")
-        ))
-    ));
+    PagesData iteration1 = new PagesDataBuilder()
+        .withPageData("question1", Map.of(
+            "input1", "string",
+            "input2", "coolString"
+        )).build();
 
-    PagesData iteration2 = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("question1", Map.of(
-            "input1", List.of("otherString"),
-            "input2", List.of("weirdString")
-        ))
-    ));
+    PagesData iteration2 = new PagesDataBuilder()
+        .withPageData("question1", Map.of(
+            "input1", "otherString",
+            "input2", "weirdString"
+        )).build();
 
-    PagesData iteration3 = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("question2", Map.of(
-            "input1", List.of("differentString")
-        ))
-    ));
+    PagesData iteration3 = new PagesDataBuilder()
+        .withPageData("question2",
+            "input1", "differentString"
+        ).build();
 
     applicationConfiguration.setPageDefinitions(List.of(
         question1Page,
@@ -241,25 +236,23 @@ class SubworkflowInputMapperTest {
 
     question2Page.setInputs(List.of(question2Input1));
 
-    PagesData iteration1 = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("question1", Map.of(
-            "input1", List.of("false"),
-            "input2", List.of("coolString")
-        )),
-        new PageDataBuilder("question2", Map.of(
-            "input1", List.of("foo")
+    PagesData iteration1 = new PagesDataBuilder()
+        .withPageData("question1", Map.of(
+            "input1", "false",
+            "input2", "coolString"
         ))
-    ));
+        .withPageData("question2", Map.of(
+            "input1", "foo"
+        )).build();
 
-    PagesData iteration2 = pagesDataBuilder.build(List.of(
-        new PageDataBuilder("question1", Map.of(
-            "input1", List.of("true"),
-            "input2", List.of("weirdString")
-        )),
-        new PageDataBuilder("question2", Map.of(
-            "input1", List.of("bar")
+    PagesData iteration2 = new PagesDataBuilder()
+        .withPageData("question1", Map.of(
+            "input1", "true",
+            "input2", "weirdString"
         ))
-    ));
+        .withPageData("question2", Map.of(
+            "input1", "bar"
+        )).build();
 
     applicationConfiguration.setPageDefinitions(List.of(
         question1Page,

@@ -15,7 +15,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Program;
@@ -26,12 +25,9 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.emails.EmailContentCreator;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -70,7 +66,11 @@ class ResendFailedEmailControllerTest {
     CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
     String confirmationId = "6730000290";
 
-    var applicationData = new ApplicationData();
+    var applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(programs)
+        .withPageData("matchInfo", "email", recipientEmail)
+        .build();
+
     when(emailContentCreator.createFullClientConfirmationEmail(applicationData,
         confirmationId,
         programs,
@@ -96,15 +96,8 @@ class ResendFailedEmailControllerTest {
     when(pdfGenerator.generate(eq(confirmationId), eq(CAF), eq(CLIENT)))
         .thenReturn(new ApplicationFile(fileContent.getBytes(), fileName));
 
-    PagesData pagesData = new PagesDataBuilder().build(List.of(
-        new PageDataBuilder("matchInfo", Map.of("email", List.of(recipientEmail))),
-        new PageDataBuilder("choosePrograms", Map.of("programs", programs))
-
-    ));
-    applicationData.setPagesData(pagesData);
-
     mockMvc.perform(get("/resend-confirmation-email/" + confirmationId)
-        .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
+            .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
         .andExpect(content()
             .string("Successfully resent confirmation email for application: " + confirmationId));
     verify(emailClient)

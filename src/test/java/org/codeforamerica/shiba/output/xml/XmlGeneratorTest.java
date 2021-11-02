@@ -22,7 +22,7 @@ import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.ApplicationInputType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
-import org.codeforamerica.shiba.output.caf.FileNameGenerator;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +38,7 @@ class XmlGeneratorTest {
 
   ApplicationInputsMappers mappers = mock(ApplicationInputsMappers.class);
   ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-  FileNameGenerator fileNameGenerator = mock(FileNameGenerator.class);
+  FilenameGenerator fileNameGenerator = mock(FilenameGenerator.class);
 
   @BeforeEach
   void setUp() {
@@ -70,7 +70,7 @@ class XmlGeneratorTest {
         pageName + "." + formInputName,
         "SOME_TOKEN"
     );
-    fileNameGenerator = mock(FileNameGenerator.class);
+    fileNameGenerator = mock(FilenameGenerator.class);
     XmlGenerator subject = new XmlGenerator(
         new ByteArrayResource(xml.getBytes()),
         xmlConfigMap,
@@ -501,7 +501,7 @@ class XmlGeneratorTest {
   }
 
   @Test
-  void shouldAppendXMLExtensionToApplicationFileName() {
+  void shouldNotAppendXMLExtensionToApplicationFileName() {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
         "<ns:Root xmlns:ns='some-url'>\n" +
         "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
@@ -515,7 +515,7 @@ class XmlGeneratorTest {
         fileNameGenerator
     );
 
-    String fileName = "some file name";
+    String fileName = "some-file-name.xml";
     Application application = Application.builder()
         .id("")
         .completedAt(null)
@@ -524,11 +524,11 @@ class XmlGeneratorTest {
         .timeToComplete(null)
         .build();
     when(applicationRepository.find(any())).thenReturn(application);
-    when(fileNameGenerator.generateXmlFileName(eq(application))).thenReturn(fileName);
+    when(fileNameGenerator.generateXmlFilename(eq(application))).thenReturn(fileName);
     String applicationId = "application-id";
     ApplicationFile applicationFile = subject.generate(applicationId, null, null);
 
-    assertThat(applicationFile.getFileName()).isEqualTo(fileName + ".xml");
+    assertThat(applicationFile.getFileName()).isEqualTo(fileName);
   }
 
   private org.w3c.dom.Document byteArrayToDocument(byte[] bytes)
