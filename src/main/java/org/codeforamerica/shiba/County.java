@@ -45,7 +45,9 @@ public enum County {
     if (List.of("St. Louis", "Saint Louis", "StLouis").contains(countyName)) {
       return StLouis;
     }
-
+    if (countyName.equals("")) {
+      return Other;
+    }
     String countyNameWithoutSpaces = countyName.replace(" ", "");
     return County.valueOf(countyNameWithoutSpaces);
   }
