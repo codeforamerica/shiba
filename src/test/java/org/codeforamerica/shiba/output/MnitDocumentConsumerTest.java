@@ -440,6 +440,9 @@ class MnitDocumentConsumerTest {
         .generateForUploadedDocument(any(), anyInt(), eq(application), any());
     when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
         "pdf1of1.pdf");
+    when(fileNameGenerator.generateUploadedDocumentName(
+        eq(application), eq(0), eq("pdf"), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)))
+    ).thenReturn("MILLE_LACS_pdf1of1.pdf");
 
     documentConsumer.processUploadedDocuments(application);
 
@@ -447,9 +450,12 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
     verify(mnitClient, never()).send(any(), eq(countyMap.get(Hennepin)),
         eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
-    verify(mnitClient).send(any(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
-        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
     verify(emailClient, times(1)).sendHennepinDocUploadsEmails(eq(application), any());
+
+    ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
+    verify(mnitClient).send(captor.capture(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
+        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+    assertThat(captor.getValue().getFileName()).isEqualTo("MILLE_LACS_pdf1of1.pdf");
   }
 
   @Test

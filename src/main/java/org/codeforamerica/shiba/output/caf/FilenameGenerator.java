@@ -39,14 +39,12 @@ public class FilenameGenerator {
   }
 
   public String generatePdfFilename(Application application, Document document) {
-
     RoutingDestination routingDestination = countyMap.get(application.getCounty());
-    return generatePdfFilenameForRoutingDestination(application, document, routingDestination);
+    return generatePdfFilename(application, document, routingDestination);
   }
 
-  public String generatePdfFilenameForRoutingDestination(Application application, Document document,
+  public String generatePdfFilename(Application application, Document document,
       RoutingDestination routingDestination) {
-
     String dhsProviderId = routingDestination.getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, document, dhsProviderId);
     String programs = getProgramCodes(application);
@@ -55,17 +53,21 @@ public class FilenameGenerator {
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
+    RoutingDestination routingDestination = countyMap.get(application.getCounty());
+    return generateUploadedDocumentName(application, index, extension, routingDestination);
+  }
 
+  public String generateUploadedDocumentName(Application application, int index, String extension,
+      RoutingDestination routingDestination) {
     int size = application.getApplicationData().getUploadedDocs().size();
     index = index + 1;
-    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String dhsProviderId = routingDestination.getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
         dhsProviderId);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
   public String generateXmlFilename(Application application) {
-
     String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, CAF,
         dhsProviderId);

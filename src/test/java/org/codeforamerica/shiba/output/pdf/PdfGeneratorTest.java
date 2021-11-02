@@ -68,10 +68,10 @@ class PdfGeneratorTest {
     TribalNationRoutingDestination routingDestination = new TribalNationRoutingDestination(
         "nationName", "folderId", "dhsProviderId", "email", "phoneNumber");
     doReturn("destinationSpecificDestination").when(fileNameGenerator)
-        .generatePdfFilenameForRoutingDestination(any(), any(), any());
+        .generatePdfFilename(any(), any(), any());
 
     pdfGenerator.generate(applicationId, Document.CAF, CASEWORKER, routingDestination);
-    verify(fileNameGenerator).generatePdfFilenameForRoutingDestination(application, Document.CAF,
+    verify(fileNameGenerator).generatePdfFilename(application, Document.CAF,
         routingDestination);
     verify(pdfFieldFillers.get(CASEWORKER).get(Document.CAF)).fill(any(), eq(applicationId),
         eq("destinationSpecificDestination"));

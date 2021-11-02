@@ -67,7 +67,7 @@ public class PdfGenerator implements FileGenerator {
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient,
       RoutingDestination routingDestination) {
     Application application = applicationRepository.find(applicationId);
-    String filename = fileNameGenerator.generatePdfFilenameForRoutingDestination(application,
+    String filename = fileNameGenerator.generatePdfFilename(application,
         document, routingDestination);
     return generateWithFilename(application, document, recipient, filename);
   }

@@ -18,12 +18,14 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -59,12 +61,12 @@ class FilenameGeneratorTest {
   void shouldGenerateFilenamesForTheCorrectRoutingDestination() {
     String applicationId = "coolIdBro";
     Application application = defaultApplicationBuilder.id(applicationId).build();
-    String countyFilename = filenameGenerator.generatePdfFilenameForRoutingDestination(application,
+    String countyFilename = filenameGenerator.generatePdfFilename(application,
         Document.CAF, defaultCountyRoutingDestination);
     assertThat(countyFilename).contains(defaultCountyRoutingDestination.getDhsProviderId());
 
     TribalNationRoutingDestination redLakeRoutingDestination = tribalNations.get(RED_LAKE);
-    String fileName = filenameGenerator.generatePdfFilenameForRoutingDestination(application,
+    String fileName = filenameGenerator.generatePdfFilename(application,
         Document.CAF,
         redLakeRoutingDestination);
     assertThat(fileName).contains(redLakeRoutingDestination.getDhsProviderId());
@@ -198,37 +200,62 @@ class FilenameGeneratorTest {
         countyNPI, "20070909", "235959", applicationId, "F"));
   }
 
-  @Test
-  void shouldFormatNameCorrectlyForFileUploads() {
-    MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg",
-        MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-    MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf",
-        MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
-    applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
+  @Nested
+  class WithUploadedDocs {
 
-    String countyNPI = "someNPI";
-    County county = Olmsted;
-    countyMap.getCounties()
-        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
-    String applicationId = "someId";
+    private Application application;
+    private final String countyNPI = "someNPI";
+    private final String applicationId = "someId";
 
-    Application application = defaultApplicationBuilder
-        .id("someId")
-        .county(county)
-        .completedAt(
-            ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
-        .applicationData(applicationData)
-        .build();
+    @BeforeEach
+    void setUp() {
+      MockMultipartFile image = new MockMultipartFile("image", "someImage.jpg",
+          MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+      MockMultipartFile pdf = new MockMultipartFile("pdf", "somePdf.pdf",
+          MediaType.APPLICATION_PDF_VALUE, "thisIsAPdf".getBytes());
+      ApplicationData applicationData = new ApplicationData();
+      applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", "image/jpeg");
+      applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
 
-    String imageName = filenameGenerator.generateUploadedDocumentName(application, 0, "jpg");
-    String pdfName = filenameGenerator.generateUploadedDocumentName(application, 1, "pdf");
+      County county = Olmsted;
+      countyMap.getCounties()
+          .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
 
-    assertThat(imageName).isEqualTo(String
-        .format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
-    assertThat(pdfName).isEqualTo(String
-        .format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+      application = defaultApplicationBuilder
+          .id(applicationId)
+          .county(county)
+          .completedAt(
+              ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+          .applicationData(applicationData)
+          .build();
+    }
+
+    @Test
+    void shouldFormatNameCorrectlyForFileUploads() {
+      String imageName = filenameGenerator.generateUploadedDocumentName(application, 0, "jpg");
+      String pdfName = filenameGenerator.generateUploadedDocumentName(application, 1, "pdf");
+
+      assertThat(imageName).isEqualTo(String
+          .format("%s_MNB_%s_%s_%s_doc1of2.jpg", countyNPI, "20070909", "235959", applicationId));
+      assertThat(pdfName).isEqualTo(String
+          .format("%s_MNB_%s_%s_%s_doc2of2.pdf", countyNPI, "20070909", "235959", applicationId));
+    }
+
+    @Test
+    void shouldIncludeCorrectDhsProviderIdWhenARoutingDestinationIsProvided() {
+      String providerId = "someOtherProviderId";
+      RoutingDestination routingDestination = new TribalNationRoutingDestination("test", "",
+          providerId, "", "");
+      String imageName = filenameGenerator.generateUploadedDocumentName(application, 0, "jpg",
+          routingDestination);
+      String pdfName = filenameGenerator.generateUploadedDocumentName(application, 1, "pdf",
+          routingDestination);
+
+      assertThat(imageName).isEqualTo(String
+          .format("%s_MNB_%s_%s_%s_doc1of2.jpg", providerId, "20070909", "235959", applicationId));
+      assertThat(pdfName).isEqualTo(String
+          .format("%s_MNB_%s_%s_%s_doc2of2.pdf", providerId, "20070909", "235959", applicationId));
+    }
   }
 
   @Test
