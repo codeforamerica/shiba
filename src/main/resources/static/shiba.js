@@ -146,28 +146,32 @@ var preCheckContactInfo = (function () {
     init: function () {
 	  var phoneInputTextBox = document.getElementById('phoneNumber');
 	  var emailInputTextBox = document.getElementById('email');
-	  phoneInputTextBox.addEventListener('input', function() {
-		var textCheckbox = document.getElementById('TEXT');
-		if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
-		  textCheckbox.checked = true;
-		  document.querySelector('label[for="TEXT"]').classList.add('is-selected');
-		}
-		if (phoneInputTextBox.value.length === 0 && textCheckbox.checked) {
-		  textCheckbox.checked = false;
-		  document.querySelector('label[for="TEXT"]').classList.remove('is-selected');
-		}
-  	  });
-	  emailInputTextBox.addEventListener('input', function() {
-	    var emailCheckbox = document.getElementById('EMAIL');
-	    if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {
-	      emailCheckbox.checked = true;
-	      document.querySelector('label[for="EMAIL"]').classList.add('is-selected');
-	    }
-	    if (emailInputTextBox.value.length === 0 && emailCheckbox.checked) {
-	      emailCheckbox.checked = false;
-	      document.querySelector('label[for="EMAIL"]').classList.remove('is-selected');
-	    }
-    });  
+	  if(phoneInputTextBox != null){
+		  phoneInputTextBox.addEventListener('input', function() {
+			var textCheckbox = document.getElementById('TEXT');
+			if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
+			  textCheckbox.checked = true;
+			  document.querySelector('label[for="TEXT"]').classList.add('is-selected');
+			}
+			if (phoneInputTextBox.value.length === 0 && textCheckbox.checked) {
+			  textCheckbox.checked = false;
+			  document.querySelector('label[for="TEXT"]').classList.remove('is-selected');
+			}
+	  	  });
+  	  }
+  	  if(emailInputTextBox != null){
+		  emailInputTextBox.addEventListener('input', function() {
+		    var emailCheckbox = document.getElementById('EMAIL');
+		    if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {
+		      emailCheckbox.checked = true;
+		      document.querySelector('label[for="EMAIL"]').classList.add('is-selected');
+		    }
+		    if (emailInputTextBox.value.length === 0 && emailCheckbox.checked) {
+		      emailCheckbox.checked = false;
+		      document.querySelector('label[for="EMAIL"]').classList.remove('is-selected');
+		    }
+	    }); 
+    } 
    }
   };
   return {
