@@ -3,13 +3,12 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
@@ -62,6 +61,20 @@ class PdfGeneratorTest {
         mappers,
         fileNameGenerator);
     when(applicationRepository.find(applicationId)).thenReturn(application);
+  }
+
+  @Test
+  void generatesAPdfWithTheCorrectFilename() {
+    TribalNationRoutingDestination routingDestination = new TribalNationRoutingDestination(
+        "nationName", "folderId", "dhsProviderId", "email", "phoneNumber");
+    doReturn("destinationSpecificDestination").when(fileNameGenerator)
+        .generatePdfFilename(any(), any(), any());
+
+    pdfGenerator.generate(applicationId, Document.CAF, CASEWORKER, routingDestination);
+    verify(fileNameGenerator).generatePdfFilename(application, Document.CAF,
+        routingDestination);
+    verify(pdfFieldFillers.get(CASEWORKER).get(Document.CAF)).fill(any(), eq(applicationId),
+        eq("destinationSpecificDestination"));
   }
 
   @Test
