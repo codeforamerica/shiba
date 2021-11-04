@@ -396,6 +396,9 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // The legal stuff.
     testPage.enter("agreeToTerms", "I agree");
+    testPage.clickContinue(); // Drug felony question is optional so we should be able to advance
+    assertThat(driver.getTitle()).isEqualTo("Sign this application");
+    testPage.goBack();
     testPage.enter("drugFelony", NO.getDisplayValue());
     testPage.clickContinue();
 

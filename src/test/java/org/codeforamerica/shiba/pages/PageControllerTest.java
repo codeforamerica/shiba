@@ -52,6 +52,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ActiveProfiles("test")
@@ -115,10 +116,10 @@ class PageControllerTest {
     when(clock.instant())
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
 
-    mockMvc.perform(post("/submit")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .param("foo[]", "some value"))
-        .andExpect(redirectedUrl("/pages/secondPage/navigation"));
+    MockHttpServletRequestBuilder request = post("/submit")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        .param("foo[]", "some value");
+    mockMvc.perform(request).andExpect(redirectedUrl("/pages/secondPage/navigation"));
 
     PageData secondPage = applicationData.getPagesData().getPage("secondPage");
     assertThat(secondPage.get("foo").getValue()).contains("some value");
