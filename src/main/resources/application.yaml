@@ -82,7 +82,6 @@ feature-flag:
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
   use-county-selection: on
-  county-dakota: on
 
 document-upload:
   max-files-uploaded: 20
