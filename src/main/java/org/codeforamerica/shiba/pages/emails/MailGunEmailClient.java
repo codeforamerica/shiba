@@ -212,7 +212,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
-    log.info("later docs confirmation email sent to " + recipientEmail);
+    log.info("later docs confirmation email sent");
   }
 
   @Override

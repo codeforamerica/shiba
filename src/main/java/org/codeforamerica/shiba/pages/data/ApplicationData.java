@@ -1,14 +1,24 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MEDICAL_EXPENSES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -16,7 +26,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.NextPage;
+import org.codeforamerica.shiba.pages.config.PageDatasource;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.multipart.MultipartFile;
@@ -116,25 +130,11 @@ public class ApplicationData implements Serializable {
   }
 
   public boolean isApplicationWith(List<String> programs) {
-    List<String> applicantPrograms = this.getPagesData()
-        .safeGetPageInputValue("choosePrograms", "programs");
-    boolean applicantWith = programs.stream().anyMatch(applicantPrograms::contains);
-    boolean hasHousehold = this.getSubworkflows().containsKey("household");
-    boolean householdWith = false;
-    if (hasHousehold) {
-      householdWith = this.getSubworkflows().get("household").stream().anyMatch(iteration -> {
-        List<String> iterationsPrograms = iteration.getPagesData()
-            .safeGetPageInputValue("householdMemberInfo", "programs");
-        return programs.stream().anyMatch(iterationsPrograms::contains);
-      });
-    }
-
-    return applicantWith || householdWith;
+    return getApplicantAndHouseholdMemberPrograms().stream().anyMatch(programs::contains);
   }
 
   public boolean isMedicalExpensesApplication() {
-    List<String> medicalExpenses = this.getPagesData()
-        .safeGetPageInputValue("medicalExpenses", "medicalExpenses");
+    List<String> medicalExpenses = getValues(pagesData, MEDICAL_EXPENSES);
     List<String> selectedExpenses = List
         .of("MEDICAL_INSURANCE_PREMIUMS", "DENTAL_INSURANCE_PREMIUMS",
             "VISION_INSURANCE_PREMIUMS");
@@ -158,16 +158,11 @@ public class ApplicationData implements Serializable {
 
   @NotNull
   public Set<String> getApplicantAndHouseholdMemberPrograms() {
-    List<String> applicantPrograms = getPagesData()
-        .safeGetPageInputValue("choosePrograms", "programs");
+    List<String> applicantPrograms = getValues(pagesData, APPLICANT_PROGRAMS);
     Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-    boolean hasHousehold = getSubworkflows().containsKey("household");
-    if (hasHousehold) {
-      Subworkflow householdSubworkflow = getSubworkflows().get("household");
-      householdSubworkflow.forEach(iteration ->
-          applicantAndHouseholdMemberPrograms.addAll(
-              iteration.getPagesData()
-                  .safeGetPageInputValue("householdMemberInfo", "programs")));
+    List<String> householdPrograms = getValues(HOUSEHOLD, HOUSEHOLD_PROGRAMS, this);
+    if (householdPrograms != null) {
+      applicantAndHouseholdMemberPrograms.addAll(householdPrograms);
     }
     return applicantAndHouseholdMemberPrograms;
   }
