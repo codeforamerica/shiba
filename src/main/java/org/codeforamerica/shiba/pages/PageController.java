@@ -527,15 +527,6 @@ public class PageController {
           .publish(new SubworkflowCompletedEvent(httpSession.getId(), groupName));
     }
 
-    if (applicationConfiguration.getLandmarkPages().isLaterDocsIdPage(pageName)) {
-      applicationData.setFlow(LATER_DOCS);
-      if (applicationData.getId() == null) {
-        applicationData.setId(applicationRepository.getNextId());
-      }
-      Application application = applicationFactory.newApplication(applicationData);
-      applicationRepository.save(application);
-    }
-
     if (pageDataIsValid) {
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());

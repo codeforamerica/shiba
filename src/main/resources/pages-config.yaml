@@ -4137,24 +4137,28 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: matchInfo
+        flow: LATER_DOCS
         condition:
           pageName: identifyCounty
           input: county
           matcher: DOES_NOT_CONTAIN
           value: Dakota
       - pageName: matchInfo
+        flow: LATER_DOCS
         flag: county-dakota
         condition:
           pageName: identifyCounty
           input: county
           value: Dakota
       - pageName: emailDocsToYourCounty
+        flow: LATER_DOCS
     subtleLinkTargetPage: identifyZipcode
   identifyZipcode:
     pageConfiguration: *identifyZipcode
     enrichment: zipcodeToCountyEnrichment
     nextPages:
       - pageName: matchInfo
+        flow: LATER_DOCS
         condition:
           logicalOperator: AND
           conditions:
@@ -4167,12 +4171,14 @@ workflow:
               matcher: DOES_NOT_CONTAIN
               value: Other
       - pageName: matchInfo
+        flow: LATER_DOCS
         flag: county-dakota
         condition:
           pageName: identifyZipcode
           input: mappedCounty
           value: Dakota
       - pageName: emailDocsToYourCounty
+        flow: LATER_DOCS
     subtleLinkTargetPage: identifyCounty
   matchInfo:
     pageConfiguration: *matchInfo
@@ -4180,8 +4186,6 @@ workflow:
       - pageName: uploadDocuments
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
-    nextPages:
-      - pageName: matchInfo
     datasources:
       - pageName: identifyCounty
   nextSteps:
@@ -4254,5 +4258,4 @@ landmarkPages:
   terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   submitPage: signThisApplication
-  laterDocsIdPage: matchInfo # Page where confirmation number is generated for later docs (happens before submit)
   uploadDocumentsPage: uploadDocuments
