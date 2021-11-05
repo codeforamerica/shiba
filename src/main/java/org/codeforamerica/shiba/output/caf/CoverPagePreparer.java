@@ -26,8 +26,8 @@ import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
-import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
+import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CoverPagePreparer implements ApplicationInputsMapper {
+public class CoverPagePreparer implements DocumentFieldPreparer {
 
   public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
   private static final Map<String, String> UTM_SOURCE_MAPPING = Map

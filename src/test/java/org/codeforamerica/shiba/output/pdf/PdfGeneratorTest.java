@@ -13,7 +13,7 @@ import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class PdfGeneratorTest {
   private Application application;
   private PdfFieldMapper pdfFieldMapper;
   private PdfFieldFiller caseworkerFiller;
-  private ApplicationInputsMappers mappers;
+  private DocumentFieldPreparers preparers;
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
 
@@ -38,7 +38,7 @@ class PdfGeneratorTest {
     caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
-    mappers = mock(ApplicationInputsMappers.class);
+    preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
 
@@ -59,7 +59,7 @@ class PdfGeneratorTest {
         pdfFieldFillers,
         applicationRepository,
         null,
-        mappers,
+        preparers,
         fileNameGenerator);
     when(applicationRepository.find(applicationId)).thenReturn(application);
   }
@@ -73,7 +73,8 @@ class PdfGeneratorTest {
     String fileName = "some file name";
     when(fileNameGenerator.generatePdfFilename(application, Document.CAF)).thenReturn(fileName);
     Recipient recipient = CASEWORKER;
-    when(mappers.map(application, Document.CAF, recipient)).thenReturn(documentFields);
+    when(preparers.prepareDocumentFields(application, Document.CAF, recipient)).thenReturn(
+        documentFields);
     when(pdfFieldMapper.map(documentFields)).thenReturn(pdfFields);
     ApplicationFile expectedApplicationFile = new ApplicationFile("someContent".getBytes(),
         "someFileName");

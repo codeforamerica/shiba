@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.ZonedDateTime;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ class SecurityConfigurationTest {
   WebApplicationContext webApplicationContext;
 
   @MockBean
-  ApplicationInputsMappers mappers;
+  DocumentFieldPreparers preparers;
 
   @MockBean
   ApplicationRepository applicationRepository;
@@ -57,7 +57,7 @@ class SecurityConfigurationTest {
         .county(null)
         .timeToComplete(null)
         .build()).when(applicationRepository).find(any());
-    doReturn(emptyList()).when(mappers).map(any(), any(), any());
+    doReturn(emptyList()).when(preparers).prepareDocumentFields(any(), any(), any());
     doReturn("").when(fileNameGenerator).generatePdfFilename(any(), any());
   }
 

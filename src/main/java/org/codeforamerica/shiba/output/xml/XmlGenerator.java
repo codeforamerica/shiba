@@ -20,7 +20,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +34,7 @@ public class XmlGenerator implements FileGenerator {
   private final Map<String, String> config;
   private final Map<String, String> enumMappings;
   private final ApplicationRepository applicationRepository;
-  private final ApplicationInputsMappers mappers;
+  private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
   private final BinaryOperator<String> UNUSED_IN_SEQUENTIAL_STREAM = (s1, s2) -> "";
   private final Function<String, String> tokenFormatter = (token) -> Pattern
@@ -45,20 +45,21 @@ public class XmlGenerator implements FileGenerator {
       Map<String, String> xmlConfigMap,
       Map<String, String> xmlEnum,
       ApplicationRepository applicationRepository,
-      ApplicationInputsMappers mappers,
+      DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator) {
     this.xmlConfiguration = xmlConfiguration;
     this.config = xmlConfigMap;
     this.enumMappings = xmlEnum;
     this.applicationRepository = applicationRepository;
-    this.mappers = mappers;
+    this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
   }
 
   @Override
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
     Application application = applicationRepository.find(applicationId);
-    List<DocumentField> documentFields = mappers.map(application, null, recipient);
+    List<DocumentField> documentFields = preparers.prepareDocumentFields(application, null,
+        recipient);
 
     try {
       List<DocumentField> nonEmptyDocumentFields = documentFields.stream()

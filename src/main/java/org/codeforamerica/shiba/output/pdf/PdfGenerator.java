@@ -19,7 +19,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
@@ -35,21 +35,21 @@ public class PdfGenerator implements FileGenerator {
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
-  private final ApplicationInputsMappers mappers;
+  private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
-      ApplicationInputsMappers mappers,
+      DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
     this.applicationRepository = applicationRepository;
     this.documentRepository = documentRepository;
-    this.mappers = mappers;
+    this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
   }
 
@@ -60,7 +60,8 @@ public class PdfGenerator implements FileGenerator {
   }
 
   public ApplicationFile generate(Application application, Document document, Recipient recipient) {
-    List<DocumentField> documentFields = mappers.map(application, document, recipient);
+    List<DocumentField> documentFields = preparers.prepareDocumentFields(application, document,
+        recipient);
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
     return pdfFiller.fill(pdfFieldMapper.map(documentFields), application.getId(),
         fileNameGenerator.generatePdfFilename(application, document));

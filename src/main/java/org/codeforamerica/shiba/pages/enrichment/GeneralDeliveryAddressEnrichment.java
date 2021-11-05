@@ -11,6 +11,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.output.documentfieldpreparers.MailingAddressStreetPreparer;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
  * If the county has "postOfficeAddress" information configured, that will be used for delivery
  * mailing address.
  *
- * @see org.codeforamerica.shiba.output.applicationinputsmappers.MailingAddressStreetMapper
+ * @see MailingAddressStreetPreparer
  * @see org.codeforamerica.shiba.mnit.CountyRoutingDestination
  */
 @Component
