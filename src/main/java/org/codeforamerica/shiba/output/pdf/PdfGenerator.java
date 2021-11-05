@@ -1,8 +1,5 @@
 package org.codeforamerica.shiba.output.pdf;
 
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +15,6 @@ import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.ApplicationInput;
 import org.codeforamerica.shiba.output.Document;
@@ -63,35 +59,17 @@ public class PdfGenerator implements FileGenerator {
     return generate(application, document, recipient);
   }
 
-  // Generates a pdf and gives it a filename corresponding to a specific routing destination
-  public ApplicationFile generate(String applicationId, Document document, Recipient recipient,
-      RoutingDestination routingDestination) {
-    Application application = applicationRepository.find(applicationId);
-    String filename = fileNameGenerator.generatePdfFilename(application,
-        document, routingDestination);
-    return generateWithFilename(application, document, recipient, filename);
-  }
-
-  public byte[] generateCoverPageForUploadedDocs(Application application) {
-    return generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
-  }
-
   public ApplicationFile generate(Application application, Document document, Recipient recipient) {
-    String filename = fileNameGenerator.generatePdfFilename(application, document);
-    return generateWithFilename(application, document, recipient, filename);
-  }
-
-  private ApplicationFile generateWithFilename(Application application, Document document,
-      Recipient recipient, String filename) {
     List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
-    List<PdfField> fields = pdfFieldMapper.map(applicationInputs);
-    return pdfFiller.fill(fields, application.getId(), filename);
+    return pdfFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId(),
+        fileNameGenerator.generatePdfFilename(application, document));
   }
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
       int documentIndex, Application application, byte[] coverPage) {
-    var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
+    var fileBytes = documentRepository
+        .get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
       if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
@@ -110,8 +88,8 @@ public class PdfGenerator implements FileGenerator {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
 
-      String filename =
-          fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
+      String filename = fileNameGenerator
+          .generateUploadedDocumentName(application, documentIndex, extension);
       return new ApplicationFile(fileBytes, filename);
     }
     return null;

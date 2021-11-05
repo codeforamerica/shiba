@@ -92,7 +92,7 @@ public class ResubmissionService {
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
       List<String> recipientEmails) {
-    var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
+    var coverPage = pdfGenerator.generate(application, document, CASEWORKER).getFileBytes();
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);

@@ -194,19 +194,19 @@ class FileDownloadControllerTest {
     when(applicationRepository.find(applicationId)).thenReturn(
         application
     );
-    when(pdfGenerator.generateCoverPageForUploadedDocs(any(Application.class)))
-        .thenReturn(imageFile.getFileBytes());
+    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
+        .thenReturn(imageFile);
     when(pdfGenerator
         .generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class),
             any())).thenReturn(imageFile);
     MvcResult result = mockMvc.perform(
-            get("/download-docs/9870000123"))
+        get("/download-docs/9870000123"))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
             String.format("filename=\"%s\"", applicationId + ".zip")))
         .andExpect(status().is2xxSuccessful())
         .andReturn();
 
-    verify(pdfGenerator).generateCoverPageForUploadedDocs(application);
+    verify(pdfGenerator).generate(application, UPLOADED_DOC, CASEWORKER);
     verify(pdfGenerator)
         .generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
 

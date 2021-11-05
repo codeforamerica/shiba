@@ -14,7 +14,6 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -36,48 +35,33 @@ public class FilenameGenerator {
   }
 
   public String generatePdfFilename(Application application, Document document) {
-    RoutingDestination routingDestination = countyMap.get(application.getCounty());
-    return generatePdfFilename(application, document, routingDestination);
-  }
-
-  public String generatePdfFilename(Application application, Document document,
-      RoutingDestination routingDestination) {
-    String dhsProviderId = routingDestination.getDhsProviderId();
-    String prefix = getSharedApplicationPrefix(application, document, dhsProviderId);
+    String prefix = getSharedApplicationPrefix(application, document);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
     return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {
-    RoutingDestination routingDestination = countyMap.get(application.getCounty());
-    return generateUploadedDocumentName(application, index, extension, routingDestination);
-  }
-
-  public String generateUploadedDocumentName(Application application, int index, String extension,
-      RoutingDestination routingDestination) {
     int size = application.getApplicationData().getUploadedDocs().size();
     index = index + 1;
-    String dhsProviderId = routingDestination.getDhsProviderId();
-    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
-        dhsProviderId);
+    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
   public String generateXmlFilename(Application application) {
-    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
-    String prefix = getSharedApplicationPrefix(application, CAF,
-        dhsProviderId);
+    String prefix = getSharedApplicationPrefix(application, CAF);
     String programs = getProgramCodes(application);
     return "%s%s.xml".formatted(prefix, programs);
   }
 
   @NotNull
-  private String getSharedApplicationPrefix(Application application, Document document,
-      String dhsProviderId) {
-    boolean isHennepinUploadedDoc =
-        document == UPLOADED_DOC && application.getCounty() == County.Hennepin;
-    String fileSource = isHennepinUploadedDoc ? "DOC" : "MNB";
+  private String getSharedApplicationPrefix(Application application,
+      Document document) {
+    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+    String fileSource = "MNB";
+    if (document == UPLOADED_DOC && application.getCounty() == County.Hennepin) {
+      fileSource = "DOC";
+    }
 
     ZonedDateTime completedAtCentralTime =
         application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"));

@@ -27,7 +27,6 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,8 +76,7 @@ class ResubmissionServiceTest {
 
     routingDestinations = new ArrayList<>();
     routingDestinations.add(CountyRoutingDestination.builder().email(OLMSTED_EMAIL).build());
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
-        routingDestinations);
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
   }
 
   @Test
@@ -180,8 +178,8 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile1 = new ApplicationFile("test".getBytes(), "fileName.txt");
     ApplicationFile applicationFile2 = new ApplicationFile("test".getBytes(), "fileName.txt");
     var coverPage = "someCoverPageText".getBytes();
-    when(pdfGenerator.generateCoverPageForUploadedDocs(application))
-        .thenReturn(coverPage);
+    when(pdfGenerator.generate(application, UPLOADED_DOC, Recipient.CASEWORKER))
+        .thenReturn(new ApplicationFile(coverPage, "coverPage"));
     var uploadedDocs = applicationData.getUploadedDocs();
     when(pdfGenerator.generateForUploadedDocument(uploadedDocs.get(0), 0, application, coverPage))
         .thenReturn(applicationFile1);
@@ -215,10 +213,11 @@ class ResubmissionServiceTest {
 
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
     var coverPage = "someCoverPageText".getBytes();
-    when(pdfGenerator.generateCoverPageForUploadedDocs(application)).thenReturn(coverPage);
-    UploadedDocument firstUploadedDoc = applicationData.getUploadedDocs().get(0);
-    when(pdfGenerator.generateForUploadedDocument(firstUploadedDoc, 0, application,
-        coverPage)).thenReturn(uploadedDocWithCoverPageFile);
+    when(pdfGenerator.generate(application, UPLOADED_DOC, Recipient.CASEWORKER))
+        .thenReturn(new ApplicationFile(coverPage, "coverPage"));
+    when(pdfGenerator
+        .generateForUploadedDocument(applicationData.getUploadedDocs().get(0), 0, application,
+            coverPage)).thenReturn(uploadedDocWithCoverPageFile);
 
     var ccapFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CCAP, Recipient.CASEWORKER)).thenReturn(ccapFile);
@@ -242,6 +241,7 @@ class ResubmissionServiceTest {
     assertThat(applicationRepositoryDocumentCaptor.getAllValues())
         .containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
   }
+
 
   @Test
   void itUpdatesTheStatusWhenResubmissionIsUnsuccessful() {
