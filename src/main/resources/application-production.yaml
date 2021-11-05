@@ -24,4 +24,3 @@ feature-flag:
   submit-via-api: on
   certain-pops: off
   submit-docs-via-email-for-hennepin: on
-  white-earth-and-red-lake-routing: off

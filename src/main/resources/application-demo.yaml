@@ -11,6 +11,5 @@ feature-flag:
   submit-via-api: off
   certain-pops: off
   submit-docs-via-email-for-hennepin: off
-  white-earth-and-red-lake-routing: off
 
 demo-banner: true
