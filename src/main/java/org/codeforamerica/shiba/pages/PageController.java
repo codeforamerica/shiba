@@ -200,7 +200,6 @@ public class PageController {
       return new ModelAndView("redirect:/error");
     }
 
-    response.addHeader("Cache-Control", "no-store");
     if (missingRequiredSubworkflows(pageWorkflowConfig)) {
       return new ModelAndView(
           "redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
