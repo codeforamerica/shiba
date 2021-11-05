@@ -172,7 +172,6 @@ public class PageController {
   ) {
     var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
-    // Validations and special case redirects
     if (landmarkPagesConfiguration.isLandingPage(pageName)) {
       httpSession.invalidate();
     }
@@ -184,6 +183,7 @@ public class PageController {
       }
     }
 
+    // Validations and special case redirects
     if (shouldRedirectToTerminalPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
@@ -204,10 +204,6 @@ public class PageController {
     if (missingRequiredSubworkflows(pageWorkflowConfig)) {
       return new ModelAndView(
           "redirect:/pages/" + pageWorkflowConfig.getDataMissingRedirect());
-    }
-
-    if (applicationConfiguration.getLandmarkPages().isUploadDocumentsPage(pageName)) {
-      applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
     }
 
     // Update pagesData with data for incomplete subworkflows
@@ -607,6 +603,7 @@ public class PageController {
   public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
       @RequestParam("dataURL") String dataURL,
       @RequestParam("type") String type) throws IOException, InterruptedException {
+    applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
     if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
         file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
       if (type.contains("pdf")) {
