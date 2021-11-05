@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -48,11 +48,11 @@ class OneToOneApplicationInputsMapperTest {
         .county(County.Other)
         .timeToComplete(null)
         .build();
-    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
-        .map(application, null, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = oneToOneApplicationInputsMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
+    assertThat(documentFields).contains(
+        new DocumentField(pageName, input1Name, input1Value, DocumentFieldType.SINGLE_VALUE)
     );
   }
 
@@ -86,12 +86,12 @@ class OneToOneApplicationInputsMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
-        .map(application, null, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = oneToOneApplicationInputsMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs)
-        .contains(new ApplicationInput(pageName, input1Name, List.of(maskedValue),
-            ApplicationInputType.SINGLE_VALUE));
+    assertThat(documentFields)
+        .contains(new DocumentField(pageName, input1Name, List.of(maskedValue),
+            DocumentFieldType.SINGLE_VALUE));
   }
 
   @Test
@@ -124,12 +124,12 @@ class OneToOneApplicationInputsMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
-        .map(application, null, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = oneToOneApplicationInputsMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs)
-        .contains(new ApplicationInput(pageName, input1Name, List.of(""),
-            ApplicationInputType.SINGLE_VALUE));
+    assertThat(documentFields)
+        .contains(new DocumentField(pageName, input1Name, List.of(""),
+            DocumentFieldType.SINGLE_VALUE));
   }
 
   @Test
@@ -162,11 +162,11 @@ class OneToOneApplicationInputsMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
-        .map(application, null, Recipient.CASEWORKER, null);
+    List<DocumentField> documentFields = oneToOneApplicationInputsMapper
+        .prepareDocumentFields(application, null, Recipient.CASEWORKER, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(pageName, input1Name, input1Value, ApplicationInputType.SINGLE_VALUE)
+    assertThat(documentFields).contains(
+        new DocumentField(pageName, input1Name, input1Value, DocumentFieldType.SINGLE_VALUE)
     );
   }
 
@@ -204,12 +204,12 @@ class OneToOneApplicationInputsMapperTest {
         .county(County.Other)
         .timeToComplete(null)
         .build();
-    List<ApplicationInput> applicationInputs = oneToOneApplicationInputsMapper
-        .map(application, null, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = oneToOneApplicationInputsMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(pageName, input2Name, input2Value, ApplicationInputType.SINGLE_VALUE),
-        new ApplicationInput(pageName, input3Name, input3Value, ApplicationInputType.SINGLE_VALUE)
+    assertThat(documentFields).contains(
+        new DocumentField(pageName, input2Name, input2Value, DocumentFieldType.SINGLE_VALUE),
+        new DocumentField(pageName, input3Name, input3Value, DocumentFieldType.SINGLE_VALUE)
     );
   }
 

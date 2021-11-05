@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class ApplicationInputsMappersTest {
 
   @Test
   void shouldIncludeApplicationIdInput() {
-    List<ApplicationInput> applicationInputs = mappers.map(Application.builder()
+    List<DocumentField> documentFields = mappers.map(Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now())
         .applicationData(new ApplicationData())
@@ -36,8 +36,8 @@ class ApplicationInputsMappersTest {
         .timeToComplete(null)
         .build(), null, CLIENT);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("nonPagesData", "applicationId", List.of("someId"), SINGLE_VALUE));
+    assertThat(documentFields).contains(
+        new DocumentField("nonPagesData", "applicationId", List.of("someId"), SINGLE_VALUE));
   }
 
   @Test
@@ -54,10 +54,10 @@ class ApplicationInputsMappersTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
+    List<DocumentField> documentFields = mappers.map(application, null, CASEWORKER);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("nonPagesData", "completedDate", List.of("2020-09-02"), SINGLE_VALUE));
+    assertThat(documentFields).contains(
+        new DocumentField("nonPagesData", "completedDate", List.of("2020-09-02"), SINGLE_VALUE));
   }
 
   @Test
@@ -73,10 +73,10 @@ class ApplicationInputsMappersTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
+    List<DocumentField> documentFields = mappers.map(application, null, CASEWORKER);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("nonPagesData", "completedDateTime", List.of("2019-11-16T05:29:01Z"),
+    assertThat(documentFields).contains(
+        new DocumentField("nonPagesData", "completedDateTime", List.of("2019-11-16T05:29:01Z"),
             SINGLE_VALUE));
   }
 
@@ -94,10 +94,10 @@ class ApplicationInputsMappersTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = mappers.map(application, null, CASEWORKER);
+    List<DocumentField> documentFields = mappers.map(application, null, CASEWORKER);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("nonPagesData", "submissionDateTime",
+    assertThat(documentFields).contains(
+        new DocumentField("nonPagesData", "submissionDateTime",
             List.of("09/03/2020 at 01:02 AM"), SINGLE_VALUE));
   }
 
@@ -117,7 +117,7 @@ class ApplicationInputsMappersTest {
         .build();
     applicationInputsMappers.map(application, Document.CAF, CASEWORKER);
 
-    verify(mapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
+    verify(mapper).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
   }
 
   @Test
@@ -134,17 +134,21 @@ class ApplicationInputsMappersTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> mockOutput = List
-        .of(new ApplicationInput("group", "name", List.of("value"), null));
-    when(successfulMapper.map(eq(application), eq(Document.CAF), eq(CASEWORKER), any()))
+    List<DocumentField> mockOutput = List
+        .of(new DocumentField("group", "name", List.of("value"), null));
+    when(successfulMapper.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any()))
         .thenReturn(mockOutput);
-    when(failingMapper.map(eq(application), eq(Document.CAF), eq(CASEWORKER), any()))
+    when(failingMapper.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any()))
         .thenThrow(IllegalArgumentException.class);
 
-    List<ApplicationInput> actualOutput = applicationInputsMappers
+    List<DocumentField> actualOutput = applicationInputsMappers
         .map(application, Document.CAF, CASEWORKER);
     assertThat(actualOutput).isNotEmpty();
-    verify(successfulMapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
-    verify(failingMapper).map(eq(application), eq(Document.CAF), eq(CASEWORKER), any());
+    verify(successfulMapper).prepareDocumentFields(eq(application), eq(Document.CAF),
+        eq(CASEWORKER), any());
+    verify(failingMapper).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any());
   }
 }

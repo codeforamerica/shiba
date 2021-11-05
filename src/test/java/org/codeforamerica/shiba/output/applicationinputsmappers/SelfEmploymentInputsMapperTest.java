@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
@@ -27,19 +27,20 @@ public class SelfEmploymentInputsMapperTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentInputsMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .containsExactlyInAnyOrder(
-            new ApplicationInput(
+            new DocumentField(
                 "employee",
                 "selfEmployed",
                 List.of("true"),
-                ApplicationInputType.SINGLE_VALUE
+                DocumentFieldType.SINGLE_VALUE
             ),
-            new ApplicationInput(
+            new DocumentField(
                 "employee",
                 "selfEmployedGrossMonthlyEarnings",
                 List.of("see question 9"),
-                ApplicationInputType.SINGLE_VALUE
+                DocumentFieldType.SINGLE_VALUE
             )
         );
   }
@@ -55,19 +56,20 @@ public class SelfEmploymentInputsMapperTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentInputsMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .containsExactlyInAnyOrder(
-            new ApplicationInput(
+            new DocumentField(
                 "employee",
                 "selfEmployed",
                 List.of("false"),
-                ApplicationInputType.SINGLE_VALUE
+                DocumentFieldType.SINGLE_VALUE
             ),
-            new ApplicationInput(
+            new DocumentField(
                 "employee",
                 "selfEmployedGrossMonthlyEarnings",
                 List.of(""),
-                ApplicationInputType.SINGLE_VALUE
+                DocumentFieldType.SINGLE_VALUE
             )
         );
   }
@@ -78,7 +80,8 @@ public class SelfEmploymentInputsMapperTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentInputsMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .isEmpty();
   }
 

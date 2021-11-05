@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,7 +11,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
@@ -44,12 +44,12 @@ public class HourlyJobInputsMapperTest {
             new PagesDataBuilder().withNonHourlyJob("false", "1.1", "EVERY_WEEK"),
             new PagesDataBuilder().withHourlyJob("false", "10", "12"))
         .build();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, scopeTracker);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("payPeriod", "payPeriod", List.of("Hourly"), SINGLE_VALUE, 1)
+        new DocumentField("payPeriod", "payPeriod", List.of("Hourly"), SINGLE_VALUE, 1)
     );
   }
 
@@ -64,21 +64,21 @@ public class HourlyJobInputsMapperTest {
             // Hourly payPeriod 1, nonSelfEmployed pay period 1
             new PagesDataBuilder().withHourlyJob("false", "10", "12"))
         .build();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), Document.CERTAIN_POPS, null, scopeTracker);
 
     assertThat(result).containsOnly(
-        new ApplicationInput("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 0),
-        new ApplicationInput("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 2),
-        new ApplicationInput("nonSelfEmployment_payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 1)
+        new DocumentField("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 0),
+        new DocumentField("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 2),
+        new DocumentField("nonSelfEmployment_payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 1)
     );
   }
 
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

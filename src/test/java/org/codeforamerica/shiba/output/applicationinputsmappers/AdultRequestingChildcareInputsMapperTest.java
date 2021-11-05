@@ -2,12 +2,12 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
@@ -25,7 +25,8 @@ class AdultRequestingChildcareInputsMapperTest {
 
     Application application = Application.builder().applicationData(appData).build();
     assertThat(new AdultRequestingChildcareInputsMapper()
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .isEqualTo(emptyList());
   }
 
@@ -35,7 +36,8 @@ class AdultRequestingChildcareInputsMapperTest {
 
     Application application = Application.builder().applicationData(appData).build();
     assertThat(adultRequestingChildcareInputsMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .isEqualTo(emptyList());
   }
 
@@ -64,32 +66,32 @@ class AdultRequestingChildcareInputsMapperTest {
 
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> result = adultRequestingChildcareInputsMapper
-        .map(application, null, null, null);
+    List<DocumentField> result = adultRequestingChildcareInputsMapper
+        .prepareDocumentFields(application, null, null, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareWorking",
             "fullName",
             List.of("John Testerson"),
             SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareWorking",
             "employersName",
             List.of("John's Job"),
             SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareWorking",
             "fullName",
             List.of("Jane Testerson"),
             SINGLE_VALUE,
             1
         ),
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareWorking",
             "employersName",
             List.of("Jane's Job"),
@@ -118,18 +120,18 @@ class AdultRequestingChildcareInputsMapperTest {
 
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> result = adultRequestingChildcareInputsMapper
-        .map(application, null, null, null);
+    List<DocumentField> result = adultRequestingChildcareInputsMapper
+        .prepareDocumentFields(application, null, null, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareLookingForJob",
             "fullName",
             List.of("John Testerson"),
             SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareLookingForJob",
             "fullName",
             List.of("Jane Testerson"),
@@ -158,18 +160,18 @@ class AdultRequestingChildcareInputsMapperTest {
 
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> result = adultRequestingChildcareInputsMapper
-        .map(application, null, null, null);
+    List<DocumentField> result = adultRequestingChildcareInputsMapper
+        .prepareDocumentFields(application, null, null, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareGoingToSchool",
             "fullName",
             List.of("John Testerson"),
             SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "adultRequestingChildcareGoingToSchool",
             "fullName",
             List.of("Jane Testerson"),

@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMapper {
 
-  private static Stream<ApplicationInput> getAdultsForWorkingSection(Application application) {
+  private static Stream<DocumentField> getAdultsForWorkingSection(Application application) {
     AtomicInteger i = new AtomicInteger(0);
     List<String> exceptNameStrings = getListOfSelectedNameStrings(application,
         "childrenInNeedOfCare", "whoNeedsChildCare");
@@ -47,18 +47,18 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
             String employersName = iteration.getPagesData().getPage("employersName")
                 .get("employersName").getValue(0);
 
-            Stream<ApplicationInput> inputs = Stream.of(
-                new ApplicationInput(
+            Stream<DocumentField> inputs = Stream.of(
+                new DocumentField(
                     "adultRequestingChildcareWorking",
                     "fullName",
                     List.of(fullName),
-                    ApplicationInputType.SINGLE_VALUE,
+                    DocumentFieldType.SINGLE_VALUE,
                     i.get()),
-                new ApplicationInput(
+                new DocumentField(
                     "adultRequestingChildcareWorking",
                     "employersName",
                     List.of(employersName),
-                    ApplicationInputType.SINGLE_VALUE,
+                    DocumentFieldType.SINGLE_VALUE,
                     i.get()));
             i.getAndIncrement();
             return inputs;
@@ -67,28 +67,29 @@ public class AdultRequestingChildcareInputsMapper implements ApplicationInputsMa
   }
 
   @NotNull
-  private static Stream<ApplicationInput> getAdultsForSection(Application application,
+  private static Stream<DocumentField> getAdultsForSection(Application application,
       String pageName, String inputName, String outputName) {
     List<String> adults = getListOfSelectedFullNamesExceptFor(application, pageName, inputName,
         "childrenInNeedOfCare", "whoNeedsChildCare");
     AtomicInteger i = new AtomicInteger(0);
     return adults.stream()
         .map(fullName ->
-            new ApplicationInput(outputName,
+            new DocumentField(outputName,
                 "fullName",
                 List.of(fullName),
-                ApplicationInputType.SINGLE_VALUE,
+                DocumentFieldType.SINGLE_VALUE,
                 i.getAndIncrement()));
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
-    Stream<ApplicationInput> lookingForAJob = getAdultsForSection(application,
+    Stream<DocumentField> lookingForAJob = getAdultsForSection(application,
         "whoIsLookingForAJob", "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
-    Stream<ApplicationInput> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool",
+    Stream<DocumentField> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool",
         "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
-    Stream<ApplicationInput> working = getAdultsForWorkingSection(application);
+    Stream<DocumentField> working = getAdultsForWorkingSection(application);
 
     return Stream.of(lookingForAJob, goingToSchool, working)
         .flatMap(Function.identity())

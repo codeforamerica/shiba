@@ -7,8 +7,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -23,12 +23,12 @@ public class LivingSituationInputsMapper implements ApplicationInputsMapper {
       "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
 
   @Override
-  public List<ApplicationInput> map(Application application, Document _document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application.getApplicationData().getPagesData());
   }
 
-  private List<ApplicationInput> map(PagesData pagesData) {
+  private List<DocumentField> map(PagesData pagesData) {
     // Question was unanswered
     if (pagesData.get("livingSituation") == null) {
       return Collections.emptyList();
@@ -48,8 +48,8 @@ public class LivingSituationInputsMapper implements ApplicationInputsMapper {
     if ("LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING".equals(livingSituation)) {
       return List.of(
           createApplicationInput(livingSituation),
-          new ApplicationInput("livingSituation", "county",
-              getFirstValue(pagesData, IDENTIFY_COUNTY), ApplicationInputType.SINGLE_VALUE)
+          new DocumentField("livingSituation", "county",
+              getFirstValue(pagesData, IDENTIFY_COUNTY), DocumentFieldType.SINGLE_VALUE)
       );
     }
 
@@ -57,9 +57,9 @@ public class LivingSituationInputsMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(String value) {
-    return new ApplicationInput("livingSituation", "derivedLivingSituation",
+  private DocumentField createApplicationInput(String value) {
+    return new DocumentField("livingSituation", "derivedLivingSituation",
         List.of(value),
-        ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+        DocumentFieldType.ENUMERATED_SINGLE_VALUE);
   }
 }

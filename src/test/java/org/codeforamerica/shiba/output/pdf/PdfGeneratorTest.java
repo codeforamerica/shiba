@@ -66,15 +66,15 @@ class PdfGeneratorTest {
 
   @Test
   void producesPdfFieldsAndFillsThePdf() {
-    List<ApplicationInput> applicationInputs = List
-        .of(new ApplicationInput("someGroupName", "someName", List.of("someValue"),
-            ApplicationInputType.SINGLE_VALUE));
+    List<DocumentField> documentFields = List
+        .of(new DocumentField("someGroupName", "someName", List.of("someValue"),
+            DocumentFieldType.SINGLE_VALUE));
     List<PdfField> pdfFields = List.of(new SimplePdfField("someName", "someValue"));
     String fileName = "some file name";
     when(fileNameGenerator.generatePdfFilename(application, Document.CAF)).thenReturn(fileName);
     Recipient recipient = CASEWORKER;
-    when(mappers.map(application, Document.CAF, recipient)).thenReturn(applicationInputs);
-    when(pdfFieldMapper.map(applicationInputs)).thenReturn(pdfFields);
+    when(mappers.map(application, Document.CAF, recipient)).thenReturn(documentFields);
+    when(pdfFieldMapper.map(documentFields)).thenReturn(pdfFields);
     ApplicationFile expectedApplicationFile = new ApplicationFile("someContent".getBytes(),
         "someFileName");
     when(caseworkerFiller.fill(pdfFields, applicationId, fileName))

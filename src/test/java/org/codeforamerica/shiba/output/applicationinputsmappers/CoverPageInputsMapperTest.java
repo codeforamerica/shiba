@@ -19,8 +19,8 @@ import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
@@ -102,15 +102,15 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "programs",
             List.of("SNAP, CASH"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
   }
 
@@ -129,15 +129,15 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "programs",
             List.of("SNAP, CASH"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ));
   }
@@ -157,15 +157,15 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "fullName",
             List.of("Jane Testuser"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ));
   }
@@ -178,8 +178,8 @@ class CoverPageInputsMapperTest {
         .build();
 
     List<String> appInputNames = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null).stream()
-        .map(ApplicationInput::getName)
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null).stream()
+        .map(DocumentField::getName)
         .collect(Collectors.toList());
 
     assertThat(appInputNames).doesNotContain("programs");
@@ -200,34 +200,36 @@ class CoverPageInputsMapperTest {
         Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
     ));
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CASEWORKER, null);
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CASEWORKER, null);
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "countyInstructions",
             "Olmsted caseworker",
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
 
-    applicationInputs = coverPageInputsMapper.map(application, CAF, Recipient.CLIENT, null);
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    documentFields = coverPageInputsMapper.prepareDocumentFields(application, CAF, Recipient.CLIENT,
+        null);
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "countyInstructions",
             "Olmsted client",
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
 
     new TestApplicationDataBuilder(applicationData)
         .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
-    applicationInputs = coverPageInputsMapper.map(application, CAF, Recipient.CLIENT, null);
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    documentFields = coverPageInputsMapper.prepareDocumentFields(application, CAF, Recipient.CLIENT,
+        null);
+    assertThat(documentFields).contains(
+        new DocumentField(
             "coverPage",
             "countyInstructions",
             "Olmsted client instructions in spanish",
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
   }
 
@@ -244,12 +246,12 @@ class CoverPageInputsMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"),
-            ApplicationInputType.SINGLE_VALUE)
+    assertThat(documentFields).contains(
+        new DocumentField("coverPage", "fullName", List.of("someFirstName someLastName"),
+            DocumentFieldType.SINGLE_VALUE)
     );
   }
 
@@ -267,12 +269,12 @@ class CoverPageInputsMapperTest {
         .flow(FlowType.LATER_DOCS)
         .build();
 
-    List<ApplicationInput> applicationInputs = coverPageInputsMapper
-        .map(application, CAF, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = coverPageInputsMapper
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput("coverPage", "fullName", List.of("someFirstName someLastName"),
-            ApplicationInputType.SINGLE_VALUE)
+    assertThat(documentFields).contains(
+        new DocumentField("coverPage", "fullName", List.of("someFirstName someLastName"),
+            DocumentFieldType.SINGLE_VALUE)
     );
   }
 
@@ -288,23 +290,24 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .timeToComplete(null)
         .build();
-    List<ApplicationInput> result = coverPageInputsMapper
-        .map(application, Document.CCAP, Recipient.CLIENT, null);
+    List<DocumentField> result = coverPageInputsMapper
+        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "nonPagesData",
             "utmSource",
             List.of("FROM BSF WAITING LIST"),
-            ApplicationInputType.SINGLE_VALUE));
+            DocumentFieldType.SINGLE_VALUE));
 
-    result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+    result = coverPageInputsMapper.prepareDocumentFields(application, Document.CCAP,
+        Recipient.CLIENT, null);
     assertThat(result).doesNotContain(
-        new ApplicationInput(
+        new DocumentField(
             "nonPagesData",
             "utmSource",
             List.of(""),
-            ApplicationInputType.SINGLE_VALUE));
+            DocumentFieldType.SINGLE_VALUE));
   }
 
   @Test
@@ -318,23 +321,24 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .timeToComplete(null)
         .build();
-    List<ApplicationInput> result = coverPageInputsMapper
-        .map(application, Document.CCAP, Recipient.CLIENT, null);
+    List<DocumentField> result = coverPageInputsMapper
+        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "nonPagesData",
             "utmSource",
             List.of(""),
-            ApplicationInputType.SINGLE_VALUE));
+            DocumentFieldType.SINGLE_VALUE));
 
-    result = coverPageInputsMapper.map(application, Document.CCAP, Recipient.CLIENT, null);
+    result = coverPageInputsMapper.prepareDocumentFields(application, Document.CCAP,
+        Recipient.CLIENT, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "nonPagesData",
             "utmSource",
             List.of(""),
-            ApplicationInputType.SINGLE_VALUE));
+            DocumentFieldType.SINGLE_VALUE));
   }
 }

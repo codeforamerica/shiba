@@ -6,7 +6,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getFullName;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.Iteration;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class SelfEmploymentInputsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
 
     List<String> selfEmploymentInputs = getValues(JOBS, IS_SELF_EMPLOYMENT,
@@ -46,7 +46,7 @@ public class SelfEmploymentInputsMapper implements ApplicationInputsMapper {
           .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
                                  && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
 
-      List<ApplicationInput> results = new ArrayList<>();
+      List<DocumentField> results = new ArrayList<>();
       if (hasSelfEmployedJob) {
         results.add(createApplicationInput("selfEmployed", "true"));
         results.add(createApplicationInput("selfEmployedApplicantName", getFullName(application)));
@@ -66,7 +66,7 @@ public class SelfEmploymentInputsMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(String name, String value) {
-    return new ApplicationInput("employee", name, value, SINGLE_VALUE);
+  private DocumentField createApplicationInput(String name, String value) {
+    return new DocumentField("employee", name, value, SINGLE_VALUE);
   }
 }

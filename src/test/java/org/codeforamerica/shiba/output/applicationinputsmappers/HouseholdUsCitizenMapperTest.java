@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.UUID;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -27,23 +27,23 @@ class HouseholdUsCitizenMapperTest {
             List.of("personAFirstName personALastName applicant",
                 "personBFirstName personBLastName " + householdMemberID));
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).isEqualTo(List.of(
-        new ApplicationInput(
+        new DocumentField(
             "usCitizen",
             "isUsCitizen",
             List.of("false"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             null
         ),
-        new ApplicationInput(
+        new DocumentField(
             "usCitizen",
             "isUsCitizen",
             List.of("false"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         )
     ));

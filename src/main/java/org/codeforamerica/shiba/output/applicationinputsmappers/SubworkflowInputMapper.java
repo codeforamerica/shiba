@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker.IterationScopeInfo;
@@ -39,14 +39,15 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     ApplicationData data = application.getApplicationData();
     Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 
-    Stream<ApplicationInput> subworkflowIterationCountInputs = getCount(data, pageGroups);
+    Stream<DocumentField> subworkflowIterationCountInputs = getCount(data, pageGroups);
 
-    Stream<ApplicationInput> pageInputs = data.getSubworkflows().entrySet().stream()
+    Stream<DocumentField> pageInputs = data.getSubworkflows().entrySet().stream()
         .flatMap(subworkflowsEntry -> {
           String groupName = subworkflowsEntry.getKey();
           Subworkflow subworkflow = subworkflowsEntry.getValue();
@@ -85,7 +86,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                                 .map(FormInput::getType)
                                 .orElse(FormInputType.TEXT);
 
-                            Stream<ApplicationInput> inputs = Stream.of(new ApplicationInput(
+                            Stream<DocumentField> inputs = Stream.of(new DocumentField(
                                 pageName,
                                 inputName,
                                 valuesForInput,
@@ -95,7 +96,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
                             IterationScopeInfo scopeInfo = scopeTracker
                                 .getIterationScopeInfo(pageGroupConfiguration, iteration);
                             if (scopeInfo != null) {
-                              inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
+                              inputs = Stream.concat(inputs, Stream.of(new DocumentField(
                                   scopeInfo.getScope() + "_" + pageName,
                                   inputName,
                                   valuesForInput,
@@ -129,7 +130,7 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private Stream<ApplicationInput> getCount(ApplicationData data,
+  private Stream<DocumentField> getCount(ApplicationData data,
       Map<String, PageGroupConfiguration> pageGroups) {
     return pageGroups.entrySet().stream()
         .map(entry -> {
@@ -141,11 +142,11 @@ public class SubworkflowInputMapper implements ApplicationInputsMapper {
           Subworkflow subworkflow = data.getSubworkflows().get(groupName);
           Integer subworkflowCount = ofNullable(subworkflow).map(ArrayList::size).orElse(0);
 
-          return new ApplicationInput(
+          return new DocumentField(
               groupName,
               "count",
               List.of(String.valueOf(subworkflowCount + startingCount)),
-              ApplicationInputType.SINGLE_VALUE
+              DocumentFieldType.SINGLE_VALUE
           );
         });
   }

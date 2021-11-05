@@ -6,7 +6,7 @@ import static org.codeforamerica.shiba.testutilities.TestUtils.createApplication
 import java.util.List;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER", "BLIND"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -47,7 +47,7 @@ public class BasicCriteriaInputsMapperTest {
             List.of("SIXTY_FIVE_OR_OLDER", "HELP_WITH_MEDICARE"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -70,7 +70,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("disability", "hasDisability", List.of("true"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -94,7 +94,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("basicCriteria", "basicCriteria", List.of("SSI_OR_RSDI"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -118,7 +118,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("basicCriteria", "basicCriteria", List.of("HAVE_DISABILITY_SSA"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -142,7 +142,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("basicCriteria", "basicCriteria", List.of("HAVE_DISABILITY_SMRT"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -166,7 +166,7 @@ public class BasicCriteriaInputsMapperTest {
         .withPageData("basicCriteria", "basicCriteria", List.of("MEDICAL_ASSISTANCE"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -194,7 +194,7 @@ public class BasicCriteriaInputsMapperTest {
         ))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -215,7 +215,7 @@ public class BasicCriteriaInputsMapperTest {
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

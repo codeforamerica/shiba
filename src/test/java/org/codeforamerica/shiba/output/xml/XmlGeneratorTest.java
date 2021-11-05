@@ -18,8 +18,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
@@ -52,19 +52,19 @@ class XmlGeneratorTest {
   }
 
   @ParameterizedTest
-  @EnumSource(value = ApplicationInputType.class)
-  void shouldExcludeElementsWhenInputValueIsEmpty(ApplicationInputType applicationInputType)
+  @EnumSource(value = DocumentFieldType.class)
+  void shouldExcludeElementsWhenInputValueIsEmpty(DocumentFieldType documentFieldType)
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName, List.of(),
-        applicationInputType);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName, List.of(),
+        documentFieldType);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName,
@@ -80,7 +80,7 @@ class XmlGeneratorTest {
         fileNameGenerator
     );
 
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
 
     ApplicationFile applicationFile = subject.generate("someId", Document.CAF, CLIENT);
 
@@ -97,13 +97,13 @@ class XmlGeneratorTest {
   void shouldRemovePlaceholdersThatHaveNotBeenReplacedWithAValue()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
-    List<ApplicationInput> applicationInputs = List.of();
+    List<DocumentField> documentFields = List.of();
 
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
 
     XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()),
         Map.of(),
@@ -126,23 +126,23 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromSingleValueInput()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN1}}</ns:Child>\n" +
-        "    <ns:Child>{{SOME_TOKEN2}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN1}}</ns:Child>\n" +
+                 "    <ns:Child>{{SOME_TOKEN2}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String value1 = "some-string-value";
     String formInputName1 = "some-form-input";
-    ApplicationInput applicationInput1 = new ApplicationInput(pageName, formInputName1,
-        List.of(value1), ApplicationInputType.SINGLE_VALUE);
+    DocumentField documentField1 = new DocumentField(pageName, formInputName1,
+        List.of(value1), DocumentFieldType.SINGLE_VALUE);
 
     String value2 = "some-other-string-value";
     String formInputName2 = "some-other-form-input";
-    ApplicationInput applicationInput2 = new ApplicationInput(pageName, formInputName2,
-        List.of(value2), ApplicationInputType.SINGLE_VALUE);
+    DocumentField documentField2 = new DocumentField(pageName, formInputName2,
+        List.of(value2), DocumentFieldType.SINGLE_VALUE);
 
-    List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
+    List<DocumentField> documentFields = List.of(documentField1, documentField2);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName1, "SOME_TOKEN1",
@@ -155,7 +155,7 @@ class XmlGeneratorTest {
         mappers,
         fileNameGenerator);
 
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
 
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
@@ -177,22 +177,22 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromInputWithIterationNumber()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
-        "    <ns:Child>{{SOME_TOKEN_1}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
+                 "    <ns:Child>{{SOME_TOKEN_1}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String value1 = "some-string-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput1 = new ApplicationInput(pageName, formInputName,
-        List.of(value1), ApplicationInputType.SINGLE_VALUE, 0);
+    DocumentField documentField1 = new DocumentField(pageName, formInputName,
+        List.of(value1), DocumentFieldType.SINGLE_VALUE, 0);
 
     String value2 = "some-other-string-value";
-    ApplicationInput applicationInput2 = new ApplicationInput(pageName, formInputName,
-        List.of(value2), ApplicationInputType.SINGLE_VALUE, 1);
+    DocumentField documentField2 = new DocumentField(pageName, formInputName,
+        List.of(value2), DocumentFieldType.SINGLE_VALUE, 1);
 
-    List<ApplicationInput> applicationInputs = List.of(applicationInput1, applicationInput2);
+    List<DocumentField> documentFields = List.of(documentField1, documentField2);
 
     Map<String, String> xmlConfigMap = Map.of(pageName + "." + formInputName, "SOME_TOKEN");
     XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()),
@@ -201,7 +201,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
 
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
@@ -223,16 +223,16 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromEnumeratedMultiValueInput()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_MULTI_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName + "." + formInputValue,
@@ -248,7 +248,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -263,16 +263,16 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromEnumeratedMultiValueInputWithIterationNumber()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN_0}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE, 0);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_MULTI_VALUE, 0);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName + "." + formInputValue,
@@ -288,7 +288,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -303,17 +303,17 @@ class XmlGeneratorTest {
   void shouldPopulateAllNodeValuesFromEnumeratedMultiValueInput()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_MULTI_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName + "." + formInputValue,
@@ -329,7 +329,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -348,16 +348,16 @@ class XmlGeneratorTest {
   void shouldExcludeNodesForEnumeratedMultiValueInputWhereEnumMappingDoesNotExist()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_MULTI_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_MULTI_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName,
@@ -372,7 +372,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -389,16 +389,16 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromEnumeratedSingleValueInput()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_SINGLE_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName,
@@ -414,7 +414,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -429,16 +429,16 @@ class XmlGeneratorTest {
   void shouldExcludeNodeForEnumeratedSingleValueInputWhereEnumMappingDoesNotExist()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputValue = "some-value";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of(formInputValue), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of(formInputValue), DocumentFieldType.ENUMERATED_SINGLE_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName,
@@ -453,7 +453,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", Document.CAF, null);
 
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
@@ -470,15 +470,15 @@ class XmlGeneratorTest {
   void shouldPopulateNodeValueFromDateValueInput()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     String pageName = "some-screen";
     String formInputName = "some-form-input";
-    ApplicationInput applicationInput = new ApplicationInput(pageName, formInputName,
-        List.of("02", "20", "1999"), ApplicationInputType.DATE_VALUE);
-    List<ApplicationInput> applicationInputs = List.of(applicationInput);
+    DocumentField documentField = new DocumentField(pageName, formInputName,
+        List.of("02", "20", "1999"), DocumentFieldType.DATE_VALUE);
+    List<DocumentField> documentFields = List.of(documentField);
 
     Map<String, String> xmlConfigMap = Map.of(
         pageName + "." + formInputName,
@@ -490,7 +490,7 @@ class XmlGeneratorTest {
         applicationRepository,
         mappers,
         fileNameGenerator);
-    when(mappers.map(any(), any(), any())).thenReturn(applicationInputs);
+    when(mappers.map(any(), any(), any())).thenReturn(documentFields);
     ApplicationFile applicationFile = subject.generate("", null, null);
     org.w3c.dom.Document document = byteArrayToDocument(applicationFile.getFileBytes());
 
@@ -503,9 +503,9 @@ class XmlGeneratorTest {
   @Test
   void shouldNotAppendXMLExtensionToApplicationFileName() {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<ns:Root xmlns:ns='some-url'>\n" +
-        "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
-        "</ns:Root>";
+                 "<ns:Root xmlns:ns='some-url'>\n" +
+                 "    <ns:Child>{{SOME_TOKEN}}</ns:Child>\n" +
+                 "</ns:Root>";
 
     FileGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()),
         Map.of(),

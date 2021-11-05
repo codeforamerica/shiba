@@ -5,7 +5,7 @@ import static org.codeforamerica.shiba.testutilities.TestUtils.createApplication
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public class UtilityPaymentsInputsMapperTest {
             List.of("SEWER"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -30,7 +30,7 @@ public class UtilityPaymentsInputsMapperTest {
         createApplicationInput("utilityPayments", "GARBAGE_REMOVAL", "false"),
         createApplicationInput("utilityPayments", "ELECTRICITY", "false"),
         createApplicationInput("utilityPayments", "COOKING_FUEL", "false"),
-        
+
         createApplicationInput("utilityPayments", "noExpeditedUtilitiesSelected", "true"),
         createApplicationInput("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
             "NO_EXPEDITED_UTILITIES_SELECTED"),
@@ -48,7 +48,7 @@ public class UtilityPaymentsInputsMapperTest {
             List.of("HEATING"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -71,7 +71,7 @@ public class UtilityPaymentsInputsMapperTest {
         .withPageData("utilityPayments", "payUtilities", List.of("NONE_OF_THE_ABOVE"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -95,7 +95,7 @@ public class UtilityPaymentsInputsMapperTest {
         .withPageData("utilityPayments", "payForUtilities", List.of("HEATING", "PHONE"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -116,7 +116,7 @@ public class UtilityPaymentsInputsMapperTest {
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

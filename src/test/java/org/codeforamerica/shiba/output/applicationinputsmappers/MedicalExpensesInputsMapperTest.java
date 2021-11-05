@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -20,16 +20,16 @@ public class MedicalExpensesInputsMapperTest {
         .withPageData("medicalExpenses", "medicalExpenses", List.of("NONE_OF_THE_ABOVE"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
+        new DocumentField(
             "medicalExpenses",
             "medicalExpensesSelection",
             List.of("NONE_SELECTED"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
   }
 
@@ -39,23 +39,23 @@ public class MedicalExpensesInputsMapperTest {
         .withPageData("medicalExpenses", "medicalExpenses", List.of("VISION_INSURANCE_PREMIUMS"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
+        new DocumentField(
             "medicalExpenses",
             "medicalExpensesSelection",
             List.of("ONE_SELECTED"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
   }
 
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

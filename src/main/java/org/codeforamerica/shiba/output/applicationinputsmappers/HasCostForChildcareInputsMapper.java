@@ -12,7 +12,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getId;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -34,12 +34,12 @@ import org.springframework.stereotype.Component;
 public class HasCostForChildcareInputsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document _document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application);
   }
 
-  private List<ApplicationInput> map(Application application) {
+  private List<DocumentField> map(Application application) {
     ApplicationData applicationData = application.getApplicationData();
     PagesData pagesData = applicationData.getPagesData();
 
@@ -78,9 +78,9 @@ public class HasCostForChildcareInputsMapper implements ApplicationInputsMapper 
   }
 
   @NotNull
-  private List<ApplicationInput> createApplicationInput() {
+  private List<DocumentField> createApplicationInput() {
     return List.of(
-        new ApplicationInput("ccapHasCostsForChildCare",
+        new DocumentField("ccapHasCostsForChildCare",
             "ccapHasCostsForChildCare",
             "true",
             ENUMERATED_SINGLE_VALUE));

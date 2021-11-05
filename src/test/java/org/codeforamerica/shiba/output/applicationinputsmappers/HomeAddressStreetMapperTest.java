@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class HomeAddressStreetMapperTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -47,7 +47,7 @@ class HomeAddressStreetMapperTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -70,7 +70,7 @@ class HomeAddressStreetMapperTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -87,16 +87,16 @@ class HomeAddressStreetMapperTest {
   void shouldNotIncludeApplicationInputs_whenThereIsNoHomeAddress() {
     application.setApplicationData(new ApplicationData());
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).isEmpty();
   }
 
-  private ApplicationInput createHomeAddressApplicationInput(String name, List<String> value) {
-    return new ApplicationInput("homeAddress", name, value, ApplicationInputType.SINGLE_VALUE);
+  private DocumentField createHomeAddressApplicationInput(String name, List<String> value) {
+    return new DocumentField("homeAddress", name, value, DocumentFieldType.SINGLE_VALUE);
   }
 
-  private ApplicationInput createHomeAddressApplicationInput(String name, String value) {
-    return new ApplicationInput("homeAddress", name, value, ApplicationInputType.SINGLE_VALUE);
+  private DocumentField createHomeAddressApplicationInput(String name, String value) {
+    return new DocumentField("homeAddress", name, value, DocumentFieldType.SINGLE_VALUE);
   }
 }

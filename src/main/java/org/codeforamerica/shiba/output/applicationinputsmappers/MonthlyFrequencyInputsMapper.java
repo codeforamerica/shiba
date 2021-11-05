@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 public class MonthlyFrequencyInputsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     return List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap", "medicalExpensesSources")
         .stream()
@@ -25,11 +26,11 @@ public class MonthlyFrequencyInputsMapper implements ApplicationInputsMapper {
                     .entrySet().stream()
                     .filter(inputData -> !inputData.getValue().getValue().isEmpty())
                     .map(inputData ->
-                        new ApplicationInput(
+                        new DocumentField(
                             pageName,
                             inputData.getKey().replace("Amount", "Frequency"),
                             List.of("Monthly"),
-                            ApplicationInputType.SINGLE_VALUE)
+                            DocumentFieldType.SINGLE_VALUE)
                     ))
                 .orElse(Stream.of()))
         .collect(Collectors.toList());

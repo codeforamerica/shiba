@@ -8,8 +8,8 @@ import java.util.List;
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.TotalIncomeParser;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,14 @@ class ThirtyDayIncomeMapperTest {
         totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList)))
         .thenReturn(Money.parse("111"));
 
-    assertThat(thirtyDayIncomeMapper.map(application, null, Recipient.CLIENT, null))
+    assertThat(
+        thirtyDayIncomeMapper.prepareDocumentFields(application, null, Recipient.CLIENT, null))
         .isEqualTo(List.of(
-            new ApplicationInput(
+            new DocumentField(
                 "totalIncome",
                 "thirtyDayIncome",
                 List.of("111.00"),
-                ApplicationInputType.SINGLE_VALUE
+                DocumentFieldType.SINGLE_VALUE
             )
         ));
   }

@@ -16,12 +16,12 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.NO_PERMANENT_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_HOME_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -34,7 +34,8 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
   private final static String NO_PERMANENT_ADDRESS_STREET = "No permanent address";
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     PagesData pagesData = application.getApplicationData().getPagesData();
     PageData homeAddressPageData = pagesData.getPage("homeAddress");
@@ -71,7 +72,7 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
     }
   }
 
-  private List<ApplicationInput> createAddressInputs(String street, String apartment,
+  private List<DocumentField> createAddressInputs(String street, String apartment,
       String zipcode, String city, String state, String county) {
     // county Fields default to "Other" but we don't want to write that to the PDF
     if (County.Other.toString().equals(county)) {
@@ -86,7 +87,7 @@ public class HomeAddressStreetMapper implements ApplicationInputsMapper {
         createSingleHomeAddressInput("selectedCounty", county));
   }
 
-  private ApplicationInput createSingleHomeAddressInput(String name, String value) {
-    return new ApplicationInput("homeAddress", name, value, SINGLE_VALUE);
+  private DocumentField createSingleHomeAddressInput(String name, String value) {
+    return new DocumentField("homeAddress", name, value, SINGLE_VALUE);
   }
 }

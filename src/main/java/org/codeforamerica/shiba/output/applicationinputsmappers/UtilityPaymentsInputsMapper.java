@@ -2,12 +2,12 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UTILITY_PAYMENTS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
 
 import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -33,7 +33,7 @@ public class UtilityPaymentsInputsMapper extends OneToManyApplicationInputsMappe
   private static final List<String> WATER_OR_SEWER = List.of("WATER", "SEWER");
 
   @Override
-  public List<ApplicationInput> map(Application application, Document _document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application.getApplicationData().getPagesData());
   }
@@ -43,22 +43,22 @@ public class UtilityPaymentsInputsMapper extends OneToManyApplicationInputsMappe
     return new OneToManyParams("utilityPayments", UTILITY_PAYMENTS, UTILITY_PAYMENTS_OPTIONS);
   }
 
-  protected List<ApplicationInput> map(PagesData pagesData) {
+  protected List<DocumentField> map(PagesData pagesData) {
     // Question was unanswered
     if (pagesData.get("utilityPayments") == null) {
       return Collections.emptyList();
     }
 
-    List<ApplicationInput> results = super.map(pagesData);
+    List<DocumentField> results = super.map(pagesData);
 
     List<String> utilityPayments = getValues(pagesData, UTILITY_PAYMENTS);
 
     // No expedited utilities selected - need multiple inputs because they are written differently
     // to xml and pdfs
     if (utilityPayments.stream().noneMatch(EXPEDITED_UTILITY_PAYMENTS::contains)) {
-      results.add(new ApplicationInput("utilityPayments", "noExpeditedUtilitiesSelected",
+      results.add(new DocumentField("utilityPayments", "noExpeditedUtilitiesSelected",
           "true", ENUMERATED_SINGLE_VALUE));
-      results.add(new ApplicationInput("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
+      results.add(new DocumentField("utilityPayments", "NO_EXPEDITED_UTILITIES_SELECTED",
           "NO_EXPEDITED_UTILITIES_SELECTED", ENUMERATED_SINGLE_VALUE));
     }
 
@@ -66,26 +66,26 @@ public class UtilityPaymentsInputsMapper extends OneToManyApplicationInputsMappe
     boolean waterOrSewer = utilityPayments.stream().anyMatch(WATER_OR_SEWER::contains);
 
     // Mark these radio buttons on the PDF
-    results.add(new ApplicationInput("utilityPayments", "heatingOrCoolingSelection",
+    results.add(new DocumentField("utilityPayments", "heatingOrCoolingSelection",
         heatingOrCooling ? "ONE_SELECTED" : "NEITHER_SELECTED",
         ENUMERATED_SINGLE_VALUE));
-    results.add(new ApplicationInput("utilityPayments", "waterOrSewerSelection",
+    results.add(new DocumentField("utilityPayments", "waterOrSewerSelection",
         waterOrSewer ? "ONE_SELECTED" : "NEITHER_SELECTED",
         ENUMERATED_SINGLE_VALUE));
 
     // Write these values explicitly on the XML
     if (heatingOrCooling) {
-      results.add(new ApplicationInput("utilityPayments", "heatingOrCooling",
+      results.add(new DocumentField("utilityPayments", "heatingOrCooling",
           "HEATING_OR_COOLING",
           ENUMERATED_SINGLE_VALUE));
     }
     if (waterOrSewer) {
-      results.add(new ApplicationInput("utilityPayments", "waterOrSewer",
+      results.add(new DocumentField("utilityPayments", "waterOrSewer",
           "WATER_OR_SEWER",
           ENUMERATED_SINGLE_VALUE));
     }
     if (utilityPayments.contains("PHONE")) {
-      results.add(new ApplicationInput("utilityPayments", "phoneCellPhone",
+      results.add(new DocumentField("utilityPayments", "phoneCellPhone",
           "PHONE_CELL_PHONE",
           ENUMERATED_SINGLE_VALUE));
     }
@@ -99,8 +99,8 @@ public class UtilityPaymentsInputsMapper extends OneToManyApplicationInputsMappe
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(String name) {
-    return new ApplicationInput("utilityPayments",
+  private DocumentField createApplicationInput(String name) {
+    return new DocumentField("utilityPayments",
         name,
         "true",
         ENUMERATED_SINGLE_VALUE);

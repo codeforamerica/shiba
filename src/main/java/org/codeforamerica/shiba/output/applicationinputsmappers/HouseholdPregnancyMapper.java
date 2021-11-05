@@ -4,8 +4,8 @@ import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelecte
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
@@ -14,14 +14,15 @@ import org.springframework.stereotype.Component;
 public class HouseholdPregnancyMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     List<String> pregnantHouseholdMembers = getListOfSelectedFullNames(application, "whoIsPregnant",
         "whoIsPregnant");
 
     return List.of(
-        new ApplicationInput("householdPregnancy", "householdPregnancy",
-            List.of(String.join(", ", pregnantHouseholdMembers)), ApplicationInputType.SINGLE_VALUE,
+        new DocumentField("householdPregnancy", "householdPregnancy",
+            List.of(String.join(", ", pregnantHouseholdMembers)), DocumentFieldType.SINGLE_VALUE,
             null)
     );
   }

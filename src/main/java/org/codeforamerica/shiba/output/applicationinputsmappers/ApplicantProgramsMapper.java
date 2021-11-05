@@ -3,8 +3,8 @@ package org.codeforamerica.shiba.output.applicationinputsmappers;
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 public class ApplicantProgramsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
 
     List<String> programs = application.getApplicationData().getPagesData()
@@ -26,11 +27,12 @@ public class ApplicantProgramsMapper implements ApplicationInputsMapper {
       programs.add("CASH");
     }
 
-    List<ApplicationInput> programSelections = new ArrayList<>();
+    List<DocumentField> programSelections = new ArrayList<>();
 
     programs.forEach(program -> {
       programSelections.add(
-          new ApplicationInput("applicantPrograms", program, List.of("Yes"), ApplicationInputType.SINGLE_VALUE)
+          new DocumentField("applicantPrograms", program, List.of("Yes"),
+              DocumentFieldType.SINGLE_VALUE)
       );
     });
 

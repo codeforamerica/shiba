@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -21,12 +21,12 @@ public class EnergyAssistanceInputsMapperTest {
         .withPageData("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", List.of("true"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
+        new DocumentField(
             "energyAssistanceGroup",
             "energyAssistanceInput",
             List.of("true"),
@@ -40,12 +40,12 @@ public class EnergyAssistanceInputsMapperTest {
         .withPageData("energyAssistance", "energyAssistance", List.of("false"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
+        new DocumentField(
             "energyAssistanceGroup",
             "energyAssistanceInput",
             List.of("false"),
@@ -60,12 +60,12 @@ public class EnergyAssistanceInputsMapperTest {
         .withPageData("energyAssistanceMoreThan20", "energyAssistanceMoreThan20", List.of("false"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).containsOnly(
-        new ApplicationInput(
+        new DocumentField(
             "energyAssistanceGroup",
             "energyAssistanceInput",
             List.of("false"),
@@ -76,7 +76,7 @@ public class EnergyAssistanceInputsMapperTest {
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -86,7 +86,7 @@ public class EnergyAssistanceInputsMapperTest {
         .withPageData("energyAssistance", "energyAssistance", List.of("true"))
         .build();
 
-    result = mapper.map(Application.builder()
+    result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

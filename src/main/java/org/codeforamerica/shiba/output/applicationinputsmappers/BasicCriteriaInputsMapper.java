@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -32,7 +32,7 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
       "SSI_OR_RSDI");
 
   @Override
-  public List<ApplicationInput> map(Application application, Document _document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application.getApplicationData().getPagesData());
   }
@@ -43,20 +43,20 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
         BASIC_CRITERIA_OPTIONS);
   }
 
-  protected List<ApplicationInput> map(PagesData pagesData) {
+  protected List<DocumentField> map(PagesData pagesData) {
     List<String> programs = getValues(pagesData, APPLICANT_PROGRAMS);
     if (!programs.contains(Program.CERTAIN_POPS)) {
       // Not applicable
       return Collections.emptyList();
     }
 
-    List<ApplicationInput> result = super.map(pagesData);
+    List<DocumentField> result = super.map(pagesData);
 
     List<String> criteriaSelections = getValues(pagesData, BASIC_CRITERIA_CERTAIN_POPS);
 
     boolean blindOrHasDisability =
         criteriaSelections.stream().anyMatch(BLIND_OR_HAS_DISABILITY::contains)
-            || getBooleanValue(pagesData, HAS_DISABILITY);
+        || getBooleanValue(pagesData, HAS_DISABILITY);
 
     if (blindOrHasDisability) {
       result.add(createApplicationInput(true, "blindOrHasDisability"));
@@ -74,8 +74,8 @@ public class BasicCriteriaInputsMapper extends OneToManyApplicationInputsMapper 
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(boolean value, String name) {
-    return new ApplicationInput("basicCriteria", name,
-        String.valueOf(value), ApplicationInputType.ENUMERATED_SINGLE_VALUE);
+  private DocumentField createApplicationInput(boolean value, String name) {
+    return new DocumentField("basicCriteria", name,
+        String.valueOf(value), DocumentFieldType.ENUMERATED_SINGLE_VALUE);
   }
 }

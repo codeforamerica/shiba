@@ -8,8 +8,8 @@ import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
@@ -52,27 +52,28 @@ public class FullNameInputsMapperTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(fullNameInputsMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker()))
         .containsExactlyInAnyOrder(
-            new ApplicationInput(
+            new DocumentField(
                 "householdSelectionForIncome",
                 "employeeFullName",
                 List.of("Fake Person"),
-                ApplicationInputType.SINGLE_VALUE,
+                DocumentFieldType.SINGLE_VALUE,
                 0
             ),
-            new ApplicationInput(
+            new DocumentField(
                 "householdSelectionForIncome",
                 "employeeFullName",
                 List.of("Different Person"),
-                ApplicationInputType.SINGLE_VALUE,
+                DocumentFieldType.SINGLE_VALUE,
                 1
             ),
-            new ApplicationInput(
+            new DocumentField(
                 "nonSelfEmployment_householdSelectionForIncome",
                 "employeeFullName",
                 List.of("Different Person"),
-                ApplicationInputType.SINGLE_VALUE,
+                DocumentFieldType.SINGLE_VALUE,
                 0
             )
         );
@@ -85,7 +86,8 @@ public class FullNameInputsMapperTest {
             .withPageData("otherPage", "uselessInput", "unimportantAnswer"));
 
     Application application = Application.builder().applicationData(applicationData).build();
-    assertThat(fullNameInputsMapper.map(application, null, Recipient.CLIENT, null))
+    assertThat(
+        fullNameInputsMapper.prepareDocumentFields(application, null, Recipient.CLIENT, null))
         .isEqualTo(emptyList());
   }
 }

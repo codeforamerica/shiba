@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
@@ -29,7 +29,8 @@ public class FullNameInputsMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     String pageName = "householdSelectionForIncome";
     String whoseJob = "whoseJobIsIt";
@@ -46,19 +47,19 @@ public class FullNameInputsMapper implements ApplicationInputsMapper {
           PageData pageData = iteration.getPagesData().get(pageName);
           String fullName = FullNameFormatter.format(pageData.get(whoseJob).getValue(0));
 
-          Stream<ApplicationInput> inputs = Stream.of(new ApplicationInput(pageName, inputName,
-              List.of(fullName), ApplicationInputType.SINGLE_VALUE,
+          Stream<DocumentField> inputs = Stream.of(new DocumentField(pageName, inputName,
+              List.of(fullName), DocumentFieldType.SINGLE_VALUE,
               subworkflow.indexOf(iteration)));
 
           if (scopeTracker != null && pageGroupConfiguration.isPresent()) {
             IterationScopeInfo scopeInfo = scopeTracker
                 .getIterationScopeInfo(pageGroupConfiguration.get(), iteration);
             if (scopeInfo != null) {
-              inputs = Stream.concat(inputs, Stream.of(new ApplicationInput(
+              inputs = Stream.concat(inputs, Stream.of(new DocumentField(
                   scopeInfo.getScope() + "_" + pageName,
                   inputName,
                   List.of(fullName),
-                  ApplicationInputType.SINGLE_VALUE,
+                  DocumentFieldType.SINGLE_VALUE,
                   scopeInfo.getIndex()
               )));
             }

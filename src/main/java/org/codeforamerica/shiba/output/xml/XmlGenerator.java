@@ -17,7 +17,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
@@ -58,17 +58,17 @@ public class XmlGenerator implements FileGenerator {
   @Override
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
     Application application = applicationRepository.find(applicationId);
-    List<ApplicationInput> applicationInputs = mappers.map(application, null, recipient);
+    List<DocumentField> documentFields = mappers.map(application, null, recipient);
 
     try {
-      List<ApplicationInput> nonEmptyApplicationInputs = applicationInputs.stream()
+      List<DocumentField> nonEmptyDocumentFields = documentFields.stream()
           .filter(input -> !input.getValue().isEmpty())
           .toList();
 
       List<XmlEntry> xmlEntries = new ArrayList<>();
-      for (ApplicationInput applicationInput : nonEmptyApplicationInputs) {
+      for (DocumentField documentField : nonEmptyDocumentFields) {
         List<XmlEntry> entriesForThisInput = convertApplicationInputToXmlEntries(
-            applicationInput);
+            documentField);
         xmlEntries.addAll(entriesForThisInput);
       }
 
@@ -95,7 +95,7 @@ public class XmlGenerator implements FileGenerator {
     }
   }
 
-  private String getXmlToken(ApplicationInput input, String xmlToken) {
+  private String getXmlToken(DocumentField input, String xmlToken) {
     return input.getIteration() != null ? xmlToken + "_" + input.getIteration() : xmlToken;
   }
 
@@ -103,7 +103,7 @@ public class XmlGenerator implements FileGenerator {
 
   }
 
-  private List<XmlEntry> convertApplicationInputToXmlEntries(ApplicationInput input) {
+  private List<XmlEntry> convertApplicationInputToXmlEntries(DocumentField input) {
     String defaultXmlConfigKey = String.join(".", input.getGroupName(), input.getName());
     final String singleValueXmlToken = getXmlToken(input, config.get(defaultXmlConfigKey));
 
@@ -123,7 +123,7 @@ public class XmlGenerator implements FileGenerator {
   }
 
   @NotNull
-  private String dateToXmlString(ApplicationInput input) {
+  private String dateToXmlString(DocumentField input) {
     return input.getValue().stream().map(StringEscapeUtils::escapeXml10)
         .collect(Collectors.joining("/"));
   }

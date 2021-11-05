@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.applicationinputsmappers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -45,15 +45,15 @@ class GrossMonthlyIncomeMapperTest {
         new HourlyJobIncomeInformation("12", "30", 0, new Iteration()),
         new HourlyJobIncomeInformation("6", "45", 1, new Iteration())
     ));
-    List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper
-        .map(application, null, null, scopeTracker);
+    List<DocumentField> documentFields = grossMonthlyIncomeMapper
+        .prepareDocumentFields(application, null, null, scopeTracker);
 
-    assertThat(applicationInputs).containsOnly(
-        new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
-        new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
+    assertThat(documentFields).containsOnly(
+        new DocumentField("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
+        new DocumentField("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
             SINGLE_VALUE, 0),
-        new ApplicationInput("employee", "grossMonthlyIncome", List.of("1080.00"), SINGLE_VALUE, 1),
-        new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1080.00"),
+        new DocumentField("employee", "grossMonthlyIncome", List.of("1080.00"), SINGLE_VALUE, 1),
+        new DocumentField("prefix_employee", "grossMonthlyIncome", List.of("1080.00"),
             SINGLE_VALUE, 1)
     );
   }
@@ -83,12 +83,12 @@ class GrossMonthlyIncomeMapperTest {
         new HourlyJobIncomeInformation("12", "30", 0, new Iteration(applicantJob)),
         new HourlyJobIncomeInformation("6", "45", 1, new Iteration(nonApplicantJob))
     ));
-    List<ApplicationInput> applicationInputs = grossMonthlyIncomeMapper
-        .map(application, Document.CERTAIN_POPS, null, scopeTracker);
+    List<DocumentField> documentFields = grossMonthlyIncomeMapper
+        .prepareDocumentFields(application, Document.CERTAIN_POPS, null, scopeTracker);
 
-    assertThat(applicationInputs).containsOnly(
-        new ApplicationInput("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
-        new ApplicationInput("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
+    assertThat(documentFields).containsOnly(
+        new DocumentField("employee", "grossMonthlyIncome", List.of("1440.00"), SINGLE_VALUE, 0),
+        new DocumentField("prefix_employee", "grossMonthlyIncome", List.of("1440.00"),
             SINGLE_VALUE, 0)
     );
   }

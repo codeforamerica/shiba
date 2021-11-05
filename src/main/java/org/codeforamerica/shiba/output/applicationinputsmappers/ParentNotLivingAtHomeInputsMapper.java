@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 public class ParentNotLivingAtHomeInputsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     Map<String, String> idToChild = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("childrenInNeedOfCare", "whoNeedsChildCare").stream()
@@ -32,21 +33,21 @@ public class ParentNotLivingAtHomeInputsMapper implements ApplicationInputsMappe
     List<String> parentNames = pageData.get("whatAreTheParentsNames").getValue();
     List<String> childIds = pageData.get("childIdMap").getValue();
 
-    List<ApplicationInput> result = new ArrayList<>();
+    List<DocumentField> result = new ArrayList<>();
     for (int i = 0; i < childIds.size(); i++) {
       String parentName = parentNames.get(i);
       String childId = childIds.get(i);
 
-      result.add(new ApplicationInput(
+      result.add(new DocumentField(
           "custodyArrangement",
           "parentNotAtHomeName",
           List.of(parentName),
-          ApplicationInputType.SINGLE_VALUE, i));
-      result.add(new ApplicationInput(
+          DocumentFieldType.SINGLE_VALUE, i));
+      result.add(new DocumentField(
           "custodyArrangement",
           "childFullName",
           List.of(idToChild.get(childId)),
-          ApplicationInputType.SINGLE_VALUE, i));
+          DocumentFieldType.SINGLE_VALUE, i));
     }
     return result;
   }

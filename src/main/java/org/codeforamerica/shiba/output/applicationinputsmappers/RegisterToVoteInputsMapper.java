@@ -6,8 +6,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -18,12 +18,12 @@ import org.springframework.stereotype.Component;
 public class RegisterToVoteInputsMapper implements ApplicationInputsMapper {
 
   @Override
-  public List<ApplicationInput> map(Application application, Document _document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document _document,
       Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application.getApplicationData().getPagesData());
   }
 
-  private List<ApplicationInput> map(PagesData pagesData) {
+  private List<DocumentField> map(PagesData pagesData) {
     String registerToVote = getFirstValue(pagesData, REGISTER_TO_VOTE);
     if (registerToVote == null) {
       // Not answered
@@ -38,9 +38,9 @@ public class RegisterToVoteInputsMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private List<ApplicationInput> createApplicationInput(String value) {
-    return List.of(new ApplicationInput("registerToVote", "registerToVoteSelection",
+  private List<DocumentField> createApplicationInput(String value) {
+    return List.of(new DocumentField("registerToVote", "registerToVoteSelection",
         List.of(value),
-        ApplicationInputType.ENUMERATED_SINGLE_VALUE));
+        DocumentFieldType.ENUMERATED_SINGLE_VALUE));
   }
 }

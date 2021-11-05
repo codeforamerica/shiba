@@ -9,7 +9,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
@@ -62,7 +62,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     var programsInput = getPrograms(application);
@@ -75,22 +75,22 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   }
 
   @Nullable
-  private ApplicationInput getUtmSource(Application application, Document document) {
-    ApplicationInput utmSourceInput = null;
+  private DocumentField getUtmSource(Application application, Document document) {
+    DocumentField utmSourceInput = null;
     if (document == Document.CCAP) {
       var utmSource = application.getApplicationData().getUtmSource();
       var applicationUtmSource = utmSource != null ? utmSource : "";
-      utmSourceInput = new ApplicationInput("nonPagesData", "utmSource",
+      utmSourceInput = new DocumentField("nonPagesData", "utmSource",
           UTM_SOURCE_MAPPING.getOrDefault(applicationUtmSource, ""), SINGLE_VALUE);
     }
     return utmSourceInput;
   }
 
   @NotNull
-  private List<ApplicationInput> combineCoverPageInputs(ApplicationInput programsInput,
-      ApplicationInput fullNameInput, ApplicationInput countyInstructionsInput,
-      ApplicationInput utmSourceInput, List<ApplicationInput> householdMemberInputs) {
-    var everythingExceptHouseholdMembers = new ArrayList<ApplicationInput>();
+  private List<DocumentField> combineCoverPageInputs(DocumentField programsInput,
+      DocumentField fullNameInput, DocumentField countyInstructionsInput,
+      DocumentField utmSourceInput, List<DocumentField> householdMemberInputs) {
+    var everythingExceptHouseholdMembers = new ArrayList<DocumentField>();
     everythingExceptHouseholdMembers.add(programsInput);
     everythingExceptHouseholdMembers.add(fullNameInput);
     everythingExceptHouseholdMembers.add(countyInstructionsInput);
@@ -99,7 +99,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     return everythingExceptHouseholdMembers.stream().filter(Objects::nonNull).toList();
   }
 
-  private ApplicationInput getPrograms(Application application) {
+  private DocumentField getPrograms(Application application) {
     List<String> programs = getValues(application.getApplicationData().getPagesData(),
         APPLICANT_PROGRAMS);
     if (isTribalTANF(application)) {
@@ -113,7 +113,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
     }
 
     if (!programs.isEmpty()) {
-      return new ApplicationInput("coverPage", "programs", String.join(", ", programs),
+      return new DocumentField("coverPage", "programs", String.join(", ", programs),
           SINGLE_VALUE);
     }
     return null;
@@ -129,15 +129,15 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
         .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
   }
 
-  private ApplicationInput getFullName(Application application) {
+  private DocumentField getFullName(Application application) {
     var value = FullNameFormatter.getFullName(application);
     if (value == null) {
       return null;
     }
-    return new ApplicationInput("coverPage", "fullName", value, SINGLE_VALUE);
+    return new DocumentField("coverPage", "fullName", value, SINGLE_VALUE);
   }
 
-  private List<ApplicationInput> getHouseholdMembers(Application application) {
+  private List<DocumentField> getHouseholdMembers(Application application) {
     var householdSubworkflow = ofNullable(
         getGroup(application.getApplicationData(), Group.HOUSEHOLD));
     return householdSubworkflow.map(this::getApplicationInputsForSubworkflow)
@@ -145,24 +145,24 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private List<ApplicationInput> getApplicationInputsForSubworkflow(Subworkflow subworkflow) {
-    List<ApplicationInput> inputsForSubworkflow = new ArrayList<>();
+  private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subworkflow) {
+    List<DocumentField> inputsForSubworkflow = new ArrayList<>();
     for (int i = 0; i < subworkflow.size(); i++) {
       var pagesData = subworkflow.get(i).getPagesData();
       var firstName = getFirstValue(pagesData, HOUSEHOLD_INFO_FIRST_NAME);
       var lastName = getFirstValue(pagesData, HOUSEHOLD_INFO_LAST_NAME);
       var fullName = firstName + " " + lastName;
       inputsForSubworkflow
-          .add(new ApplicationInput("coverPage", "fullName", fullName, SINGLE_VALUE, i));
+          .add(new DocumentField("coverPage", "fullName", fullName, SINGLE_VALUE, i));
 
       var programs = String.join(", ", getValues(pagesData, HOUSEHOLD_PROGRAMS));
       inputsForSubworkflow
-          .add(new ApplicationInput("coverPage", "programs", programs, SINGLE_VALUE, i));
+          .add(new DocumentField("coverPage", "programs", programs, SINGLE_VALUE, i));
     }
     return inputsForSubworkflow;
   }
 
-  private ApplicationInput getCountyInstructions(Application application, Recipient recipient,
+  private DocumentField getCountyInstructions(Application application, Recipient recipient,
       Document document) {
     Locale locale = switch (recipient) {
       case CASEWORKER -> LocaleContextHolder.getLocale();
@@ -187,7 +187,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
 
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 
-    return new ApplicationInput("coverPage", "countyInstructions", countyInstructions,
+    return new DocumentField("coverPage", "countyInstructions", countyInstructions,
         SINGLE_VALUE);
   }
 }

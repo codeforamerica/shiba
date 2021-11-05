@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output;
 
-public enum ApplicationInputType {
+public enum DocumentFieldType {
   SINGLE_VALUE,
   DATE_VALUE,
   ENUMERATED_SINGLE_VALUE,

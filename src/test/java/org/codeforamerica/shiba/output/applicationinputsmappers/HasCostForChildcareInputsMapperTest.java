@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
@@ -26,7 +26,7 @@ public class HasCostForChildcareInputsMapperTest {
         .withApplicantPrograms(List.of("CCAP"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -37,7 +37,7 @@ public class HasCostForChildcareInputsMapperTest {
         .withApplicantPrograms(List.of("CCAP"))
         .build();
 
-    result = mapper.map(Application.builder()
+    result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -52,7 +52,7 @@ public class HasCostForChildcareInputsMapperTest {
         .withApplicantPrograms(List.of("CCAP"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -70,7 +70,7 @@ public class HasCostForChildcareInputsMapperTest {
         .build();
     applicationData.setSubworkflows(new Subworkflows(Map.of("household", household)));
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -86,7 +86,7 @@ public class HasCostForChildcareInputsMapperTest {
         .withSubworkflow("household", createHouseholdSubworkflowBuilder("SNAP"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -102,7 +102,7 @@ public class HasCostForChildcareInputsMapperTest {
         .withSubworkflow("household", createHouseholdSubworkflowBuilder("CCAP"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -113,7 +113,7 @@ public class HasCostForChildcareInputsMapperTest {
   @Test
   public void shouldReturnEmptyForMissingData() {
     ApplicationData applicationData = new ApplicationData();
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
@@ -142,12 +142,12 @@ public class HasCostForChildcareInputsMapperTest {
 
 
   @NotNull
-  private ApplicationInput createApplicationInput() {
-    return new ApplicationInput(
+  private DocumentField createApplicationInput() {
+    return new DocumentField(
         "ccapHasCostsForChildCare",
         "ccapHasCostsForChildCare",
         List.of("true"),
-        ApplicationInputType.ENUMERATED_SINGLE_VALUE
+        DocumentFieldType.ENUMERATED_SINGLE_VALUE
     );
   }
 }

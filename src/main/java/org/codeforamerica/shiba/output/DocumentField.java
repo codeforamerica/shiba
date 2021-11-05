@@ -9,16 +9,17 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 @Value
-public class ApplicationInput {
+public class DocumentField {
 
   String groupName;
   String name;
-  @NotNull List<String> value;
-  ApplicationInputType type;
+  @NotNull
+  List<String> value;
+  DocumentFieldType type;
   Integer iteration;
 
-  public ApplicationInput(String groupName, String name, @NotNull List<String> value,
-      ApplicationInputType type, Integer iteration) {
+  public DocumentField(String groupName, String name, @NotNull List<String> value,
+      DocumentFieldType type, Integer iteration) {
     this.groupName = groupName;
     this.name = name;
     this.value = value;
@@ -26,18 +27,18 @@ public class ApplicationInput {
     this.iteration = iteration;
   }
 
-  public ApplicationInput(String groupName, String name, @NotNull List<String> value,
-      ApplicationInputType type) {
+  public DocumentField(String groupName, String name, @NotNull List<String> value,
+      DocumentFieldType type) {
     this(groupName, name, value, type, null);
   }
 
   // Make an application input with only a single value
-  public ApplicationInput(String groupName, String name, String value, ApplicationInputType type) {
+  public DocumentField(String groupName, String name, String value, DocumentFieldType type) {
     this(groupName, name, value, type, null);
   }
 
   // Make an application input for an iteration with only a single value
-  public ApplicationInput(String groupName, String name, String value, ApplicationInputType type,
+  public DocumentField(String groupName, String name, String value, DocumentFieldType type,
       Integer iteration) {
     this(groupName, name, value == null ? emptyList() : List.of(value), type, iteration);
   }

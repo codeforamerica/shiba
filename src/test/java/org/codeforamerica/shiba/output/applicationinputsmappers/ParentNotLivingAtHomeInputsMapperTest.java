@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -28,35 +28,35 @@ public class ParentNotLivingAtHomeInputsMapperTest {
             List.of("939dc33-d13a-4cf0-9093-309293k3", "b99f3f7e-d13a-4cf0-9093-4092384"))
         .build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 
     assertThat(result).contains(
-        new ApplicationInput(
+        new DocumentField(
             "custodyArrangement",
             "parentNotAtHomeName",
             List.of("parentAName"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0),
-        new ApplicationInput(
+        new DocumentField(
             "custodyArrangement",
             "childFullName",
             List.of("childAFirstName childALastName"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "custodyArrangement",
             "parentNotAtHomeName",
             List.of("parentCName"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             1),
-        new ApplicationInput(
+        new DocumentField(
             "custodyArrangement",
             "childFullName",
             List.of("childCFirstName childCLastName"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             1
         ));
   }
@@ -70,7 +70,7 @@ public class ParentNotLivingAtHomeInputsMapperTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("childrenInNeedOfCare", "whoNeedsChildCare", childrenInNeedOfCare).build();
 
-    List<ApplicationInput> result = mapper.map(Application.builder()
+    List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
         .build(), null, null, null);
 

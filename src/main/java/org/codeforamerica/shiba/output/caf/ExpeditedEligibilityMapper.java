@@ -2,8 +2,8 @@ package org.codeforamerica.shiba.output.caf;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
@@ -24,21 +24,22 @@ public class ExpeditedEligibilityMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     ApplicationData data = application.getApplicationData();
     return List.of(
-        new ApplicationInput(
+        new DocumentField(
             "snapExpeditedEligibility",
             "snapExpeditedEligibility",
             List.of(snapExpeditedEligibilityDecider.decide(data).getStatus()),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ),
-        new ApplicationInput(
+        new DocumentField(
             "ccapExpeditedEligibility",
             "ccapExpeditedEligibility",
             List.of(ccapExpeditedEligibilityDecider.decide(data).getStatus()),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ));
   }
 }

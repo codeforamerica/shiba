@@ -9,8 +9,8 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.inputconditions.ValueMatcher;
-import org.codeforamerica.shiba.output.ApplicationInput;
-import org.codeforamerica.shiba.output.ApplicationInputType;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
@@ -105,53 +105,54 @@ class SubworkflowInputMapperTest {
         .build();
 
     assertThat(subworkflowInputMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker())).contains(
-        new ApplicationInput(
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker())).contains(
+        new DocumentField(
             "question1",
             "input1",
             List.of("string"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "question1",
             "input2",
             List.of("coolString"),
-            ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "question1",
             "input1",
             List.of("otherString"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             1
         ),
-        new ApplicationInput(
+        new DocumentField(
             "question1",
             "input2",
             List.of("weirdString"),
-            ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE,
             1
         ),
-        new ApplicationInput(
+        new DocumentField(
             "question2",
             "input1",
             List.of("differentString"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             "group1",
             "count",
             List.of("2"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ),
-        new ApplicationInput(
+        new DocumentField(
             "group2",
             "count",
             List.of("2"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         )
     );
   }
@@ -178,21 +179,21 @@ class SubworkflowInputMapperTest {
     ));
 
     Application application = Application.builder().applicationData(new ApplicationData()).build();
-    List<ApplicationInput> applicationInputs = subworkflowInputMapper
-        .map(application, null, Recipient.CLIENT, null);
+    List<DocumentField> documentFields = subworkflowInputMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
-    assertThat(applicationInputs).contains(
-        new ApplicationInput(
+    assertThat(documentFields).contains(
+        new DocumentField(
             "someGroupName",
             "count",
             List.of("0"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         ),
-        new ApplicationInput(
+        new DocumentField(
             "otherGroupName",
             "count",
             List.of("5"),
-            ApplicationInputType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE
         )
     );
   }
@@ -280,51 +281,52 @@ class SubworkflowInputMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<ApplicationInput> mapResult = subworkflowInputMapper
-        .map(application, null, Recipient.CLIENT, new SubworkflowIterationScopeTracker());
+    List<DocumentField> mapResult = subworkflowInputMapper
+        .prepareDocumentFields(application, null, Recipient.CLIENT,
+            new SubworkflowIterationScopeTracker());
     assertThat(mapResult).contains(
-        new ApplicationInput(
+        new DocumentField(
             prefix1 + "_question1",
             "input1",
             List.of("true"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             prefix1 + "_question1",
             "input2",
             List.of("weirdString"),
-            ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             prefix1 + "_question2",
             "input1",
             List.of("bar"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         )
     );
     assertThat(mapResult).contains(
-        new ApplicationInput(
+        new DocumentField(
             prefix2 + "_question1",
             "input1",
             List.of("false"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             prefix2 + "_question1",
             "input2",
             List.of("coolString"),
-            ApplicationInputType.ENUMERATED_SINGLE_VALUE,
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE,
             0
         ),
-        new ApplicationInput(
+        new DocumentField(
             prefix2 + "_question2",
             "input1",
             List.of("foo"),
-            ApplicationInputType.SINGLE_VALUE,
+            DocumentFieldType.SINGLE_VALUE,
             0
         )
     );

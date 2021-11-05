@@ -26,7 +26,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.enrichment.Address;
@@ -81,7 +81,7 @@ class MailingAddressStreetMapperTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", ENRICHED_HOME_STREET),
@@ -104,7 +104,7 @@ class MailingAddressStreetMapperTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", HOME_STREET),
@@ -128,7 +128,7 @@ class MailingAddressStreetMapperTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", ENRICHED_MAILING_STREET),
@@ -153,7 +153,7 @@ class MailingAddressStreetMapperTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", MAILING_STREET),
@@ -175,7 +175,7 @@ class MailingAddressStreetMapperTest {
         .build();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput("selectedStreetAddress", "General Delivery"),
@@ -197,7 +197,7 @@ class MailingAddressStreetMapperTest {
         .build();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<ApplicationInput> map = mapper.map(application, null, null, null);
+    List<DocumentField> map = mapper.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput("selectedStreetAddress", expectedStreetAddress),
@@ -207,12 +207,12 @@ class MailingAddressStreetMapperTest {
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(PagesData pagesData, String name, Field field) {
+  private DocumentField createApplicationInput(PagesData pagesData, String name, Field field) {
     return createApplicationInput(name, getFirstValue(pagesData, field));
   }
 
   @NotNull
-  private ApplicationInput createApplicationInput(String name, String value) {
-    return new ApplicationInput("mailingAddress", name, value, SINGLE_VALUE);
+  private DocumentField createApplicationInput(String name, String value) {
+    return new DocumentField("mailingAddress", name, value, SINGLE_VALUE);
   }
 }

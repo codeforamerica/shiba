@@ -2,14 +2,14 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHOSE_JOB_IS_IT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMapper;
@@ -33,7 +33,8 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     PageGroupConfiguration pageGroupConfiguration = applicationConfiguration.getPageGroups()
         .get("jobs");
@@ -48,8 +49,8 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
 
           String pageName = "employee";
           String inputName = "grossMonthlyIncome";
-          List<ApplicationInput> inputs = new ArrayList<>();
-          inputs.add(new ApplicationInput(
+          List<DocumentField> inputs = new ArrayList<>();
+          inputs.add(new DocumentField(
               pageName,
               inputName,
               String.valueOf(jobIncomeInformation.grossMonthlyIncome()),
@@ -59,7 +60,7 @@ public class GrossMonthlyIncomeMapper implements ApplicationInputsMapper {
           IterationScopeInfo scopeInfo = scopeTracker
               .getIterationScopeInfo(pageGroupConfiguration, jobIncomeInformation.getIteration());
           if (scopeInfo != null) {
-            inputs.add(new ApplicationInput(
+            inputs.add(new DocumentField(
                 scopeInfo.getScope() + "_" + pageName,
                 inputName,
                 String.valueOf(jobIncomeInformation.grossMonthlyIncome()),

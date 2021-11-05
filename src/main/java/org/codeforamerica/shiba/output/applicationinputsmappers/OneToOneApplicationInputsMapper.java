@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
@@ -30,7 +30,8 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     ApplicationData data = application.getApplicationData();
     return applicationConfiguration.getPageDefinitions().stream()
@@ -54,7 +55,7 @@ public class OneToOneApplicationInputsMapper implements ApplicationInputsMapper 
                 }
               })
               .collect(Collectors.toList());
-          return new ApplicationInput(
+          return new DocumentField(
               entry.getKey(),
               formInput.getName(),
               valuesForInput,

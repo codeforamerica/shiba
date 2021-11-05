@@ -31,7 +31,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_HOME_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_MAILING_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.output.ApplicationInputType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -65,7 +65,8 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
   }
 
   @Override
-  public List<ApplicationInput> map(Application application, Document document, Recipient recipient,
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
     PagesData pagesData = application.getApplicationData().getPagesData();
 
@@ -94,7 +95,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
     return createAddressInputsFromMailingAddress(pagesData);
   }
 
-  private List<ApplicationInput> createGeneralDeliveryAddressInputs(PagesData pagesData) {
+  private List<DocumentField> createGeneralDeliveryAddressInputs(PagesData pagesData) {
     // Default values if no post office provided
     String streetAddress = GENERAL_DELIVERY;
     String zipcode = getFirstValue(pagesData, GENERAL_DELIVERY_ZIPCODE);
@@ -124,7 +125,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
    * @param pagesData application data to check
    * @return mailing address inputs
    */
-  private List<ApplicationInput> createAddressInputsFromHomeAddress(PagesData pagesData) {
+  private List<DocumentField> createAddressInputsFromHomeAddress(PagesData pagesData) {
     boolean usesEnriched = parseBoolean(getFirstValue(pagesData, USE_ENRICHED_HOME_ADDRESS));
     if (usesEnriched) {
       return createMailingInputs(pagesData,
@@ -152,7 +153,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
    * @param pagesData application data to check
    * @return mailing address inputs
    */
-  private List<ApplicationInput> createAddressInputsFromMailingAddress(PagesData pagesData) {
+  private List<DocumentField> createAddressInputsFromMailingAddress(PagesData pagesData) {
     boolean usesEnriched = parseBoolean(getFirstValue(pagesData, USE_ENRICHED_MAILING_ADDRESS));
     if (usesEnriched) {
       return createMailingInputs(pagesData,
@@ -173,7 +174,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
     }
   }
 
-  private List<ApplicationInput> createMailingInputs(PagesData pagesData, Field street,
+  private List<DocumentField> createMailingInputs(PagesData pagesData, Field street,
       Field apartment, Field zipcode, Field city, Field state, Field county) {
     // county Fields default to "Other" but we don't want to write that to the PDF
     String countyValue = getFirstValue(pagesData, county);
@@ -190,7 +191,7 @@ public class MailingAddressStreetMapper implements ApplicationInputsMapper {
   }
 
   @NotNull
-  private ApplicationInput createSingleMailingInput(String name, String value) {
-    return new ApplicationInput("mailingAddress", name, value, SINGLE_VALUE);
+  private DocumentField createSingleMailingInput(String name, String value) {
+    return new DocumentField("mailingAddress", name, value, SINGLE_VALUE);
   }
 }

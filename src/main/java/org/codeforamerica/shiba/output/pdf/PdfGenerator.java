@@ -16,7 +16,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.ApplicationInput;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.applicationinputsmappers.ApplicationInputsMappers;
@@ -60,9 +60,9 @@ public class PdfGenerator implements FileGenerator {
   }
 
   public ApplicationFile generate(Application application, Document document, Recipient recipient) {
-    List<ApplicationInput> applicationInputs = mappers.map(application, document, recipient);
+    List<DocumentField> documentFields = mappers.map(application, document, recipient);
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
-    return pdfFiller.fill(pdfFieldMapper.map(applicationInputs), application.getId(),
+    return pdfFiller.fill(pdfFieldMapper.map(documentFields), application.getId(),
         fileNameGenerator.generatePdfFilename(application, document));
   }
 
@@ -78,7 +78,7 @@ public class PdfGenerator implements FileGenerator {
           extension = "pdf";
         } catch (IOException e) {
           log.error("failed to convert document " + uploadedDocument.getFilename()
-              + " to pdf. Maintaining original type");
+                    + " to pdf. Maintaining original type");
         }
       } else if (!extension.equals("pdf")) {
         log.warn("Unsupported file-type: " + extension);
