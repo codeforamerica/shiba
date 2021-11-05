@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.caf.CoverPageInputsMapper.CHILDCARE_WAITING_LIST_UTM_SOURCE;
+import static org.codeforamerica.shiba.output.caf.CoverPagePreparer.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,7 @@ import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.caf.CoverPageInputsMapper;
+import org.codeforamerica.shiba.output.caf.CoverPagePreparer;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
@@ -38,10 +38,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class CoverPageInputsMapperTest {
+class CoverPagePreparerTest {
 
   private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
-  private CoverPageInputsMapper coverPageInputsMapper;
+  private CoverPagePreparer preparer;
   private ApplicationData applicationData;
   @MockBean
   private RoutingDecisionService routingDecisionService;
@@ -55,7 +55,7 @@ class CoverPageInputsMapperTest {
     CountyMap<CountyRoutingDestination> countyInformationMapping = new CountyMap<>();
     StaticMessageSource staticMessageSource = new StaticMessageSource();
     applicationData = new ApplicationData();
-    coverPageInputsMapper = new CoverPageInputsMapper(countyInstructionsMapping,
+    preparer = new CoverPagePreparer(countyInstructionsMapping,
         countyInformationMapping, staticMessageSource, routingDecisionService,
         routingDestinationMessageService);
     countyInstructionsMapping.getCounties().put(Other, Map.of(
@@ -102,7 +102,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
@@ -129,7 +129,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
@@ -157,7 +157,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
@@ -177,7 +177,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .build();
 
-    List<String> appInputNames = coverPageInputsMapper
+    List<String> appInputNames = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null).stream()
         .map(DocumentField::getName)
         .collect(Collectors.toList());
@@ -200,7 +200,7 @@ class CoverPageInputsMapperTest {
         Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
     ));
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CASEWORKER, null);
     assertThat(documentFields).contains(
         new DocumentField(
@@ -210,7 +210,7 @@ class CoverPageInputsMapperTest {
             DocumentFieldType.SINGLE_VALUE
         ));
 
-    documentFields = coverPageInputsMapper.prepareDocumentFields(application, CAF, Recipient.CLIENT,
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT,
         null);
     assertThat(documentFields).contains(
         new DocumentField(
@@ -222,7 +222,7 @@ class CoverPageInputsMapperTest {
 
     new TestApplicationDataBuilder(applicationData)
         .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
-    documentFields = coverPageInputsMapper.prepareDocumentFields(application, CAF, Recipient.CLIENT,
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT,
         null);
     assertThat(documentFields).contains(
         new DocumentField(
@@ -246,7 +246,7 @@ class CoverPageInputsMapperTest {
         .timeToComplete(null)
         .build();
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
@@ -269,7 +269,7 @@ class CoverPageInputsMapperTest {
         .flow(FlowType.LATER_DOCS)
         .build();
 
-    List<DocumentField> documentFields = coverPageInputsMapper
+    List<DocumentField> documentFields = preparer
         .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
@@ -290,7 +290,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .timeToComplete(null)
         .build();
-    List<DocumentField> result = coverPageInputsMapper
+    List<DocumentField> result = preparer
         .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
 
     assertThat(result).contains(
@@ -300,7 +300,7 @@ class CoverPageInputsMapperTest {
             List.of("FROM BSF WAITING LIST"),
             DocumentFieldType.SINGLE_VALUE));
 
-    result = coverPageInputsMapper.prepareDocumentFields(application, Document.CCAP,
+    result = preparer.prepareDocumentFields(application, Document.CCAP,
         Recipient.CLIENT, null);
     assertThat(result).doesNotContain(
         new DocumentField(
@@ -321,7 +321,7 @@ class CoverPageInputsMapperTest {
         .county(Other)
         .timeToComplete(null)
         .build();
-    List<DocumentField> result = coverPageInputsMapper
+    List<DocumentField> result = preparer
         .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
 
     assertThat(result).contains(
@@ -331,7 +331,7 @@ class CoverPageInputsMapperTest {
             List.of(""),
             DocumentFieldType.SINGLE_VALUE));
 
-    result = coverPageInputsMapper.prepareDocumentFields(application, Document.CCAP,
+    result = preparer.prepareDocumentFields(application, Document.CCAP,
         Recipient.CLIENT, null);
 
     assertThat(result).contains(

@@ -37,7 +37,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CoverPageInputsMapper implements ApplicationInputsMapper {
+public class CoverPagePreparer implements ApplicationInputsMapper {
 
   public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
   private static final Map<String, String> UTM_SOURCE_MAPPING = Map
@@ -49,7 +49,7 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   private final RoutingDestinationMessageService routingDestinationMessageService;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public CoverPageInputsMapper(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
+  public CoverPagePreparer(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
       CountyMap<CountyRoutingDestination> countyInformationMapping,
       MessageSource messageSource,
       RoutingDecisionService routingDecisionService,
@@ -100,8 +100,8 @@ public class CoverPageInputsMapper implements ApplicationInputsMapper {
   }
 
   private DocumentField getPrograms(Application application) {
-    List<String> programs = getValues(application.getApplicationData().getPagesData(),
-        APPLICANT_PROGRAMS);
+    List<String> programs = new ArrayList<>(
+        getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));
     if (isTribalTANF(application)) {
       programs.add("TRIBAL TANF");
     }

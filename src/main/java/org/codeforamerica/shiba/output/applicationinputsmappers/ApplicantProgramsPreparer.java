@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.output.applicationinputsmappers;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
@@ -10,15 +13,15 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ApplicantProgramsMapper implements ApplicationInputsMapper {
+public class ApplicantProgramsPreparer implements ApplicationInputsMapper {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
 
-    List<String> programs = application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("choosePrograms", "programs");
+    List<String> programs = new ArrayList<>(
+        getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));
 
     boolean isMFIP = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
