@@ -41,7 +41,7 @@
 			</xsd:element>
 			<xsd:element name="ROPSignedInd" type="xsd:boolean" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>F# 152 - Parent signed Recoganition of
+					<xsd:documentation>F# 152 - Parent signed Recognition of
 						Paternity
 					</xsd:documentation>
 				</xsd:annotation>
@@ -49,7 +49,7 @@
 			<xsd:element name="COForPaternityInd" type="xsd:boolean" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>F# 152 - There is court order for
-						paterity
+						paternity
 					</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
