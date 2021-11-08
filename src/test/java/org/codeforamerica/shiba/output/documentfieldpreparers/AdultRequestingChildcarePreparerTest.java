@@ -12,11 +12,17 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AdultRequestingChildcarePreparerTest {
 
-  AdultRequestingChildcarePreparer adultRequestingChildcarePreparer = new AdultRequestingChildcarePreparer();
+  private AdultRequestingChildcarePreparer adultRequestingChildcarePreparer;
+
+  @BeforeEach
+  void setUp() {
+    adultRequestingChildcarePreparer = new AdultRequestingChildcarePreparer();
+  }
 
   @Test
   void shouldReturnEmptyListWhenLivingAlone() {

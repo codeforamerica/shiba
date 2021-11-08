@@ -3,31 +3,47 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelectedFullNamesExceptFor;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelectedNameStrings;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.output.DocumentField;
-import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.FullNameFormatter;
-import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdultRequestingChildcarePreparer implements DocumentFieldPreparer {
 
-  private static Stream<DocumentField> getAdultsForWorkingSection(Application application) {
+  @Override
+  public List<DocumentField> prepareDocumentFields(Application application, Document document,
+      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+
+    List<DocumentField> fields;
+
+    List<DocumentField> lookingForAJob = getAdultsForSection(application, "whoIsLookingForAJob",
+        "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
+    fields = new ArrayList<>(lookingForAJob);
+
+    List<DocumentField> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool",
+        "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
+    fields.addAll(goingToSchool);
+
+    List<DocumentField> working = getAdultsForWorkingSection(application);
+    fields.addAll(working);
+
+    return fields;
+  }
+
+  private static List<DocumentField> getAdultsForWorkingSection(Application application) {
     AtomicInteger i = new AtomicInteger(0);
     List<String> exceptNameStrings = getListOfSelectedNameStrings(application,
         "childrenInNeedOfCare", "whoNeedsChildCare");
     if (!DocumentListParser.parse(application.getApplicationData()).contains(Document.CCAP) ||
         !application.getApplicationData().getSubworkflows().containsKey("jobs")) {
-      return Stream.of();
+      return Collections.emptyList();
     } else {
       return application.getApplicationData().getSubworkflows().get("jobs")
           .stream().filter(iteration -> {
@@ -62,37 +78,23 @@ public class AdultRequestingChildcarePreparer implements DocumentFieldPreparer {
                     i.get()));
             i.getAndIncrement();
             return inputs;
-          });
+          })
+          .toList();
     }
   }
 
   @NotNull
-  private static Stream<DocumentField> getAdultsForSection(Application application,
+  private static List<DocumentField> getAdultsForSection(Application application,
       String pageName, String inputName, String outputName) {
     List<String> adults = getListOfSelectedFullNamesExceptFor(application, pageName, inputName,
         "childrenInNeedOfCare", "whoNeedsChildCare");
-    AtomicInteger i = new AtomicInteger(0);
-    return adults.stream()
-        .map(fullName ->
-            new DocumentField(outputName,
-                "fullName",
-                List.of(fullName),
-                DocumentFieldType.SINGLE_VALUE,
-                i.getAndIncrement()));
-  }
 
-  @Override
-  public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
-    Stream<DocumentField> lookingForAJob = getAdultsForSection(application,
-        "whoIsLookingForAJob", "whoIsLookingForAJob", "adultRequestingChildcareLookingForJob");
-    Stream<DocumentField> goingToSchool = getAdultsForSection(application, "whoIsGoingToSchool",
-        "whoIsGoingToSchool", "adultRequestingChildcareGoingToSchool");
-    Stream<DocumentField> working = getAdultsForWorkingSection(application);
-
-    return Stream.of(lookingForAJob, goingToSchool, working)
-        .flatMap(Function.identity())
-        .collect(Collectors.toList());
+    List<DocumentField> fields = new ArrayList<>();
+    for (int i = 0; i < adults.size(); i++) {
+      DocumentField name = new DocumentField(outputName, "fullName", List.of(adults.get(i)),
+          DocumentFieldType.SINGLE_VALUE, i);
+      fields.add(name);
+    }
+    return fields;
   }
 }
