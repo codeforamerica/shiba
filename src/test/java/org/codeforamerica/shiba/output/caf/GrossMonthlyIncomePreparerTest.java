@@ -19,17 +19,27 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class GrossMonthlyIncomePreparerTest {
 
-  private final ApplicationData applicationData = new ApplicationData();
-  private final GrossMonthlyIncomeParser grossMonthlyIncomeParser = mock(
-      GrossMonthlyIncomeParser.class);
-  private final ApplicationConfiguration applicationConfiguration = mock(
-      ApplicationConfiguration.class);
-  private final SubworkflowIterationScopeTracker scopeTracker = mock(
-      SubworkflowIterationScopeTracker.class);
+  private ApplicationData applicationData;
+  @Mock
+  private GrossMonthlyIncomeParser grossMonthlyIncomeParser;
+  @Mock
+  private ApplicationConfiguration applicationConfiguration;
+  @Mock
+  private SubworkflowIterationScopeTracker scopeTracker;
+
+  @BeforeEach
+  void setUp() {
+    applicationData = new ApplicationData();
+  }
 
   @Test
   void shouldMapJobIncomeInformationToInputs() {
