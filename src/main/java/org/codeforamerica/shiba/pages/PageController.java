@@ -277,7 +277,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -374,9 +374,9 @@ public class PageController {
       record DocWithThumbnail(UploadedDocument doc, String thumbnail) {
 
       }
-      var uploadedDocsWithThumbnails = applicationData.getUploadedDocs().stream()
+      List<DocWithThumbnail> uploadedDocsWithThumbnails = applicationData.getUploadedDocs().stream()
           .parallel()
-          .map(doc -> new DocWithThumbnail(doc, doc.getThumbnail(documentRepository)))
+          .map(doc -> new DocWithThumbnail(doc, documentRepository.getThumbnail(doc)))
           .toList();
       model.put("uploadedDocs", uploadedDocsWithThumbnails);
       model.put("uploadDocMaxFileSize", uploadDocumentConfiguration.getMaxFilesize());
@@ -423,7 +423,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-                        && applicationData.getStartTime() == null;
+        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
