@@ -3092,6 +3092,7 @@ workflow:
   householdMemberInfo:
     pageConfiguration: *householdMemberInfo
     groupName: household
+    enrichment: householdMemberDateOfBirthEnrichment
     nextPages:
       - pageName: householdList
   householdList:
@@ -4182,6 +4183,7 @@ workflow:
     subtleLinkTargetPage: identifyCounty
   matchInfo:
     pageConfiguration: *matchInfo
+    enrichment: matchInfoDateOfBirthEnrichment
     nextPages:
       - pageName: uploadDocuments
   emailDocsToYourCounty:

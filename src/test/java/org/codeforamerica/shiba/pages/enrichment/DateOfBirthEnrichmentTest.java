@@ -56,4 +56,12 @@ public class DateOfBirthEnrichmentTest {
     assertEquals("05/06/1978", enrichmentResult.get("dobAsDate").getValue(0));
   }
 
+  @Test
+  void dobAsDateIsEmptyIfDateOfBirthIsEmpty() {
+    DateOfBirthEnrichment enrichment = new PersonalInfoDateOfBirthEnrichment();
+    PageData enrichmentResult = enrichment.process(new PagesData());
+
+    assertNotNull(enrichmentResult.get("dobAsDate"));
+    assertEquals("", enrichmentResult.get("dobAsDate").getValue(0));
+  }
 }
