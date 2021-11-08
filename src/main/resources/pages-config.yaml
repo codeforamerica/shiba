@@ -2871,8 +2871,8 @@ pageDefinitions:
       - name: raceAndEthnicity
         type: CHECKBOX
         validators:
-            - validation: SELECT_AT_LEAST_ONE
-              errorMessageKey: general.validation.make-sure-you-answer-this-question
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
         options:
           selectableOptions:
             - value: AMERICAN_INDIAN_OR_ALASKA_NATIVE
@@ -4254,8 +4254,6 @@ landmarkPages:
     - feedback
     - matchInfo
     - documentsSent
-    - identifyCounty
-    - identifyCountyBeforeApplying
   nextStepsPage: nextSteps
   terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
