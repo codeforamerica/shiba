@@ -1,17 +1,17 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
-import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -29,19 +29,27 @@ public class DocumentFieldPreparers {
 
     SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
 
-    Stream<DocumentField> inputs = this.preparers.stream()
-        .flatMap(preparer -> {
-          try {
-            return preparer.prepareDocumentFields(application, document, recipient, scopeTracker)
-                .stream();
-          } catch (Exception e) {
-            log.error("There was an issue preparing application data for " + preparer.getClass()
-                .getSimpleName(), e);
-            return Stream.empty();
-          }
-        });
+    // Add default fields
+    List<DocumentField> fields = new ArrayList<>(getDefaultFields(application));
 
-    Stream<DocumentField> defaultInputs = Stream.of(
+    // Run all the preparers
+    preparers.forEach(preparer -> {
+      try {
+        fields.addAll(
+            preparer.prepareDocumentFields(application, document, recipient, scopeTracker)
+        );
+      } catch (Exception e) {
+        String preparerClassName = preparer.getClass().getSimpleName();
+        log.error("There was an issue preparing application data for " + preparerClassName, e);
+      }
+    });
+
+    return fields;
+  }
+
+  @NotNull
+  private List<DocumentField> getDefaultFields(Application application) {
+    return List.of(
         new DocumentField("nonPagesData", "applicationId", List.of(application.getId()),
             SINGLE_VALUE),
         new DocumentField("nonPagesData", "completedDate", List.of(
@@ -54,8 +62,7 @@ public class DocumentFieldPreparers {
         new DocumentField("nonPagesData", "submissionDateTime", List.of(
             DateTimeFormatter.ofPattern("MM/dd/yyyy' at 'hh:mm a").format(
                 application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
-            SINGLE_VALUE));
-
-    return Stream.concat(defaultInputs, inputs).collect(toList());
+            SINGLE_VALUE)
+    );
   }
 }

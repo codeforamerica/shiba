@@ -17,14 +17,20 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DocumentFieldPreparersTest {
 
-  private final DocumentFieldPreparers preparers = new DocumentFieldPreparers(List.of());
+  private DocumentFieldPreparers preparers;
+
+  @BeforeEach
+  void setUp() {
+    preparers = new DocumentFieldPreparers(List.of());
+  }
 
   @Test
   void shouldIncludeApplicationIdInput() {
