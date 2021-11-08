@@ -518,5 +518,7 @@ class PageControllerTest {
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
     mockMvc.perform(get("/pages/doesNotExist")).andExpect(redirectedUrl("/error"));
+
+    mockMvc.perform(get("/pages/doesNotExist/navigation")).andExpect(redirectedUrl("/error"));
   }
 }

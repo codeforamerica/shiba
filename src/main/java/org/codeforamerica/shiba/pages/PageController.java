@@ -136,6 +136,10 @@ public class PageController {
       @RequestParam(required = false, defaultValue = "0") Integer option
   ) {
     PageWorkflowConfiguration currentPage = applicationConfiguration.getPageWorkflow(pageName);
+    if (currentPage == null) {
+      return new RedirectView("/error");
+    }
+
     PagesData pagesData = applicationData.getPagesData();
     NextPage nextPage = applicationData.getNextPageName(featureFlags, currentPage, option);
     ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
