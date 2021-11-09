@@ -3499,6 +3499,7 @@ workflow:
   householdSelectionForIncome:
     pageConfiguration: *householdSelectionForIncome
     groupName: jobs
+    enrichment: fullNameEnrichment
     datasources:
       - pageName: addHouseholdMembers
     nextPages:
