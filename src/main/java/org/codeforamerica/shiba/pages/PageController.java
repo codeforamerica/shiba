@@ -279,7 +279,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -412,7 +412,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-                        && applicationData.getStartTime() == null;
+        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
@@ -424,9 +424,9 @@ public class PageController {
         .getLandmarkPages();
     // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-           !landmarkPagesConfiguration.isLandingPage(pageName) &&
-           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
-           applicationData.isSubmitted();
+        !landmarkPagesConfiguration.isLandingPage(pageName) &&
+        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
+        applicationData.isSubmitted();
   }
 
   @PostMapping("/groups/{groupName}/delete")

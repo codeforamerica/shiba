@@ -21,8 +21,8 @@ public abstract class DateOfBirthEnrichment implements Enrichment {
       return "";
     }
     return StringUtils.leftPad(dateOfBirth.get(0), 2, '0') + '/' +
-           StringUtils.leftPad(dateOfBirth.get(1), 2, '0') + '/' +
-           dateOfBirth.get(2);
+        StringUtils.leftPad(dateOfBirth.get(1), 2, '0') + '/' +
+        dateOfBirth.get(2);
   }
 
   @Override

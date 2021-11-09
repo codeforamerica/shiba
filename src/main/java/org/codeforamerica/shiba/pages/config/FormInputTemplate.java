@@ -43,9 +43,9 @@ public class FormInputTemplate {
 
   public boolean needsAriaLabel() {
     return promptMessage == null &&
-           type != CHECKBOX &&
-           type != RADIO &&
-           type != FormInputType.PEOPLE_CHECKBOX;
+        type != CHECKBOX &&
+        type != RADIO &&
+        type != FormInputType.PEOPLE_CHECKBOX;
   }
 
   public boolean isRadioOrCheckbox() {
