@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.pages.Sentiment.HAPPY;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
@@ -13,12 +12,11 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedListener;
 import org.codeforamerica.shiba.testutilities.AbstractStaticMessageSourceFrameworkTest;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,9 +33,10 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
   void shouldProvideApplicationDataToTerminalPageWhenApplicationIsSigned() throws Exception {
     var applicationId = "someId";
     var county = Hennepin;
-    var applicationData = mock(ApplicationData.class);
-    when(applicationData.isCAFApplication()).thenReturn(true);
-    when(applicationData.isCCAPApplication()).thenReturn(true);
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("SNAP", "CCAP"))
+        .withPageData("homeAddress", "enrichedCounty", county.name())
+        .build();
     var sentiment = HAPPY;
     var feedbackText = "someFeedback";
     Application application = Application.builder()
@@ -50,6 +49,7 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
         .feedback(feedbackText)
         .build();
     when(applicationRepository.find(any())).thenReturn(application);
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
 
     assertThat(getFormPage("firstPage").getInputByName("foo")).isNotNull();
     postToUrlExpectingSuccess("/submit",

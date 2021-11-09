@@ -27,6 +27,7 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
     staticMessageSource.addMessage("general.inputs.yes", Locale.ENGLISH, "Yes");
     staticMessageSource.addMessage("general.inputs.no", Locale.ENGLISH, "No");
     staticMessageSource.addMessage("general.county-and-phone", Locale.ENGLISH, "somethin");
+    staticMessageSource.addMessage("general.and", Locale.ENGLISH, "and");
     staticMessageSource.addMessage("dummy-page-title", Locale.ENGLISH, dummyPageTitle);
     staticMessageSource.addMessage("generic.footer", Locale.ENGLISH, "footer");
     staticMessageSource.addMessage("general.privacy", Locale.ENGLISH, "privacy");
@@ -40,5 +41,9 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
     staticMessageSource.addMessage("success.standard-suggested-action", Locale.ENGLISH, "success");
     staticMessageSource.addMessage("success.suggested-action-header", Locale.ENGLISH,
         "Suggested Action");
+    staticMessageSource.addMessage("success.childcare", Locale.ENGLISH, "");
+    staticMessageSource.addMessage("success.food-support", Locale.ENGLISH, "");
+    staticMessageSource.addMessage("success.contact-promise", Locale.ENGLISH, "");
+    staticMessageSource.addMessage("success.contact-promise-header", Locale.ENGLISH, "");
   }
 }

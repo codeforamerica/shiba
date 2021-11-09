@@ -4,6 +4,8 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.io.IOException;
@@ -277,7 +279,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -289,12 +291,21 @@ public class PageController {
   private Map<String, Object> buildModelForThymeleaf(String pageName, Locale locale,
       LandmarkPagesConfiguration landmarkPagesConfiguration, PageTemplate pageTemplate,
       PageWorkflowConfiguration pageWorkflow, PagesData pagesData, String iterationIndex) {
-    HashMap<String, Object> model = new HashMap<>(Map.of(
-        "page", pageTemplate,
-        "pageName", pageName,
-        "postTo",
-        landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName
-    ));
+    Map<String, Object> model = new HashMap<>();
+    model.put("page", pageTemplate);
+    model.put("pageName", pageName);
+    model.put("postTo",
+        landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName);
+    model.put("applicationId", applicationData.getId());
+    model.put("county", countyParser.parse(applicationData));
+    model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
+    model.put("zipCode", getFirstValue(applicationData.getPagesData(), HOME_ZIPCODE));
+    model.put("featureFlags", featureFlags);
+
+    var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
+    model.put("expeditedSnap", snapExpeditedEligibility);
+    var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
+    model.put("expeditedCcap", ccapExpeditedEligibility);
 
     if (pageWorkflow.getPageConfiguration().isStaticPage()) {
       model.put("pageNameContext", pageName);
@@ -304,21 +315,7 @@ public class PageController {
     if (!programs.isEmpty()) {
       model.put("programs", String.join(", ", programs));
     }
-
-    model.put("county", countyParser.parse(applicationData));
-    model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
     model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
-
-    List<String> zipCode = applicationData.getPagesData()
-        .safeGetPageInputValue("homeAddress", "zipCode");
-    if (!zipCode.isEmpty()) {
-      model.put("zipCode", zipCode.get(0));
-    }
-
-    var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
-    model.put("expeditedSnap", snapExpeditedEligibility);
-    var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
-    model.put("expeditedCcap", ccapExpeditedEligibility);
 
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
       model.put("docRecommendations", docRecommendationMessageService
@@ -330,12 +327,10 @@ public class PageController {
 
     if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
       Application application = applicationRepository.find(applicationData.getId());
-      model.put("applicationId", application.getId());
       model.put("documents", DocumentListParser.parse(application.getApplicationData()));
       model.put("hasUploadDocuments", !applicationData.getUploadedDocs().isEmpty());
       model.put("submissionTime",
           application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
-      model.put("county", application.getCounty());
       model.put("sentiment", application.getSentiment());
       model.put("feedbackText", application.getFeedback());
       model.put("combinedFormText", applicationData.combinedApplicationProgramsList());
@@ -364,10 +359,6 @@ public class PageController {
           true,
           new ArrayList<>(routingDestinations));
       model.put("routingDestinationList", finalDestinationList);
-    }
-
-    if (landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)) {
-      model.put("applicationId", applicationData.getId());
     }
 
     if (landmarkPagesConfiguration.isUploadDocumentsPage(pageName)) {
@@ -407,8 +398,6 @@ public class PageController {
           .getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
     }
 
-    model.put("featureFlags", featureFlags);
-
     return model;
   }
 
@@ -423,7 +412,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-        && applicationData.getStartTime() == null;
+                        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
