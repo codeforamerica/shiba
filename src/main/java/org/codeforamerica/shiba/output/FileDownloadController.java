@@ -3,7 +3,6 @@ package org.codeforamerica.shiba.output;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
@@ -125,7 +124,7 @@ public class FileDownloadController {
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
 
     List<ApplicationFile> applicationFiles = new ArrayList<>();
-    byte[] coverPage = pdfGenerator.generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
+    byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument uploadedDocument = uploadedDocs.get(i);
       ApplicationFile fileToSend = pdfGenerator

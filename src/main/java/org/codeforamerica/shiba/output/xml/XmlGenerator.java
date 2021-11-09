@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,9 +34,6 @@ public class XmlGenerator implements FileGenerator {
   private final ApplicationRepository applicationRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
-  private final BinaryOperator<String> UNUSED_IN_SEQUENTIAL_STREAM = (s1, s2) -> "";
-  private final Function<String, String> tokenFormatter = (token) -> Pattern
-      .quote(String.format("{{%s}}", token));
 
   public XmlGenerator(
       @Value("classpath:XmlConfiguration.xml") Resource xmlConfiguration,
@@ -77,10 +72,9 @@ public class XmlGenerator implements FileGenerator {
       try (InputStream xmlConfigInputStream = xmlConfiguration.getInputStream()) {
         String partiallyReplacedContent = new String(xmlConfigInputStream.readAllBytes());
         for (XmlEntry entry : xmlEntries) {
-          partiallyReplacedContent = partiallyReplacedContent.replaceAll(
-              tokenFormatter.apply(entry.xmlToken()),
-              entry.escapedInputValue()
-          );
+          String regex = getTokenRegex(entry.xmlToken());
+          String replacement = entry.escapedInputValue();
+          partiallyReplacedContent = partiallyReplacedContent.replaceAll(regex, replacement);
         }
         contentsAfterReplacement = partiallyReplacedContent;
       }
@@ -94,6 +88,11 @@ public class XmlGenerator implements FileGenerator {
       // TODO never, ever, ever convert a checked exception to a runtime exception
       throw new RuntimeException(e);
     }
+  }
+
+  @NotNull
+  private String getTokenRegex(String xmlToken) {
+    return Pattern.quote("{{%s}}".formatted(xmlToken));
   }
 
   private String getXmlToken(DocumentField input, String xmlToken) {
