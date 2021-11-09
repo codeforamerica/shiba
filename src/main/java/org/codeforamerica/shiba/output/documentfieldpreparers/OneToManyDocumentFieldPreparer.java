@@ -6,8 +6,9 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGL
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
 
@@ -32,11 +33,11 @@ public abstract class OneToManyDocumentFieldPreparer implements DocumentFieldPre
 
   private List<DocumentField> createApplicationInputs(OneToManyParams params,
       PagesData pagesData) {
-    String pageName = params.getPageName();
+    String pageName = params.pageName();
     List<DocumentField> results = new ArrayList<>();
     if (pagesData.containsKey(pageName)) {
-      List<String> selectedValues = getValues(pagesData, params.getField());
-      params.getYesNoOptions().stream()
+      List<String> selectedValues = getValues(pagesData, params.field());
+      params.yesNoOptions().stream()
           .map(option -> new DocumentField(pageName,
               option,
               String.valueOf(selectedValues.contains(option)),
@@ -46,4 +47,7 @@ public abstract class OneToManyDocumentFieldPreparer implements DocumentFieldPre
     return results;
   }
 
+  protected static record OneToManyParams(String pageName, Field field, List<String> yesNoOptions) {
+
+  }
 }
