@@ -194,6 +194,12 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("moveToMnPreviousCity", "Chicago");
     testPage.clickContinue();
 
+    // Check that we get the no phone number confirmation screen if no phone number is entered
+    testPage.enter("email", "some@example.com");
+    testPage.clickContinue();
+    assertThat(testPage.getTitle()).contains("No phone number confirmation");
+    testPage.goBack();
+
     // How can we get in touch with you?
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");

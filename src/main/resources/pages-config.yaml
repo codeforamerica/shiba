@@ -541,6 +541,12 @@ pageDefinitions:
             - value: EMAIL
               messageKey: contact-info.email-me
     cardFooterTextKey: contact-info.the-department-of-human-services
+  - &noPhoneNumberConfirmation
+    name: noPhoneNumberConfirmation
+    headerKey: no-phone.are-you-sure
+    pageTitle: no-phone.title
+    contextFragment: contactInfoContextFragment
+    hasPrimaryButton: false
   - &homeAddress
     name: homeAddress
     headerKey: home-address.where-are-you-currently-living
@@ -2984,6 +2990,16 @@ workflow:
   contactInfo:
     pageConfiguration: *contactInfo
     nextPages:
+      - pageName: noPhoneNumberConfirmation
+        condition:
+          pageName: contactInfo
+          input: phoneNumber
+          matcher: EMPTY
+      - pageName: homeAddress
+  noPhoneNumberConfirmation:
+    pageConfiguration: *noPhoneNumberConfirmation
+    nextPages:
+      - pageName: contactInfo
       - pageName: homeAddress
   homeAddress:
     pageConfiguration: *homeAddress
