@@ -16,13 +16,21 @@ import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class FullNamePreparerTest {
 
-  private final ApplicationData applicationData = new ApplicationData();
-  ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  FullNamePreparer fullNamePreparer = new FullNamePreparer(applicationConfiguration);
+  private ApplicationData applicationData;
+  private ApplicationConfiguration applicationConfiguration;
+  private FullNamePreparer fullNamePreparer;
+
+  @BeforeEach
+  void setUp() {
+    applicationData = new ApplicationData();
+    applicationConfiguration = new ApplicationConfiguration();
+    fullNamePreparer = new FullNamePreparer(applicationConfiguration);
+  }
 
   @Test
   void mapsFullNamesForHouseholdAndJobIndividualsWithoutIdentifiers() {

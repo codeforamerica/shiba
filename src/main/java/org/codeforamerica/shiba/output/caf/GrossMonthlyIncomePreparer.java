@@ -6,11 +6,10 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
 import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
@@ -34,45 +33,52 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
-    PageGroupConfiguration pageGroupConfiguration = applicationConfiguration.getPageGroups()
-        .get("jobs");
-    return grossMonthlyIncomeParser.parse(application.getApplicationData()).stream()
-        .filter(jobIncomeInformation -> {
-          // Only want applicant info for certain-pops
-          PagesData pagesData = jobIncomeInformation.getIteration().getPagesData();
-          return document != Document.CERTAIN_POPS ||
-                 getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant");
-        })
-        .flatMap(jobIncomeInformation -> {
+      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
+    List<JobIncomeInformation> jobsToIncludeInGrossIncome =
+        getJobIncomeInformationToIncludeInThisDocument(application, document);
+
+    int initialCapacity = jobsToIncludeInGrossIncome.size() * 2;
+    List<DocumentField> fields = new ArrayList<>(initialCapacity);
+    jobsToIncludeInGrossIncome.forEach(job -> {
           String pageName = "employee";
           String inputName = "grossMonthlyIncome";
-          List<DocumentField> inputs = new ArrayList<>();
-          inputs.add(new DocumentField(
-              pageName,
-              inputName,
-              String.valueOf(jobIncomeInformation.grossMonthlyIncome()),
-              SINGLE_VALUE,
-              jobIncomeInformation.getIndexInJobsSubworkflow()));
+          fields.add(new DocumentField(pageName, inputName, String.valueOf(job.grossMonthlyIncome()),
+              SINGLE_VALUE, job.getIndexInJobsSubworkflow()));
 
-          IterationScopeInfo scopeInfo = scopeTracker
-              .getIterationScopeInfo(pageGroupConfiguration, jobIncomeInformation.getIteration());
+          PageGroupConfiguration pageGroupConfiguration =
+              applicationConfiguration.getPageGroups().get("jobs");
+          IterationScopeInfo scopeInfo =
+              scopeTracker.getIterationScopeInfo(pageGroupConfiguration, job.getIteration());
           if (scopeInfo != null) {
-            inputs.add(new DocumentField(
-                scopeInfo.getScope() + "_" + pageName,
-                inputName,
-                String.valueOf(jobIncomeInformation.grossMonthlyIncome()),
-                SINGLE_VALUE,
-                scopeInfo.getIndex()
-            ));
+            String groupName = scopeInfo.getScope() + "_" + pageName;
+            fields.add(new DocumentField(groupName, inputName, String.valueOf(job.grossMonthlyIncome()),
+                SINGLE_VALUE, scopeInfo.getIndex()));
           }
-
-          return inputs.stream();
-        })
-        .collect(Collectors.toList());
+        }
+    );
+    return fields;
   }
 
+  private List<JobIncomeInformation> getJobIncomeInformationToIncludeInThisDocument(
+      Application application,
+      Document document) {
+    List<JobIncomeInformation> grossIncomeInfoForAllHouseholdMembers =
+        grossMonthlyIncomeParser.parse(application.getApplicationData());
+
+    List<JobIncomeInformation> grossIncomeInfoToIncludeInThisDocument = grossIncomeInfoForAllHouseholdMembers;
+    if (document == Document.CERTAIN_POPS) {
+      // Only include income info for jobs held by the applicant
+      grossIncomeInfoToIncludeInThisDocument = grossIncomeInfoForAllHouseholdMembers.stream()
+          .filter(GrossMonthlyIncomePreparer::isApplicantIncomeInfo)
+          .toList();
+    }
+    return grossIncomeInfoToIncludeInThisDocument;
+  }
+
+  private static boolean isApplicantIncomeInfo(JobIncomeInformation jobIncomeInformation) {
+    PagesData pagesData = jobIncomeInformation.getIteration().getPagesData();
+    return getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant");
+  }
 }
 
