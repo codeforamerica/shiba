@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Stream.empty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,10 @@ import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.pages.config.*;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -42,64 +44,60 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
     List<DocumentField> fields = new ArrayList<>(
         getCount(data, pageGroups));
 
-    data.getSubworkflows().forEach((groupName, subworkflow) -> {
+    data.getSubworkflows().forEach((groupName, subworkflow) ->
+        subworkflow.forEach(iteration -> {
+          PagesData pagesData = iteration.getPagesData();
+          pagesData.forEach((pageName, pageData) -> {
 
-      List<DocumentField> fieldsForThisSubworkflow = subworkflow.stream().flatMap(iteration -> {
-        PagesData pagesData = iteration.getPagesData();
-
-        return pagesData.entrySet().stream().flatMap(pagesDataEntry -> {
-          String pageName = pagesDataEntry.getKey();
-          PageData pageData = pagesDataEntry.getValue();
-
-          if (pageData == null) {
-            return empty();
-          }
-
-          List<FormInput> inputConfigurations = applicationConfiguration.getPageDefinitions()
-              .stream()
-              .filter(pageConfig -> pageConfig.getName().equals(pageName)).findAny()
-              .map(PageConfiguration::getInputs)
-              .orElse(emptyList());
-
-          return pageData.entrySet().stream().flatMap(pageDataEntry -> {
-            String inputName = pageDataEntry.getKey();
-            InputData inputData = pageDataEntry.getValue();
-
-            List<String> valuesForInput = getValuesForInput(recipient, inputName,
-                inputData);
-
-            FormInputType inputType = inputConfigurations.stream()
-                .filter(inputConfiguration -> inputConfiguration.getName()
-                    .equals(inputName))
-                .findAny()
-                .map(FormInput::getType)
-                .orElse(FormInputType.TEXT);
-
-            Stream<DocumentField> inputs = Stream.of(new DocumentField(
-                pageName,
-                inputName,
-                valuesForInput,
-                DocumentFieldPreparer
-                    .formInputTypeToApplicationInputType(inputType),
-                subworkflow.indexOf(iteration)));
-            IterationScopeInfo scopeInfo = scopeTracker
-                .getIterationScopeInfo(pageGroups.get(groupName), iteration);
-            if (scopeInfo != null) {
-              inputs = Stream.concat(inputs, Stream.of(new DocumentField(
-                  scopeInfo.getScope() + "_" + pageName,
-                  inputName,
-                  valuesForInput,
-                  DocumentFieldPreparer
-                      .formInputTypeToApplicationInputType(inputType),
-                  scopeInfo.getIndex()
-              )));
+            if (pageData == null) {
+              return;
             }
-            return inputs;
+
+            List<FormInput> inputConfigurations = applicationConfiguration.getPageDefinitions()
+                .stream()
+                .filter(pageConfig -> pageConfig.getName().equals(pageName)).findAny()
+                .map(PageConfiguration::getInputs)
+                .orElse(emptyList());
+
+            List<DocumentField> fieldsForthisPage = pageData.entrySet().stream()
+                .flatMap(pageDataEntry -> {
+                  String inputName = pageDataEntry.getKey();
+                  InputData inputData = pageDataEntry.getValue();
+
+                  List<String> valuesForInput = getValuesForInput(recipient, inputName,
+                      inputData);
+
+                  FormInputType inputType = inputConfigurations.stream()
+                      .filter(inputConfiguration -> inputConfiguration.getName()
+                          .equals(inputName))
+                      .findAny()
+                      .map(FormInput::getType)
+                      .orElse(FormInputType.TEXT);
+
+                  Stream<DocumentField> inputs = Stream.of(new DocumentField(
+                      pageName,
+                      inputName,
+                      valuesForInput,
+                      DocumentFieldPreparer
+                          .formInputTypeToApplicationInputType(inputType),
+                      subworkflow.indexOf(iteration)));
+                  IterationScopeInfo scopeInfo = scopeTracker
+                      .getIterationScopeInfo(pageGroups.get(groupName), iteration);
+                  if (scopeInfo != null) {
+                    inputs = Stream.concat(inputs, Stream.of(new DocumentField(
+                        scopeInfo.getScope() + "_" + pageName,
+                        inputName,
+                        valuesForInput,
+                        DocumentFieldPreparer
+                            .formInputTypeToApplicationInputType(inputType),
+                        scopeInfo.getIndex()
+                    )));
+                  }
+                  return inputs;
+                }).toList();
+            fields.addAll(fieldsForthisPage);
           });
-        });
-      }).collect(Collectors.toList());
-      fields.addAll(fieldsForThisSubworkflow);
-    });
+        }));
     return fields;
   }
 
@@ -112,9 +110,8 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
               && personalDataMappings.get(inputName) != null
               && !value.isEmpty()) {
             return personalDataMappings.get(inputName);
-          } else {
-            return value;
           }
+          return value;
         })
         .collect(Collectors.toList());
   }
