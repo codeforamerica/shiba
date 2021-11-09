@@ -16,13 +16,19 @@ import org.codeforamerica.shiba.pages.config.FormInputType;
 import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class OneToOneDocumentFieldPreparerTest {
 
-  ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  OneToOneDocumentFieldPreparer preparer = new OneToOneDocumentFieldPreparer(
-      applicationConfiguration, Map.of());
+  private ApplicationConfiguration applicationConfiguration;
+  private OneToOneDocumentFieldPreparer preparer;
+
+  @BeforeEach
+  void setUp() {
+    applicationConfiguration = new ApplicationConfiguration();
+    preparer = new OneToOneDocumentFieldPreparer(applicationConfiguration, Map.of());
+  }
 
   @Test
   void shouldProduceAnApplicationInputForAFormInput() {

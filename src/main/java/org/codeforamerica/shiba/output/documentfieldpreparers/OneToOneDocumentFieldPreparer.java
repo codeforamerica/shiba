@@ -4,17 +4,19 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer.formInputTypeToApplicationInputType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FormInput;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,19 +31,25 @@ public class OneToOneDocumentFieldPreparer implements DocumentFieldPreparer {
     this.personalDataMappings = personalDataMappings;
   }
 
+  private record PageNameToInput(String pageName, FormInput input) {
+
+  }
+
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient,
       SubworkflowIterationScopeTracker scopeTracker) {
-    ApplicationData data = application.getApplicationData();
-    return applicationConfiguration.getPageDefinitions().stream()
-        .flatMap(pageConfiguration -> pageConfiguration.getFlattenedInputs().stream()
-            .map(input -> Map.entry(pageConfiguration.getName(), input)))
-        .filter(entry -> data.getPagesData().getPage(entry.getKey()) != null)
-        .map(entry -> {
-          FormInput formInput = entry.getValue();
-          List<String> values = ofNullable(data.getPagesData().getPage(entry.getKey())
-              .get(formInput.getName()))
+    ApplicationData applicationData = application.getApplicationData();
+
+    List<PageNameToInput> pageNameToInputList = getPageNameToInputList();
+
+    return pageNameToInputList.stream()
+        .filter(nameToInput -> doesPageHaveData(applicationData, nameToInput.pageName()))
+        .map(nameToInput -> {
+          FormInput formInput = nameToInput.input();
+          List<String> values = ofNullable(
+              applicationData.getPagesData().getPage(nameToInput.pageName())
+                  .get(formInput.getName()))
               .map(InputData::getValue)
               .orElse(List.of());
           List<String> valuesForInput = values.stream()
@@ -56,11 +64,30 @@ public class OneToOneDocumentFieldPreparer implements DocumentFieldPreparer {
               })
               .collect(Collectors.toList());
           return new DocumentField(
-              entry.getKey(),
+              nameToInput.pageName(),
               formInput.getName(),
               valuesForInput,
               formInputTypeToApplicationInputType(formInput.getType()));
         })
         .collect(toList());
+  }
+
+  private boolean doesPageHaveData(ApplicationData applicationData, String pageName) {
+    return applicationData.getPagesData().getPage(pageName) != null;
+  }
+
+  @NotNull
+  private List<PageNameToInput> getPageNameToInputList() {
+    List<PageNameToInput> pageNameToInputList = new ArrayList<>();
+    applicationConfiguration.getPageDefinitions().forEach(pageConfiguration -> {
+          for (FormInput input : pageConfiguration.getFlattenedInputs()) {
+            PageNameToInput pageNameToInput = new PageNameToInput(
+                pageConfiguration.getName(),
+                input);
+            pageNameToInputList.add(pageNameToInput);
+          }
+        }
+    );
+    return pageNameToInputList;
   }
 }
