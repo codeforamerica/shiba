@@ -64,42 +64,41 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
                   .map(PageConfiguration::getInputs)
                   .orElse(emptyList());
 
-              return pageData.entrySet().stream()
-                  .flatMap(pageDataEntry -> {
-                    String inputName = pageDataEntry.getKey();
-                    InputData inputData = pageDataEntry.getValue();
+              return pageData.entrySet().stream().flatMap(pageDataEntry -> {
+                String inputName = pageDataEntry.getKey();
+                InputData inputData = pageDataEntry.getValue();
 
-                    List<String> valuesForInput = getValuesForInput(recipient, inputName,
-                        inputData);
+                List<String> valuesForInput = getValuesForInput(recipient, inputName,
+                    inputData);
 
-                    FormInputType inputType = inputConfigurations.stream()
-                        .filter(inputConfiguration -> inputConfiguration.getName()
-                            .equals(inputName))
-                        .findAny()
-                        .map(FormInput::getType)
-                        .orElse(FormInputType.TEXT);
+                FormInputType inputType = inputConfigurations.stream()
+                    .filter(inputConfiguration -> inputConfiguration.getName()
+                        .equals(inputName))
+                    .findAny()
+                    .map(FormInput::getType)
+                    .orElse(FormInputType.TEXT);
 
-                    Stream<DocumentField> inputs = Stream.of(new DocumentField(
-                        pageName,
-                        inputName,
-                        valuesForInput,
-                        DocumentFieldPreparer
-                            .formInputTypeToApplicationInputType(inputType),
-                        subworkflow.indexOf(iteration)));
-                    IterationScopeInfo scopeInfo = scopeTracker
-                        .getIterationScopeInfo(pageGroupConfiguration, iteration);
-                    if (scopeInfo != null) {
-                      inputs = Stream.concat(inputs, Stream.of(new DocumentField(
-                          scopeInfo.getScope() + "_" + pageName,
-                          inputName,
-                          valuesForInput,
-                          DocumentFieldPreparer
-                              .formInputTypeToApplicationInputType(inputType),
-                          scopeInfo.getIndex()
-                      )));
-                    }
-                    return inputs;
-                  });
+                Stream<DocumentField> inputs = Stream.of(new DocumentField(
+                    pageName,
+                    inputName,
+                    valuesForInput,
+                    DocumentFieldPreparer
+                        .formInputTypeToApplicationInputType(inputType),
+                    subworkflow.indexOf(iteration)));
+                IterationScopeInfo scopeInfo = scopeTracker
+                    .getIterationScopeInfo(pageGroupConfiguration, iteration);
+                if (scopeInfo != null) {
+                  inputs = Stream.concat(inputs, Stream.of(new DocumentField(
+                      scopeInfo.getScope() + "_" + pageName,
+                      inputName,
+                      valuesForInput,
+                      DocumentFieldPreparer
+                          .formInputTypeToApplicationInputType(inputType),
+                      scopeInfo.getIndex()
+                  )));
+                }
+                return inputs;
+              });
             });
           });
         });
@@ -125,22 +124,21 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
   @NotNull
   private Stream<DocumentField> getCount(ApplicationData data,
       Map<String, PageGroupConfiguration> pageGroups) {
-    return pageGroups.entrySet().stream()
-        .map(entry -> {
-          String groupName = entry.getKey();
-          PageGroupConfiguration pageGroupConfiguration = entry.getValue();
+    return pageGroups.entrySet().stream().map(entry -> {
+      String groupName = entry.getKey();
+      PageGroupConfiguration pageGroupConfiguration = entry.getValue();
 
-          Integer startingCount = ofNullable(pageGroupConfiguration.getStartingCount()).orElse(0);
+      Integer startingCount = ofNullable(pageGroupConfiguration.getStartingCount()).orElse(0);
 
-          Subworkflow subworkflow = data.getSubworkflows().get(groupName);
-          Integer subworkflowCount = ofNullable(subworkflow).map(ArrayList::size).orElse(0);
+      Subworkflow subworkflow = data.getSubworkflows().get(groupName);
+      Integer subworkflowCount = ofNullable(subworkflow).map(ArrayList::size).orElse(0);
 
-          return new DocumentField(
-              groupName,
-              "count",
-              List.of(String.valueOf(subworkflowCount + startingCount)),
-              DocumentFieldType.SINGLE_VALUE
-          );
-        });
+      return new DocumentField(
+          groupName,
+          "count",
+          List.of(String.valueOf(subworkflowCount + startingCount)),
+          DocumentFieldType.SINGLE_VALUE
+      );
+    });
   }
 }
