@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Stream.empty;
 
@@ -9,20 +10,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker.IterationScopeInfo;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.config.FormInput;
-import org.codeforamerica.shiba.pages.config.FormInputType;
-import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.InputData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
+import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.data.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -69,7 +63,8 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
                       List<FormInput> inputConfigurations = applicationConfiguration
                           .getPageDefinitions().stream()
                           .filter(pageConfig -> pageConfig.getName().equals(pageName)).findAny()
-                          .orElse(null).getInputs();
+                          .map(PageConfiguration::getInputs)
+                          .orElse(emptyList());
 
                       return pageData.entrySet().stream()
                           .flatMap(pageDataEntry -> {

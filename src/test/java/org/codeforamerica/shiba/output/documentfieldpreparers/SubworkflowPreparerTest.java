@@ -12,25 +12,28 @@ import org.codeforamerica.shiba.inputconditions.ValueMatcher;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.config.FormInput;
-import org.codeforamerica.shiba.pages.config.FormInputType;
-import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SubworkflowPreparerTest {
 
-  private final ApplicationData applicationData = new ApplicationData();
-  private final Subworkflows subworkflows = new Subworkflows();
-  private final ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-  SubworkflowPreparer subworkflowPreparer = new SubworkflowPreparer(
-      applicationConfiguration, Map.of());
+  private ApplicationData applicationData;
+  private Subworkflows subworkflows;
+  private ApplicationConfiguration applicationConfiguration;
+  SubworkflowPreparer subworkflowPreparer;
+
+  @BeforeEach
+  void setUp() {
+    applicationData = new ApplicationData();
+    subworkflows = new Subworkflows();
+    applicationConfiguration = new ApplicationConfiguration();
+    subworkflowPreparer = new SubworkflowPreparer(applicationConfiguration, Map.of());
+  }
 
   @Test
   void shouldNameSpaceValuesFromEachIteration() {
