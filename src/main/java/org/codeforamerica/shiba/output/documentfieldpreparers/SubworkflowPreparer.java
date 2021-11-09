@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
@@ -41,14 +40,15 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
     ApplicationData data = application.getApplicationData();
     Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 
-    List<DocumentField> fields = new ArrayList<>(
-        getCount(data, pageGroups));
+    List<DocumentField> fields = new ArrayList<>(getCount(data, pageGroups));
 
     data.getSubworkflows().forEach((groupName, subworkflow) ->
+        // for each subworkflow
         subworkflow.forEach(iteration -> {
+          // for each iteration in that subworkflow
           PagesData pagesData = iteration.getPagesData();
           pagesData.forEach((pageName, pageData) -> {
-
+            // for each page in that iteration
             if (pageData == null) {
               return;
             }
@@ -59,46 +59,46 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
                 .map(PageConfiguration::getInputs)
                 .orElse(emptyList());
 
-            List<DocumentField> fieldsForthisPage = pageData.entrySet().stream()
-                .flatMap(pageDataEntry -> {
-                  String inputName = pageDataEntry.getKey();
-                  InputData inputData = pageDataEntry.getValue();
+            pageData.forEach((inputName, inputData) -> {
+              // for each input on that page
+              List<String> valuesForInput = getValuesForInput(recipient, inputName, inputData);
+              FormInputType inputType = getInputType(inputConfigurations, inputName);
+              DocumentFieldType documentFieldType = DocumentFieldPreparer.formInputTypeToApplicationInputType(
+                  inputType);
 
-                  List<String> valuesForInput = getValuesForInput(recipient, inputName,
-                      inputData);
+              // Add DocumentField to our final result for the input
+              fields.add(new DocumentField(
+                  pageName,
+                  inputName,
+                  valuesForInput,
+                  documentFieldType,
+                  subworkflow.indexOf(iteration)));
 
-                  FormInputType inputType = inputConfigurations.stream()
-                      .filter(inputConfiguration -> inputConfiguration.getName()
-                          .equals(inputName))
-                      .findAny()
-                      .map(FormInput::getType)
-                      .orElse(FormInputType.TEXT);
-
-                  Stream<DocumentField> inputs = Stream.of(new DocumentField(
-                      pageName,
-                      inputName,
-                      valuesForInput,
-                      DocumentFieldPreparer
-                          .formInputTypeToApplicationInputType(inputType),
-                      subworkflow.indexOf(iteration)));
-                  IterationScopeInfo scopeInfo = scopeTracker
-                      .getIterationScopeInfo(pageGroups.get(groupName), iteration);
-                  if (scopeInfo != null) {
-                    inputs = Stream.concat(inputs, Stream.of(new DocumentField(
-                        scopeInfo.getScope() + "_" + pageName,
-                        inputName,
-                        valuesForInput,
-                        DocumentFieldPreparer
-                            .formInputTypeToApplicationInputType(inputType),
-                        scopeInfo.getIndex()
-                    )));
-                  }
-                  return inputs;
-                }).toList();
-            fields.addAll(fieldsForthisPage);
+              IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(
+                  pageGroups.get(groupName), iteration);
+              if (scopeInfo != null) {
+                // Add another DocumentField if there is iteration scopeInfo
+                fields.add(new DocumentField(
+                    scopeInfo.getScope() + "_" + pageName,
+                    inputName,
+                    valuesForInput,
+                    documentFieldType,
+                    scopeInfo.getIndex()
+                ));
+              }
+            });
           });
         }));
     return fields;
+  }
+
+  @NotNull
+  private FormInputType getInputType(List<FormInput> inputConfigurations, String inputName) {
+    return inputConfigurations.stream()
+        .filter(inputConfiguration -> inputConfiguration.getName().equals(inputName))
+        .findAny()
+        .map(FormInput::getType)
+        .orElse(FormInputType.TEXT);
   }
 
   @NotNull
