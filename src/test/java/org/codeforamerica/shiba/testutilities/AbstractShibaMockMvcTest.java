@@ -860,7 +860,8 @@ public class AbstractShibaMockMvcTest {
         "Some additional information about my application",
         "canWeAsk");
     postWithQueryParam("canWeAsk", "option", "0");
-    postExpectingRedirect("raceAndEthnicity", "raceAndEthnicity", List.of("ASIAN", "BLACK_OR_AFRICAN_AMERICANS"), "legalStuff");
+    postExpectingRedirect("raceAndEthnicity", "raceAndEthnicity",
+        List.of("ASIAN", "BLACK_OR_AFRICAN_AMERICANS"), "legalStuff");
     postExpectingRedirect("legalStuff",
         Map.of("agreeToTerms", List.of("true"), "drugFelony", List.of("false")),
         "signThisApplication");
@@ -909,7 +910,6 @@ public class AbstractShibaMockMvcTest {
         new FileInputStream(getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME)));
     mockMvc.perform(multipart("/submit-documents").file(jpgFile).session(session).with(csrf()))
         .andExpect(redirectedUrl("/pages/nextSteps"));
-    postToUrlExpectingSuccess("/submit-documents", "/pages/nextSteps", Map.of());
   }
 
   protected void deleteOnlyHouseholdMember() throws Exception {
