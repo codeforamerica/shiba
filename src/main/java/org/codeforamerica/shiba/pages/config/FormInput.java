@@ -10,18 +10,16 @@ public class FormInput {
 
   private FormInputType type;
   private String name;
-  private String customInputFragment;
+  private String customInputFragment; // for type=CUSTOM
   private PromptMessage promptMessage;
   private String helpMessageKey;
   private String placeholder;
-  private OptionsWithDataSource options;
+  private OptionsWithDataSource options; // for type=RADIO,CHECKBOX
   private List<FormInput> followUps = Collections.emptyList();
   private List<String> followUpValues = Collections.emptyList();
   private List<Validator> validators = Collections.emptyList();
-  private Boolean readOnly = false;
+  private Boolean readOnly = false; // disables input
   private String defaultValue;
-  private Integer max;
-  private Integer min;
   private Condition condition;
-  private List<PageDatasource> datasources;
+  private List<PageDatasource> datasources; // for options
 }

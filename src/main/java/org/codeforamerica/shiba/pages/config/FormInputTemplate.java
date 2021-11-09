@@ -21,8 +21,6 @@ public class FormInputTemplate {
   List<String> followUpValues;
   Boolean readOnly;
   String defaultValue;
-  Integer max;
-  Integer min;
   List<PageDatasource> datasources;
 
   public String fragment() {
@@ -45,9 +43,9 @@ public class FormInputTemplate {
 
   public boolean needsAriaLabel() {
     return promptMessage == null &&
-        type != CHECKBOX &&
-        type != RADIO &&
-        type != FormInputType.PEOPLE_CHECKBOX;
+           type != CHECKBOX &&
+           type != RADIO &&
+           type != FormInputType.PEOPLE_CHECKBOX;
   }
 
   public boolean isRadioOrCheckbox() {

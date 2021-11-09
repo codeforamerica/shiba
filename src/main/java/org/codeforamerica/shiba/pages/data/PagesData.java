@@ -202,8 +202,6 @@ public class PagesData extends HashMap<String, PageData> {
         formInput.getFollowUpValues(),
         formInput.getReadOnly(),
         formInput.getDefaultValue(),
-        formInput.getMax(),
-        formInput.getMin(),
         formInput.getDatasources()
     );
   }
