@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LandmarkPagesConfiguration {
 
-  private List<String> startTimerPage = new ArrayList<>();
+  private List<String> startTimerPages = new ArrayList<>();
   private List<String> landingPages = new ArrayList<>();
   private List<String> postSubmitPages = new ArrayList<>();
   private String nextStepsPage;
@@ -17,23 +17,23 @@ public class LandmarkPagesConfiguration {
   private String laterDocsTerminalPage;
 
   public boolean isLandingPage(String pageName) {
-    return getLandingPages().contains(pageName);
+    return landingPages.contains(pageName);
   }
 
   public boolean isTerminalPage(String pageName) {
-    return pageName.equals(getTerminalPage());
+    return pageName.equals(terminalPage);
   }
 
   public boolean isPostSubmitPage(String pageName) {
-    return getPostSubmitPages().contains(pageName);
+    return postSubmitPages.contains(pageName);
   }
 
   public boolean isStartTimerPage(String pageName) {
-    return getStartTimerPage().contains(pageName);
+    return startTimerPages.contains(pageName);
   }
 
   public boolean isSubmitPage(String pageName) {
-    return pageName.equals(getSubmitPage());
+    return pageName.equals(submitPage);
   }
 
   public boolean isLaterDocsTerminalPage(String pageName) {

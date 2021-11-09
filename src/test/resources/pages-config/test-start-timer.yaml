@@ -25,7 +25,7 @@ workflow:
   pageThatDoesStartTimer:
     pageConfiguration: *pageThatDoesStartTimer
 landmarkPages:
-  startTimerPage:
+  startTimerPages:
     - pageThatDoesStartTimer
   landingPages:
     - testStaticLandingPage

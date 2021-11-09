@@ -37,7 +37,7 @@ workflow:
   fourthPage:
     pageConfiguration: *fourthPage
 landmarkPages:
-  startTimerPage:
+  startTimerPages:
     - secondPage
   landingPages:
     - testStaticLandingPage

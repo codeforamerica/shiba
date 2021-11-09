@@ -4236,7 +4236,7 @@ pageGroups:
     restartPage: addHouseholdMembers
     startingCount: 1
 landmarkPages:
-  startTimerPage: # "the first page" of a flow, where we set applicationData.startTime
+  startTimerPages: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
     - identifyCounty
   landingPages: # the home page of the app

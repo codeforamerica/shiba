@@ -143,5 +143,5 @@ pageGroups:
     completePages:
       - soloPage
 landmarkPages:
-  startTimerPage:
+  startTimerPages:
     - earlierPage

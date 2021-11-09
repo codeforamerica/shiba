@@ -47,7 +47,7 @@ workflow:
 landmarkPages:
   landingPages:
     - landingPage
-  startTimerPage:
+  startTimerPages:
     - firstPage
   terminalPage: terminalPage
   submitPage: secondPage
