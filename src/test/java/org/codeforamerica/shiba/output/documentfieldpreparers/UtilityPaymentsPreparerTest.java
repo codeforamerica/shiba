@@ -23,7 +23,7 @@ public class UtilityPaymentsPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("utilityPayments", "PHONE", "false"),
@@ -50,7 +50,7 @@ public class UtilityPaymentsPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("utilityPayments", "PHONE", "false"),
@@ -73,7 +73,7 @@ public class UtilityPaymentsPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("utilityPayments", "PHONE", "false"),
@@ -97,7 +97,7 @@ public class UtilityPaymentsPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("utilityPayments", "PHONE", "true"),
@@ -118,7 +118,7 @@ public class UtilityPaymentsPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
   }

@@ -55,7 +55,7 @@ class OneToOneDocumentFieldPreparerTest {
         .timeToComplete(null)
         .build();
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT);
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
         new DocumentField(pageName, input1Name, input1Value, DocumentFieldType.SINGLE_VALUE)
@@ -93,7 +93,7 @@ class OneToOneDocumentFieldPreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT);
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
     assertThat(documentFields)
         .contains(new DocumentField(pageName, input1Name, List.of(maskedValue),
@@ -131,7 +131,7 @@ class OneToOneDocumentFieldPreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT);
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
     assertThat(documentFields)
         .contains(new DocumentField(pageName, input1Name, List.of(""),
@@ -169,7 +169,7 @@ class OneToOneDocumentFieldPreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, null, Recipient.CASEWORKER);
+        .prepareDocumentFields(application, null, Recipient.CASEWORKER, null);
 
     assertThat(documentFields).contains(
         new DocumentField(pageName, input1Name, input1Value, DocumentFieldType.SINGLE_VALUE)
@@ -211,7 +211,7 @@ class OneToOneDocumentFieldPreparerTest {
         .timeToComplete(null)
         .build();
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT);
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
         new DocumentField(pageName, input2Name, input2Value, DocumentFieldType.SINGLE_VALUE),

@@ -29,7 +29,7 @@ class HouseholdUsCitizenPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEqualTo(List.of(
         new DocumentField(

@@ -20,7 +20,7 @@ public class EnergyAssistancePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document _document,
-      Recipient _recipient) {
+      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
     return map(application.getApplicationData().getPagesData());
   }
 

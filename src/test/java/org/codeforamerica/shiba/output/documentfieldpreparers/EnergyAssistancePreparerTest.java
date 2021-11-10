@@ -23,7 +23,7 @@ public class EnergyAssistancePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -42,7 +42,7 @@ public class EnergyAssistancePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -62,7 +62,7 @@ public class EnergyAssistancePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -78,7 +78,7 @@ public class EnergyAssistancePreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
 
@@ -88,7 +88,7 @@ public class EnergyAssistancePreparerTest {
 
     result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
   }

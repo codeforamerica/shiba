@@ -112,7 +112,7 @@ class SubworkflowPreparerTest {
         .build();
 
     assertThat(subworkflowPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null
         )).contains(
         new DocumentField("question1", "input1", "string", SINGLE_VALUE, 0),
         new DocumentField("question1", "input2", "coolString", ENUMERATED_SINGLE_VALUE, 0),
@@ -147,7 +147,7 @@ class SubworkflowPreparerTest {
 
     Application application = Application.builder().applicationData(new ApplicationData()).build();
     List<DocumentField> documentFields = subworkflowPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT);
+        .prepareDocumentFields(application, null, Recipient.CLIENT, null);
 
     assertThat(documentFields).contains(
         new DocumentField(

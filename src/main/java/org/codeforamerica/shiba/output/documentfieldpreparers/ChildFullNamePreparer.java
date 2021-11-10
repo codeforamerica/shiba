@@ -17,7 +17,8 @@ public class ChildFullNamePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient) {
+      Recipient recipient,
+      SubworkflowIterationScopeTracker scopeTracker) {
 
     List<String> childrenNeedChildcare = getListOfSelectedFullNames(application,
         "childrenInNeedOfCare", "whoNeedsChildCare");

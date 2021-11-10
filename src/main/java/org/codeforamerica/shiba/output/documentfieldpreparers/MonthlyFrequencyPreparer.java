@@ -19,7 +19,8 @@ public class MonthlyFrequencyPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient) {
+      Recipient recipient,
+      SubworkflowIterationScopeTracker scopeTracker) {
 
     List<DocumentField> fields = new ArrayList<>();
     List<String> pageNames = List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap",

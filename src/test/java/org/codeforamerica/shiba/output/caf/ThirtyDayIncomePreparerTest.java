@@ -36,7 +36,7 @@ class ThirtyDayIncomePreparerTest {
         .thenReturn(Money.parse("111"));
 
     assertThat(
-        thirtyDayIncomePreparer.prepareDocumentFields(application, null, Recipient.CLIENT))
+        thirtyDayIncomePreparer.prepareDocumentFields(application, null, Recipient.CLIENT, null))
         .isEqualTo(List.of(
             new DocumentField(
                 "totalIncome",

@@ -24,7 +24,7 @@ class HomeAddressStreetPreparerTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -47,7 +47,7 @@ class HomeAddressStreetPreparerTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -70,7 +70,7 @@ class HomeAddressStreetPreparerTest {
         .build();
     application.setApplicationData(applicationData);
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).containsOnly(
         createHomeAddressApplicationInput("streetAddressWithPermanentAddress",
@@ -87,7 +87,7 @@ class HomeAddressStreetPreparerTest {
   void shouldNotIncludeApplicationInputs_whenThereIsNoHomeAddress() {
     application.setApplicationData(new ApplicationData());
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
 
     assertThat(map).isEmpty();
   }

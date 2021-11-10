@@ -24,7 +24,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
@@ -49,7 +49,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
@@ -72,7 +72,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
@@ -96,7 +96,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
@@ -120,7 +120,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
@@ -144,7 +144,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
@@ -168,7 +168,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "false"),
@@ -196,7 +196,7 @@ public class BasicCriteriaPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("basicCriteria", "SIXTY_FIVE_OR_OLDER", "true"),
@@ -217,7 +217,7 @@ public class BasicCriteriaPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
   }

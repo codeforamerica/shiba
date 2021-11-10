@@ -15,6 +15,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
+import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient) {
+      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
     List<JobIncomeInformation> jobsToIncludeInGrossIncome =
         getJobIncomeInformationToIncludeInThisDocument(application, document);

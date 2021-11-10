@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -125,7 +126,8 @@ class DocumentFieldPreparersTest {
         .build();
     documentFieldPreparers.prepareDocumentFields(application, Document.CAF, CASEWORKER);
 
-    verify(preparer).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER));
+    verify(preparer).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any());
   }
 
   @Test
@@ -144,17 +146,19 @@ class DocumentFieldPreparersTest {
 
     List<DocumentField> mockOutput = List
         .of(new DocumentField("group", "name", List.of("value"), null));
-    when(successfulPreparer.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER))
-    ).thenReturn(mockOutput);
-    when(failingPreparer.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER)))
+    when(successfulPreparer.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any()))
+        .thenReturn(mockOutput);
+    when(failingPreparer.prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any()))
         .thenThrow(IllegalArgumentException.class);
 
     List<DocumentField> actualOutput = documentFieldPreparers
         .prepareDocumentFields(application, Document.CAF, CASEWORKER);
     assertThat(actualOutput).isNotEmpty();
     verify(successfulPreparer).prepareDocumentFields(eq(application), eq(Document.CAF),
-        eq(CASEWORKER));
-    verify(failingPreparer).prepareDocumentFields(eq(application), eq(Document.CAF),
-        eq(CASEWORKER));
+        eq(CASEWORKER), any());
+    verify(failingPreparer).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER),
+        any());
   }
 }

@@ -23,7 +23,7 @@ public class UnearnedIncomeCcapPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("unearnedIncomeCcap", "BENEFITS", "false"),
@@ -45,7 +45,7 @@ public class UnearnedIncomeCcapPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("unearnedIncomeCcap", "BENEFITS", "false"),
@@ -63,7 +63,7 @@ public class UnearnedIncomeCcapPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
   }

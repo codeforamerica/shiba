@@ -37,7 +37,7 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient) {
+      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
 
     List<String> selfEmploymentInputs = getValues(JOBS, IS_SELF_EMPLOYMENT,
         application.getApplicationData());

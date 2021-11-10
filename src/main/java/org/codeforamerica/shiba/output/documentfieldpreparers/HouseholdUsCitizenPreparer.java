@@ -18,7 +18,8 @@ public class HouseholdUsCitizenPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient) {
+      Recipient recipient,
+      SubworkflowIterationScopeTracker scopeTracker) {
 
     List<String> nonUsCitizenHouseholdMembers = Optional
         .ofNullable(application.getApplicationData().getPageData("whoIsNonCitizen"))

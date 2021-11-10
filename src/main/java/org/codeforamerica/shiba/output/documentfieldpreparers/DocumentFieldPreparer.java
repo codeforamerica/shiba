@@ -21,5 +21,5 @@ public interface DocumentFieldPreparer {
   }
 
   List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient);
+      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker);
 }

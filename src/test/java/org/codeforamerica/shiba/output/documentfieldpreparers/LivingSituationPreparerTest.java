@@ -23,7 +23,7 @@ public class LivingSituationPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -44,7 +44,7 @@ public class LivingSituationPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -71,7 +71,7 @@ public class LivingSituationPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -91,7 +91,7 @@ public class LivingSituationPreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -107,7 +107,7 @@ public class LivingSituationPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null);
+        .build(), null, null, null);
 
     assertThat(result).isEmpty();
   }

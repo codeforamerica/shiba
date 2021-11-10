@@ -19,7 +19,7 @@ public class AdultRequestingChildcarePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient) {
+      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
 
     List<DocumentField> fields;
 
