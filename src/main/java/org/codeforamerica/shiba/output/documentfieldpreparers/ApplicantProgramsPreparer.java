@@ -17,8 +17,7 @@ public class ApplicantProgramsPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
 
     List<String> programs = new ArrayList<>(
         getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));

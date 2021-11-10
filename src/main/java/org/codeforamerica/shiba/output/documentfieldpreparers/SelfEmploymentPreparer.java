@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IS_SELF_EMPLOYMENT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHOSE_JOB_IS_IT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -24,11 +25,19 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SelfEmploymentPreparer implements DocumentFieldPreparer {
+public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
+
+  @Override
+  protected ScopedParams getParams(Document _document) {
+    return new ScopedParams(
+        pagesData -> getBooleanValue(pagesData, IS_SELF_EMPLOYMENT),
+        JOBS,
+        "selfEmployment_");
+  }
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
+      Recipient _recipient) {
 
     List<String> selfEmploymentInputs = getValues(JOBS, IS_SELF_EMPLOYMENT,
         application.getApplicationData());
@@ -44,7 +53,7 @@ public class SelfEmploymentPreparer implements DocumentFieldPreparer {
           .orElse(Stream.empty())
           .map(Iteration::getPagesData)
           .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
-                                 && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
+              && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
 
       List<DocumentField> results = new ArrayList<>();
       if (hasSelfEmployedJob) {
@@ -56,12 +65,15 @@ public class SelfEmploymentPreparer implements DocumentFieldPreparer {
 
       return results;
     } else {
+      List<DocumentField> results = super.prepareDocumentFields(application, document);
+
       // Is anyone in the household self-employed?
       boolean hasSelfEmployedJob = selfEmploymentInputs.contains("true");
-      return List.of(
-          createApplicationInput("selfEmployed", hasSelfEmployedJob ? "true" : "false"),
-          createApplicationInput("selfEmployedGrossMonthlyEarnings",
-              hasSelfEmployedJob ? "see question 9" : ""));
+      results.add(createApplicationInput("selfEmployed", hasSelfEmployedJob ? "true" : "false"));
+      results.add(createApplicationInput("selfEmployedGrossMonthlyEarnings",
+          hasSelfEmployedJob ? "see question 9" : ""));
+
+      return results;
     }
   }
 

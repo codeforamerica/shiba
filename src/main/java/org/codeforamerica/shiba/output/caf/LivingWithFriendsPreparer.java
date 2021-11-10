@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
-import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +14,7 @@ public class LivingWithFriendsPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     List<String> pageInputValue = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("livingSituation", "livingSituation");
     if (pageInputValue.size() == 0) {

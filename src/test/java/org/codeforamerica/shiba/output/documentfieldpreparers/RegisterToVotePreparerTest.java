@@ -23,7 +23,7 @@ public class RegisterToVotePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -43,7 +43,7 @@ public class RegisterToVotePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -63,7 +63,7 @@ public class RegisterToVotePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         new DocumentField(
@@ -79,7 +79,7 @@ public class RegisterToVotePreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).isEmpty();
   }

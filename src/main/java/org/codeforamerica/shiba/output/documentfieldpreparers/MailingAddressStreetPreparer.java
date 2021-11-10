@@ -66,8 +66,7 @@ public class MailingAddressStreetPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     PagesData pagesData = application.getApplicationData().getPagesData();
 
     // Not applicable or enough information to continue

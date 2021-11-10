@@ -15,8 +15,7 @@ public class HouseholdPregnancyPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     List<String> pregnantHouseholdMembers = getListOfSelectedFullNames(application, "whoIsPregnant",
         "whoIsPregnant");
 

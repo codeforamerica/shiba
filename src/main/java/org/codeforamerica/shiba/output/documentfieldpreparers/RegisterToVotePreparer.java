@@ -19,7 +19,7 @@ public class RegisterToVotePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document _document,
-      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
+      Recipient _recipient) {
     return map(application.getApplicationData().getPagesData());
   }
 

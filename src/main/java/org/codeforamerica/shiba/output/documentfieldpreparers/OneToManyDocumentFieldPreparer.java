@@ -19,8 +19,7 @@ public abstract class OneToManyDocumentFieldPreparer implements DocumentFieldPre
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     return map(application.getApplicationData().getPagesData());
   }
 

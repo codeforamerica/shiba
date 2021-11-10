@@ -9,56 +9,51 @@ import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker.IterationScopeInfo;
 import org.codeforamerica.shiba.output.caf.HourlyJobIncomeInformation;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
-import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
-import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HourlyJobPreparer implements DocumentFieldPreparer {
 
   private final GrossMonthlyIncomeParser grossMonthlyIncomeParser;
-  private final ApplicationConfiguration applicationConfiguration;
 
-  public HourlyJobPreparer(GrossMonthlyIncomeParser grossMonthlyIncomeParser,
-      ApplicationConfiguration applicationConfiguration) {
+  public HourlyJobPreparer(GrossMonthlyIncomeParser grossMonthlyIncomeParser) {
     this.grossMonthlyIncomeParser = grossMonthlyIncomeParser;
-    this.applicationConfiguration = applicationConfiguration;
   }
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient, SubworkflowIterationScopeTracker scopeTracker) {
-    List<JobIncomeInformation> jobs = grossMonthlyIncomeParser.parse(
-        application.getApplicationData());
-    PageGroupConfiguration jobGroup = applicationConfiguration.getPageGroups().get("jobs");
+      Recipient _recipient) {
+    List<JobIncomeInformation> jobs =
+        grossMonthlyIncomeParser.parse(application.getApplicationData());
+
+    int nonSelfEmploymentIndex = 0;
     List<DocumentField> result = new ArrayList<>();
     for (int i = 0; i < jobs.size(); i++) {
+      boolean isNonSelfEmployment = !parseBoolean(
+          getFirstValue(jobs.get(i).getIteration().getPagesData(), IS_SELF_EMPLOYMENT));
       // ScopeTracker needs to track for every job iteration, even though we are only adding for hourly jobs
-      IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(jobGroup,
-          jobs.get(i).getIteration());
       if (jobs.get(i) instanceof HourlyJobIncomeInformation hourlyJob) {
         result.add(new DocumentField("payPeriod", "payPeriod", "Hourly",
             SINGLE_VALUE, i));
 
         // Add non-self-employment scope for certain-pops only
-        if (document == Document.CERTAIN_POPS && !parseBoolean(
-            getFirstValue(hourlyJob.getIteration().getPagesData(), IS_SELF_EMPLOYMENT))) {
-          if (scopeInfo != null) {
-            result.add(new DocumentField(
-                scopeInfo.getScope() + "_payPeriod",
-                "payPeriod",
-                "Hourly",
-                SINGLE_VALUE,
-                scopeInfo.getIndex()
-            ));
-          }
+        if (document == Document.CERTAIN_POPS && isNonSelfEmployment) {
+          result.add(new DocumentField(
+              "nonSelfEmployment_payPeriod",
+              "payPeriod",
+              "Hourly",
+              SINGLE_VALUE,
+              nonSelfEmploymentIndex
+          ));
         }
+      }
+      if (isNonSelfEmployment) {
+        nonSelfEmploymentIndex++;
       }
     }
 

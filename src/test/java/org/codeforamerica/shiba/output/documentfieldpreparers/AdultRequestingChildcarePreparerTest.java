@@ -31,8 +31,8 @@ class AdultRequestingChildcarePreparerTest {
 
     Application application = Application.builder().applicationData(appData).build();
     assertThat(new AdultRequestingChildcarePreparer()
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .isEqualTo(emptyList());
   }
 
@@ -42,8 +42,8 @@ class AdultRequestingChildcarePreparerTest {
 
     Application application = Application.builder().applicationData(appData).build();
     assertThat(adultRequestingChildcarePreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .isEqualTo(emptyList());
   }
 
@@ -73,7 +73,7 @@ class AdultRequestingChildcarePreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> result = adultRequestingChildcarePreparer
-        .prepareDocumentFields(application, null, null, null);
+        .prepareDocumentFields(application, null, null);
 
     assertThat(result).contains(
         new DocumentField(
@@ -127,7 +127,7 @@ class AdultRequestingChildcarePreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> result = adultRequestingChildcarePreparer
-        .prepareDocumentFields(application, null, null, null);
+        .prepareDocumentFields(application, null, null);
 
     assertThat(result).contains(
         new DocumentField(
@@ -167,7 +167,7 @@ class AdultRequestingChildcarePreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> result = adultRequestingChildcarePreparer
-        .prepareDocumentFields(application, null, null, null);
+        .prepareDocumentFields(application, null, null);
 
     assertThat(result).contains(
         new DocumentField(

@@ -18,8 +18,7 @@ public class HispanicLatinoOrSpanishPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
 
     PagesData pagesData = application.getApplicationData().getPagesData();
     List<String> raceAndEthnicityValues = getValues(pagesData, RACE_AND_ETHNICITY);

@@ -18,8 +18,7 @@ public class ParentNotLivingAtHomePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     Map<String, String> idToChild = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("childrenInNeedOfCare", "whoNeedsChildCare").stream()
         .collect(Collectors.toMap(FullNameFormatter::getId, FullNameFormatter::format));

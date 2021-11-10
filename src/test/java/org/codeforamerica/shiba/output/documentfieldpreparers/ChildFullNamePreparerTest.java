@@ -24,7 +24,7 @@ public class ChildFullNamePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).contains(
         new DocumentField(

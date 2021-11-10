@@ -35,8 +35,7 @@ public class HomeAddressStreetPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     PagesData pagesData = application.getApplicationData().getPagesData();
     PageData homeAddressPageData = pagesData.getPage("homeAddress");
     if (homeAddressPageData == null) {

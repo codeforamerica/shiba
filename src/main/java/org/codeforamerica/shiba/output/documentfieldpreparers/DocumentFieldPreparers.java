@@ -27,17 +27,13 @@ public class DocumentFieldPreparers {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
 
-    SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
-
     // Add default fields
     List<DocumentField> fields = new ArrayList<>(getDefaultFields(application));
 
     // Run all the preparers
     preparers.forEach(preparer -> {
       try {
-        fields.addAll(
-            preparer.prepareDocumentFields(application, document, recipient, scopeTracker)
-        );
+        fields.addAll(preparer.prepareDocumentFields(application, document, recipient));
       } catch (Exception e) {
         String preparerClassName = preparer.getClass().getSimpleName();
         log.error("There was an issue preparing application data for " + preparerClassName, e);
