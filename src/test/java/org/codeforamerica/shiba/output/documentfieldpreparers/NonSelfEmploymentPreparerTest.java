@@ -33,7 +33,7 @@ class NonSelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> actual =
-        preparer.prepareDocumentFields(application, null, Recipient.CLIENT, null);
+        preparer.prepareDocumentFields(application, null, Recipient.CLIENT);
 
     assertThat(actual).containsExactlyInAnyOrder(
         new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
@@ -67,7 +67,7 @@ class NonSelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> actual =
-        preparer.prepareDocumentFields(application, Document.CERTAIN_POPS, Recipient.CLIENT, null);
+        preparer.prepareDocumentFields(application, Document.CERTAIN_POPS, Recipient.CLIENT);
 
     assertThat(actual).containsExactlyInAnyOrder(
         new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
@@ -88,7 +88,7 @@ class NonSelfEmploymentPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    assertThat(preparer.prepareDocumentFields(application, null, Recipient.CLIENT, null))
+    assertThat(preparer.prepareDocumentFields(application, null, Recipient.CLIENT))
         .isEmpty();
   }
 

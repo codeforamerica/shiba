@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +17,7 @@ public class StudentFullNamePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     List<String> students = getListOfSelectedFullNames(application, "whoIsGoingToSchool",
         "whoIsGoingToSchool");
     List<String> children = getListOfSelectedFullNames(application, "childrenInNeedOfCare",

@@ -33,7 +33,7 @@ public class DocumentFieldPreparers {
     // Run all the preparers
     preparers.forEach(preparer -> {
       try {
-        fields.addAll(preparer.prepareDocumentFields(application, document, recipient, null));
+        fields.addAll(preparer.prepareDocumentFields(application, document, recipient));
       } catch (Exception e) {
         String preparerClassName = preparer.getClass().getSimpleName();
         log.error("There was an issue preparing application data for " + preparerClassName, e);

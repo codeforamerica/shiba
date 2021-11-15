@@ -27,8 +27,8 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> actual =
-        selfEmploymentPreparer.prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker());
+        selfEmploymentPreparer.prepareDocumentFields(application, null, Recipient.CLIENT
+        );
     assertThat(actual).containsExactlyInAnyOrder(
         new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
         new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "see question 9",
@@ -55,8 +55,8 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .containsExactlyInAnyOrder(
             new DocumentField("employee", "selfEmployed", "false", SINGLE_VALUE),
             new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "", SINGLE_VALUE)
@@ -69,8 +69,8 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .isEmpty();
   }
 

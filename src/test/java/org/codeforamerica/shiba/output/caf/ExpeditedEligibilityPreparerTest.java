@@ -40,7 +40,7 @@ class ExpeditedEligibilityPreparerTest {
     when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
 
     assertThat(
-        preparer.prepareDocumentFields(application, null, Recipient.CLIENT, null)).containsExactly(
+        preparer.prepareDocumentFields(application, null, Recipient.CLIENT)).containsExactly(
         new DocumentField(
             "snapExpeditedEligibility",
             "snapExpeditedEligibility",
@@ -75,8 +75,8 @@ class ExpeditedEligibilityPreparerTest {
     when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
     when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
 
-    List<DocumentField> result = preparer.prepareDocumentFields(application, null, Recipient.CLIENT,
-        null);
+    List<DocumentField> result = preparer.prepareDocumentFields(application, null, Recipient.CLIENT
+    );
 
     verify(mockSnapDecider).decide(appData);
     assertThat(result).containsExactly(

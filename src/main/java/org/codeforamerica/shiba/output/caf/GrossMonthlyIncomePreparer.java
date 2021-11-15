@@ -8,16 +8,13 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
-import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -36,50 +33,40 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
 
     List<JobIncomeInformation> jobsToIncludeInGrossIncome =
         getJobIncomeInformationToIncludeInThisDocument(application, document);
 
     // Scope for self-employment and non self-employment jobs
-    AtomicInteger selfEmploymentIndex = new AtomicInteger(0);
-    AtomicInteger nonSelfEmploymentIndex = new AtomicInteger(0);
+    int selfEmploymentIndex = 0, nonSelfEmploymentIndex = 0;
     int initialCapacity = jobsToIncludeInGrossIncome.size() * 2;
     List<DocumentField> fields = new ArrayList<>(initialCapacity);
-    jobsToIncludeInGrossIncome.forEach(job -> {
-          String pageName = "employee";
-          String inputName = "grossMonthlyIncome";
-          fields.add(new DocumentField(pageName, inputName, String.valueOf(job.grossMonthlyIncome()),
-              SINGLE_VALUE, job.getIndexInJobsSubworkflow()));
+    for (JobIncomeInformation job : jobsToIncludeInGrossIncome) {
+      String pageName = "employee";
+      String inputName = "grossMonthlyIncome";
+      fields.add(new DocumentField(pageName, inputName, String.valueOf(job.grossMonthlyIncome()),
+          SINGLE_VALUE, job.getIndexInJobsSubworkflow()));
 
-          fields.add(
-              getScopedField(selfEmploymentIndex, nonSelfEmploymentIndex, job, pageName, inputName));
-        }
-    );
-    return fields;
-  }
-
-  @NotNull
-  private DocumentField getScopedField(AtomicInteger selfEmploymentIndex,
-      AtomicInteger nonSelfEmploymentIndex, JobIncomeInformation job, String pageName,
-      String inputName) {
-    String prefix;
-    int index;
-    boolean isSelfEmployment = getBooleanValue(job.getIteration().getPagesData(),
-        IS_SELF_EMPLOYMENT);
-    if (isSelfEmployment) {
-      prefix = "selfEmployment_";
-      index = selfEmploymentIndex.getAndIncrement();
-    } else {
-      prefix = "nonSelfEmployment_";
-      index = nonSelfEmploymentIndex.getAndIncrement();
+      String prefix;
+      int index;
+      boolean isSelfEmployment = getBooleanValue(job.getIteration().getPagesData(),
+          IS_SELF_EMPLOYMENT);
+      if (isSelfEmployment) {
+        prefix = "selfEmployment_";
+        index = selfEmploymentIndex++;
+      } else {
+        prefix = "nonSelfEmployment_";
+        index = nonSelfEmploymentIndex++;
+      }
+      fields.add(new DocumentField(
+          prefix + pageName,
+          inputName,
+          String.valueOf(job.grossMonthlyIncome()),
+          SINGLE_VALUE,
+          index));
     }
-    return new DocumentField(
-        prefix + pageName,
-        inputName,
-        String.valueOf(job.grossMonthlyIncome()),
-        SINGLE_VALUE,
-        index);
+    return fields;
   }
 
   private List<JobIncomeInformation> getJobIncomeInformationToIncludeInThisDocument(

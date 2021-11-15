@@ -2,9 +2,9 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.config.FormInputType;
 
@@ -21,5 +21,5 @@ public interface DocumentFieldPreparer {
   }
 
   List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker);
+      Recipient recipient);
 }

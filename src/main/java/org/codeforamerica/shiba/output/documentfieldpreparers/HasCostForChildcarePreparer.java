@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Iteration;
@@ -35,7 +35,7 @@ public class HasCostForChildcarePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document _document,
-      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
+      Recipient _recipient) {
     return map(application);
   }
 

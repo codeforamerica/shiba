@@ -7,8 +7,8 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGL
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,7 @@ public class HispanicLatinoOrSpanishPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
 
     PagesData pagesData = application.getApplicationData().getPagesData();
     List<String> raceAndEthnicityValues = getValues(pagesData, RACE_AND_ETHNICITY);

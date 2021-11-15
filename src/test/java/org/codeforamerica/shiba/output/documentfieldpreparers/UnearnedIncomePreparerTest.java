@@ -22,7 +22,7 @@ public class UnearnedIncomePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("unearnedIncome", "SOCIAL_SECURITY", "false"),
@@ -45,7 +45,7 @@ public class UnearnedIncomePreparerTest {
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         createApplicationInput("unearnedIncome", "SOCIAL_SECURITY", "true"),
@@ -64,7 +64,7 @@ public class UnearnedIncomePreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).isEmpty();
   }

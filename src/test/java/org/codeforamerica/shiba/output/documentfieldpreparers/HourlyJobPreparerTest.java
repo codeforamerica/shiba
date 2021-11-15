@@ -41,7 +41,7 @@ public class HourlyJobPreparerTest {
         .build();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         new DocumentField("payPeriod", "payPeriod", List.of("Hourly"), SINGLE_VALUE, 1)
@@ -61,7 +61,7 @@ public class HourlyJobPreparerTest {
         .build();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), Document.CERTAIN_POPS, null, null);
+        .build(), Document.CERTAIN_POPS, null);
 
     assertThat(result).containsOnly(
         new DocumentField("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 0),
@@ -75,7 +75,7 @@ public class HourlyJobPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).isEmpty();
   }

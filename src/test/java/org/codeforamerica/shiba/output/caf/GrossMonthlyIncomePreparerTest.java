@@ -41,7 +41,7 @@ class GrossMonthlyIncomePreparerTest {
         new HourlyJobIncomeInformation("6", "45", 1, new Iteration())
     ));
     List<DocumentField> documentFields = grossMonthlyIncomePreparer
-        .prepareDocumentFields(application, null, null, null);
+        .prepareDocumentFields(application, null, null);
 
     assertThat(documentFields).containsOnly(
         new DocumentField("employee", "grossMonthlyIncome", "1440.00", SINGLE_VALUE, 0),
@@ -72,7 +72,7 @@ class GrossMonthlyIncomePreparerTest {
         new HourlyJobIncomeInformation("6", "45", 1, new Iteration(nonApplicantJob))
     ));
     List<DocumentField> documentFields = grossMonthlyIncomePreparer
-        .prepareDocumentFields(application, Document.CERTAIN_POPS, null, null);
+        .prepareDocumentFields(application, Document.CERTAIN_POPS, null);
 
     assertThat(documentFields).containsOnly(
         new DocumentField("employee", "grossMonthlyIncome", "1440.00", SINGLE_VALUE, 0),

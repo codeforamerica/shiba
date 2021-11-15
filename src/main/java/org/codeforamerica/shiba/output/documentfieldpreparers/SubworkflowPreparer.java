@@ -38,8 +38,7 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     ApplicationData data = application.getApplicationData();
     Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 

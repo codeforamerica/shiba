@@ -27,7 +27,7 @@ public class HourlyJobPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient, SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient _recipient) {
     List<JobIncomeInformation> jobs =
         grossMonthlyIncomeParser.parse(application.getApplicationData());
 

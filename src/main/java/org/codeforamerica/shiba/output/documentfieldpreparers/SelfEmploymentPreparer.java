@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
@@ -37,7 +37,7 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
+      Recipient _recipient) {
 
     List<String> selfEmploymentInputs = getValues(JOBS, IS_SELF_EMPLOYMENT,
         application.getApplicationData());

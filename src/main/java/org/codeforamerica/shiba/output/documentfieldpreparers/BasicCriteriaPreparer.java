@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class BasicCriteriaPreparer extends OneToManyDocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document _document,
-      Recipient _recipient, SubworkflowIterationScopeTracker _scopeTracker) {
+      Recipient _recipient) {
     return map(application.getApplicationData().getPagesData());
   }
 

@@ -28,7 +28,7 @@ public abstract class SubworkflowScopePreparer implements DocumentFieldPreparer 
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient _recipient, SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient _recipient) {
     return prepareDocumentFields(application, document);
   }
 
