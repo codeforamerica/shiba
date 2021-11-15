@@ -17,8 +17,7 @@
     </appender>
 
     <appender name="DatadogJSON" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <remoteHost>intake.logs.datadoghq.com</remoteHost>
-        <port>10514</port>
+        <destination>intake.logs.datadoghq.com:10514</destination>
         <keepAliveDuration>20 seconds</keepAliveDuration>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <prefix class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
