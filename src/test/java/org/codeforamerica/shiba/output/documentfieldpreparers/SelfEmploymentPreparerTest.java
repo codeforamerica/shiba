@@ -1,11 +1,11 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.DocumentField;
-import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
@@ -17,32 +17,31 @@ public class SelfEmploymentPreparerTest {
   private final SelfEmploymentPreparer selfEmploymentPreparer = new SelfEmploymentPreparer();
 
   @Test
-  void shouldMapTrueIfSelfEmployedJobExists() {
+  void shouldMapValuesIfSelfEmployedJobExists() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withSubworkflow("jobs",
             new PagesDataBuilder().withHourlyJob("false", "10", "10"),
-            new PagesDataBuilder().withNonHourlyJob("true", "10", "EVERY_WEEK"))
+            new PagesDataBuilder().withNonHourlyJob("true", "12", "EVERY_WEEK"))
         .build();
 
     Application application = Application.builder().applicationData(applicationData).build();
 
-    assertThat(selfEmploymentPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
-        .containsExactlyInAnyOrder(
-            new DocumentField(
-                "employee",
-                "selfEmployed",
-                List.of("true"),
-                DocumentFieldType.SINGLE_VALUE
-            ),
-            new DocumentField(
-                "employee",
-                "selfEmployedGrossMonthlyEarnings",
-                List.of("see question 9"),
-                DocumentFieldType.SINGLE_VALUE
-            )
+    List<DocumentField> actual =
+        selfEmploymentPreparer.prepareDocumentFields(application, null, Recipient.CLIENT
         );
+    assertThat(actual).containsExactlyInAnyOrder(
+        new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
+        new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "see question 9",
+            SINGLE_VALUE),
+
+        new DocumentField("selfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
+            SINGLE_VALUE, 0),
+        new DocumentField("selfEmployment_payPeriod", "payPeriod", "EVERY_WEEK", SINGLE_VALUE, 0),
+        new DocumentField("selfEmployment_paidByTheHour", "paidByTheHour", "false", SINGLE_VALUE,
+            0),
+        new DocumentField("selfEmployment_selfEmployment", "selfEmployment", "true", SINGLE_VALUE,
+            0)
+    );
   }
 
   @Test
@@ -56,21 +55,11 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .containsExactlyInAnyOrder(
-            new DocumentField(
-                "employee",
-                "selfEmployed",
-                List.of("false"),
-                DocumentFieldType.SINGLE_VALUE
-            ),
-            new DocumentField(
-                "employee",
-                "selfEmployedGrossMonthlyEarnings",
-                List.of(""),
-                DocumentFieldType.SINGLE_VALUE
-            )
+            new DocumentField("employee", "selfEmployed", "false", SINGLE_VALUE),
+            new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "", SINGLE_VALUE)
         );
   }
 
@@ -80,8 +69,8 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentPreparer
-        .prepareDocumentFields(application, null, Recipient.CLIENT,
-            new SubworkflowIterationScopeTracker()))
+        .prepareDocumentFields(application, null, Recipient.CLIENT
+        ))
         .isEmpty();
   }
 

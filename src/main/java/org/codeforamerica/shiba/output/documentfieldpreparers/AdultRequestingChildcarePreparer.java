@@ -8,7 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.output.*;
+import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
+import org.codeforamerica.shiba.output.FullNameFormatter;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +23,7 @@ public class AdultRequestingChildcarePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient, SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
 
     List<DocumentField> fields;
 

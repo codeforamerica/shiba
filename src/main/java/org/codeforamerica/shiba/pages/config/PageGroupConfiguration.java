@@ -1,9 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
 import java.util.List;
-import java.util.Map;
 import lombok.Data;
-import org.codeforamerica.shiba.inputconditions.Condition;
 
 @Data
 public class PageGroupConfiguration {
@@ -15,5 +13,4 @@ public class PageGroupConfiguration {
   private String redirectPage;
   private String restartPage;
   private Integer startingCount;
-  private Map<String, Condition> addedScope;
 }

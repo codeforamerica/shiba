@@ -2,12 +2,11 @@ package org.codeforamerica.shiba.output.caf;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparer;
-import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +25,7 @@ public class ExpeditedEligibilityPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     ApplicationData data = application.getApplicationData();
     return List.of(
         new DocumentField(

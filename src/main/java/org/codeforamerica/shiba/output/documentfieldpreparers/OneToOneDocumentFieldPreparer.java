@@ -37,8 +37,7 @@ public class OneToOneDocumentFieldPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     ApplicationData applicationData = application.getApplicationData();
 
     List<PageNameToInput> pageNameToInputList = getPageNameToInputList();

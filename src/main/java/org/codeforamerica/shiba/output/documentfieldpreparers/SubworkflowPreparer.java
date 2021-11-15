@@ -12,8 +12,11 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.documentfieldpreparers.SubworkflowIterationScopeTracker.IterationScopeInfo;
-import org.codeforamerica.shiba.pages.config.*;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.config.FormInput;
+import org.codeforamerica.shiba.pages.config.FormInputType;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -35,8 +38,7 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     ApplicationData data = application.getApplicationData();
     Map<String, PageGroupConfiguration> pageGroups = applicationConfiguration.getPageGroups();
 
@@ -73,19 +75,6 @@ public class SubworkflowPreparer implements DocumentFieldPreparer {
                   valuesForInput,
                   documentFieldType,
                   subworkflow.indexOf(iteration)));
-
-              IterationScopeInfo scopeInfo = scopeTracker.getIterationScopeInfo(
-                  pageGroups.get(groupName), iteration);
-              if (scopeInfo != null) {
-                // Add another DocumentField if there is iteration scopeInfo
-                fields.add(new DocumentField(
-                    scopeInfo.getScope() + "_" + pageName,
-                    inputName,
-                    valuesForInput,
-                    documentFieldType,
-                    scopeInfo.getIndex()
-                ));
-              }
             });
           });
         }));

@@ -9,10 +9,8 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
-import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.inputconditions.ValueMatcher;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.PageGroupConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -26,14 +24,11 @@ public class HourlyJobPreparerTest {
   private final ApplicationConfiguration applicationConfiguration = mock(
       ApplicationConfiguration.class);
   private final PageGroupConfiguration jobGroup = new PageGroupConfiguration();
-  private final SubworkflowIterationScopeTracker scopeTracker = new SubworkflowIterationScopeTracker();
-  private final HourlyJobPreparer preparer = new HourlyJobPreparer(
-      new GrossMonthlyIncomeParser(), applicationConfiguration);
+  private HourlyJobPreparer preparer;
 
   @BeforeEach
   void setUp() {
-    jobGroup.setAddedScope(Map.of("nonSelfEmployment",
-        new Condition("selfEmployment", "selfEmployment", "false", ValueMatcher.CONTAINS)));
+    preparer = new HourlyJobPreparer(new GrossMonthlyIncomeParser());
     when(applicationConfiguration.getPageGroups()).thenReturn(Map.of("jobs", jobGroup));
   }
 
@@ -46,7 +41,7 @@ public class HourlyJobPreparerTest {
         .build();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, scopeTracker);
+        .build(), null, null);
 
     assertThat(result).containsOnly(
         new DocumentField("payPeriod", "payPeriod", List.of("Hourly"), SINGLE_VALUE, 1)
@@ -66,7 +61,7 @@ public class HourlyJobPreparerTest {
         .build();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), Document.CERTAIN_POPS, null, scopeTracker);
+        .build(), Document.CERTAIN_POPS, null);
 
     assertThat(result).containsOnly(
         new DocumentField("payPeriod", "payPeriod", "Hourly", SINGLE_VALUE, 0),
@@ -80,7 +75,7 @@ public class HourlyJobPreparerTest {
     ApplicationData applicationData = new ApplicationData();
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).isEmpty();
   }

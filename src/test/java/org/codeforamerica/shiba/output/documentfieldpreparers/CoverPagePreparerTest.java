@@ -103,7 +103,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
 
     assertThat(documentFields).contains(
         new DocumentField(
@@ -130,7 +130,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
 
     assertThat(documentFields).contains(
         new DocumentField(
@@ -158,7 +158,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
 
     assertThat(documentFields).contains(
         new DocumentField(
@@ -178,7 +178,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<String> appInputNames = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null).stream()
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT).stream()
         .map(DocumentField::getName)
         .collect(Collectors.toList());
 
@@ -201,7 +201,7 @@ class CoverPagePreparerTest {
     ));
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CASEWORKER, null);
+        .prepareDocumentFields(application, CAF, Recipient.CASEWORKER);
     assertThat(documentFields).contains(
         new DocumentField(
             "coverPage",
@@ -210,8 +210,8 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE
         ));
 
-    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT,
-        null);
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT
+    );
     assertThat(documentFields).contains(
         new DocumentField(
             "coverPage",
@@ -222,8 +222,8 @@ class CoverPagePreparerTest {
 
     new TestApplicationDataBuilder(applicationData)
         .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
-    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT,
-        null);
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT
+    );
     assertThat(documentFields).contains(
         new DocumentField(
             "coverPage",
@@ -247,7 +247,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
 
     assertThat(documentFields).contains(
         new DocumentField("coverPage", "fullName", List.of("someFirstName someLastName"),
@@ -270,7 +270,7 @@ class CoverPagePreparerTest {
         .build();
 
     List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
 
     assertThat(documentFields).contains(
         new DocumentField("coverPage", "fullName", List.of("someFirstName someLastName"),
@@ -291,7 +291,7 @@ class CoverPagePreparerTest {
         .timeToComplete(null)
         .build();
     List<DocumentField> result = preparer
-        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT);
 
     assertThat(result).contains(
         new DocumentField(
@@ -301,7 +301,7 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE));
 
     result = preparer.prepareDocumentFields(application, Document.CCAP,
-        Recipient.CLIENT, null);
+        Recipient.CLIENT);
     assertThat(result).doesNotContain(
         new DocumentField(
             "nonPagesData",
@@ -322,7 +322,7 @@ class CoverPagePreparerTest {
         .timeToComplete(null)
         .build();
     List<DocumentField> result = preparer
-        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT, null);
+        .prepareDocumentFields(application, Document.CCAP, Recipient.CLIENT);
 
     assertThat(result).contains(
         new DocumentField(
@@ -332,7 +332,7 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE));
 
     result = preparer.prepareDocumentFields(application, Document.CCAP,
-        Recipient.CLIENT, null);
+        Recipient.CLIENT);
 
     assertThat(result).contains(
         new DocumentField(

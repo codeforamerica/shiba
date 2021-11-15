@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -18,8 +18,7 @@ public class ParentNotLivingAtHomePreparer implements DocumentFieldPreparer {
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
-      Recipient recipient,
-      SubworkflowIterationScopeTracker scopeTracker) {
+      Recipient recipient) {
     Map<String, String> idToChild = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("childrenInNeedOfCare", "whoNeedsChildCare").stream()
         .collect(Collectors.toMap(FullNameFormatter::getId, FullNameFormatter::format));

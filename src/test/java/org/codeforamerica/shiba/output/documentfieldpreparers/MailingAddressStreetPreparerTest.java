@@ -81,7 +81,7 @@ class MailingAddressStreetPreparerTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", ENRICHED_HOME_STREET),
@@ -104,7 +104,7 @@ class MailingAddressStreetPreparerTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", HOME_STREET),
@@ -128,7 +128,7 @@ class MailingAddressStreetPreparerTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", ENRICHED_MAILING_STREET),
@@ -153,7 +153,7 @@ class MailingAddressStreetPreparerTest {
     PagesData pagesData = applicationData.getPagesData();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput(pagesData, "selectedStreetAddress", MAILING_STREET),
@@ -175,7 +175,7 @@ class MailingAddressStreetPreparerTest {
         .build();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput("selectedStreetAddress", "General Delivery"),
@@ -197,7 +197,7 @@ class MailingAddressStreetPreparerTest {
         .build();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null, null);
+    List<DocumentField> map = preparer.prepareDocumentFields(application, null, null);
 
     assertThat(map).containsOnly(
         createApplicationInput("selectedStreetAddress", expectedStreetAddress),

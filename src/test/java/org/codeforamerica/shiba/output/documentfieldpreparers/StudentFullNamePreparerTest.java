@@ -26,7 +26,7 @@ public class StudentFullNamePreparerTest {
 
     List<DocumentField> result = mapper.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
-        .build(), null, null, null);
+        .build(), null, null);
 
     assertThat(result).contains(
         new DocumentField(
