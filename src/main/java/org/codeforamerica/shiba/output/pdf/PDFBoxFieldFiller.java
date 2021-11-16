@@ -122,12 +122,14 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
         pdField.getAcroForm().getDefaultResources();
 
         if (font == null || font.toUnicode(codepoint) != null) {
-          PDSimpleFont fontCasted = (PDSimpleFont) font;
-          String name = fontCasted.getGlyphList().codePointToName(codepoint);
-          fontCasted.getEncoding().contains(name);
-          if (fontCasted.getEncoding().contains(name)) {
-            builder.append(field.charAt(i));
-          }
+          builder.append(field.charAt(i));
+//
+//          PDSimpleFont fontCasted = (PDSimpleFont) font;
+//          String name = fontCasted.getGlyphList().codePointToName(codepoint);
+//          fontCasted.getEncoding().contains(name);
+//          if (fontCasted.getEncoding().contains(name)) {
+//            builder.append(field.charAt(i));
+//          }
         }
       }
       pdField.setValue(builder.toString());
