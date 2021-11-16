@@ -167,6 +167,12 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.clickContinue();
 
     if (programSelections.contains(PROGRAM_CERTAIN_POPS)) {
+      // Test Certain pops offboarding flow first by selecting None of the above
+      testPage.enter("basicCriteria", "None of the above");
+      testPage.clickContinue();
+      assertThat(testPage.getTitle()).isEqualTo("Certain Pops Offboarding");
+      testPage.goBack();
+
       // Basic Criteria:
       testPage.enter("basicCriteria", "I am 65 years old or older");
       testPage.enter("basicCriteria", "I am blind");
