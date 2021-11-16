@@ -374,6 +374,10 @@ pageDefinitions:
             - value: NONE
               messageKey: general.inputs.none-of-the-above
               isNone: true
+  - &certainPopsOffboarding
+    name: certainPopsOffboarding
+    pageTitle: certain-pops-offboarding.title
+    hasPrimaryButton: false
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
@@ -2976,6 +2980,16 @@ workflow:
       - pageName: introBasicInfo
   basicCriteria:
     pageConfiguration: *basicCriteria
+    nextPages:
+      - pageName: certainPopsOffboarding
+        condition:
+          pageName: basicCriteria
+          input: basicCriteria
+          matcher: CONTAINS
+          value: NONE
+      - pageName: introBasicInfo
+  certainPopsOffboarding:
+    pageConfiguration: *certainPopsOffboarding
     nextPages:
       - pageName: introBasicInfo
   introBasicInfo:
