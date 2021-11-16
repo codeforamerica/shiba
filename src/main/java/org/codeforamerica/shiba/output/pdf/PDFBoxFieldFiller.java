@@ -12,6 +12,8 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
+import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
@@ -97,7 +99,9 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
               fieldValue = "Off";
             }
 
-            PDFont font = acroForm.getDefaultResources().getFont(COSName.getPDFName(fontName));
+            PDResources resources = acroForm.getDefaultResources();
+            COSName cosNamePdfName = COSName.getPDFName(fontName);
+            PDFont font = resources.getFont(cosNamePdfName);
             setPdfFieldWithoutUnsupportedUnicode(fieldValue, pdField, font);
           } catch (Exception e) {
             throw new RuntimeException("Error setting field: " + field.getName(), e);
@@ -114,8 +118,16 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
       StringBuilder builder = new StringBuilder();
       for (int i = 0; i < field.length(); i++) {
         int codepoint = field.codePointAt(i);
+
+        pdField.getAcroForm().getDefaultResources();
+
         if (font == null || font.toUnicode(codepoint) != null) {
-          builder.append(field.charAt(i));
+          PDSimpleFont fontCasted = (PDSimpleFont) font;
+          String name = fontCasted.getGlyphList().codePointToName(codepoint);
+          fontCasted.getEncoding().contains(name);
+          if (fontCasted.getEncoding().contains(name)) {
+            builder.append(field.charAt(i));
+          }
         }
       }
       pdField.setValue(builder.toString());
