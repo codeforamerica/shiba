@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.application;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -58,10 +59,6 @@ public class ApplicationRepository {
   }
 
   public void save(Application application) {
-    save(application, false);
-  }
-
-  public void save(Application application, boolean isDocuments) {
     ApplicationData applicationData = application.getApplicationData();
     HashMap<String, Object> parameters = new HashMap<>(Map.of(
         "id", application.getId(),
@@ -81,22 +78,17 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    String cafStatus = "null", ccapStatus = "null", certainPopsStatus = "null";
+    String cafStatus = String.valueOf(application.getCafApplicationStatus());
+    String ccapStatus = String.valueOf(application.getCcapApplicationStatus());
+    String certainPopsStatus = String.valueOf(application.getCertainPopsApplicationStatus());
 
-    if (isDocuments) {
-      if (application.getCafApplicationStatus() != null) {
-        cafStatus = application.getCafApplicationStatus().displayName();
-      }
-      if (application.getCcapApplicationStatus() != null) {
-        ccapStatus = application.getCcapApplicationStatus().displayName();
-      }
-      if (application.getCertainPopsApplicationStatus() != null) {
-        certainPopsStatus = application.getCertainPopsApplicationStatus().displayName();
-      }
-    } else {
-      cafStatus =
-          applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    if (application.getCafApplicationStatus() != DELIVERED) {
+      cafStatus = applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    }
+    if (application.getCcapApplicationStatus() != DELIVERED) {
       ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
+    }
+    if (application.getCertainPopsApplicationStatus() != DELIVERED) {
       List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
       certainPopsStatus =
           programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";

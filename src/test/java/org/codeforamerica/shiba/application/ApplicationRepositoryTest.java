@@ -353,8 +353,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
 
       String actualEncryptedData = jdbcTemplate.queryForObject(
           "SELECT application_data " +
-          "FROM applications " +
-          "WHERE id = 'someid'", String.class);
+              "FROM applications " +
+              "WHERE id = 'someid'", String.class);
       assertThat(actualEncryptedData).isEqualTo(jsonData);
     }
 
@@ -436,5 +436,25 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
     assertThat(resultingApplication.getCcapApplicationStatus()).isNull();
     assertThat(resultingApplication.getCertainPopsApplicationStatus()).isEqualTo(IN_PROGRESS);
+  }
+
+  @Test
+  void saveShouldNotUpdateDeliveredApplicationStatus() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP"))
+        .build();
+    Application application = Application.builder()
+        .id(applicationData.getId())
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(applicationData)
+        .cafApplicationStatus(DELIVERED)
+        .county(Olmsted)
+        .build();
+    applicationRepository.save(application); // initial save to insert. Does not save statuses
+    applicationRepository.save(application); // save statuses
+
+    Application resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(DELIVERED);
   }
 }
