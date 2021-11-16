@@ -627,7 +627,7 @@ public class PageController {
     if (applicationData.getFlow() == LATER_DOCS) {
       application.setCompletedAtTime(clock);
     }
-    applicationRepository.save(application, true);
+    applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),

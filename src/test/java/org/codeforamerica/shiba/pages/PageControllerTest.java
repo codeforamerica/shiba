@@ -192,7 +192,7 @@ class PageControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-    inOrder.verify(applicationRepository).save(application, true);
+    inOrder.verify(applicationRepository).save(application);
     inOrder.verify(pageEventPublisher)
         .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
   }
@@ -233,7 +233,7 @@ class PageControllerTest {
     assertThat(application.getCompletedAt()).isNotNull();
     assertThat(application.getTimeToComplete()).isNotNull();
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
-    inOrder.verify(applicationRepository).save(application, true);
+    inOrder.verify(applicationRepository).save(application);
     inOrder.verify(pageEventPublisher)
         .publish(new UploadedDocumentsSubmittedEvent(sessionId, applicationId, Locale.ENGLISH));
   }

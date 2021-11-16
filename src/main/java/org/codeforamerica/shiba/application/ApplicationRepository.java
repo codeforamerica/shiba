@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.application;
 
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -58,10 +59,6 @@ public class ApplicationRepository {
   }
 
   public void save(Application application) {
-    save(application, false);
-  }
-
-  public void save(Application application, boolean isDocuments) {
     ApplicationData applicationData = application.getApplicationData();
     HashMap<String, Object> parameters = new HashMap<>(Map.of(
         "id", application.getId(),
@@ -81,22 +78,17 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    String cafStatus = "null", ccapStatus = "null", certainPopsStatus = "null";
+    String cafStatus = String.valueOf(application.getCafApplicationStatus());
+    String ccapStatus = String.valueOf(application.getCcapApplicationStatus());
+    String certainPopsStatus = String.valueOf(application.getCertainPopsApplicationStatus());
 
-    if (isDocuments) {
-      if (application.getCafApplicationStatus() != null) {
-        cafStatus = application.getCafApplicationStatus().displayName();
-      }
-      if (application.getCcapApplicationStatus() != null) {
-        ccapStatus = application.getCcapApplicationStatus().displayName();
-      }
-      if (application.getCertainPopsApplicationStatus() != null) {
-        certainPopsStatus = application.getCertainPopsApplicationStatus().displayName();
-      }
-    } else {
-      cafStatus =
-          applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    if (application.getCafApplicationStatus() != DELIVERED) {
+      cafStatus = applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
+    }
+    if (application.getCcapApplicationStatus() != DELIVERED) {
       ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
+    }
+    if (application.getCertainPopsApplicationStatus() != DELIVERED) {
       List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
       certainPopsStatus =
           programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";
@@ -107,7 +99,7 @@ public class ApplicationRepository {
     parameters.put("certainPopsStatus", certainPopsStatus);
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    namedParameterJdbcTemplate.update(
+    int rowCount = namedParameterJdbcTemplate.update(
         "UPDATE applications SET " +
             "completed_at = :completedAt, " +
             "application_data = :applicationData ::jsonb, " +
@@ -120,16 +112,18 @@ public class ApplicationRepository {
             "ccap_application_status = :ccapStatus, " +
             "certain_pops_application_status = :certainPopsStatus, " +
             "flow = :flow WHERE id = :id", parameters);
-    namedParameterJdbcTemplate.update(
+    rowCount += namedParameterJdbcTemplate.update(
         "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow, doc_upload_email_status) "
             +
             "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
             +
             "ON CONFLICT DO NOTHING", parameters);
 
-    logStatusUpdate(application.getId(), CAF, Status.valueFor(cafStatus));
-    logStatusUpdate(application.getId(), CCAP, Status.valueFor(ccapStatus));
-    logStatusUpdate(application.getId(), CERTAIN_POPS, Status.valueFor(certainPopsStatus));
+    if (rowCount > 0) {
+      logStatusUpdate(application.getId(), CAF, Status.valueFor(cafStatus));
+      logStatusUpdate(application.getId(), CCAP, Status.valueFor(ccapStatus));
+      logStatusUpdate(application.getId(), CERTAIN_POPS, Status.valueFor(certainPopsStatus));
+    }
   }
 
   public Application find(String id) {
@@ -158,14 +152,24 @@ public class ApplicationRepository {
 
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     String statement = switch (document) {
-      case CAF -> "UPDATE applications SET caf_application_status = :status WHERE id = :id";
-      case CCAP -> "UPDATE applications SET ccap_application_status = :status WHERE id = :id";
-      case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = :status WHERE id = :id";
-      case CERTAIN_POPS -> "UPDATE applications SET certain_pops_application_status = :status WHERE id = :id";
+      case CAF -> getUpdateStatusQueryString("caf_application_status", status);
+      case CCAP -> getUpdateStatusQueryString("ccap_application_status", status);
+      case UPLOADED_DOC -> getUpdateStatusQueryString("uploaded_documents_status", status);
+      case CERTAIN_POPS -> getUpdateStatusQueryString("certain_pops_application_status", status);
     };
 
-    namedParameterJdbcTemplate.update(statement, parameters);
-    logStatusUpdate(id, document, status);
+    if (namedParameterJdbcTemplate.update(statement, parameters) > 0) {
+      logStatusUpdate(id, document, status);
+    }
+  }
+
+  private String getUpdateStatusQueryString(String column, Status status) {
+    if (status != DELIVERED) {
+      return String.format(
+          "UPDATE applications SET %s = :status WHERE id = :id and (%s != 'delivered' or %s is NULL)",
+          column, column, column);
+    }
+    return String.format("UPDATE applications SET %s = :status WHERE id = :id", column);
   }
 
   private void logStatusUpdate(String id, Document document, Status status) {
