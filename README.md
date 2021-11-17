@@ -1,5 +1,10 @@
 # SHIBA - Securely Hosted Integrated Benefits Application
 
+While we appreciate the interest in contributing to the codebase, we are not currently accepting
+pull requests outside of the MNbenefits team. If you're interested in getting involved with
+volunteer projects in Minnesota, check out
+the [Open Twin Cities Brigade](https://www.opentwincities.org/).
+
 ## Development setup
 
 ### Install the following system dependencies:
