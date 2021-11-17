@@ -378,6 +378,10 @@ pageDefinitions:
     name: certainPopsOffboarding
     pageTitle: certain-pops-offboarding.title
     hasPrimaryButton: false
+  - &addOtherPrograms
+    name: addOtherPrograms
+    pageTitle: add-other-programs.title
+    hasPrimaryButton: false
   - &introBasicInfo
     name: introBasicInfo
     pageTitle: intro-basic-info.title
@@ -2991,7 +2995,12 @@ workflow:
   certainPopsOffboarding:
     pageConfiguration: *certainPopsOffboarding
     nextPages:
-      - pageName: introBasicInfo
+      - pageName: addOtherPrograms
+  addOtherPrograms:
+    pageConfiguration: *addOtherPrograms
+    nextPages:
+      - pageName: choosePrograms
+      - pageName: landing
   introBasicInfo:
     pageConfiguration: *introBasicInfo
     nextPages:
