@@ -12,7 +12,6 @@ import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDSimpleFont;
 import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -116,20 +115,14 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     } catch (IllegalArgumentException e) {
       // Might be an unsupported unicode
       StringBuilder builder = new StringBuilder();
+      PDTrueTypeFont font1 = (PDTrueTypeFont) pdField.getAcroForm()
+          .getDefaultResources().getFont(COSName.getPDFName(font.getName()));
       for (int i = 0; i < field.length(); i++) {
         int codepoint = field.codePointAt(i);
 
-        pdField.getAcroForm().getDefaultResources();
-
-        if (font == null || font.toUnicode(codepoint) != null) {
+        if ((font == null || font.toUnicode(codepoint) != null
+            && (font1 == null || font1.toUnicode(codepoint) != null))) {
           builder.append(field.charAt(i));
-//
-//          PDSimpleFont fontCasted = (PDSimpleFont) font;
-//          String name = fontCasted.getGlyphList().codePointToName(codepoint);
-//          fontCasted.getEncoding().contains(name);
-//          if (fontCasted.getEncoding().contains(name)) {
-//            builder.append(field.charAt(i));
-//          }
         }
       }
       pdField.setValue(builder.toString());

@@ -63,10 +63,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     postToUrlExpectingSuccess("/submit",
         "/pages/signThisApplication/navigation",
-        Map.of("applicantSignature", List.of("Екатерина")));
+        Map.of("applicantSignature", List.of("aЕкатерина")));
     var caf = downloadCaf();
 
-    assertPdfFieldEquals("APPLICANT_SIGNATURE", "", caf);
+    assertPdfFieldEquals("APPLICANT_SIGNATURE", "a", caf);
   }
 
   @Test
