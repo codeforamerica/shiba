@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" th:fragment="addOtherPrograms">
+  <div class="grid__item spacing-below-60">
+    <div class="grid__item spacing-below-15">
+      <div th:replace="fragments/contextFragments :: chooseProgramsContextFragment"></div>
+    </div>
+    <div class="grid__item">
+      <h1 class="h2 spacing-below-35 spacing-above-0"
+          th:text="#{add-other-programs.would-you-like-to}"></h1>
+    </div>
+    <div class="spacing-above-60">
+      <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+         th:text="#{add-other-programs.yes}"></a>
+    </div>
+    <div>
+      <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+         th:text="#{add-other-programs.no}"></a>
+    </div>
+  </div>
+</html>

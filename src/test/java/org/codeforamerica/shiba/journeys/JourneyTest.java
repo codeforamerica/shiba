@@ -171,6 +171,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
       testPage.enter("basicCriteria", "None of the above");
       testPage.clickContinue();
       assertThat(testPage.getTitle()).isEqualTo("Certain Pops Offboarding");
+      testPage.clickContinue();
+      assertThat(testPage.getTitle()).isEqualTo("Add other programs");
+      testPage.goBack();
       testPage.goBack();
 
       // Basic Criteria:
