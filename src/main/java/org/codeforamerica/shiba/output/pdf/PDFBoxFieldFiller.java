@@ -123,6 +123,8 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
         if ((font == null || font.toUnicode(codepoint) != null
             && (font1 == null || font1.toUnicode(codepoint) != null))) {
           builder.append(field.charAt(i));
+        } else {
+          log.warn("Omitting unsupported character: " + field.codePointAt(i));
         }
       }
       pdField.setValue(builder.toString());
