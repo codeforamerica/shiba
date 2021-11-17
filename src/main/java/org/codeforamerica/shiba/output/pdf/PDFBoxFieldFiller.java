@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.pdf;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -117,16 +118,19 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
       StringBuilder builder = new StringBuilder();
       PDTrueTypeFont font1 = (PDTrueTypeFont) pdField.getAcroForm()
           .getDefaultResources().getFont(COSName.getPDFName(font.getName()));
+      List<Integer> unsupportedCodepoints = new ArrayList<>();
       for (int i = 0; i < field.length(); i++) {
-        int codepoint = field.codePointAt(i);
+        int codepoint = Character.codePointAt(field, i);
 
         if ((font == null || font.toUnicode(codepoint) != null
             && (font1 == null || font1.toUnicode(codepoint) != null))) {
           builder.append(field.charAt(i));
         } else {
-          log.warn("Omitting unsupported character: " + field.codePointAt(i));
+          unsupportedCodepoints.add(codepoint);
         }
       }
+      log.warn("Omitting unsupported codepoints: " + unsupportedCodepoints + " for field " +
+          pdField.getFullyQualifiedName());
       pdField.setValue(builder.toString());
     }
   }
