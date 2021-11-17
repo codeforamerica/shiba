@@ -58,6 +58,18 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
+  void shouldSupportCyrillicCharacters() throws Exception {
+    selectPrograms("CASH");
+
+    postToUrlExpectingSuccess("/submit",
+        "/pages/signThisApplication/navigation",
+        Map.of("applicantSignature", List.of("aЕкатерина")));
+    var caf = downloadCaf();
+
+    assertPdfFieldEquals("APPLICANT_SIGNATURE", "a", caf);
+  }
+
+  @Test
   void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
     selectPrograms("CCAP");
     addHouseholdMembersWithCCAP();
