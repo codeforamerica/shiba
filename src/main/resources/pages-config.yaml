@@ -4226,6 +4226,7 @@ workflow:
     enrichment: matchInfoDateOfBirthEnrichment
     nextPages:
       - pageName: uploadDocuments
+        flow: LATER_DOCS
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     datasources:
