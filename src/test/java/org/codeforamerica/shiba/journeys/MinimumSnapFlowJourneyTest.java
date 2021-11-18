@@ -21,7 +21,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   @Test
   void nonExpeditedFlow() {
     // No permanent address for this test
-    getToHomeAddress(List.of(PROGRAM_SNAP));
+    getToHomeAddress("Hennepin", List.of(PROGRAM_SNAP));
 
     // Where are you currently Living? (with home address)
     testPage.enter("zipCode", "23456");
@@ -46,31 +46,23 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(testPage.getTitle()).isEqualTo("City for General Delivery");
     testPage.clickContinue(); // Error on "Continue" without selecting a city
     assertThat(testPage.hasErrorText("Make sure to provide a city")).isTrue();
-    testPage.selectFromDropdown("whatIsTheCity[]", "Minneapolis");
+    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
     testPage.clickContinue();
+
+    // General Delivery address
     assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
-    // Cities in Hennepin show physical address
     String generalDeliveryText = testPage.getElementText("general-delivery");
     assertThat(generalDeliveryText).contains("General Delivery");
     assertThat(generalDeliveryText).contains("Main Post Office.");
     assertThat(generalDeliveryText).contains("100 S 1st St");
     assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
 
-    // Go back to General Delivery and select a different city
-    testPage.goBack();
-    testPage.selectFromDropdown("whatIsTheCity[]", "Ada");
-    testPage.clickContinue();
-    generalDeliveryText = testPage.getElementText("general-delivery");
-    assertThat(generalDeliveryText).contains("General Delivery");
-    assertThat(generalDeliveryText).contains("Ada, MN");
-    assertThat(generalDeliveryText).contains("56510-9999");
-
     // Let's review your info
     testPage.clickContinue();
     assertThat(driver.findElementById("homeAddress-address_message").getText())
         .isEqualTo("No permanent address");
     assertThat(testPage.findElementById("generalDelivery_streetAddress").getText())
-        .isEqualTo("Ada, MN");
+        .isEqualTo("100 S 1st St");
 
     testPage.clickLink("Submit application now with only the above information.");
 
@@ -97,7 +89,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted to Norman County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Norman County (218-784-5400).");
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId,
+        "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County (612-596-1300).");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("DRUG_FELONY", "No");
@@ -108,16 +101,16 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_HOME_CITY", "");
     assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
     assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "");
-    assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "General Delivery");
+    assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "100 S 1st St");
     assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "");
-    assertCafFieldEquals("APPLICANT_MAILING_CITY", "Ada");
+    assertCafFieldEquals("APPLICANT_MAILING_CITY", "Minneapolis");
     assertCafFieldEquals("APPLICANT_MAILING_STATE", "MN");
-    assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "56510-9999");
+    assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "55401");
   }
 
   @Test
   void expeditedFlow() {
-    getToHomeAddress(List.of(PROGRAM_SNAP));
+    getToHomeAddress("Hennepin", List.of(PROGRAM_SNAP));
 
     // Where are you currently Living?
     String homeZip = "12345";
@@ -179,8 +172,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testFeedbackScreen();
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300."
-);
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, """
+        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
+
+        For more support, you can call Hennepin County (612-596-1300)."""
+    );
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("DRUG_FELONY", "Yes");
@@ -210,7 +206,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   }
 
 
-  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId, String countyInstructions) {
+  private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId,
+      String countyInstructions) {
     // Page 1
     assertCafFieldEquals("APPLICATION_ID", applicationId);
     assertCafFieldEquals("COUNTY_INSTRUCTIONS", countyInstructions);

@@ -8,8 +8,6 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -21,12 +19,9 @@ class GeneralDeliveryAddressEnrichmentTest {
 
   private final CountyMap<CountyRoutingDestination> countyZipCodeMap = new CountyMap<>();
   private final CityInfoConfiguration cityInfoConfiguration = new CityInfoConfiguration();
-  private final FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(
-      Map.of("use-county-selection", FeatureFlag.OFF));
 
   private final GeneralDeliveryAddressEnrichment generalDeliveryAddressEnrichment =
-      new GeneralDeliveryAddressEnrichment(cityInfoConfiguration, countyZipCodeMap,
-          featureFlagConfiguration);
+      new GeneralDeliveryAddressEnrichment(cityInfoConfiguration, countyZipCodeMap);
 
   @BeforeEach
   void setup() {
@@ -51,6 +46,7 @@ class GeneralDeliveryAddressEnrichmentTest {
   void shouldMapCityInfoForCountyWithoutPostOfficeAddress() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Battle Lake")
+        .withPageData("identifyCounty", "county", "OtterTail")
         .build();
 
     PageData enrichmentResult = generalDeliveryAddressEnrichment
@@ -70,6 +66,7 @@ class GeneralDeliveryAddressEnrichmentTest {
   void shouldMapCityInfoForCountyWithPostOfficeAddress() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Minneapolis")
+        .withPageData("identifyCounty", "county", "Hennepin")
         .build();
 
     PageData enrichmentResult = generalDeliveryAddressEnrichment
@@ -88,7 +85,6 @@ class GeneralDeliveryAddressEnrichmentTest {
 
   @Test
   void shouldMapCityInfoAndCountyPhoneNumberIfUseCountySelectionIsOn() {
-    featureFlagConfiguration.put("use-county-selection", FeatureFlag.ON);
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withPageData("identifyCounty", "county", "Anoka")
         .withPageData("cityForGeneralDelivery", "whatIsTheCity", "Battle Lake")

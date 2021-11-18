@@ -2,7 +2,11 @@ package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Beltrami;
-import static org.codeforamerica.shiba.Program.*;
+import static org.codeforamerica.shiba.Program.CASH;
+import static org.codeforamerica.shiba.Program.CCAP;
+import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.GRH;
+import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.OTHER_FEDERALLY_RECOGNIZED_TRIBE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
@@ -25,6 +29,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,8 +51,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @BeforeEach
   protected void setUp() throws Exception {
     super.setUp();
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("identifyCounty", "county", "Hennepin");
     when(countyParser.parse(any())).thenReturn(County.Hennepin);
-    when(countyParser.parseCountyInput(any())).thenReturn(County.Hennepin.name());
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
@@ -522,7 +528,8 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     String countyNameWithoutSpaces = county.replace(" ", "");
     County value = County.valueOf(countyNameWithoutSpaces);
     when(countyParser.parse(any())).thenReturn(value);
-    when(countyParser.parseCountyInput(any())).thenReturn(county);
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("identifyCounty", "county", county);
     fillOutPersonalInfo();
     fillOutContactInfo();
 

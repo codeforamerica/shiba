@@ -136,7 +136,6 @@ class MnitDocumentConsumerTest {
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfig.get("use-county-selection")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
 
     doReturn(application).when(applicationRepository).find(any());

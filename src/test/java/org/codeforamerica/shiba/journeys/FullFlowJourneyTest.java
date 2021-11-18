@@ -42,7 +42,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     List<String> programSelections = List
         .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
-    getToHomeAddress(programSelections);
+    getToHomeAddress("Hennepin", programSelections);
 
     // Where are you currently Living?
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
@@ -396,9 +396,6 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // The legal stuff.
     testPage.enter("agreeToTerms", "I agree");
-    testPage.clickContinue(); // Drug felony question is optional so we should be able to advance
-    assertThat(driver.getTitle()).isEqualTo("Sign this application");
-    testPage.goBack();
     testPage.enter("drugFelony", NO.getDisplayValue());
     testPage.clickContinue();
 
@@ -435,8 +432,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
     assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
-    assertCcapFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
+    assertCcapFieldEquals("COUNTY_INSTRUCTIONS", """
+        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
+                    
+        For more support, you can call Hennepin County (612-596-1300).""");
     assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("UTM_SOURCE", "");
@@ -557,7 +556,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted. A caseworker at Hennepin County will help route your application to your county. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed. For more support with your application, you can call Hennepin County at 612-596-1300.");
+        "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\n"
+        + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);

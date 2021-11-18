@@ -35,7 +35,7 @@ public class SubmissionAndTerminalPageTest extends AbstractStaticMessageSourceFr
     var county = Hennepin;
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("SNAP", "CCAP"))
-        .withPageData("homeAddress", "enrichedCounty", county.name())
+        .withPageData("identifyCounty", "county", county.name())
         .build();
     var sentiment = HAPPY;
     var feedbackText = "someFeedback";

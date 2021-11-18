@@ -12,8 +12,6 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.documentfieldpreparers.MailingAddressStreetPreparer;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -34,28 +32,21 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
   private final CityInfoConfiguration cityInfoConfiguration;
   private final CountyMap<CountyRoutingDestination> countyMap;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public GeneralDeliveryAddressEnrichment(CityInfoConfiguration cityInfoConfiguration,
-      CountyMap<CountyRoutingDestination> countyMap,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+      CountyMap<CountyRoutingDestination> countyMap) {
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.countyMap = countyMap;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   @Override
   public PageData process(PagesData pagesData) {
     String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
-    Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping()
-        .get(cityName);
-    String countyName;
-    if (featureFlagConfiguration.get("use-county-selection") == FeatureFlag.ON) {
-      countyName = getFirstValue(pagesData, IDENTIFY_COUNTY);
-    } else {
-      countyName = cityInfo.get("county").replace(" ", "");
-    }
+    Map<String, String> cityInfo =
+        cityInfoConfiguration.getCityToZipAndCountyMapping().get(cityName);
+    String countyName = getFirstValue(pagesData, IDENTIFY_COUNTY);
+
     String zipcodeFromCity = cityInfo.get("zipcode") + "-9999";
     County county = County.valueOf(countyName);
     CountyRoutingDestination countyInfo = countyMap.get(county);
