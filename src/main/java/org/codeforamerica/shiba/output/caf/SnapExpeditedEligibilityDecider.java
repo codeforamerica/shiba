@@ -99,7 +99,7 @@ public class SnapExpeditedEligibilityDecider {
   private boolean isApplyingForSnap(ApplicationData applicationData) {
     boolean applicantApplyingForSnap = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS)
         .contains("SNAP");
-    List<String> householdPrograms = getValues(HOUSEHOLD, HOUSEHOLD_PROGRAMS, applicationData);
+    List<String> householdPrograms = getValues(applicationData, HOUSEHOLD, HOUSEHOLD_PROGRAMS);
     boolean householdMemberApplyingForSnap =
         householdPrograms != null && householdPrograms.contains("SNAP");
     boolean isPreparingMealsTogether = Boolean
@@ -117,7 +117,7 @@ public class SnapExpeditedEligibilityDecider {
       return false;
     }
 
-    List<String> thirtyDayEstimates = getValues(JOBS, LAST_THIRTY_DAYS_JOB_INCOME, applicationData);
+    List<String> thirtyDayEstimates = getValues(applicationData, JOBS, LAST_THIRTY_DAYS_JOB_INCOME);
     return thirtyDayEstimates == null || !thirtyDayEstimates.stream().allMatch(String::isBlank);
   }
 

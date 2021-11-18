@@ -79,7 +79,7 @@ public class ApplicationData implements Serializable {
     return datasources.stream()
         .filter(datasource -> datasource.getGroupName() != null)
         .allMatch(datasource -> datasource.isOptional()
-                                || getSubworkflows().get(datasource.getGroupName()) != null);
+            || getSubworkflows().get(datasource.getGroupName()) != null);
   }
 
   public NextPage getNextPageName(
@@ -126,7 +126,7 @@ public class ApplicationData implements Serializable {
 
   public boolean isCAFApplication() {
     return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA")) ||
-           getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
+        getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
   }
 
   public boolean isApplicationWith(List<String> programs) {
@@ -160,7 +160,7 @@ public class ApplicationData implements Serializable {
   public Set<String> getApplicantAndHouseholdMemberPrograms() {
     List<String> applicantPrograms = getValues(pagesData, APPLICANT_PROGRAMS);
     Set<String> applicantAndHouseholdMemberPrograms = new HashSet<>(applicantPrograms);
-    List<String> householdPrograms = getValues(HOUSEHOLD, HOUSEHOLD_PROGRAMS, this);
+    List<String> householdPrograms = getValues(this, HOUSEHOLD, HOUSEHOLD_PROGRAMS);
     if (householdPrograms != null) {
       applicantAndHouseholdMemberPrograms.addAll(householdPrograms);
     }

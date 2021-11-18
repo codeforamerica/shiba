@@ -171,7 +171,8 @@ public class ApplicationDataParser {
         .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("matchInfo", "firstName"));
     coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("matchInfo", "lastName"));
 
-    coordinatesMap.put(Field.RACE_AND_ETHNICITY, new ParsingCoordinate("raceAndEthnicity", "raceAndEthnicity"));
+    coordinatesMap.put(Field.RACE_AND_ETHNICITY,
+        new ParsingCoordinate("raceAndEthnicity", "raceAndEthnicity"));
     groupCoordinatesMap.put(Group.JOBS, "jobs");
     groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
 
@@ -194,7 +195,7 @@ public class ApplicationDataParser {
     return Boolean.parseBoolean(getFirstValue(pagesData, field));
   }
 
-  public static List<String> getValues(Group group, Field field, ApplicationData applicationData) {
+  public static List<String> getValues(ApplicationData applicationData, Group group, Field field) {
     Subworkflow iterations = getGroup(applicationData, group);
     if (iterations == null) {
       return null;

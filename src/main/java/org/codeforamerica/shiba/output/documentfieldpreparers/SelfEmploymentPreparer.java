@@ -39,8 +39,9 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient _recipient) {
 
-    List<String> selfEmploymentInputs = getValues(JOBS, IS_SELF_EMPLOYMENT,
-        application.getApplicationData());
+    List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS,
+        IS_SELF_EMPLOYMENT
+    );
 
     if (selfEmploymentInputs == null) {
       return Collections.emptyList();
