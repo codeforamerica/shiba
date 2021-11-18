@@ -1,4 +1,4 @@
-# SHIBA - Securely Hosted Integrated Benefits Application
+# SHIBA - State Hosted Integrated Benefits Application
 
 We appreciate your interest in contributing to our codebase, which is why we'd like to invite you to
 check out the volunteer projects at [Open Twin Cities Brigade](https://www.opentwincities.org/)! At
