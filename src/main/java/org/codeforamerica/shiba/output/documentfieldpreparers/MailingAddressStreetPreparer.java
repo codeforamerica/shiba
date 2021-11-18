@@ -21,6 +21,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_APARTMENT_NUMBER;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_CITY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_COUNTY;
@@ -99,12 +100,15 @@ public class MailingAddressStreetPreparer implements DocumentFieldPreparer {
     String streetAddress = GENERAL_DELIVERY;
     String zipcode = getFirstValue(pagesData, GENERAL_DELIVERY_ZIPCODE);
     String cityName = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+    County identifiedCounty = County.valueOf(getFirstValue(pagesData, IDENTIFY_COUNTY));
 
     // If post office information available, set mailing address application inputs to that
-    Map<String, String> cityInfo = cityInfoConfiguration.getCityToZipAndCountyMapping()
-        .get(cityName);
-    String countyFromCity = cityInfo.get("county").replace(" ", "");
-    CountyRoutingDestination countyInfo = countyMap.get(County.valueOf(countyFromCity));
+    Map<String, String> cityInfo =
+        cityInfoConfiguration.getCityToZipAndCountyMapping().get(cityName);
+    County countyFromCity = County.valueOf(cityInfo.get("county").replace(" ", ""));
+    County county = identifiedCounty == County.Other ? countyFromCity : identifiedCounty;
+    CountyRoutingDestination countyInfo = countyMap.get(county);
+
     if (countyInfo.getPostOfficeAddress() != null) {
       streetAddress = countyInfo.getPostOfficeAddress().getStreet();
       zipcode = countyInfo.getPostOfficeAddress().getZipcode();

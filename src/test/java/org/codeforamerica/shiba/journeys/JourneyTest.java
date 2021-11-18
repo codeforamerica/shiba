@@ -144,12 +144,12 @@ abstract class JourneyTest extends AbstractBasePageTest {
     return () -> getAllFiles().size() == successPage.pdfDownloadLinks();
   }
 
-  protected void getToHomeAddress(List<String> programSelections) {
+  protected void getToHomeAddress(String county, List<String> programSelections) {
     // Landing page
     testPage.clickButton("Apply now");
 
     // Select county
-    testPage.enter("county", "Hennepin");
+    testPage.enter("county", county);
     testPage.clickContinue();
 
     // Informational pages
@@ -180,9 +180,12 @@ abstract class JourneyTest extends AbstractBasePageTest {
       testPage.enter("basicCriteria", "I am 65 years old or older");
       testPage.enter("basicCriteria", "I am blind");
       testPage.enter("basicCriteria", "I currently receive SSI or RSDI for a disability");
-      testPage.enter("basicCriteria", "I have a disability that has been certified by the Social Security Administration (SSA)");
-      testPage.enter("basicCriteria", "I have a disability that has been certified by the State Medical Review Team (SMRT)");
-      testPage.enter("basicCriteria", "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EDP)");
+      testPage.enter("basicCriteria",
+          "I have a disability that has been certified by the Social Security Administration (SSA)");
+      testPage.enter("basicCriteria",
+          "I have a disability that has been certified by the State Medical Review Team (SMRT)");
+      testPage.enter("basicCriteria",
+          "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EDP)");
       testPage.enter("basicCriteria", "I want help with my Medicare costs");
       testPage.clickContinue();
     }
@@ -212,7 +215,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
     // How can we get in touch with you?
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
-    assertThat(testPage.getCheckboxValues("phoneOrEmail")).contains("It's okay to text me", "It's okay to email me");
+    assertThat(testPage.getCheckboxValues("phoneOrEmail")).contains("It's okay to text me",
+        "It's okay to email me");
     testPage.clickContinue();
   }
 
