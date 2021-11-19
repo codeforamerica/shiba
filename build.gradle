@@ -131,7 +131,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.springframework.session:spring-session-jdbc")
-    implementation("io.sentry:sentry-spring-boot-starter:5.4.0")
+    implementation("io.sentry:sentry-spring-boot-starter:5.4.1")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services") {
