@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.data;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.BASIC_CRITERIA_CERTAIN_POPS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MEDICAL_EXPENSES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
@@ -127,6 +128,11 @@ public class ApplicationData implements Serializable {
   public boolean isCAFApplication() {
     return isApplicationWith(List.of("SNAP", "CASH", "GRH", "EA")) ||
         getBooleanValue(pagesData, APPLYING_FOR_TRIBAL_TANF);
+  }
+
+  public boolean isCertainPopsApplication() {
+    return isApplicationWith(List.of("CERTAIN_POPS")) &&
+        !getValues(pagesData, BASIC_CRITERIA_CERTAIN_POPS).contains("NONE");
   }
 
   public boolean isApplicationWith(List<String> programs) {

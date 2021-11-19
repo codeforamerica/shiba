@@ -745,7 +745,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "basicCriteria",
           List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
               "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
-          "introBasicInfo");
+          "certainPopsConfirm");
 
       fillInPersonalInfoAndContactInfoAndAddress();
       postExpectingSuccess("livingSituation", "livingSituation",
@@ -830,6 +830,24 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
+    }
+
+    @Test
+    void shouldNotMapCertainPopsIfBasicCriteriaIsNoneOfTheAbove() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+      selectPrograms("CERTAIN_POPS", "SNAP");
+      postExpectingRedirect("basicCriteria",
+          "basicCriteria",
+          List.of("NONE"),
+          "certainPopsOffboarding");
+
+      submitApplication();
+      var pdf = downloadCertainPops(applicationData.getId());
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("PROGRAMS", "SNAP", pdf);
+      assertPdfFieldEquals("PROGRAMS", "SNAP", caf);
     }
   }
 }

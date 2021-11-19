@@ -2,8 +2,6 @@ package org.codeforamerica.shiba.application;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
@@ -20,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -89,9 +86,7 @@ public class ApplicationRepository {
       ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
     }
     if (application.getCertainPopsApplicationStatus() != DELIVERED) {
-      List<String> programs = getValues(applicationData.getPagesData(), APPLICANT_PROGRAMS);
-      certainPopsStatus =
-          programs.contains(Program.CERTAIN_POPS) ? IN_PROGRESS.toString() : "null";
+      certainPopsStatus = applicationData.isCertainPopsApplication() ? IN_PROGRESS.toString() : "null";
     }
 
     parameters.put("cafStatus", cafStatus);

@@ -374,6 +374,10 @@ pageDefinitions:
             - value: NONE
               messageKey: general.inputs.none-of-the-above
               isNone: true
+  - &certainPopsConfirm
+    name: certainPopsConfirm
+    pageTitle: certain-pops-confirm.title
+    hasPrimaryButton: false
   - &certainPopsOffboarding
     name: certainPopsOffboarding
     pageTitle: certain-pops-offboarding.title
@@ -2991,7 +2995,16 @@ workflow:
           input: basicCriteria
           matcher: CONTAINS
           value: NONE
-      - pageName: introBasicInfo
+      - pageName: certainPopsConfirm
+        condition:
+          pageName: basicCriteria
+          input: basicCriteria
+          matcher: DOES_NOT_CONTAIN
+          value: NONE
+  certainPopsConfirm:
+    pageConfiguration: *certainPopsConfirm
+    nextPages:
+      - pageName: introBasicInfo    
   certainPopsOffboarding:
     pageConfiguration: *certainPopsOffboarding
     nextPages:
