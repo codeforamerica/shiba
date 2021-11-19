@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.util.ArrayList;
@@ -40,10 +41,17 @@ public class ApplicantProgramsPreparer implements DocumentFieldPreparer {
     boolean isMFIP = application.getApplicationData().getPagesData()
         .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
 
+    boolean isTribalTanf =
+        getValues(application.getApplicationData().getPagesData(), APPLYING_FOR_TRIBAL_TANF).contains("true");
+
     boolean isCertainPops = application.getApplicationData().isCertainPopsApplication();
 
     if (!isCertainPops) {
       programs.remove(Program.CERTAIN_POPS);
+    }
+
+    if (isTribalTanf) {
+      programs.add("TRIBAL TANF");
     }
 
     if (isMFIP && !programs.contains("CASH")) {
