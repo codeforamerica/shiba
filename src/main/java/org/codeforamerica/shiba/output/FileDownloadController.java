@@ -143,6 +143,8 @@ public class FileDownloadController {
 
   /**
    * Create a response without throwing an exception on missing result.
+   * <p>
+   * Should only be used for internal endpoints!
    */
   private ResponseEntity<byte[]> createResponse(String applicationId, Document document) {
     try {
