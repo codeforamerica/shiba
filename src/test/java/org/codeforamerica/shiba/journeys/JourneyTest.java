@@ -188,6 +188,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
           "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EDP)");
       testPage.enter("basicCriteria", "I want help with my Medicare costs");
       testPage.clickContinue();
+      assertThat(testPage.getTitle()).isEqualTo("Certain Pops Confirmation");
+      testPage.clickContinue();
     }
 
     // Getting to know you (Personal Info intro page)
