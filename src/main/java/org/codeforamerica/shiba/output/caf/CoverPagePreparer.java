@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.caf;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
@@ -10,6 +9,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.documentfieldpreparers.ApplicantProgramsPreparer.prepareProgramSelections;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,33 +98,13 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   }
 
   private DocumentField getPrograms(Application application) {
-    List<String> programs = new ArrayList<>(
-        getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));
-    if (isTribalTANF(application)) {
-      programs.add("TRIBAL TANF");
-    }
-
-    if (isMFIP(application)) {
-      if (!programs.contains("CASH")) {
-        programs.add("CASH");
-      }
-    }
+    List<String> programs = prepareProgramSelections(application);
 
     if (!programs.isEmpty()) {
       return new DocumentField("coverPage", "programs", String.join(", ", programs),
           SINGLE_VALUE);
     }
     return null;
-  }
-
-  private boolean isTribalTANF(Application application) {
-    return application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForTribalTANF", "applyForTribalTANF").contains("true");
-  }
-
-  private boolean isMFIP(Application application) {
-    return application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
   }
 
   private DocumentField getFullName(Application application) {

@@ -831,5 +831,23 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
     }
+
+    @Test
+    void shouldNotMapCertainPopsIfBasicCriteriaIsNoneOfTheAbove() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+      selectPrograms("CERTAIN_POPS", "SNAP");
+      postExpectingRedirect("basicCriteria",
+          "basicCriteria",
+          List.of("NONE"),
+          "certainPopsOffboarding");
+
+      submitApplication();
+      var pdf = downloadCertainPops(applicationData.getId());
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("PROGRAMS", "SNAP", pdf);
+      assertPdfFieldEquals("PROGRAMS", "SNAP", caf);
+    }
   }
 }

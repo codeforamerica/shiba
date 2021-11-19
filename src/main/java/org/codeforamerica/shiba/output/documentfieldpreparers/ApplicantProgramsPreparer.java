@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 
 import java.util.ArrayList;
 import java.util.List;
+import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
@@ -19,16 +20,7 @@ public class ApplicantProgramsPreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
 
-    List<String> programs = new ArrayList<>(
-        getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));
-
-    boolean isMFIP = application.getApplicationData().getPagesData()
-        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
-
-    if (isMFIP && !programs.contains("CASH")) {
-      programs.add("CASH");
-    }
-
+    List<String> programs = prepareProgramSelections(application);
     List<DocumentField> programSelections = new ArrayList<>();
 
     programs.forEach(program -> {
@@ -39,5 +31,25 @@ public class ApplicantProgramsPreparer implements DocumentFieldPreparer {
     });
 
     return programSelections;
+  }
+
+  public static List<String> prepareProgramSelections(Application application) {
+    List<String> programs = new ArrayList<>(
+        getValues(application.getApplicationData().getPagesData(), APPLICANT_PROGRAMS));
+
+    boolean isMFIP = application.getApplicationData().getPagesData()
+        .safeGetPageInputValue("applyForMFIP", "applyForMFIP").contains("true");
+
+    boolean isCertainPops = application.getApplicationData().isCertainPopsApplication();
+
+    if (!isCertainPops) {
+      programs.remove(Program.CERTAIN_POPS);
+    }
+
+    if (isMFIP && !programs.contains("CASH")) {
+      programs.add("CASH");
+    }
+
+    return programs;
   }
 }
