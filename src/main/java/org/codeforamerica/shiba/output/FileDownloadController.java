@@ -10,10 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -21,8 +19,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,21 +33,19 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class FileDownloadController {
 
+  private static final String NOT_FOUND_MESSAGE = "Could not find application for download";
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
-  private final ApplicationEventPublisher applicationEventPublisher;
   private final ApplicationData applicationData;
   private final ApplicationRepository applicationRepository;
 
   public FileDownloadController(
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
-      ApplicationEventPublisher applicationEventPublisher,
       ApplicationData applicationData,
       ApplicationRepository applicationRepository) {
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
-    this.applicationEventPublisher = applicationEventPublisher;
     this.applicationData = applicationData;
     this.applicationRepository = applicationRepository;
   }
@@ -68,27 +63,13 @@ public class FileDownloadController {
   }
 
   @GetMapping("/download-ccap/{applicationId}")
-  ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(
-      @PathVariable String applicationId,
-      HttpServletRequest request) {
-
-    String requestIp = createRequestIp(request);
-    // TODO: Change this to a CCAP PDF Download Notification
-    applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-    ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CCAP, CASEWORKER);
-
-    return createResponse(applicationFile);
+  ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(@PathVariable String applicationId) {
+    return createResponse(applicationId, CCAP);
   }
 
   @GetMapping("/download-certain-pops/{applicationId}")
-  ResponseEntity<byte[]> downloadCertainPopsWithApplicationId(
-      @PathVariable String applicationId,
-      HttpServletRequest request) {
-    String requestIp = createRequestIp(request);
-    applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-    ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CERTAIN_POPS,
-        CASEWORKER);
-    return createResponse(applicationFile);
+  ResponseEntity<byte[]> downloadCertainPopsWithApplicationId(@PathVariable String applicationId) {
+    return createResponse(applicationId, CERTAIN_POPS);
   }
 
   @GetMapping("/download-xml")
@@ -98,28 +79,13 @@ public class FileDownloadController {
   }
 
   @GetMapping("/download-caf/{applicationId}")
-  ResponseEntity<byte[]> downloadPdfWithApplicationId(
-      @PathVariable String applicationId,
-      HttpServletRequest request
-  ) {
-    String requestIp = createRequestIp(request);
-
-    applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-    ApplicationFile applicationFile = pdfGenerator.generate(applicationId, CAF, CASEWORKER);
-
-    return createResponse(applicationFile);
+  ResponseEntity<byte[]> downloadPdfWithAppJlicationId(@PathVariable String applicationId) {
+    return createResponse(applicationId, CAF);
   }
 
   @GetMapping("/download-docs/{applicationId}")
-  ResponseEntity<byte[]> downloadDocsWithApplicationId(
-      @PathVariable String applicationId,
-      HttpServletRequest request
-  ) throws IOException {
-    String requestIp = createRequestIp(request);
-
-    // TODO: Change this to a Doc download event
-    applicationEventPublisher.publishEvent(new DownloadCafEvent(applicationId, requestIp));
-
+  ResponseEntity<byte[]> downloadDocsWithApplicationId(@PathVariable String applicationId)
+      throws IOException {
     Application application = applicationRepository.find(applicationId);
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
 
@@ -157,11 +123,10 @@ public class FileDownloadController {
       if (baos.size() > 22) {
         return createResponse(baos.toByteArray(), applicationId + ".zip");
       } else {
-        throw new ResponseStatusException(
-            HttpStatus.NOT_FOUND);
+        // Applicant should not have been able to "submit" documents without uploading any.
+        log.warn("No documents to download");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
-
-
     }
   }
 
@@ -176,10 +141,16 @@ public class FileDownloadController {
         .body(fileBytes);
   }
 
-  @NotNull
-  private String createRequestIp(HttpServletRequest request) {
-    String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
-    String[] ipAddresses = requestIpHeader.split(",");
-    return ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
+  /**
+   * Create a response without throwing an exception on missing result.
+   */
+  private ResponseEntity<byte[]> createResponse(String applicationId, Document document) {
+    try {
+      ApplicationFile applicationFile = pdfGenerator.generate(applicationId, document, CASEWORKER);
+      return createResponse(applicationFile);
+    } catch (EmptyResultDataAccessException e) {
+      log.info(NOT_FOUND_MESSAGE);
+      return ResponseEntity.ok().body(NOT_FOUND_MESSAGE.getBytes());
+    }
   }
 }

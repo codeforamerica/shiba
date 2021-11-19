@@ -7,7 +7,12 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,10 +29,6 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -41,16 +42,7 @@ class FileDownloadControllerTest {
   XmlGenerator xmlGenerator = mock(XmlGenerator.class);
   ApplicationData applicationData;
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-  ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
   ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
-
-  @SuppressWarnings("unused")
-  static List<Arguments> shouldPublishEventWhenDownloadCafIsInvoked() {
-    return List.of(
-        Arguments.of("123.123.123", "ip, someIp, 123.123.123, someOtherIp"),
-        Arguments.of("<blank>", "")
-    );
-  }
 
   @BeforeEach
   void setUp() {
@@ -60,7 +52,6 @@ class FileDownloadControllerTest {
             new FileDownloadController(
                 xmlGenerator,
                 pdfGenerator,
-                applicationEventPublisher,
                 applicationData,
                 applicationRepository))
         .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
@@ -102,41 +93,6 @@ class FileDownloadControllerTest {
         .andExpect(status().is2xxSuccessful());
 
     verify(pdfGenerator).generate("9870000123", CCAP, CASEWORKER);
-  }
-
-  @ParameterizedTest
-  @MethodSource
-  void shouldPublishEventWhenDownloadCafIsInvoked(
-      String expectedIp, String requestHeader
-  ) throws Exception {
-    when(pdfGenerator.generate(anyString(), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    String confirmationNumber = "9870000123";
-    mockMvc.perform(
-        get("/download-caf/" + confirmationNumber)
-            .with(request -> {
-              request.addHeader("X-FORWARDED-FOR", requestHeader);
-              return request;
-            })
-    ).andExpect(status().is2xxSuccessful());
-
-    DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, expectedIp);
-    verify(applicationEventPublisher).publishEvent(event);
-  }
-
-  @Test
-  void shouldReturnBlankIpWhenRequestHeaderIsNull() throws Exception {
-    when(pdfGenerator.generate(anyString(), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    String confirmationNumber = "9870000123";
-    mockMvc.perform(
-        get("/download-caf/" + confirmationNumber).with(request -> request)
-    ).andExpect(status().is2xxSuccessful());
-
-    DownloadCafEvent event = new DownloadCafEvent(confirmationNumber, "<blank>");
-    verify(applicationEventPublisher).publishEvent(event);
   }
 
   @Test

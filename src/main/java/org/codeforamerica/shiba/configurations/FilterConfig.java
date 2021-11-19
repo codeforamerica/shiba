@@ -27,9 +27,7 @@ public class FilterConfig {
         "/submit",
         "/submit-feedback",
         "/submit-documents",
-        "/download-caf/*",
-        "/download-ccap/*",
-        "/download-certain-pops/*"
+        "/download**"
     );
 
     return registrationBean;

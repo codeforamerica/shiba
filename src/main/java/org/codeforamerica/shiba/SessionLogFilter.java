@@ -3,7 +3,13 @@ package org.codeforamerica.shiba;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.IOException;
-import javax.servlet.*;
+import java.util.Optional;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -44,6 +50,7 @@ public class SessionLogFilter implements Filter {
     HttpServletRequest httpReq = (HttpServletRequest) request;
     MDC.put("url", String.valueOf(httpReq.getRequestURL()));
     MDC.put("sessionId", httpReq.getSession().getId());
+    MDC.put("ip", createRequestIp(httpReq));
     if (applicationData != null && applicationData.getId() != null) {
       monitoringService.setApplicationId(applicationData.getId());
       MDC.put("applicationId", applicationData.getId());
@@ -59,5 +66,11 @@ public class SessionLogFilter implements Filter {
 
     chain.doFilter(request, response);
     MDC.clear();
+  }
+
+  private String createRequestIp(HttpServletRequest request) {
+    String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
+    String[] ipAddresses = requestIpHeader.split(",");
+    return ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim() : "<blank>";
   }
 }
