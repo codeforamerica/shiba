@@ -8,6 +8,8 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.security.SecureRandom;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -265,26 +267,32 @@ public class ApplicationRepository {
             .flow(Optional.ofNullable(resultSet.getString("flow"))
                 .map(FlowType::valueOf)
                 .orElse(null))
-            .cafApplicationStatus(
-                Optional.ofNullable(resultSet.getString("caf_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .ccapApplicationStatus(
-                Optional.ofNullable(resultSet.getString("ccap_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .certainPopsApplicationStatus(
-                Optional.ofNullable(resultSet.getString("certain_pops_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .uploadedDocumentApplicationStatus(
-                Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
+            .applicationStatuses(List.of(
+                applicationStatusMapper("caf_application_status", resultSet),
+                applicationStatusMapper("ccap_application_status", resultSet),
+                applicationStatusMapper("certain_pops_application_status", resultSet),
+                applicationStatusMapper("uploaded_documents_status", resultSet)
+            ))
             .docUploadEmailStatus(
                 Optional.ofNullable(resultSet.getString("doc_upload_email_status"))
                     .map(Status::valueFor)
                     .orElse(null))
             .build();
+  }
+
+  private ApplicationStatus applicationStatusMapper(String column, ResultSet resultSet)
+      throws SQLException {
+    Status status = Optional.ofNullable(resultSet.getString(column))
+        .map(Status::valueFor)
+        .orElse(null);
+
+    return switch (column) {
+      case "caf_application_status" -> new ApplicationStatus(CAF, status);
+      case "ccap_application_status" -> new ApplicationStatus(CCAP, status);
+      case "certain_pops_application_status" -> new ApplicationStatus(CERTAIN_POPS, status);
+      case "uploaded_documents_status" -> new ApplicationStatus(UPLOADED_DOC, status);
+      default -> null;
+    };
+
   }
 }
