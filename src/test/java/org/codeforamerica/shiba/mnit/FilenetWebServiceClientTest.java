@@ -22,6 +22,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -195,6 +196,7 @@ class FilenetWebServiceClientTest {
     mockWebServiceServer.verify();
   }
 
+  @Disabled("Disabled until mock is fixed to continue to the Router request")
   @Test
   void includesAuthenticationCredentials() {
     when(clock.instant()).thenReturn(

@@ -7,9 +7,14 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
+
 import java.math.BigInteger;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,13 +32,17 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 
@@ -47,20 +56,26 @@ public class FilenetWebServiceClient {
   private final Clock clock;
   private final String username;
   private final String password;
+  private final String routerUrl;
   private final ApplicationRepository applicationRepository;
-
+  
+  @Autowired
+  private RestTemplate restTemplate;
+  
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public FilenetWebServiceClient(
       @Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
+      @Value("${mnit-filenet.router-url}") String routerUrl,
       CountyMap<CountyRoutingDestination> countyMap,
       ApplicationRepository applicationRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
+    this.routerUrl = routerUrl;
     this.applicationRepository = applicationRepository;
   }
 
@@ -85,7 +100,8 @@ public class FilenetWebServiceClient {
         flowType, createDocument);
     setContentStreamOnDocument(applicationFile, createDocument);
 
-    filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
+    // Create the document in Filenet
+    CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
       SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
       try {
         SOAPHeader soapHeader = soapMessage.getSOAPHeader();
@@ -118,7 +134,25 @@ public class FilenetWebServiceClient {
             flowType);
       }
     });
-
+    
+    // Now route a copy of the document from Filenet to SFTP
+    String idd = response.getObjectId();
+    System.out.println("response from createDocument: " + idd);
+    String routerRequest = String.format("%s/%s", routerUrl, idd);
+    try {
+	    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+	    JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+	    JsonElement messageElement = jsonObject.get("message");
+	    if (messageElement.isJsonNull() || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
+	    	String eMessage = String.format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+	    	throw new Exception(eMessage);
+ 	    }
+    } catch (Exception e) {
+        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
+                applicationDocument,
+                flowType);
+    }
+    
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
   }
 
@@ -129,8 +163,7 @@ public class FilenetWebServiceClient {
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
-
-
+  
   private void setPropertiesOnDocument(ApplicationFile applicationFile,
       RoutingDestination routingDestination, String applicationNumber,
       Document applicationDocument, FlowType flowType,
@@ -233,5 +266,14 @@ public class FilenetWebServiceClient {
       }
     }
     return docDescription;
+  }
+  
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+   
+      return builder
+              .setConnectTimeout(Duration.ofMillis(3000))
+              .setReadTimeout(Duration.ofMillis(3000))
+              .build();
   }
 }

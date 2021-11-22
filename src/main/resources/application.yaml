@@ -57,6 +57,8 @@ mnit-filenet:
   url:  https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
 # future endpoint for atompub/chemistry implementation:
 # url: https://test-svcs.dhs.mn.gov/fncmis/resources/Service
+#  router-url: http://10.217.19.80:9083/router/api/fileNetToSftp
+  router-url: https://mn-its-stst.dhs.state.mn.us/router/api/fileNetToSftp
   jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
   max-attempts: 4
   delay: 5400000 # 1.5 hours
