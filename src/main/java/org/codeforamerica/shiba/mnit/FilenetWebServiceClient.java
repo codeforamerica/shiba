@@ -12,18 +12,29 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
+import javax.net.ssl.SSLContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -37,6 +48,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -58,6 +70,8 @@ public class FilenetWebServiceClient {
   private final String password;
   private final String routerUrl;
   private final ApplicationRepository applicationRepository;
+  private String truststorePassword;
+  private String truststore;
   
   @Autowired
   private RestTemplate restTemplate;
@@ -69,6 +83,8 @@ public class FilenetWebServiceClient {
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
       @Value("${mnit-filenet.router-url}") String routerUrl,
+      @Value("${client.truststore}") String truststore,
+      @Value("${client.truststore-password}") String truststorePassword,
       CountyMap<CountyRoutingDestination> countyMap,
       ApplicationRepository applicationRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
@@ -76,6 +92,8 @@ public class FilenetWebServiceClient {
     this.username = username;
     this.password = password;
     this.routerUrl = routerUrl;
+    this.truststorePassword = truststorePassword;
+    this.truststore = truststore;
     this.applicationRepository = applicationRepository;
   }
 
@@ -137,7 +155,7 @@ public class FilenetWebServiceClient {
     
     // Now route a copy of the document from Filenet to SFTP
     String idd = response.getObjectId();
-    System.out.println("response from createDocument: " + idd);
+    log.info("response from FileNet createDocument: " + idd);
     String routerRequest = String.format("%s/%s", routerUrl, idd);
     try {
 	    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
@@ -269,11 +287,17 @@ public class FilenetWebServiceClient {
   }
   
   @Bean
-  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+  public RestTemplate restTemplate(RestTemplateBuilder builder) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
    
-      return builder
-              .setConnectTimeout(Duration.ofMillis(3000))
-              .setReadTimeout(Duration.ofMillis(3000))
-              .build();
+	  SSLContext sslContext = SSLContexts.custom()
+			  .loadTrustMaterial(Paths.get(truststore).toFile(), truststorePassword.toCharArray()).build();
+	  SSLConnectionSocketFactory socketFactory = 
+			  new SSLConnectionSocketFactory(sslContext);
+	  HttpClient httpClient = HttpClients.custom()
+			  .setSSLSocketFactory(socketFactory).build();
+	  HttpComponentsClientHttpRequestFactory factory = 
+			  new HttpComponentsClientHttpRequestFactory(httpClient);
+	  
+	  return new RestTemplate(factory);
   }
 }
