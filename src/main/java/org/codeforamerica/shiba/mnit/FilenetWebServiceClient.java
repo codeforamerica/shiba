@@ -32,6 +32,7 @@ import javax.xml.soap.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
@@ -292,7 +293,7 @@ public class FilenetWebServiceClient {
 	  SSLContext sslContext = SSLContexts.custom()
 			  .loadTrustMaterial(Paths.get(truststore).toFile(), truststorePassword.toCharArray()).build();
 	  SSLConnectionSocketFactory socketFactory = 
-			  new SSLConnectionSocketFactory(sslContext);
+			  new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
 	  HttpClient httpClient = HttpClients.custom()
 			  .setSSLSocketFactory(socketFactory).build();
 	  HttpComponentsClientHttpRequestFactory factory = 
