@@ -7,7 +7,6 @@ import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
@@ -56,8 +55,6 @@ public class AbstractPageControllerTest {
   protected PageEventPublisher pageEventPublisher;
   @MockBean
   protected ApplicationEnrichment applicationEnrichment;
-  @MockBean
-  protected CountyParser countyParser;
   @MockBean
   protected CityInfoConfiguration cityInfoConfiguration;
   @MockBean

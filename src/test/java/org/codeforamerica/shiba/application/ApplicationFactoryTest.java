@@ -10,7 +10,6 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import org.codeforamerica.shiba.MonitoringService;
-import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -21,10 +20,8 @@ class ApplicationFactoryTest {
 
   Clock clock = mock(Clock.class);
 
-  CountyParser countyParser = mock(CountyParser.class);
   MonitoringService monitoringService = mock(MonitoringService.class);
-  ApplicationFactory applicationFactory = new ApplicationFactory(clock, countyParser,
-      monitoringService);
+  ApplicationFactory applicationFactory = new ApplicationFactory(clock, monitoringService);
   ApplicationData applicationData = new ApplicationData();
   ZoneOffset zoneOffset = ZoneOffset.UTC;
 
@@ -61,7 +58,8 @@ class ApplicationFactoryTest {
 
   @Test
   void shouldParseCounty() {
-    when(countyParser.parse(applicationData)).thenReturn(Hennepin);
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("identifyCounty", "county", "Hennepin");
 
     Application application = applicationFactory.newApplication(applicationData);
 

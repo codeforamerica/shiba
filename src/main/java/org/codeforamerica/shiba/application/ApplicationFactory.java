@@ -12,13 +12,10 @@ import org.springframework.stereotype.Component;
 public class ApplicationFactory {
 
   private final Clock clock;
-  private final CountyParser countyParser;
   private final MonitoringService monitoringService;
 
-  public ApplicationFactory(Clock clock, CountyParser countyParser,
-      MonitoringService monitoringService) {
+  public ApplicationFactory(Clock clock, MonitoringService monitoringService) {
     this.clock = clock;
-    this.countyParser = countyParser;
     this.monitoringService = monitoringService;
   }
 
@@ -37,7 +34,7 @@ public class ApplicationFactory {
         .id(applicationData.getId())
         .updatedAt(ZonedDateTime.now(clock))
         .applicationData(copy)
-        .county(countyParser.parse(applicationData))
+        .county(CountyParser.parse(applicationData))
         .flow(applicationData.getFlow())
         .build();
   }

@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
@@ -36,7 +35,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
@@ -45,15 +43,12 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private CountyMap<CountyRoutingDestination> countyMap;
-  @MockBean
-  private CountyParser countyParser;
 
   @BeforeEach
   protected void setUp() throws Exception {
     super.setUp();
     new TestApplicationDataBuilder(applicationData)
         .withPageData("identifyCounty", "county", "Hennepin");
-    when(countyParser.parse(any())).thenReturn(County.Hennepin);
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
@@ -525,9 +520,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   private void addAddressInGivenCounty(String county) throws Exception {
-    String countyNameWithoutSpaces = county.replace(" ", "");
-    County value = County.valueOf(countyNameWithoutSpaces);
-    when(countyParser.parse(any())).thenReturn(value);
     new TestApplicationDataBuilder(applicationData)
         .withPageData("identifyCounty", "county", county);
     fillOutPersonalInfo();

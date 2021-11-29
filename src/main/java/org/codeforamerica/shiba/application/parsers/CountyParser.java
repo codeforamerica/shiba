@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CountyParser {
 
-  // Take an applicationData and figure out what county the client lives in
-  public County parse(ApplicationData applicationData) {
+  public static County parse(ApplicationData applicationData) {
     String countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY);
 
     try {
@@ -23,5 +22,4 @@ public class CountyParser {
       return County.Other;
     }
   }
-
 }

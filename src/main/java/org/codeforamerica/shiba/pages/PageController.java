@@ -64,7 +64,6 @@ public class PageController {
   private final ApplicationEnrichment applicationEnrichment;
   private final FeatureFlagConfiguration featureFlags;
   private final UploadDocumentConfiguration uploadDocumentConfiguration;
-  private final CountyParser countyParser;
   private final CityInfoConfiguration cityInfoConfiguration;
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
@@ -84,7 +83,6 @@ public class PageController {
       ApplicationEnrichment applicationEnrichment,
       FeatureFlagConfiguration featureFlags,
       UploadDocumentConfiguration uploadDocumentConfiguration,
-      CountyParser countyParser,
       CityInfoConfiguration cityInfoConfiguration,
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
@@ -103,7 +101,6 @@ public class PageController {
     this.applicationEnrichment = applicationEnrichment;
     this.featureFlags = featureFlags;
     this.uploadDocumentConfiguration = uploadDocumentConfiguration;
-    this.countyParser = countyParser;
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
@@ -297,7 +294,7 @@ public class PageController {
     model.put("postTo",
         landmarkPagesConfiguration.isSubmitPage(pageName) ? "/submit" : "/pages/" + pageName);
     model.put("applicationId", applicationData.getId());
-    model.put("county", countyParser.parse(applicationData));
+    model.put("county", CountyParser.parse(applicationData));
     model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
     model.put("zipCode", getFirstValue(applicationData.getPagesData(), HOME_ZIPCODE));
     model.put("featureFlags", featureFlags);

@@ -36,17 +36,15 @@ public class RoutingDecisionService {
   private final List<String> TRIBES_WE_CAN_ROUTE_TO = List.of(MILLE_LACS_BAND_OF_OJIBWE,
       WHITE_EARTH, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, RED_LAKE,
       OTHER_FEDERALLY_RECOGNIZED_TRIBE);
-  private final CountyParser countyParser;
   private final Map<String, TribalNationRoutingDestination> tribalNations;
   private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
-  public RoutingDecisionService(CountyParser countyParser,
-      Map<String, TribalNationRoutingDestination> tribalNations,
+  public RoutingDecisionService(Map<String, TribalNationRoutingDestination> tribalNations,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
       FeatureFlagConfiguration featureFlagConfiguration) {
-    this.countyParser = countyParser;
+
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
     this.featureFlagConfiguration = featureFlagConfiguration;
@@ -55,7 +53,7 @@ public class RoutingDecisionService {
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
       Document document) {
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
-    County county = countyParser.parse(applicationData);
+    County county = CountyParser.parse(applicationData);
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
 
     if (tribeName != null && TRIBES_WE_CAN_ROUTE_TO.contains(tribeName)) {
@@ -103,7 +101,7 @@ public class RoutingDecisionService {
 
   private boolean isOnlyApplyingForGrh(Set<String> programs, ApplicationData applicationData) {
     return programs.size() == 1 && programs.contains(GRH) &&
-           !isApplyingForTribalTanf(applicationData.getPagesData());
+        !isApplyingForTribalTanf(applicationData.getPagesData());
   }
 
   private List<RoutingDestination> routeWhiteEarthClients(Set<String> programs,
@@ -128,8 +126,8 @@ public class RoutingDecisionService {
 
   private boolean livesInCountyServicedByWhiteEarth(County county, String selectedTribeName) {
     return selectedTribeName != null
-           && selectedTribeName.equals(WHITE_EARTH)
-           && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
+        && selectedTribeName.equals(WHITE_EARTH)
+        && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
   }
 
   private boolean isApplyingForTribalTanf(PagesData pagesData) {
@@ -152,10 +150,10 @@ public class RoutingDecisionService {
       Document document) {
     boolean shouldSendToMilleLacs = shouldSendToMilleLacs(applicationData, document);
     boolean isApplicableForCcap = programs.contains(CCAP) &&
-                                  (document == Document.CCAP || document == Document.UPLOADED_DOC);
+        (document == Document.CCAP || document == Document.UPLOADED_DOC);
     return !shouldSendToMilleLacs
-           || isApplicableForCcap
-           || programs.contains(SNAP) || programs.contains(CASH) || programs.contains(GRH);
+        || isApplicableForCcap
+        || programs.contains(SNAP) || programs.contains(CASH) || programs.contains(GRH);
   }
 
   private boolean shouldSendToMilleLacs(ApplicationData applicationData, Document document) {
@@ -164,9 +162,9 @@ public class RoutingDecisionService {
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
     return selectedTribeName != null
-           && tribalNations.get(selectedTribeName) != null
-           && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
-           && !Document.CCAP.equals(document);
+        && tribalNations.get(selectedTribeName) != null
+        && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
+        && !Document.CCAP.equals(document);
   }
 }
 
