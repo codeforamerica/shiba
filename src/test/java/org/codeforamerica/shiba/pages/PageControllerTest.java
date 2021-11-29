@@ -13,6 +13,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -39,6 +40,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -255,7 +257,13 @@ class PageControllerTest {
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-    verify(applicationRepository).save(application);
+    mockMvc.perform(post("/pages/secondPage")
+        .param("foo[]", "some other value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository, times(2)).save(application);
+    verify(applicationRepository, times(2)).updateStatusToInProgress(application,
+        routingDecisionService);
     assertThat(applicationData.getId()).isEqualTo(applicationId);
   }
 
@@ -449,6 +457,10 @@ class PageControllerTest {
         .build();
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    List<RoutingDestination> routingDestinations =
+        List.of(new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe"));
+    when(routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC)).thenReturn(
+        routingDestinations);
 
     mockMvc.perform(
             MockMvcRequestBuilders.multipart("/document-upload")
@@ -458,6 +470,8 @@ class PageControllerTest {
         .andExpect(status().is(200));
 
     verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
+    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
+        routingDestinations, IN_PROGRESS);
   }
 
   @Test

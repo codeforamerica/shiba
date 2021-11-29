@@ -524,6 +524,7 @@ public class PageController {
 
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);
+      applicationRepository.updateStatusToInProgress(application, routingDecisionService);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);
@@ -593,6 +594,9 @@ public class PageController {
       @RequestParam("dataURL") String dataURL,
       @RequestParam("type") String type) throws IOException, InterruptedException {
     applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
+    applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
+        routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
+        IN_PROGRESS);
     if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
         file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
       if (type.contains("pdf")) {

@@ -164,7 +164,7 @@ public class RoutingDecisionService {
     return selectedTribeName != null
         && tribalNations.get(selectedTribeName) != null
         && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
-        && !Document.CCAP.equals(document);
+        && Document.CCAP != document;
   }
 }
 

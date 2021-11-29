@@ -132,6 +132,9 @@ public class MnitDocumentConsumer {
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
 
     for (RoutingDestination routingDestination : routingDestinations) {
+      applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, routingDestination,
+          SENDING);
+
       boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
           "submit-docs-via-email-for-hennepin").isOn();
       boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
@@ -185,9 +188,11 @@ public class MnitDocumentConsumer {
     String id = application.getId();
     try {
       applicationRepository.updateStatus(id, documentType, SENDING);
+      applicationRepository.updateStatus(id, documentType, routingDestination, SENDING);
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
       applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
+      applicationRepository.updateStatus(id, documentType, routingDestination, DELIVERY_FAILED);
       log.error("Failed to send document %s to recipient %s for application %s with error, "
           .formatted(documentType, routingDestination.getName(), id), e);
     }

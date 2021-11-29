@@ -70,7 +70,7 @@ public class Application {
     return getApplicationStatus(Document.UPLOADED_DOC);
   }
 
-  private Status getApplicationStatus(Document document) {
+  public Status getApplicationStatus(Document document) {
     if (applicationStatuses != null) {
       return applicationStatuses.stream()
           .filter(appStatus -> appStatus.getDocumentType() == document).findFirst()

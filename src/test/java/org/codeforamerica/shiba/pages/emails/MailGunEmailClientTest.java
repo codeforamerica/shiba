@@ -223,6 +223,8 @@ class MailGunEmailClientTest {
 
     mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
+    verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, "Hennepin",
+        Status.DELIVERED);
 
     wireMockServer.verify(1, postToMailgun()
         .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
@@ -278,6 +280,8 @@ class MailGunEmailClientTest {
 
     mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
     verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, Status.DELIVERED);
+    verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, "Hennepin",
+        Status.DELIVERED);
 
     wireMockServer.verify(2, postToMailgun()
         .withBasicAuth(new BasicCredentials("api", mailGunApiKey))

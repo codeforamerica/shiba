@@ -156,6 +156,8 @@ class FilenetWebServiceClientTest {
     );
 
     verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
+    verify(applicationRepository).updateStatus("someId", Document.CAF, routingDestination,
+        DELIVERED);
 
     mockWebServiceServer.verify();
   }

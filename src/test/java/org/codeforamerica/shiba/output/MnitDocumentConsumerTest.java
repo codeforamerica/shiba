@@ -336,6 +336,12 @@ class MnitDocumentConsumerTest {
 
     verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
     verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
+
+    CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
+    verify(applicationRepository).updateStatus(application.getId(), CAF, routingDestination,
+        SENDING);
+    verify(applicationRepository).updateStatus(application.getId(), CCAP, routingDestination,
+        SENDING);
   }
 
   @Test
@@ -357,8 +363,15 @@ class MnitDocumentConsumerTest {
     verify(applicationRepository, times(1)).updateStatus(application.getId(), CCAP, SENDING);
     verify(applicationRepository, times(1)).updateStatus(application.getId(), CAF, SENDING);
 
+    CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CCAP,
+        routingDestination, SENDING);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CAF,
+        routingDestination, SENDING);
     verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
         CCAP, DELIVERY_FAILED);
+    verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
+        CCAP, routingDestination, DELIVERY_FAILED);
   }
 
   @Test
@@ -488,7 +501,10 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processUploadedDocuments(application);
 
+    CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
     verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
+        routingDestination, SENDING);
   }
 
   @Test

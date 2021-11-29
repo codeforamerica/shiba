@@ -22,8 +22,21 @@ CREATE TABLE IF NOT EXISTS applications
     doc_upload_email_status         varchar
 );
 
+CREATE TABLE IF NOT EXISTS  application_status
+(
+    application_id      VARCHAR,
+    document_type       VARCHAR,
+    routing_destination VARCHAR,
+    status              VARCHAR,
+    created_at          TIMESTAMP,
+    updated_at          TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_application_id
     ON applications (id);
+
+CREATE INDEX IF NOT EXISTS application_status_index
+  ON application_status (application_id, document_type, routing_destination);
 
 CREATE TABLE IF NOT EXISTS spring_session
 (

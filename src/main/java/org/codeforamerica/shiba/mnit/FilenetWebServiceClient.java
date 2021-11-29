@@ -173,6 +173,8 @@ public class FilenetWebServiceClient {
     }
     
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
+    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+        DELIVERED);
   }
 
   @Recover
@@ -180,6 +182,8 @@ public class FilenetWebServiceClient {
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
+    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+        DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
   
