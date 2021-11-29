@@ -40,6 +40,8 @@
                 <ns4:OtherName>
                     <ns4:FirstName>{{PERSONALINFO_OTHERNAME}}</ns4:FirstName>
                 </ns4:OtherName>
+                <ns4:FirstName>{{PERSONALINFO_FIRSTNAME}}</ns4:FirstName>
+                <ns4:LastName>{{PERSONALINFO_LASTNAME}}</ns4:LastName>
                 <ns4:Gender>{{PERSONALINFO_SEX}}</ns4:Gender>
                 <ns4:MaritalStatus>{{PERSONALINFO_MARITALSTATUS}}</ns4:MaritalStatus>
                 <ns4:DOB>{{PERSONALINFO_DATE_OF_BIRTH}}</ns4:DOB>
