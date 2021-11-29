@@ -1,6 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shiba
+    hikari:
+      maxLifetime: 540000 # 9 minutes (1 minute less than the default idleTimeout)
   session:
     store-type: jdbc
     jdbc:
