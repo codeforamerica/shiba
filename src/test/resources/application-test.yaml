@@ -7,6 +7,7 @@ spring:
     enabled: false
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
 
 client:
   keystore: src/test/resources/test-keystore.jks
