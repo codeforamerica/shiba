@@ -11,6 +11,7 @@ import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.XML;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
@@ -159,10 +160,8 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, routingDestination, application.getId(), CAF,
-        FULL);
-    verify(mnitClient).send(xmlApplicationFile, routingDestination, application.getId(), CAF,
-        FULL);
+    verify(mnitClient).send(pdfApplicationFile, routingDestination, application.getId(), CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, routingDestination, application.getId(), XML, FULL);
   }
 
   @ParameterizedTest
@@ -192,11 +191,9 @@ class MnitDocumentConsumerTest {
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), application.getId(),
-        CAF,
-        FULL);
+        CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), application.getId(),
-        CAF,
-        FULL);
+        XML, FULL);
   }
 
   @Test
@@ -222,7 +219,7 @@ class MnitDocumentConsumerTest {
     verify(mnitClient).send(pdfApplicationFile, routingDestination,
         application.getId(), CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, routingDestination,
-        application.getId(), CAF, FULL);
+        application.getId(), XML, FULL);
   }
 
   @Test
@@ -249,7 +246,7 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, olmstedRoutingDestination, application.getId(), CAF,
         FULL);
-    verify(mnitClient).send(xmlApplicationFile, olmstedRoutingDestination, application.getId(), CAF,
+    verify(mnitClient).send(xmlApplicationFile, olmstedRoutingDestination, application.getId(), XML,
         FULL);
   }
 
@@ -292,11 +289,9 @@ class MnitDocumentConsumerTest {
     verify(xmlGenerator, times(2)).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(nationCaf, nationDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, nationDestination, application.getId(), CAF,
-        FULL);
+    verify(mnitClient).send(xmlFile, nationDestination, application.getId(), XML, FULL);
     verify(mnitClient).send(countycaf, countyDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, countyDestination, application.getId(), CAF,
-        FULL);
+    verify(mnitClient).send(xmlFile, countyDestination, application.getId(), XML, FULL);
     // CCAP never goes to Mille Lacs
     verify(mnitClient).send(ccap, countyDestination, application.getId(), CCAP, FULL);
   }
@@ -323,7 +318,7 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
         FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), CAF,
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), XML,
         FULL);
   }
 
@@ -520,17 +515,14 @@ class MnitDocumentConsumerTest {
     verify(mnitFilenetClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
         application.getId(), CAF, FULL);
     verify(mnitFilenetClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-        application.getId(), CAF, FULL);
+        application.getId(), XML, FULL);
     verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
-        CAF,
-        FULL);
+        CAF, FULL);
     verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
-        CAF,
-        FULL);
+        XML, FULL);
     // CCAP never goes to Mille Lacs
     verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
-        CCAP,
-        FULL);
+        CCAP, FULL);
     verifyNoInteractions(mnitClient);
   }
 

@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.XML;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class MnitDocumentConsumer {
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      Thread thread = new Thread(() -> sendFile(application, CAF, xml, rd));
+      Thread thread = new Thread(() -> sendFile(application, XML, xml, rd));
       thread.start();
       threads.add(thread);
     });
@@ -184,8 +185,7 @@ public class MnitDocumentConsumer {
     String id = application.getId();
     try {
       applicationRepository.updateStatus(id, documentType, SENDING);
-      sendFile(application, documentType, applicationFile,
-          routingDestination);
+      sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
       applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
       log.error("Failed to send document %s to recipient %s for application %s with error, "
@@ -196,13 +196,9 @@ public class MnitDocumentConsumer {
   private void sendFile(Application application, Document document, ApplicationFile file,
       RoutingDestination routingDestination) {
 
-    String documentName = document.name();
-    if (file != null && file.getFileName() != null && file.getFileName().contains("xml")) {
-      documentName = "XML";
-    }
     // This is where we want to generate the new filename
     log.info("Now sending %s to recipient %s for application %s".formatted(
-        documentName,
+        document.name(),
         routingDestination.getName(),
         application.getId()));
     if (featureFlagConfiguration.get("filenet").isOn()) {
