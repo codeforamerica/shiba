@@ -23,12 +23,14 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.WebServiceTransportException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
@@ -55,12 +57,15 @@ class FilenetWebServiceClientTest {
   private String username;
   @Value("${mnit-filenet.password}")
   private String password;
+  @Value("${mnit-filenet.router-url}")
+  private String routerUrl;
   private MockWebServiceServer mockWebServiceServer;
   @MockBean
   private ApplicationRepository applicationRepository;
-
   @MockBean
   protected FeatureFlagConfiguration featureFlagConfiguration;
+  @MockBean
+  private RestTemplate restTemplate;
 
   private RoutingDestination olmsted;
   private RoutingDestination hennepin;
@@ -68,16 +73,20 @@ class FilenetWebServiceClientTest {
       "ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/",
       "ns3", "http://docs.oasis-open.org/ns/cmis/core/200908/",
       "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
-  String fileContent = "fileContent";
-  String fileName = "fileName";
-  StringSource successResponse = new StringSource("" +
+  private String fileContent = "fileContent";
+  private String fileName = "fileName";
+  private String filenetIdd = "idd_some-filenet-idd";
+  private StringSource successResponse = new StringSource("" +
       "<soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>" +
       "<soapenv:Body>" +
       "<b:createDocumentResponse xmlns:b='http://docs.oasis-open.org/ns/cmis/messaging/200908/'>" +
+      "<b:objectId>" + filenetIdd + "</b:objectId>" +
+      "<b:extension si:nil='true' xmlns:si='http://www.w3.org/2001/XMLSchema-instance'/>" +
       "</b:createDocumentResponse>" +
       "</soapenv:Body>" +
       "</soapenv:Envelope>"
   );
+  private String routerResponse = "{\n \"message\" : \"Success\" \n}";
 
   @BeforeEach
   void setUp() {
@@ -200,6 +209,7 @@ class FilenetWebServiceClientTest {
     when(clock.instant()).thenReturn(
         ZonedDateTime.of(LocalDateTime.of(1293, 12, 7, 1, 42, 17), ZoneOffset.UTC)
             .toInstant());
+
     mockWebServiceServer.expect(connectionTo(url))
         .andExpect((uri, request) -> {
           Node soapHeaderNode = extractHeaderNodeFromSoapMessage(
@@ -228,13 +238,18 @@ class FilenetWebServiceClientTest {
           MatcherAssert.assertThat(soapHeaderNode, Matchers.hasXPath(
               "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
               namespaceContext));
-        });
+        })
+    .andRespond(withSoapEnvelope(successResponse));
 
+    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
+    
     filenetWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
         "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
+    Mockito.verify(restTemplate).getForObject(routerRequest, String.class);
   }
 
   private Node extractHeaderNodeFromSoapMessage(SaajSoapMessage request) {

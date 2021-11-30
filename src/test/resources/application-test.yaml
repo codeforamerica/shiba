@@ -46,3 +46,4 @@ mnit-filenet:
   url: some-url
   username: someUsername
   password: somePassword
+  router-url: some-router-url

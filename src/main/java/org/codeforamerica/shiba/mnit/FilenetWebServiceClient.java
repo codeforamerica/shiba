@@ -8,18 +8,35 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Document.XML;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
+
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
+import javax.net.ssl.SSLContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -28,13 +45,18 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 
@@ -48,20 +70,32 @@ public class FilenetWebServiceClient {
   private final Clock clock;
   private final String username;
   private final String password;
+  private final String routerUrl;
   private final ApplicationRepository applicationRepository;
-
+  private String truststorePassword;
+  private String truststore;
+  
+  @Autowired
+  private RestTemplate restTemplate;
+  
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public FilenetWebServiceClient(
       @Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
+      @Value("${mnit-filenet.router-url}") String routerUrl,
+      @Value("${client.truststore}") String truststore,
+      @Value("${client.truststore-password}") String truststorePassword,
       CountyMap<CountyRoutingDestination> countyMap,
       ApplicationRepository applicationRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
+    this.routerUrl = routerUrl;
+    this.truststorePassword = truststorePassword;
+    this.truststore = truststore;
     this.applicationRepository = applicationRepository;
   }
 
@@ -85,7 +119,8 @@ public class FilenetWebServiceClient {
         applicationDocument, flowType, createDocument);
     setContentStreamOnDocument(applicationFile, createDocument);
 
-    filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
+    // Create the document in Filenet
+    CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
       SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
       try {
         SOAPHeader soapHeader = soapMessage.getSOAPHeader();
@@ -118,7 +153,25 @@ public class FilenetWebServiceClient {
             flowType);
       }
     });
-
+    
+    // Now route a copy of the document from Filenet to SFTP
+    String idd = response.getObjectId();
+    log.info("response from FileNet createDocument: " + idd);
+    String routerRequest = String.format("%s/%s", routerUrl, idd);
+    try {
+	    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+	    JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+	    JsonElement messageElement = jsonObject.get("message");
+	    if (messageElement.isJsonNull() || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
+	    	String eMessage = String.format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+	    	throw new Exception(eMessage);
+ 	    }
+    } catch (Exception e) {
+        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
+                applicationDocument,
+                flowType);
+    }
+    
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
   }
 
@@ -129,8 +182,7 @@ public class FilenetWebServiceClient {
     applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
-
-
+  
   private void setPropertiesOnDocument(ApplicationFile applicationFile,
       RoutingDestination routingDestination, String applicationNumber,
       Document applicationDocument, FlowType flowType,
@@ -229,5 +281,20 @@ public class FilenetWebServiceClient {
       }
     }
     return docDescription;
+  }
+  
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
+   
+	  SSLContext sslContext = SSLContexts.custom()
+			  .loadTrustMaterial(Paths.get(truststore).toFile(), truststorePassword.toCharArray()).build();
+	  SSLConnectionSocketFactory socketFactory = 
+			  new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+	  HttpClient httpClient = HttpClients.custom()
+			  .setSSLSocketFactory(socketFactory).build();
+	  HttpComponentsClientHttpRequestFactory factory = 
+			  new HttpComponentsClientHttpRequestFactory(httpClient);
+	  
+	  return new RestTemplate(factory);
   }
 }
