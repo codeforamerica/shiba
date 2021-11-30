@@ -43,11 +43,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
-abstract class JourneyTest extends AbstractBasePageTest {
+abstract public class JourneyTest extends AbstractBasePageTest {
 
   protected PDAcroForm caf;
   protected PDAcroForm ccap;
-  protected PDAcroForm certainPops;
   protected String applicationId;
 
   @MockBean
