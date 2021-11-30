@@ -169,6 +169,7 @@ public class EmailContentCreator {
       case CCAP -> "a CCAP application.";
       case CERTAIN_POPS -> "a Certain Populations application.";
       case UPLOADED_DOC -> "an uploaded document.";
+      default -> throw new IllegalStateException("Unexpected value: " + document);
     };
     String messageBody = getMessage(RESUBMIT_EMAIL_BODY, List.of(documentType), locale);
     return wrapHtml("<p>" + messageBody + "</p>");

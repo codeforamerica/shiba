@@ -86,7 +86,8 @@ public class ApplicationRepository {
       ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
     }
     if (application.getCertainPopsApplicationStatus() != DELIVERED) {
-      certainPopsStatus = applicationData.isCertainPopsApplication() ? IN_PROGRESS.toString() : "null";
+      certainPopsStatus =
+          applicationData.isCertainPopsApplication() ? IN_PROGRESS.toString() : "null";
     }
 
     parameters.put("cafStatus", cafStatus);
@@ -151,9 +152,10 @@ public class ApplicationRepository {
       case CCAP -> getUpdateStatusQueryString("ccap_application_status", status);
       case UPLOADED_DOC -> getUpdateStatusQueryString("uploaded_documents_status", status);
       case CERTAIN_POPS -> getUpdateStatusQueryString("certain_pops_application_status", status);
+      default -> null;
     };
 
-    if (namedParameterJdbcTemplate.update(statement, parameters) > 0) {
+    if (statement != null && namedParameterJdbcTemplate.update(statement, parameters) > 0) {
       logStatusUpdate(id, document, status);
     }
   }
@@ -190,11 +192,14 @@ public class ApplicationRepository {
       case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
       case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
       case CERTAIN_POPS -> "UPDATE applications SET certain_pops_application_status = null WHERE id = :id";
+      default -> null;
     };
 
-    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    namedParameterJdbcTemplate.update(statement, parameters);
-    logStatusUpdate(id, document, null);
+    if (statement != null) {
+      var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+      namedParameterJdbcTemplate.update(statement, parameters);
+      logStatusUpdate(id, document, null);
+    }
   }
 
   public Map<Document, List<String>> getApplicationIdsToResubmit() {

@@ -6,6 +6,7 @@ import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.XML;
 
 import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import java.math.BigInteger;
@@ -81,8 +82,7 @@ public class FilenetWebServiceClient {
     CreateDocument createDocument = new CreateDocument();
     createDocument.setRepositoryId("Programs");
     setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
-        applicationDocument,
-        flowType, createDocument);
+        applicationDocument, flowType, createDocument);
     setContentStreamOnDocument(applicationFile, createDocument);
 
     filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
@@ -148,8 +148,7 @@ public class FilenetWebServiceClient {
     CmisPropertyString mnitsMailboxTransactionType = createCmisPropertyString(
         "MNITSMailboxTransactionType", "OLA");
     CmisPropertyString description = createCmisPropertyString("Description",
-        generateDocumentDescription(applicationFile, applicationDocument, applicationNumber,
-            flowType));
+        generateDocumentDescription(applicationDocument, applicationNumber, flowType));
     CmisPropertyString source = createCmisPropertyString("Source", "MNITS");
     CmisPropertyString flow = createCmisPropertyString("Flow", "Inbound");
     CmisPropertyId cmisObjectTypeId = createCmisPropertyId("cmis:objectTypeId", "MNITSMailbox");
@@ -211,18 +210,15 @@ public class FilenetWebServiceClient {
   }
 
   @NotNull
-  private String generateDocumentDescription(ApplicationFile applicationFile,
-      Document applicationDocument, String applicationNumber, FlowType flowType) {
+  private String generateDocumentDescription(Document applicationDocument, String applicationNumber,
+      FlowType flowType) {
     String docDescription = String
         .format("Associated with MNBenefits Application #%s", applicationNumber);
     if (applicationDocument == CAF || applicationDocument == CCAP) {
-      if (applicationFile.getFileName().toLowerCase().endsWith(".xml")) {
-        docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
-      } else if (applicationFile.getFileName().toLowerCase().endsWith(".pdf")) {
-        docDescription = String
-            .format("PDF of MNBenefits %s Application #%s", applicationDocument,
-                applicationNumber);
-      }
+      docDescription = String
+          .format("PDF of MNBenefits %s Application #%s", applicationDocument, applicationNumber);
+    } else if (applicationDocument == XML) {
+      docDescription = String.format("XML of MNBenefits Application #%s", applicationNumber);
     } else if (applicationDocument == UPLOADED_DOC) {
       if (flowType == LATER_DOCS) {
         docDescription = String
