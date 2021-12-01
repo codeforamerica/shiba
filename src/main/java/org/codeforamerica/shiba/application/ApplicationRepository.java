@@ -8,6 +8,8 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.security.SecureRandom;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.ZoneOffset;
@@ -18,7 +20,10 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
@@ -140,6 +145,70 @@ public class ApplicationRepository {
         .orElse(null);
   }
 
+  public void updateStatusToInProgress(Application application,
+      RoutingDecisionService routingDecisionService) {
+    List<Document> documents = DocumentListParser.parse(application.getApplicationData());
+
+    for (Document document : documents) {
+      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+          application.getApplicationData(), document);
+      Status status = application.getApplicationStatus(document);
+      if (status != DELIVERED) {
+        updateStatus(application.getId(), document, routingDestinations, IN_PROGRESS);
+      }
+    }
+  }
+
+  public void updateStatus(String id, Document document,
+      List<RoutingDestination> routingDestinations, Status status) {
+    routingDestinations.forEach(
+        routingDestination -> updateStatus(id, document, routingDestination.getName(), status));
+  }
+
+  public void updateStatus(String id, Document document, RoutingDestination routingDestination,
+      Status status) {
+    updateStatus(id, document, routingDestination.getName(), status);
+  }
+
+  /**
+   * Try to update existing status - if it's not found, add a new one.
+   */
+  public void updateStatus(String id, Document document, String routingDestination, Status status) {
+    updateStatus(id, document, status);
+    if (document == null || routingDestination == null) {
+      return;
+    }
+
+    String updateStatement = """
+        UPDATE application_status SET status = :status WHERE application_id = :application_id
+        AND document_type = :document_type AND routing_destination = :routing_destination
+        """;
+
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("application_id", id);
+    parameters.put("status", status.toString());
+    parameters.put("document_type", document.name());
+    parameters.put("routing_destination", routingDestination);
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+    int rowCount = namedParameterJdbcTemplate.update(updateStatement, parameters);
+    if (rowCount == 0) {
+      // Not found, add a new entry
+      String insertStatement = """
+          INSERT INTO application_status (application_id, status, document_type, routing_destination)
+          VALUES (:application_id, :status, :document_type, :routing_destination)
+          """;
+      rowCount = namedParameterJdbcTemplate.update(insertStatement, parameters);
+    }
+
+    if (rowCount != 0) {
+      logStatusUpdate(id, document, routingDestination, status);
+    }
+
+  }
+
+  @Deprecated
   public void updateStatus(String id, Document document, Status status) {
     Map<String, Object> parameters = Map.of(
         "status", status.toString(),
@@ -176,6 +245,22 @@ public class ApplicationRepository {
     }
 
     final String msg = String.format("%s #%s has been updated to %s", document, id, status);
+    switch (status) {
+      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
+      default -> log.info(msg);
+    }
+  }
+
+  private void logStatusUpdate(String id, Document document, String routingDestination,
+      Status status) {
+    if (status == null) {
+      log.info(String.format("%s to %s #%s application status has been updated to null", document,
+          routingDestination, id));
+      return;
+    }
+
+    final String msg = String.format("%s to %s #%s has been updated to %s", document,
+        routingDestination, id, status);
     switch (status) {
       case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
       default -> log.info(msg);
@@ -265,26 +350,32 @@ public class ApplicationRepository {
             .flow(Optional.ofNullable(resultSet.getString("flow"))
                 .map(FlowType::valueOf)
                 .orElse(null))
-            .cafApplicationStatus(
-                Optional.ofNullable(resultSet.getString("caf_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .ccapApplicationStatus(
-                Optional.ofNullable(resultSet.getString("ccap_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .certainPopsApplicationStatus(
-                Optional.ofNullable(resultSet.getString("certain_pops_application_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
-            .uploadedDocumentApplicationStatus(
-                Optional.ofNullable(resultSet.getString("uploaded_documents_status"))
-                    .map(Status::valueFor)
-                    .orElse(null))
+            .applicationStatuses(List.of(
+                applicationStatusMapper("caf_application_status", resultSet),
+                applicationStatusMapper("ccap_application_status", resultSet),
+                applicationStatusMapper("certain_pops_application_status", resultSet),
+                applicationStatusMapper("uploaded_documents_status", resultSet)
+            ))
             .docUploadEmailStatus(
                 Optional.ofNullable(resultSet.getString("doc_upload_email_status"))
                     .map(Status::valueFor)
                     .orElse(null))
             .build();
+  }
+
+  private ApplicationStatus applicationStatusMapper(String column, ResultSet resultSet)
+      throws SQLException {
+    Status status = Optional.ofNullable(resultSet.getString(column))
+        .map(Status::valueFor)
+        .orElse(null);
+
+    return switch (column) {
+      case "caf_application_status" -> new ApplicationStatus(CAF, status);
+      case "ccap_application_status" -> new ApplicationStatus(CCAP, status);
+      case "certain_pops_application_status" -> new ApplicationStatus(CERTAIN_POPS, status);
+      case "uploaded_documents_status" -> new ApplicationStatus(UPLOADED_DOC, status);
+      default -> null;
+    };
+
   }
 }

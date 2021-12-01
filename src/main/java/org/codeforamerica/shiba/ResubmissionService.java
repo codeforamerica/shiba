@@ -73,18 +73,18 @@ public class ResubmissionService {
       log.info("Attempting to resubmit %s(s) for application id %s to emails %s".formatted(
           document.name(), id, recipientEmails));
       try {
-        if (document.equals(UPLOADED_DOC)) {
+        if (document == UPLOADED_DOC) {
           resubmitUploadedDocumentsForApplication(document, application, recipientEmails);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
           recipientEmails.forEach(
               eml -> emailClient.resubmitFailedEmail(eml, document, applicationFile, application));
         }
-        applicationRepository.updateStatus(id, document, DELIVERED);
+        applicationRepository.updateStatus(id, document, routingDestinations, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
+        applicationRepository.updateStatus(id, document, routingDestinations, RESUBMISSION_FAILED);
       }
     }));
     MDC.clear();

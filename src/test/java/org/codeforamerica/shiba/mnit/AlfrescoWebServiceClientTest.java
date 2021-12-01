@@ -10,7 +10,12 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
 import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
@@ -121,7 +126,8 @@ class AlfrescoWebServiceClientTest {
         routingDestination, "someId", Document.CAF, FlowType.FULL
     );
 
-    verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
+    verify(applicationRepository).updateStatus("someId", Document.CAF, routingDestination,
+        DELIVERED);
 
     mockWebServiceServer.verify();
   }

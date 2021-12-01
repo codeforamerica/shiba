@@ -9,7 +9,12 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +81,8 @@ class ResubmissionServiceTest {
         pdfGenerator, routingDecisionService);
 
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(CountyRoutingDestination.builder().email(OLMSTED_EMAIL).build());
+    routingDestinations.add(
+        CountyRoutingDestination.builder().county(Olmsted).email(OLMSTED_EMAIL).build());
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
         routingDestinations);
   }
@@ -94,7 +100,7 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
   }
 
   @Test
@@ -116,7 +122,7 @@ class ResubmissionServiceTest {
         any());
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
   }
 
   @Test
@@ -137,9 +143,8 @@ class ResubmissionServiceTest {
 
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
-    verify(emailClient).resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile,
-        application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, Status.DELIVERED);
+    verify(emailClient).resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile, application);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
   }
 
   @Test
@@ -161,7 +166,8 @@ class ResubmissionServiceTest {
             application);
 
     resubmissionService.resubmitFailedApplications();
-    verify(applicationRepository).updateStatus(APP_ID, CAF, RESUBMISSION_FAILED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations,
+        RESUBMISSION_FAILED);
   }
 
   @Test
@@ -198,7 +204,8 @@ class ResubmissionServiceTest {
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
         .containsExactlyElementsOf(List.of(applicationFile1, applicationFile2));
-    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, routingDestinations,
+        Status.DELIVERED);
   }
 
   @Test
@@ -238,7 +245,7 @@ class ResubmissionServiceTest {
     var applicationRepositoryDocumentCaptor = ArgumentCaptor.forClass(Document.class);
     verify(applicationRepository, times(2))
         .updateStatus(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(),
-            eq(Status.DELIVERED));
+            eq(routingDestinations), eq(Status.DELIVERED));
     assertThat(applicationRepositoryDocumentCaptor.getAllValues())
         .containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
   }
@@ -268,6 +275,7 @@ class ResubmissionServiceTest {
     verify(emailClient, never())
         .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
             application);
-    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, RESUBMISSION_FAILED);
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, routingDestinations,
+        RESUBMISSION_FAILED);
   }
 }

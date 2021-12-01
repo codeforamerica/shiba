@@ -13,6 +13,7 @@ import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -180,6 +181,12 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .sentiment(Sentiment.HAPPY)
         .feedback("someUpdatedFeedback")
         .flow(FlowType.EXPEDITED)
+        .applicationStatuses(List.of(
+            new ApplicationStatus(CAF, null),
+            new ApplicationStatus(CCAP, null),
+            new ApplicationStatus(CERTAIN_POPS, null),
+            new ApplicationStatus(UPLOADED_DOC, null)
+        ))
         .build();
 
     applicationRepository.save(updatedApplication);
@@ -414,23 +421,23 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .id(applicationData.getId())
         .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
         .applicationData(applicationData)
-        .cafApplicationStatus(IN_PROGRESS)
-        .ccapApplicationStatus(null)
-        .certainPopsApplicationStatus(IN_PROGRESS)
+        .applicationStatuses(List.of(
+            new ApplicationStatus(CAF, IN_PROGRESS),
+            new ApplicationStatus(CERTAIN_POPS, IN_PROGRESS)))
         .county(Olmsted)
         .build();
     applicationRepository.save(application);
 
-    applicationData.getPagesData().putPage("choosePrograms",
-        new PageData(Map.of("programs", new InputData(List.of("CCAP")))));
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("CCAP"));
     applicationRepository.save(application);
     Application resultingApplication = applicationRepository.find(applicationData.getId());
     assertThat(resultingApplication.getCafApplicationStatus()).isNull();
     assertThat(resultingApplication.getCcapApplicationStatus()).isEqualTo(IN_PROGRESS);
     assertThat(resultingApplication.getCertainPopsApplicationStatus()).isNull();
 
-    applicationData.getPagesData().putPage("choosePrograms",
-        new PageData(Map.of("programs", new InputData(List.of("SNAP", "CERTAIN_POPS")))));
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
     applicationRepository.save(application);
     resultingApplication = applicationRepository.find(applicationData.getId());
     assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
@@ -448,7 +455,8 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .id(applicationData.getId())
         .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
         .applicationData(applicationData)
-        .cafApplicationStatus(DELIVERED)
+        .applicationStatuses(List.of(
+            new ApplicationStatus(CAF, DELIVERED)))
         .county(Olmsted)
         .build();
     applicationRepository.save(application); // initial save to insert. Does not save statuses

@@ -17,12 +17,20 @@ import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
-import javax.xml.soap.*;
+import javax.xml.soap.SOAPElement;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.esbwsdl.*;
+import org.codeforamerica.shiba.esbwsdl.CmisContentStreamType;
+import org.codeforamerica.shiba.esbwsdl.CmisPropertiesType;
+import org.codeforamerica.shiba.esbwsdl.CmisProperty;
+import org.codeforamerica.shiba.esbwsdl.CmisPropertyString;
+import org.codeforamerica.shiba.esbwsdl.CreateDocument;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
@@ -118,7 +126,8 @@ public class AlfrescoWebServiceClient {
             flowType);
       }
     });
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
+    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+        DELIVERED);
   }
 
   // Recover method has to have the same arguments at the retryable
@@ -126,7 +135,8 @@ public class AlfrescoWebServiceClient {
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
+    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+        DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
 

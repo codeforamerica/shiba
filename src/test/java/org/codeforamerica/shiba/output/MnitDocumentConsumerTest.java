@@ -16,7 +16,18 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -334,8 +345,11 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(applicationRepository).updateStatus(application.getId(), CAF, SENDING);
-    verify(applicationRepository).updateStatus(application.getId(), CCAP, SENDING);
+    CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
+    verify(applicationRepository).updateStatus(application.getId(), CAF, routingDestination,
+        SENDING);
+    verify(applicationRepository).updateStatus(application.getId(), CCAP, routingDestination,
+        SENDING);
   }
 
   @Test
@@ -354,11 +368,13 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(applicationRepository, times(1)).updateStatus(application.getId(), CCAP, SENDING);
-    verify(applicationRepository, times(1)).updateStatus(application.getId(), CAF, SENDING);
-
+    CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CCAP,
+        routingDestination, SENDING);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), CAF,
+        routingDestination, SENDING);
     verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
-        CCAP, DELIVERY_FAILED);
+        CCAP, routingDestination, DELIVERY_FAILED);
   }
 
   @Test
@@ -488,7 +504,9 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processUploadedDocuments(application);
 
-    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, SENDING);
+    CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
+    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
+        routingDestination, SENDING);
   }
 
   @Test

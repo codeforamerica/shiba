@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -181,7 +182,8 @@ public class MailGunEmailClient implements EmailClient {
           filesToSend, true);
     }
 
-    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
+    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, County.Hennepin.name(),
+        Status.DELIVERED);
   }
 
   @NotNull
