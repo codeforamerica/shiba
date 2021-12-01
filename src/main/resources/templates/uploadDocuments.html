@@ -323,8 +323,12 @@
       });
     },
     error: function (file, errorMessage, xhr) {
-      debugger;
-      file.previewElement.getElementsByClassName("text--error")[0].innerText = xhr.response;
+      if (xhr && xhr.response) {
+        file.previewElement.getElementsByClassName("text--error")[0].innerText = xhr.response;
+      } else {
+        file.previewElement.getElementsByClassName("text--error")[0].innerText =
+            errorMessage.error ? errorMessage.error : errorMessage;
+      }
 
       for (var i = 0; i < myDropZone.files.length; i++) {
         if (myDropZone.files[i] === file) {

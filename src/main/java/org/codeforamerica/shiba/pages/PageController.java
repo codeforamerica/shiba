@@ -28,6 +28,7 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
@@ -276,7 +277,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -409,7 +410,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-        && applicationData.getStartTime() == null;
+                        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
@@ -421,9 +422,9 @@ public class PageController {
         .getLandmarkPages();
     // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-        !landmarkPagesConfiguration.isLandingPage(pageName) &&
-        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
-        applicationData.isSubmitted();
+           !landmarkPagesConfiguration.isLandingPage(pageName) &&
+           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
+           applicationData.isSubmitted();
   }
 
   @PostMapping("/groups/{groupName}/delete")
@@ -592,29 +593,32 @@ public class PageController {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
       @RequestParam("dataURL") String dataURL,
-      @RequestParam("type") String type) throws IOException, InterruptedException {
+      @RequestParam("type") String type,
+      Locale locale) throws IOException, InterruptedException {
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
       applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
           routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
           IN_PROGRESS);
+
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
         if (type.contains("pdf")) {
+          // Return an error response if this is an pdf we can't work with
           try (var pdfFile = PDDocument.load(file.getBytes())) {
             var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
             if (acroForm != null && acroForm.xfaIsDynamic()) {
               return new ResponseEntity<>(
-                  messageSource.getMessage("upload-documents.this-pdf-is-in-an-old-format", null,
-                      LocaleContextHolder.getLocale()),
+                  lms.getMessage("upload-documents.this-pdf-is-in-an-old-format"),
                   HttpStatus.UNPROCESSABLE_ENTITY);
             }
           } catch (InvalidPasswordException e) {
             return new ResponseEntity<>(
-                messageSource.getMessage("upload-documents.this-pdf-is-password-protected", null,
-                    LocaleContextHolder.getLocale()),
+                lms.getMessage("upload-documents.this-pdf-is-password-protected"),
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
         }
+
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
         documentRepository.upload(filePath, file);
@@ -624,9 +628,10 @@ public class PageController {
 
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
+      // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(
-          messageSource.getMessage("error.something-went-wrong-on-our-end", null,
-              LocaleContextHolder.getLocale()), HttpStatus.INTERNAL_SERVER_ERROR);
+          lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
