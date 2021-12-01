@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba.output;
 
-import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -121,10 +120,8 @@ public class MnitDocumentConsumer {
   }
 
   public void processUploadedDocuments(Application application) {
-    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, SENDING);
     List<ApplicationFile> uploadedDocs = prepareUploadedDocsForSending(application);
     sendUploadedDocs(application, uploadedDocs);
-    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, DELIVERED);
   }
 
   private void sendUploadedDocs(Application application, List<ApplicationFile> uploadedDocs) {
@@ -187,11 +184,9 @@ public class MnitDocumentConsumer {
 
     String id = application.getId();
     try {
-      applicationRepository.updateStatus(id, documentType, SENDING);
       applicationRepository.updateStatus(id, documentType, routingDestination, SENDING);
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
-      applicationRepository.updateStatus(id, documentType, DELIVERY_FAILED);
       applicationRepository.updateStatus(id, documentType, routingDestination, DELIVERY_FAILED);
       log.error("Failed to send document %s to recipient %s for application %s with error, "
           .formatted(documentType, routingDestination.getName(), id), e);

@@ -182,7 +182,6 @@ public class MailGunEmailClient implements EmailClient {
           filesToSend, true);
     }
 
-    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, Status.DELIVERED);
     applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, County.Hennepin.name(),
         Status.DELIVERED);
   }

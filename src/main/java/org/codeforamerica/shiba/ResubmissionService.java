@@ -80,12 +80,10 @@ public class ResubmissionService {
           recipientEmails.forEach(
               eml -> emailClient.resubmitFailedEmail(eml, document, applicationFile, application));
         }
-        applicationRepository.updateStatus(id, document, DELIVERED);
         applicationRepository.updateStatus(id, document, routingDestinations, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationRepository.updateStatus(id, document, RESUBMISSION_FAILED);
         applicationRepository.updateStatus(id, document, routingDestinations, RESUBMISSION_FAILED);
       }
     }));

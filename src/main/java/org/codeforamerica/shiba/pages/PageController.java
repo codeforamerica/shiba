@@ -593,7 +593,6 @@ public class PageController {
   public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
       @RequestParam("dataURL") String dataURL,
       @RequestParam("type") String type) throws IOException, InterruptedException {
-    applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC, IN_PROGRESS);
     applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
         routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
         IN_PROGRESS);

@@ -74,10 +74,10 @@ public class FilenetWebServiceClient {
   private final ApplicationRepository applicationRepository;
   private String truststorePassword;
   private String truststore;
-  
+
   @Autowired
   private RestTemplate restTemplate;
-  
+
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public FilenetWebServiceClient(
       @Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
@@ -153,7 +153,7 @@ public class FilenetWebServiceClient {
             flowType);
       }
     });
-    
+
     // Now route a copy of the document from Filenet to SFTP
     String idd = response.getObjectId();
     log.info("response from FileNet createDocument: " + idd);
@@ -171,8 +171,7 @@ public class FilenetWebServiceClient {
                 applicationDocument,
                 flowType);
     }
-    
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
+
     applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
         DELIVERED);
   }
@@ -181,12 +180,11 @@ public class FilenetWebServiceClient {
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
     applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
         DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
-  
+
   private void setPropertiesOnDocument(ApplicationFile applicationFile,
       RoutingDestination routingDestination, String applicationNumber,
       Document applicationDocument, FlowType flowType,
@@ -286,19 +284,19 @@ public class FilenetWebServiceClient {
     }
     return docDescription;
   }
-  
+
   @Bean
   public RestTemplate restTemplate(RestTemplateBuilder builder) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, CertificateException, IOException {
-   
+
 	  SSLContext sslContext = SSLContexts.custom()
 			  .loadTrustMaterial(Paths.get(truststore).toFile(), truststorePassword.toCharArray()).build();
-	  SSLConnectionSocketFactory socketFactory = 
+	  SSLConnectionSocketFactory socketFactory =
 			  new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
 	  HttpClient httpClient = HttpClients.custom()
 			  .setSSLSocketFactory(socketFactory).build();
-	  HttpComponentsClientHttpRequestFactory factory = 
+	  HttpComponentsClientHttpRequestFactory factory =
 			  new HttpComponentsClientHttpRequestFactory(httpClient);
-	  
+
 	  return new RestTemplate(factory);
   }
 }

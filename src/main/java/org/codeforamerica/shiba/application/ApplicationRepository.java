@@ -174,6 +174,7 @@ public class ApplicationRepository {
    * Try to update existing status - if it's not found, add a new one.
    */
   public void updateStatus(String id, Document document, String routingDestination, Status status) {
+    updateStatus(id, document, status);
     if (document == null || routingDestination == null) {
       return;
     }

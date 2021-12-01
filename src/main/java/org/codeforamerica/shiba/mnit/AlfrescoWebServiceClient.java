@@ -126,7 +126,6 @@ public class AlfrescoWebServiceClient {
             flowType);
       }
     });
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERED);
     applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
         DELIVERED);
   }
@@ -136,7 +135,6 @@ public class AlfrescoWebServiceClient {
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, DELIVERY_FAILED);
     applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
         DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
