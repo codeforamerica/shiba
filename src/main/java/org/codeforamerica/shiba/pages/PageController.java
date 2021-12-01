@@ -593,31 +593,41 @@ public class PageController {
   public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
       @RequestParam("dataURL") String dataURL,
       @RequestParam("type") String type) throws IOException, InterruptedException {
-    applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
-        routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
-        IN_PROGRESS);
-    if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
-        file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-      if (type.contains("pdf")) {
-        try (var pdfFile = PDDocument.load(file.getBytes())) {
-          var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
-          if (acroForm != null && acroForm.xfaIsDynamic()) {
-            return new ResponseEntity<>("An XFA formatted PDF was uploaded.",
+    try {
+      applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
+          routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
+          IN_PROGRESS);
+      if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
+          file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
+        if (type.contains("pdf")) {
+          try (var pdfFile = PDDocument.load(file.getBytes())) {
+            var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
+            if (acroForm != null && acroForm.xfaIsDynamic()) {
+              return new ResponseEntity<>(
+                  messageSource.getMessage("upload-documents.this-pdf-is-in-an-old-format", null,
+                      LocaleContextHolder.getLocale()),
+                  HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+          } catch (InvalidPasswordException e) {
+            return new ResponseEntity<>(
+                messageSource.getMessage("upload-documents.this-pdf-is-password-protected", null,
+                    LocaleContextHolder.getLocale()),
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
-        } catch (InvalidPasswordException e) {
-          return new ResponseEntity<>("A password protected PDF was uploaded.",
-              HttpStatus.UNPROCESSABLE_ENTITY);
         }
+        var filePath = applicationData.getId() + "/" + UUID.randomUUID();
+        var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
+        documentRepository.upload(filePath, file);
+        documentRepository.upload(thumbnailFilePath, dataURL);
+        applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
       }
-      var filePath = applicationData.getId() + "/" + UUID.randomUUID();
-      var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
-      documentRepository.upload(filePath, file);
-      documentRepository.upload(thumbnailFilePath, dataURL);
-      applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
-    }
 
-    return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(
+          messageSource.getMessage("error.something-went-wrong-on-our-end", null,
+              LocaleContextHolder.getLocale()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @PostMapping("/submit-documents")
