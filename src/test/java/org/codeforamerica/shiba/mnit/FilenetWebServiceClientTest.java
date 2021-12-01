@@ -10,7 +10,12 @@ import static org.springframework.ws.test.client.RequestMatchers.xpath;
 import static org.springframework.ws.test.client.ResponseCreators.withException;
 import static org.springframework.ws.test.client.ResponseCreators.withSoapEnvelope;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
@@ -73,10 +78,10 @@ class FilenetWebServiceClientTest {
       "ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/",
       "ns3", "http://docs.oasis-open.org/ns/cmis/core/200908/",
       "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
-  private String fileContent = "fileContent";
-  private String fileName = "fileName";
-  private String filenetIdd = "idd_some-filenet-idd";
-  private StringSource successResponse = new StringSource("" +
+  private final String fileContent = "fileContent";
+  private final String fileName = "fileName";
+  private final String filenetIdd = "idd_some-filenet-idd";
+  private final StringSource successResponse = new StringSource("" +
       "<soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>" +
       "<soapenv:Body>" +
       "<b:createDocumentResponse xmlns:b='http://docs.oasis-open.org/ns/cmis/messaging/200908/'>" +
@@ -86,7 +91,7 @@ class FilenetWebServiceClientTest {
       "</soapenv:Body>" +
       "</soapenv:Envelope>"
   );
-  private String routerResponse = "{\n \"message\" : \"Success\" \n}";
+  private final String routerResponse = "{\n \"message\" : \"Success\" \n}";
 
   @BeforeEach
   void setUp() {
@@ -155,7 +160,6 @@ class FilenetWebServiceClientTest {
         routingDestination, "someId", Document.CAF, FlowType.FULL
     );
 
-    verify(applicationRepository).updateStatus("someId", Document.CAF, DELIVERED);
     verify(applicationRepository).updateStatus("someId", Document.CAF, routingDestination,
         DELIVERED);
 
@@ -241,11 +245,11 @@ class FilenetWebServiceClientTest {
               "//wsse:Security/wsse:UsernameToken/wsse:Password[@Type='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText']",
               namespaceContext));
         })
-    .andRespond(withSoapEnvelope(successResponse));
+        .andRespond(withSoapEnvelope(successResponse));
 
     String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
-    
+
     filenetWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
         "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);

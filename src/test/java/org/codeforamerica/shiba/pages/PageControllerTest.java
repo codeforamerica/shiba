@@ -469,7 +469,6 @@ class PageControllerTest {
                 .param("type", "jpg"))
         .andExpect(status().is(200));
 
-    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC, IN_PROGRESS);
     verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
         routingDestinations, IN_PROGRESS);
   }
