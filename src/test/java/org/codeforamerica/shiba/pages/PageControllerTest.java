@@ -253,7 +253,7 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
-    mockMvc.perform(post("/pages/secondPage")
+    mockMvc.perform(post("/pages/firstPage")
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
@@ -262,8 +262,32 @@ class PageControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     verify(applicationRepository, times(2)).save(application);
-    verify(applicationRepository, times(2)).updateStatusToInProgress(application,
-        routingDecisionService);
+    assertThat(applicationData.getId()).isEqualTo(applicationId);
+  }
+
+  @Test
+  void shouldSaveApplicationStatusOnStartTimerPage() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(post("/pages/firstPage")
+        .param("foo[]", "some value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    mockMvc.perform(post("/pages/secondPage")
+        .param("foo[]", "some other value")
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+    verify(applicationRepository, times(1))
+        .updateStatusToInProgress(application, routingDecisionService);
     assertThat(applicationData.getId()).isEqualTo(applicationId);
   }
 

@@ -525,7 +525,9 @@ public class PageController {
 
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);
-      applicationRepository.updateStatusToInProgress(application, routingDecisionService);
+      if (applicationConfiguration.getLandmarkPages().isStartTimerPage(pageName)) {
+        applicationRepository.updateStatusToInProgress(application, routingDecisionService);
+      }
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);
