@@ -266,7 +266,7 @@ class PageControllerTest {
   }
 
   @Test
-  void shouldSaveApplicationStatusOnStartTimerPage() throws Exception {
+  void shouldSaveApplicationStatusOnInProgressPages() throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
 
     String applicationId = "someId";

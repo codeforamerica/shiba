@@ -49,6 +49,8 @@ landmarkPages:
     - landingPage
   startTimerPages:
     - firstPage
+  inProgressStatusPages:
+    - firstPage
   terminalPage: terminalPage
   submitPage: secondPage
   uploadDocumentsPage: uploadDocuments

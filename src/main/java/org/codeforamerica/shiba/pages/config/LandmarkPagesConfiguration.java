@@ -8,6 +8,7 @@ import lombok.Data;
 public class LandmarkPagesConfiguration {
 
   private List<String> startTimerPages = new ArrayList<>();
+  private List<String> inProgressStatusPages = new ArrayList<>();
   private List<String> landingPages = new ArrayList<>();
   private List<String> postSubmitPages = new ArrayList<>();
   private String nextStepsPage;
@@ -42,5 +43,9 @@ public class LandmarkPagesConfiguration {
 
   public boolean isUploadDocumentsPage(String pageName) {
     return pageName.equals(uploadDocumentsPage);
+  }
+
+  public boolean isInProgressStatusPage(String pageName) {
+    return inProgressStatusPages.contains(pageName);
   }
 }
