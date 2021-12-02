@@ -106,6 +106,11 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     try {
       pdField.setValue(field);
     } catch (IllegalArgumentException e) {
+      log.error(
+          "Error setting value '%s' for field %s".formatted(field,
+              pdField.getFullyQualifiedName()));
+//      pdField.setValue(pdField.getValueAsString());
+
 //      // Might be an unsupported unicode
 //      StringBuilder builder = new StringBuilder();
 //      PDTrueTypeFont font1 = (PDTrueTypeFont) pdField.getAcroForm()
