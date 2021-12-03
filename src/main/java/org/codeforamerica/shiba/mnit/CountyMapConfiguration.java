@@ -785,7 +785,10 @@ public class CountyMapConfiguration {
     addCounty(Fillmore, "507-765-2175");
     addCounty(Freeborn, "507-377-5400");
     addCounty(Goodhue, "651-385-3200");
-    addCounty(Grant, "800-291-2827");
+    addCounty(Grant, "320-634-7758", //Grant and Pope share same phone number and NPI
+    		"help+dev@mnbenefits.org",
+            "5a869a7f-4ebb-44ae-b2db-a6f40396d6a0",
+            "A000061200");
     addCounty(Hennepin,
         "612-596-1300",
         "help+dev@mnbenefits.org",
@@ -837,7 +840,10 @@ public class CountyMapConfiguration {
     addCounty(Pine, "320-591-1570");
     addCounty(Pipestone, "507-825-6720");
     addCounty(Polk, "877-281-3127");
-    addCounty(Pope, "320-634-7755");
+    addCounty(Pope, "320-634-7758", //Grant and Pope share same phone number and NPI
+    		"help+dev@mnbenefits.org",
+            "5a869a7f-4ebb-44ae-b2db-a6f40396d6a0",
+            "A000061200");
     addCounty(Ramsey, "651-266-4444");
     addCounty(RedLake, "877-294-0846");
     addCounty(Redwood, "888-234-1292");
