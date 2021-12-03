@@ -624,7 +624,7 @@ public class CountyMapConfiguration {
         "86eb961c-f54f-4855-ac6e-b65531df3591",
         "A000059100");
     updateCounty(Polk,
-        "Jon.street@co.polk.mn.us",
+        "ssoss@co.polk.mn.us",
         "2b8a2117-9488-4dd4-b6bd-dcf01fb1e699",
         "A000060400");
     //Grant and Pope merged into Western Prairie, using Pope NPI and westernprairie email
