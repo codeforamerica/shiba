@@ -54,26 +54,34 @@ public class Application {
     setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
   }
 
+  @Deprecated
   public Status getCafApplicationStatus() {
-    return getApplicationStatus(Document.CAF);
+    return getApplicationStatus(Document.CAF, null);
   }
 
+  @Deprecated
   public Status getCcapApplicationStatus() {
-    return getApplicationStatus(Document.CCAP);
+    return getApplicationStatus(Document.CCAP, null);
   }
 
+  @Deprecated
   public Status getCertainPopsApplicationStatus() {
-    return getApplicationStatus(Document.CERTAIN_POPS);
+    return getApplicationStatus(Document.CERTAIN_POPS, null);
   }
 
+  @Deprecated
   public Status getUploadDocumentStatus() {
-    return getApplicationStatus(Document.UPLOADED_DOC);
+    return getApplicationStatus(Document.UPLOADED_DOC, null);
   }
 
-  public Status getApplicationStatus(Document document) {
+  public Status getApplicationStatus(Document document, String routingDestination) {
     if (applicationStatuses != null) {
       return applicationStatuses.stream()
-          .filter(appStatus -> appStatus.getDocumentType() == document).findFirst()
+          .filter(appStatus -> appStatus.getDocumentType() == document
+              && (appStatus.getRoutingDestinationName() == null
+              || appStatus.getRoutingDestinationName()
+              .equals(routingDestination)))
+          .findFirst()
           .map(ApplicationStatus::getStatus).orElse(null);
     }
     return null;

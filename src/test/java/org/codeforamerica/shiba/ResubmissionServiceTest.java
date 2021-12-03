@@ -4,33 +4,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -64,7 +68,6 @@ class ResubmissionServiceTest {
   private RoutingDecisionService routingDecisionService;
   private Map<String, TribalNationRoutingDestination> tribalNations;
   private ResubmissionService resubmissionService;
-  private List<RoutingDestination> routingDestinations;
 
   @BeforeEach
   void setUp() {
@@ -74,24 +77,21 @@ class ResubmissionServiceTest {
         .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
     countyMap.setCounties(Map.of(
-        Anoka, CountyRoutingDestination.builder().email(ANOKA_EMAIL).build()
+        Anoka, CountyRoutingDestination.builder().county(Anoka).email(ANOKA_EMAIL).build(),
+        Olmsted, CountyRoutingDestination.builder().county(Olmsted).email(OLMSTED_EMAIL).build()
     ));
     tribalNations = new TribalNationConfiguration().localTribalNations();
+    routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
+        FeatureFlagConfiguration.class));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient, countyMap,
         pdfGenerator, routingDecisionService);
-
-    routingDestinations = new ArrayList<>();
-    routingDestinations.add(
-        CountyRoutingDestination.builder().county(Olmsted).email(OLMSTED_EMAIL).build());
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
-        routingDestinations);
   }
 
   @Test
   void itResubmitsCafs() {
     Application application = Application.builder().id(APP_ID).county(Olmsted).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+        .thenReturn(List.of(new ApplicationStatus(APP_ID, CAF, "Olmsted", DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
@@ -100,21 +100,20 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, countyMap.get(Olmsted),
+        Status.DELIVERED);
   }
 
   @Test
   void itResubmitsCafsToTribalNationsOnly() {
     Application application = Application.builder().id(APP_ID).county(Olmsted).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+        .thenReturn(List.of(
+            new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
-
-    routingDestinations.remove(0);
-    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
 
     resubmissionService.resubmitFailedApplications();
 
@@ -122,52 +121,55 @@ class ResubmissionServiceTest {
         any());
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF,
+        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE), Status.DELIVERED);
   }
 
   @Test
   void itResubmitsCafsToTribalNationsAndCounties() {
     Application application = Application.builder().id(APP_ID).county(Anoka).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+        .thenReturn(List.of(
+            new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED),
+            new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
-
-    routingDestinations.remove(0);
-    routingDestinations.add(countyMap.get(Anoka));
-    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
 
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
     verify(emailClient).resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile, application);
-    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations, Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, countyMap.get(Anoka), Status.DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF,
+        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+        Status.DELIVERED);
   }
 
   @Test
   void itShouldMarkDeliveryFailedWhenApplicationFailsToSendToEitherCountyOrTribalNation() {
     Application application = Application.builder().id(APP_ID).county(Anoka).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CAF, List.of(APP_ID)));
+        .thenReturn(List.of(
+            new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED),
+            new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    routingDestinations.remove(0);
-    routingDestinations.add(countyMap.get(Anoka));
-    routingDestinations.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
-
+    doNothing().when(emailClient)
+        .resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile, application);
     doThrow(new RuntimeException()).when(emailClient)
-        .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
-            application);
+        .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile, application);
 
     resubmissionService.resubmitFailedApplications();
-    verify(applicationRepository).updateStatus(APP_ID, CAF, routingDestinations,
-        RESUBMISSION_FAILED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, countyMap.get(Anoka),
+        DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF,
+        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE), RESUBMISSION_FAILED);
   }
 
   @Test
@@ -180,7 +182,8 @@ class ResubmissionServiceTest {
     Application application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(UPLOADED_DOC, List.of(APP_ID)));
+        .thenReturn(
+            List.of(new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile1 = new ApplicationFile("test".getBytes(), "fileName.txt");
@@ -204,7 +207,7 @@ class ResubmissionServiceTest {
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
         .containsExactlyElementsOf(List.of(applicationFile1, applicationFile2));
-    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, routingDestinations,
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, countyMap.get(Olmsted),
         Status.DELIVERED);
   }
 
@@ -216,8 +219,9 @@ class ResubmissionServiceTest {
             "someDataUrl", "image/jpeg");
     var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
-    when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(CCAP, List.of(APP_ID), UPLOADED_DOC, List.of(APP_ID)));
+    when(applicationRepository.getApplicationIdsToResubmit()).thenReturn(List.of(
+        new ApplicationStatus(APP_ID, CCAP, "Olmsted", DELIVERY_FAILED),
+        new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
@@ -245,7 +249,7 @@ class ResubmissionServiceTest {
     var applicationRepositoryDocumentCaptor = ArgumentCaptor.forClass(Document.class);
     verify(applicationRepository, times(2))
         .updateStatus(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(),
-            eq(routingDestinations), eq(Status.DELIVERED));
+            eq(countyMap.get(Olmsted)), eq(Status.DELIVERED));
     assertThat(applicationRepositoryDocumentCaptor.getAllValues())
         .containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
   }
@@ -259,7 +263,8 @@ class ResubmissionServiceTest {
     var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
     when(applicationRepository.getApplicationIdsToResubmit())
-        .thenReturn(Map.of(UPLOADED_DOC, List.of(APP_ID)));
+        .thenReturn(
+            List.of(new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED)));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
@@ -275,7 +280,7 @@ class ResubmissionServiceTest {
     verify(emailClient, never())
         .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
             application);
-    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, routingDestinations,
+    verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, countyMap.get(Olmsted),
         RESUBMISSION_FAILED);
   }
 }
