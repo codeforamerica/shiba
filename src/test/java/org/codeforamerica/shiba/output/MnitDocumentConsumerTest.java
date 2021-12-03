@@ -353,7 +353,7 @@ class MnitDocumentConsumerTest {
   }
 
   @Test
-  void updatesStatusToDeliveryFailedForDocuments() {
+  void updatesStatusToDeliveryFailedForApplications() {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any(), any());
 
@@ -363,7 +363,6 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
-        .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
 
     documentConsumer.processCafAndCcap(application);
@@ -375,6 +374,30 @@ class MnitDocumentConsumerTest {
         routingDestination, SENDING);
     verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
         CCAP, routingDestination, DELIVERY_FAILED);
+  }
+
+  @Test
+  void updatesStatusToDeliveryFailedForUploadedDocuments() throws IOException {
+    mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+    ApplicationFile testFile = new ApplicationFile(FILE_BYTES, "doc1of1.pdf");
+    doReturn(testFile).when(pdfGenerator)
+        .generate(anyString(), eq(UPLOADED_DOC), eq(CASEWORKER), any());
+    doReturn(testFile).when(pdfGenerator)
+        .generateForUploadedDocument(any(), anyInt(), eq(application), any());
+    doThrow(new RuntimeException("Some mocked exception")).when(mnitClient)
+        .send(any(), any(), any(), eq(UPLOADED_DOC), any());
+
+    try {
+      documentConsumer.processUploadedDocuments(application);
+    } catch (Exception e) {
+      // Catch mocked exception
+    }
+
+    CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
+    verify(applicationRepository, times(1)).updateStatus(application.getId(), UPLOADED_DOC,
+        routingDestination, SENDING);
+    verify(applicationRepository, timeout(2000).atLeastOnce()).updateStatus(application.getId(),
+        UPLOADED_DOC, routingDestination, DELIVERY_FAILED);
   }
 
   @Test
@@ -505,7 +528,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
+    verify(applicationRepository, times(2)).updateStatus(application.getId(), UPLOADED_DOC,
         routingDestination, SENDING);
   }
 
