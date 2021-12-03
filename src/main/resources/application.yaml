@@ -83,6 +83,7 @@ feature-flag:
   certain-pops: on
   filenet: off
   submit-via-api: off
+  county-dakota: on
   submit-docs-via-email-for-hennepin: on
   white-earth-and-red-lake-routing: on
 
