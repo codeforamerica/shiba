@@ -395,7 +395,7 @@ public class CountyMapConfiguration {
         "2daf63e7-64f7-4c59-9a1e-4da18cfbeb10",
         "1023250115");
     updateCounty(Becker,
-        "stacie@co.becker.mn.us ",
+        "hsosu2@co.becker.mn.us",
         "60a4cc7e-2186-42c6-b6b3-bd5957b66d36",
         "A000003500");
     updateCounty(Beltrami,
@@ -431,7 +431,7 @@ public class CountyMapConfiguration {
         "ba4cc43c-87b3-4ce3-a434-f6ae13042883",
         "1760489769");
     updateCounty(Chippewa,
-        "nicole.draeger@co.nicollet.mn.us",
+        "Tracy.kittelson@chippewa.mn",
         "c03494f9-4646-4ff7-87cc-19836ed97fe7",
         "A000012400");
     updateCounty(Chisago,
@@ -451,7 +451,7 @@ public class CountyMapConfiguration {
         "00ba833d-41ff-49e9-815a-e1f3f82826e4",
         "A000016700");
     updateCounty(Cottonwood,
-        "angela.holmen@dvhhs.org",
+        "financial@dvhhs.org",
         "df0bf5a2-5267-4fbd-9d91-211d86855d46",
         "A000017500");
     updateCounty(CrowWing,
@@ -669,7 +669,7 @@ public class CountyMapConfiguration {
         "7587e3c7-5409-4caf-b3c0-e4864f8b09b6",
         "1447381660");
     updateCounty(Sibley,
-        "contactphhf@co.sibley.mn.us ",
+        "ContactPHHS@co.sibley.mn.us",
         "9bc21fe3-74bd-4655-93fa-7f3f91dda8db",
         "A000072800");
     updateCounty(Stearns,
