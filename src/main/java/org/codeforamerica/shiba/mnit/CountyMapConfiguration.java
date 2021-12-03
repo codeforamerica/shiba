@@ -129,10 +129,11 @@ public class CountyMapConfiguration {
         "help+staging@mnbenefits.org",
         "c3a52682-8baf-46cd-ae04-c8993b435b26",
         "A000025600");
+    //Grant and Pope are merged, now using Pope NPI
     updateCounty(Grant,
         "help+staging@mnbenefits.org",
-        "cbd936a5-b2e5-4e4f-8dc1-a4bcc29da43c",
-        "1225119381");
+        "abf2001a-7ed6-4a2f-af2f-0dfd07e47bb7",
+        "A000061200");
     updateCounty(Hennepin,
         "help+staging@mnbenefits.org",
         "45ed1eea-d045-48fe-9970-383e1b889ec5",
@@ -485,10 +486,11 @@ public class CountyMapConfiguration {
         "hhs.imu@co.goodhue.mn.us",
         "3058aa16-eace-4b12-b4e8-7a792acab26a",
         "A000025600");
+    // Grant and Pope counties merged, now using Pope NPI and folder id
     updateCounty(Grant,
-        "front@co.grant.mn.us ",
-        "6498cbd4-d283-40c2-b3ba-9fb9153546fb",
-        "1225119381");
+        "crystal.zaviska@westernprairiemn.us",
+        "5a869a7f-4ebb-44ae-b2db-a6f40396d6a0",
+        "A000061200");
     updateCounty(Hennepin,
         "hhsews@hennepin.us",
         "39e0ea57-cc12-4cc1-a074-0ad3d7216d01",
@@ -625,8 +627,9 @@ public class CountyMapConfiguration {
         "Jon.street@co.polk.mn.us",
         "2b8a2117-9488-4dd4-b6bd-dcf01fb1e699",
         "A000060400");
+    //Grant and Pope merged into Western Prairie, using Pope NPI and westernprairie email
     updateCounty(Pope,
-        "intake@co.pope.mn.us",
+        "crystal.zaviska@westernprairiemn.us",
         "5a869a7f-4ebb-44ae-b2db-a6f40396d6a0",
         "A000061200");
     updateCounty(Ramsey,
@@ -785,7 +788,7 @@ public class CountyMapConfiguration {
     addCounty(Fillmore, "507-765-2175");
     addCounty(Freeborn, "507-377-5400");
     addCounty(Goodhue, "651-385-3200");
-    addCounty(Grant, "800-291-2827");
+    addCounty(Grant, "320-634-7758");//Grant and Pope share same phone number
     addCounty(Hennepin,
         "612-596-1300",
         "help+dev@mnbenefits.org",
@@ -837,7 +840,7 @@ public class CountyMapConfiguration {
     addCounty(Pine, "320-591-1570");
     addCounty(Pipestone, "507-825-6720");
     addCounty(Polk, "877-281-3127");
-    addCounty(Pope, "320-634-7755");
+    addCounty(Pope, "320-634-7758");//Grant and Pope share same phone number
     addCounty(Ramsey, "651-266-4444");
     addCounty(RedLake, "877-294-0846");
     addCounty(Redwood, "888-234-1292");
