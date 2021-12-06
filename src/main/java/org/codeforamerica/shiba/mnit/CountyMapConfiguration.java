@@ -614,7 +614,7 @@ public class CountyMapConfiguration {
         "09218b77-8e8b-4e99-9aaa-f8e2b8b84eb6",
         "A000057400");
     updateCounty(Pine,
-        "MNSure@co.pine.mn.us and INCOME.PROOF@CO.PINE.MN.US and snap@lakesandpines.org",
+        "income.proof@co.pine.mn.us",
         "8a429d36-b734-46a6-a70d-51688aebcbb4",
         "A000058200");
     updateCounty(Pipestone,
@@ -630,7 +630,7 @@ public class CountyMapConfiguration {
         "5a869a7f-4ebb-44ae-b2db-a6f40396d6a0",
         "A000061200");
     updateCounty(Ramsey,
-        "FAS.Forms@co.ramsey.mn.us and ASKHumanServices@CO.RAMSEY.MN.US",
+        "fas.forms@co.ramsey.mn.us",
         "c9db444b-05a2-4566-8a80-2f669f557c00",
         "1811055957");
     updateCounty(RedLake,
