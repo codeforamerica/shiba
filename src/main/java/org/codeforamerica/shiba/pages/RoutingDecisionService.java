@@ -75,7 +75,7 @@ public class RoutingDecisionService {
 
   public RoutingDestination getRoutingDestinationByName(String name) {
     RoutingDestination result = tribalNations.get(name);
-    return result != null ? result : countyRoutingDestinations.get(County.valueOf(name));
+    return result != null ? result : countyRoutingDestinations.get(County.getCountyForName(name));
   }
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
