@@ -414,7 +414,7 @@ public class CountyMapConfiguration {
         "efae7dad-3a03-4ec7-8be1-d2e3ea3f850a",
         "A000007800");
     updateCounty(Brown,
-        "FrontDesk1@co.brown.mn",
+        "FrontDesk1@co.brown.mn.us",
         "3be208a9-078c-4ee1-a2c1-4c4c08d13b46",
         "A000008600");
     updateCounty(Carlton,
