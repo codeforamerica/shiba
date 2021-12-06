@@ -406,11 +406,11 @@ public class CountyMapConfiguration {
         "965f1616-132e-4b45-b1f4-d450da0ce785",
         "1174697148");
     updateCounty(BigStone,
-        "familyservicecenter@bigstonecounty.org ",
+        "familyservicecenter@bigstonecounty.org",
         "a81f65f8-54be-4306-be29-7029f6ec4e9d",
         "A000006000");
     updateCounty(BlueEarth,
-        "DeAnn.Boney@blueearthcountymn.gov ",
+        "DeAnn.Boney@blueearthcountymn.gov",
         "efae7dad-3a03-4ec7-8be1-d2e3ea3f850a",
         "A000007800");
     updateCounty(Brown,
@@ -434,7 +434,7 @@ public class CountyMapConfiguration {
         "c03494f9-4646-4ff7-87cc-19836ed97fe7",
         "A000012400");
     updateCounty(Chisago,
-        "hhsim@chisagocounty.us ",
+        "hhsim@chisagocounty.us",
         "516563d9-d1c2-4112-b3d0-d515d089bafb",
         "1659408904");
     updateCounty(Clay,
@@ -454,11 +454,11 @@ public class CountyMapConfiguration {
         "df0bf5a2-5267-4fbd-9d91-211d86855d46",
         "A000017500");
     updateCounty(CrowWing,
-        "cwcss@crowwing.us ",
+        "cwcss@crowwing.us",
         "af92e7fd-a52e-48c9-85f3-d961c1745661",
         "A000018300");
     updateCounty(Dakota,
-        "eeadocs@co.dakota.mn.us",
+        "eearigappresearch@co.dakota.mn.us",
         "cb1db222-a612-475a-9fc5-0a0b5466cb79",
         "1427127620");
     updateCounty(Dodge,
@@ -474,7 +474,7 @@ public class CountyMapConfiguration {
         "6bb1caab-bd7f-4bef-938c-47998ffd1eb8",
         "A000022100");
     updateCounty(Fillmore,
-        "SS-FAX@co.fillmore.mn.us ",
+        "SS-FAX@co.fillmore.mn.us",
         "c0c52c0d-b3d7-4092-b134-89fa17e21715",
         "1437228236");
     updateCounty(Freeborn,
@@ -486,7 +486,7 @@ public class CountyMapConfiguration {
         "3058aa16-eace-4b12-b4e8-7a792acab26a",
         "A000025600");
     updateCounty(Grant,
-        "front@co.grant.mn.us ",
+        "front@co.grant.mn.us",
         "6498cbd4-d283-40c2-b3ba-9fb9153546fb",
         "1225119381");
     updateCounty(Hennepin,
@@ -510,7 +510,7 @@ public class CountyMapConfiguration {
         "f489b6eb-0660-4358-8ef3-270cb40cf063",
         "A000031100");
     updateCounty(Jackson,
-        "financial@dvhhs.org ",
+        "financial@dvhhs.org",
         "7a1f9364-3f2f-4fba-8449-c92796f58562",
         "A000032900");
     updateCounty(Kanabec,
@@ -534,7 +534,7 @@ public class CountyMapConfiguration {
         "8510a300-75c1-4625-a4d8-b075c2bcd4ff",
         "A000037000");
     updateCounty(Lake,
-        "financial.assistance@co.lake.mn.us ",
+        "financial.assistance@co.lake.mn.us",
         "5ade0387-9a23-4d7d-b752-d6ba80539d1d",
         "A000038800");
     updateCounty(LakeOfTheWoods,
@@ -546,11 +546,11 @@ public class CountyMapConfiguration {
         "9e3adfb8-06a9-4e7c-a0e7-5392d077506e",
         "A000040000");
     updateCounty(Lincoln,
-        "ssintake@swmhhs.com ",
+        "ivanhoe.frontdesk@swmhhs.com",
         "8390e1e9-2860-441f-ad95-7d27605ff706",
         "A000041800");
     updateCounty(Lyon,
-        "ssintake@swmhhs.com ",
+        "marshallss.frontdesk@swmhhs.com",
         "a045a4e2-bf25-40a4-b206-d42319049a7f",
         "A000042600");
     updateCounty(McLeod,
@@ -574,7 +574,7 @@ public class CountyMapConfiguration {
         "a10f19da-7829-4149-8a81-aa3fc4429441",
         "A000047700");
     updateCounty(MilleLacs,
-        "Beth.Sumner@millelacs.mn.gov>",
+        "Beth.Sumner@millelacs.mn.gov",
         "34c71473-445d-45b6-8b51-a1346f99b8ed",
         "A000048500");
     updateCounty(Morrison,
@@ -586,7 +586,7 @@ public class CountyMapConfiguration {
         "7680711b-f022-45c4-a325-c27d2cb468dc",
         "M000050700");
     updateCounty(Murray,
-        "ssintake@swmhhs.com ",
+        "slayton.frontdesk@swmhhs.com",
         "04dc7d5e-0694-4cf0-9d01-f7ba15f4de33",
         "M000051500");
     updateCounty(Nicollet,
@@ -614,11 +614,11 @@ public class CountyMapConfiguration {
         "09218b77-8e8b-4e99-9aaa-f8e2b8b84eb6",
         "A000057400");
     updateCounty(Pine,
-        "MNSure@co.pine.mn.us and INCOME.PROOF@CO.PINE.MN.US and snap@lakesandpines.org ",
+        "MNSure@co.pine.mn.us and INCOME.PROOF@CO.PINE.MN.US and snap@lakesandpines.org",
         "8a429d36-b734-46a6-a70d-51688aebcbb4",
         "A000058200");
     updateCounty(Pipestone,
-        "webmaster@co.pipestone.mn.us",
+        "pipestone.frontdesk@swmhhs.com",
         "86eb961c-f54f-4855-ac6e-b65531df3591",
         "A000059100");
     updateCounty(Polk,
@@ -650,7 +650,7 @@ public class CountyMapConfiguration {
         "4f131207-1680-4834-a53b-cee6d7d3fad0",
         "M000066300");
     updateCounty(Rock,
-        "ssintake@swmhhs.com ",
+        "luverne.frontdesk@swmhhs.com",
         "28d44e96-9a18-432d-a756-db41d2f6edf5",
         "M000067100");
     updateCounty(Roseau,
@@ -686,7 +686,7 @@ public class CountyMapConfiguration {
         "8e50a17a-6f8e-43bd-9de1-da4dff40a478",
         "A000069800");
     updateCounty(Swift,
-        "julie.jahn@co.swift.mn.us ",
+        "julie.jahn@co.swift.mn.us",
         "452c72d8-0637-4c86-b49d-a880479d6beb",
         "A000076100");
     updateCounty(Todd,
