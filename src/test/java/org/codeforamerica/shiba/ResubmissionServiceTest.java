@@ -274,4 +274,26 @@ class ResubmissionServiceTest {
     verify(applicationRepository).updateStatus(APP_ID, UPLOADED_DOC, "Olmsted",
         RESUBMISSION_FAILED);
   }
+
+  @Test
+  void shouldUpdateStatusToResubmissionFailedForUnknownCounty() {
+    Application application = Application.builder().id(APP_ID).county(Anoka).build();
+    when(applicationRepository.getApplicationStatusToResubmit())
+        .thenReturn(List.of(
+            new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED),
+            new ApplicationStatus(APP_ID, CAF, "Invalid County", DELIVERY_FAILED),
+            new ApplicationStatus(APP_ID, CAF, "Olmsted", DELIVERY_FAILED)
+        ));
+    when(applicationRepository.find(APP_ID)).thenReturn(application);
+
+    ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
+    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+
+    resubmissionService.resubmitFailedApplications();
+
+    verify(applicationRepository).updateStatus(APP_ID, CAF, "Anoka", DELIVERED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, "Invalid County",
+        RESUBMISSION_FAILED);
+    verify(applicationRepository).updateStatus(APP_ID, CAF, "Olmsted", DELIVERED);
+  }
 }

@@ -63,10 +63,10 @@ public class ResubmissionService {
       String routingDestinationName = applicationStatus.getRoutingDestinationName();
       log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
           + " for application id " + id);
-      Application application = applicationRepository.find(id);
-      RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
-          routingDestinationName);
       try {
+        Application application = applicationRepository.find(id);
+        RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
+            routingDestinationName);
         if (document == UPLOADED_DOC) {
           resubmitUploadedDocumentsForApplication(document, application,
               routingDestination.getEmail());
