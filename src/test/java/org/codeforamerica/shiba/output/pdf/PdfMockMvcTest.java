@@ -849,5 +849,30 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("PROGRAMS", "SNAP", pdf);
       assertPdfFieldEquals("PROGRAMS", "SNAP", caf);
     }
+
+    @Test
+    void shouldMapZeroLiquidAssetsAmountAsNoSavings() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("savings", "haveSavings", "true");
+      postExpectingSuccess("savingsAmount", "liquidAssets", "0");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
+      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0", caf);
+    }
+
+    @Test
+    void shouldNotMapSavingsAmountWhenSavingsIsNo() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("savings", "haveSavings", "false");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
+      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "", caf);
+    }
   }
 }
