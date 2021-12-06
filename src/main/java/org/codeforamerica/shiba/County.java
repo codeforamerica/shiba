@@ -44,8 +44,8 @@ public enum County {
       return Other;
     }
 
-    String countyNameWithoutSpaces = countyName.replace(" ", "");
-    return County.valueOf(countyNameWithoutSpaces);
+    String formattedCountyName = countyName.replace(" ", "").replace(".", "");
+    return County.valueOf(formattedCountyName);
   }
 
   public String displayName() {

@@ -47,4 +47,22 @@ class CountyParserTest {
 
     assertThat(CountyParser.parse(applicationData)).isEqualTo(County.Other);
   }
+
+  @Test
+  void shouldMapCountiesWithSpaces() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("identifyCounty", "county", "Le Sueur")
+        .build();
+
+    assertThat(CountyParser.parse(applicationData)).isEqualTo(County.LeSueur);
+  }
+
+  @Test
+  void shouldMapCountiesWithDots() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("identifyCounty", "county", "St. Louis")
+        .build();
+
+    assertThat(CountyParser.parse(applicationData)).isEqualTo(County.StLouis);
+  }
 }
