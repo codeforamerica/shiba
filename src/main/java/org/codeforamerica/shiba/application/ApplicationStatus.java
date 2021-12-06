@@ -8,6 +8,8 @@ import org.codeforamerica.shiba.output.Document;
 @AllArgsConstructor
 public class ApplicationStatus {
 
+  private String applicationId;
   private Document documentType;
+  private String routingDestinationName;
   private Status status;
 }

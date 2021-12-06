@@ -16,6 +16,7 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,9 +27,15 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.Sentiment;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -181,12 +188,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .sentiment(Sentiment.HAPPY)
         .feedback("someUpdatedFeedback")
         .flow(FlowType.EXPEDITED)
-        .applicationStatuses(List.of(
-            new ApplicationStatus(CAF, null),
-            new ApplicationStatus(CCAP, null),
-            new ApplicationStatus(CERTAIN_POPS, null),
-            new ApplicationStatus(UPLOADED_DOC, null)
-        ))
+        .applicationStatuses(emptyList())
         .build();
 
     applicationRepository.save(updatedApplication);
@@ -238,19 +240,20 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.save(application3);
     applicationRepository.save(application4);
 
-    applicationRepository.updateStatus("someId1", CAF, DELIVERY_FAILED);
-    applicationRepository.updateStatus("someId2", UPLOADED_DOC, DELIVERY_FAILED);
+    applicationRepository.updateStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED);
+    applicationRepository.updateStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
     // In Progress is NOT included
-    applicationRepository.updateStatus("someId3", CAF, IN_PROGRESS);
+    applicationRepository.updateStatus("someId3", CAF, "Olmsted", IN_PROGRESS);
     // In Progress is NOT included
-    applicationRepository.updateStatus("someId3", UPLOADED_DOC, IN_PROGRESS);
-    applicationRepository.updateStatus("someId4", CCAP, DELIVERY_FAILED);
+    applicationRepository.updateStatus("someId3", UPLOADED_DOC, "Olmsted", IN_PROGRESS);
+    applicationRepository.updateStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
-    Map<Document, List<String>> failedApplications = applicationRepository
-        .getApplicationIdsToResubmit();
-    assertThat(failedApplications.get(CAF)).containsExactlyInAnyOrder("someId1");
-    assertThat(failedApplications.get(CCAP)).containsExactlyInAnyOrder("someId4");
-    assertThat(failedApplications.get(UPLOADED_DOC)).containsExactlyInAnyOrder("someId2");
+    List<ApplicationStatus> failedApplications = applicationRepository.getApplicationStatusToResubmit();
+    assertThat(failedApplications).containsExactlyInAnyOrder(
+        new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
+        new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED),
+        new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED)
+    );
   }
 
   @Test
@@ -292,26 +295,67 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.save(inProgressApplication);
     applicationRepository.save(incompleteApplication);
 
-    applicationRepository.updateStatus(deliveredApplication.getId(), CAF, DELIVERED);
-    applicationRepository.updateStatus(deliveredApplication.getId(), CCAP, DELIVERED);
-    applicationRepository.updateStatus(deliveredApplication.getId(), UPLOADED_DOC, DELIVERED);
+    applicationRepository.updateStatus(deliveredApplication.getId(), CAF, "Olmsted", DELIVERED);
+    applicationRepository.updateStatus(deliveredApplication.getId(), CCAP, "Olmsted", DELIVERED);
+    applicationRepository.updateStatus(deliveredApplication.getId(), UPLOADED_DOC, "Olmsted",
+        DELIVERED);
 
-    applicationRepository.updateStatus(sendingApplication.getId(), CAF, SENDING);
-    applicationRepository.updateStatus(sendingApplication.getId(), CCAP, SENDING);
-    applicationRepository.updateStatus(sendingApplication.getId(), UPLOADED_DOC, SENDING);
+    applicationRepository.updateStatus(sendingApplication.getId(), CAF, "Olmsted", SENDING);
+    applicationRepository.updateStatus(sendingApplication.getId(), CCAP, "Olmsted", SENDING);
+    applicationRepository.updateStatus(sendingApplication.getId(), UPLOADED_DOC, "Olmsted",
+        SENDING);
 
-    applicationRepository.updateStatus(inProgressApplication.getId(), CAF, IN_PROGRESS);
-    applicationRepository.updateStatus(inProgressApplication.getId(), CCAP, IN_PROGRESS);
-    applicationRepository.updateStatus(inProgressApplication.getId(), UPLOADED_DOC, IN_PROGRESS);
+    applicationRepository.updateStatus(inProgressApplication.getId(), CAF, "Olmsted", IN_PROGRESS);
+    applicationRepository.updateStatus(inProgressApplication.getId(), CCAP, "Olmsted", IN_PROGRESS);
+    applicationRepository.updateStatus(inProgressApplication.getId(), UPLOADED_DOC, "Olmsted",
+        IN_PROGRESS);
 
-    applicationRepository.updateStatus(incompleteApplication.getId(), CAF, IN_PROGRESS);
-    applicationRepository.updateStatus(incompleteApplication.getId(), CCAP, IN_PROGRESS);
-    applicationRepository.updateStatus(incompleteApplication.getId(), UPLOADED_DOC, IN_PROGRESS);
+    applicationRepository.updateStatus(incompleteApplication.getId(), CAF, "Olmsted", IN_PROGRESS);
+    applicationRepository.updateStatus(incompleteApplication.getId(), CCAP, "Olmsted", IN_PROGRESS);
+    applicationRepository.updateStatus(incompleteApplication.getId(), UPLOADED_DOC, "Olmsted",
+        IN_PROGRESS);
 
-    var failedApplications = applicationRepository.getApplicationIdsToResubmit();
-    assertThat(failedApplications.get(CAF)).isEmpty();
-    assertThat(failedApplications.get(CCAP)).isEmpty();
-    assertThat(failedApplications.get(UPLOADED_DOC)).isEmpty();
+    var failedApplications = applicationRepository.getApplicationStatusToResubmit();
+    assertThat(failedApplications).isEmpty();
+  }
+
+  @Test
+  void saveShouldUpdateApplicationStatuses() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
+        .build();
+    Application application = Application.builder()
+        .id(applicationData.getId())
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(applicationData)
+        .county(Olmsted)
+        .build();
+    RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
+    RoutingDestination routingDestination = CountyRoutingDestination.builder().county(Olmsted)
+        .build();
+    String routingDestName = routingDestination.getName();
+    when(routingDecisionService.getRoutingDestinations(eq(applicationData), any(Document.class)))
+        .thenReturn(List.of(routingDestination));
+    applicationRepository.save(application);
+    applicationRepository.updateStatusToInProgress(application, routingDecisionService);
+    Application resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getApplicationStatus(CAF, routingDestName))
+        .isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getApplicationStatus(CERTAIN_POPS, routingDestName))
+        .isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getApplicationStatus(CCAP, routingDestName)).isNull();
+
+    new TestApplicationDataBuilder(applicationData)
+        .withApplicantPrograms(List.of("CCAP"));
+    applicationRepository.updateStatusToInProgress(application, routingDecisionService);
+    resultingApplication = applicationRepository.find(applicationData.getId());
+    assertThat(resultingApplication.getApplicationStatus(CAF, routingDestName))
+        .isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getApplicationStatus(CERTAIN_POPS, routingDestName))
+        .isEqualTo(IN_PROGRESS);
+    assertThat(resultingApplication.getApplicationStatus(CCAP, routingDestName))
+        .isEqualTo(IN_PROGRESS);
   }
 
   @Nested
@@ -409,60 +453,5 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
       Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
       assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
     }
-  }
-
-  @Test
-  void saveShouldUpdateApplicationStatuses() {
-    ApplicationData applicationData = new TestApplicationDataBuilder()
-        .base()
-        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
-        .build();
-    Application application = Application.builder()
-        .id(applicationData.getId())
-        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
-        .applicationData(applicationData)
-        .applicationStatuses(List.of(
-            new ApplicationStatus(CAF, IN_PROGRESS),
-            new ApplicationStatus(CERTAIN_POPS, IN_PROGRESS)))
-        .county(Olmsted)
-        .build();
-    applicationRepository.save(application);
-
-    new TestApplicationDataBuilder(applicationData)
-        .withApplicantPrograms(List.of("CCAP"));
-    applicationRepository.save(application);
-    Application resultingApplication = applicationRepository.find(applicationData.getId());
-    assertThat(resultingApplication.getCafApplicationStatus()).isNull();
-    assertThat(resultingApplication.getCcapApplicationStatus()).isEqualTo(IN_PROGRESS);
-    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isNull();
-
-    new TestApplicationDataBuilder(applicationData)
-        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
-    applicationRepository.save(application);
-    resultingApplication = applicationRepository.find(applicationData.getId());
-    assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(IN_PROGRESS);
-    assertThat(resultingApplication.getCcapApplicationStatus()).isNull();
-    assertThat(resultingApplication.getCertainPopsApplicationStatus()).isEqualTo(IN_PROGRESS);
-  }
-
-  @Test
-  void saveShouldNotUpdateDeliveredApplicationStatus() {
-    ApplicationData applicationData = new TestApplicationDataBuilder()
-        .base()
-        .withApplicantPrograms(List.of("SNAP"))
-        .build();
-    Application application = Application.builder()
-        .id(applicationData.getId())
-        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
-        .applicationData(applicationData)
-        .applicationStatuses(List.of(
-            new ApplicationStatus(CAF, DELIVERED)))
-        .county(Olmsted)
-        .build();
-    applicationRepository.save(application); // initial save to insert. Does not save statuses
-    applicationRepository.save(application); // save statuses
-
-    Application resultingApplication = applicationRepository.find(applicationData.getId());
-    assertThat(resultingApplication.getCafApplicationStatus()).isEqualTo(DELIVERED);
   }
 }

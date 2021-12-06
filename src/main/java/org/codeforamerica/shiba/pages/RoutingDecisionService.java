@@ -73,6 +73,11 @@ public class RoutingDecisionService {
     return List.of(countyRoutingDestinations.get(county));
   }
 
+  public RoutingDestination getRoutingDestinationByName(String name) {
+    RoutingDestination result = tribalNations.get(name);
+    return result != null ? result : countyRoutingDestinations.get(County.valueOf(name));
+  }
+
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
       County county) {
     if (!county.equals(County.Beltrami) ||

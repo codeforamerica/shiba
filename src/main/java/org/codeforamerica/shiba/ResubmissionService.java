@@ -5,13 +5,12 @@ import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -50,48 +49,45 @@ public class ResubmissionService {
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    Map<Document, List<String>> documentsToIds =
-        applicationRepository.getApplicationIdsToResubmit();
+    List<ApplicationStatus> applicationsToResubmit = applicationRepository.getApplicationStatusToResubmit();
 
-    if (documentsToIds.values().stream().allMatch(List::isEmpty)) {
+    if (applicationsToResubmit.isEmpty()) {
       log.info("There are no applications to resubmit");
       return;
     }
 
-    documentsToIds.forEach((document, applicationIds) -> applicationIds.forEach(id -> {
+    applicationsToResubmit.forEach(applicationStatus -> {
+      String id = applicationStatus.getApplicationId();
       MDC.put("applicationId", id);
-      log.info("Resubmitting " + document.name() + "(s) for application id " + id);
+      Document document = applicationStatus.getDocumentType();
+      String routingDestinationName = applicationStatus.getRoutingDestinationName();
+      log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
+          + " for application id " + id);
       Application application = applicationRepository.find(id);
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-          application.getApplicationData(), document);
-      List<String> recipientEmails = new ArrayList<>();
-
-      routingDestinations.forEach(rd -> {
-        recipientEmails.add(rd.getEmail());
-      });
-
-      log.info("Attempting to resubmit %s(s) for application id %s to emails %s".formatted(
-          document.name(), id, recipientEmails));
+      RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
+          routingDestinationName);
       try {
         if (document == UPLOADED_DOC) {
-          resubmitUploadedDocumentsForApplication(document, application, recipientEmails);
+          resubmitUploadedDocumentsForApplication(document, application,
+              routingDestination.getEmail());
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
-          recipientEmails.forEach(
-              eml -> emailClient.resubmitFailedEmail(eml, document, applicationFile, application));
+          emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
+              application);
         }
-        applicationRepository.updateStatus(id, document, routingDestinations, DELIVERED);
+        applicationRepository.updateStatus(id, document, routingDestinationName, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationRepository.updateStatus(id, document, routingDestinations, RESUBMISSION_FAILED);
+        applicationRepository.updateStatus(id, document, routingDestinationName,
+            RESUBMISSION_FAILED);
       }
-    }));
+    });
     MDC.clear();
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
-      List<String> recipientEmails) {
+      String recipientEmail) {
     var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -103,8 +99,7 @@ public class ResubmissionService {
 
       log.info("Resubmitting uploaded doc: %s original filename: %s"
           .formatted(esbFilename, originalFilename));
-      recipientEmails.forEach(
-          eml -> emailClient.resubmitFailedEmail(eml, document, fileToSend, application));
+      emailClient.resubmitFailedEmail(recipientEmail, document, fileToSend, application);
       log.info("Finished resubmitting document %s".formatted(esbFilename));
     }
   }

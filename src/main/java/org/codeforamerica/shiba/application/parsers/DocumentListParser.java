@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.application.parsers;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,9 @@ public class DocumentListParser {
     }
     if (applicationData.isCAFApplication()) {
       documents.add(CAF);
+    }
+    if (applicationData.isCertainPopsApplication()) {
+      documents.add(CERTAIN_POPS);
     }
 
     return documents;

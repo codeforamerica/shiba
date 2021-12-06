@@ -127,16 +127,14 @@ public class MnitDocumentConsumer {
   private void sendUploadedDocs(Application application, List<ApplicationFile> uploadedDocs) {
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
-
     for (RoutingDestination routingDestination : routingDestinations) {
-      applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, routingDestination,
-          SENDING);
-
       boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
           "submit-docs-via-email-for-hennepin").isOn();
       boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
 
       if (sendToHennepinViaEmail && isHennepin) {
+        applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, routingDestination,
+            SENDING);
         emailClient.sendHennepinDocUploadsEmails(application, uploadedDocs);
       } else {
         for (int i = 0; i < uploadedDocs.size(); i++) {
@@ -147,7 +145,7 @@ public class MnitDocumentConsumer {
               extension, routingDestination);
           ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
               newFilename);
-          sendFile(application, UPLOADED_DOC, renamedFile, routingDestination);
+          sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);
         }
       }
     }

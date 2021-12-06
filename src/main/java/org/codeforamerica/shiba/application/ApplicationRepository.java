@@ -5,7 +5,6 @@ import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.security.SecureRandom;
 import java.sql.ResultSet;
@@ -128,9 +127,12 @@ public class ApplicationRepository {
   }
 
   public Application find(String id) {
-    return jdbcTemplate
-        .queryForObject("SELECT * FROM applications WHERE id = ?", applicationRowMapper(),
-            id);
+    Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
+        applicationRowMapper(), id);
+    application.setApplicationStatuses(
+        jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
+            new ApplicationStatusRowMapper(), id));
+    return application;
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
@@ -152,10 +154,7 @@ public class ApplicationRepository {
     for (Document document : documents) {
       List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
           application.getApplicationData(), document);
-      Status status = application.getApplicationStatus(document);
-      if (status != DELIVERED) {
-        updateStatus(application.getId(), document, routingDestinations, IN_PROGRESS);
-      }
+      updateStatus(application.getId(), document, routingDestinations, IN_PROGRESS);
     }
   }
 
@@ -287,12 +286,10 @@ public class ApplicationRepository {
     }
   }
 
-  public Map<Document, List<String>> getApplicationIdsToResubmit() {
-    Map<Document, List<String>> failedSubmissions = new HashMap<>();
-    failedSubmissions.put(CCAP, getCCAPSubmissionsToResubmit());
-    failedSubmissions.put(CAF, getCAFSubmissionsToResubmit());
-    failedSubmissions.put(UPLOADED_DOC, getUploadedDocSubmissionsToResubmit());
-    return failedSubmissions;
+  public List<ApplicationStatus> getApplicationStatusToResubmit() {
+    return jdbcTemplate.query(
+        "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
+        new ApplicationStatusRowMapper());
   }
 
   public void setDocUploadEmailStatus(String applicationId, Status status) {
@@ -315,24 +312,6 @@ public class ApplicationRepository {
         end);
   }
 
-  private List<String> getCCAPSubmissionsToResubmit() {
-    return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE ccap_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
-        String.class);
-  }
-
-  private List<String> getCAFSubmissionsToResubmit() {
-    return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE caf_application_status = 'delivery_failed' AND completed_at IS NOT NULL",
-        String.class);
-  }
-
-  private List<String> getUploadedDocSubmissionsToResubmit() {
-    return jdbcTemplate.queryForList(
-        "SELECT id FROM applications WHERE uploaded_documents_status = 'delivery_failed' AND completed_at IS NOT NULL",
-        String.class);
-  }
-
   @NotNull
   private RowMapper<Application> applicationRowMapper() {
     return (resultSet, rowNum) ->
@@ -350,12 +329,6 @@ public class ApplicationRepository {
             .flow(Optional.ofNullable(resultSet.getString("flow"))
                 .map(FlowType::valueOf)
                 .orElse(null))
-            .applicationStatuses(List.of(
-                applicationStatusMapper("caf_application_status", resultSet),
-                applicationStatusMapper("ccap_application_status", resultSet),
-                applicationStatusMapper("certain_pops_application_status", resultSet),
-                applicationStatusMapper("uploaded_documents_status", resultSet)
-            ))
             .docUploadEmailStatus(
                 Optional.ofNullable(resultSet.getString("doc_upload_email_status"))
                     .map(Status::valueFor)
@@ -363,19 +336,16 @@ public class ApplicationRepository {
             .build();
   }
 
-  private ApplicationStatus applicationStatusMapper(String column, ResultSet resultSet)
-      throws SQLException {
-    Status status = Optional.ofNullable(resultSet.getString(column))
-        .map(Status::valueFor)
-        .orElse(null);
+  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
 
-    return switch (column) {
-      case "caf_application_status" -> new ApplicationStatus(CAF, status);
-      case "ccap_application_status" -> new ApplicationStatus(CCAP, status);
-      case "certain_pops_application_status" -> new ApplicationStatus(CERTAIN_POPS, status);
-      case "uploaded_documents_status" -> new ApplicationStatus(UPLOADED_DOC, status);
-      default -> null;
-    };
-
+    @Override
+    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new ApplicationStatus(
+          rs.getString("application_id"),
+          Document.valueOf(rs.getString("document_type")),
+          rs.getString("routing_destination"),
+          Status.valueFor(rs.getString("status"))
+      );
+    }
   }
 }
