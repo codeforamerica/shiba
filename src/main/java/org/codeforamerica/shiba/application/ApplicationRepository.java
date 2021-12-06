@@ -286,7 +286,7 @@ public class ApplicationRepository {
     }
   }
 
-  public List<ApplicationStatus> getApplicationIdsToResubmit() {
+  public List<ApplicationStatus> getApplicationStatusToResubmit() {
     return jdbcTemplate.query(
         "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
         new ApplicationStatusRowMapper());

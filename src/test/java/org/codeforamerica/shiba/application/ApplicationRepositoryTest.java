@@ -248,7 +248,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.updateStatus("someId3", UPLOADED_DOC, "Olmsted", IN_PROGRESS);
     applicationRepository.updateStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
-    List<ApplicationStatus> failedApplications = applicationRepository.getApplicationIdsToResubmit();
+    List<ApplicationStatus> failedApplications = applicationRepository.getApplicationStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
         new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
         new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED),
@@ -315,7 +315,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.updateStatus(incompleteApplication.getId(), UPLOADED_DOC, "Olmsted",
         IN_PROGRESS);
 
-    var failedApplications = applicationRepository.getApplicationIdsToResubmit();
+    var failedApplications = applicationRepository.getApplicationStatusToResubmit();
     assertThat(failedApplications).isEmpty();
   }
 

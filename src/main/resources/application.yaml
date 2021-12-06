@@ -107,6 +107,6 @@ pagesConfig: pages-config.yaml
 
 resubmission:
   interval:
-    milliseconds: 43200000 # 12 hours
+    milliseconds: 10800000 # 3 hours
 
 demo-banner: false

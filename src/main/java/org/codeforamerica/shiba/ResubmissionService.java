@@ -49,7 +49,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    List<ApplicationStatus> applicationsToResubmit = applicationRepository.getApplicationIdsToResubmit();
+    List<ApplicationStatus> applicationsToResubmit = applicationRepository.getApplicationStatusToResubmit();
 
     if (applicationsToResubmit.isEmpty()) {
       log.info("There are no applications to resubmit");
@@ -75,11 +75,12 @@ public class ResubmissionService {
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        applicationRepository.updateStatus(id, document, routingDestination, DELIVERED);
+        applicationRepository.updateStatus(id, document, routingDestinationName, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationRepository.updateStatus(id, document, routingDestination, RESUBMISSION_FAILED);
+        applicationRepository.updateStatus(id, document, routingDestinationName,
+            RESUBMISSION_FAILED);
       }
     });
     MDC.clear();
