@@ -4197,13 +4197,6 @@ workflow:
           input: county
           matcher: DOES_NOT_CONTAIN
           value: Dakota
-      - pageName: matchInfo
-        flow: LATER_DOCS
-        flag: county-dakota
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Dakota
       - pageName: emailDocsToYourCounty
         flow: LATER_DOCS
     subtleLinkTargetPage: identifyZipcode
