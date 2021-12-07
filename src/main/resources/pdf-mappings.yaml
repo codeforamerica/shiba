@@ -207,7 +207,7 @@ mappings:
   supportAndCare:
     supportAndCare: SUPPORT_AND_CARE
   savings:
-    haveSavings: HAVE_SAVINGS
+    haveNonZeroSavings: HAVE_SAVINGS
   investments:
     haveInvestments: HAVE_INVESTMENTS
   vehicle:
