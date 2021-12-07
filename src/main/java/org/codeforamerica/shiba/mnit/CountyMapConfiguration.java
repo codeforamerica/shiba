@@ -502,7 +502,7 @@ public class CountyMapConfiguration {
         "9c572f51-4e0a-4947-b501-aa1c8e36dc35",
         "A000029900");
     updateCounty(Isanti,
-        "Jennifer.johnson@co.isanti.mn.us",
+        "Jennifer.Ann.Johnson@co.isanti.mn.us",
         "31ab351e-8288-46d4-bba9-f59401693bea",
         "A000030200");
     updateCounty(Itasca,
