@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Dakota;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -422,6 +424,8 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(2))
         .send(captor.capture(), eq(countyMap.get(Olmsted)), eq(application.getId()),
             eq(UPLOADED_DOC), any());
+    verify(mnitClient, times(0)).send(any(), any(),
+        eq(application.getId()), eq(XML), any()); // XMLs only for Dakota
 
     // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
 //         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
@@ -430,6 +434,28 @@ class MnitDocumentConsumerTest {
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
     verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(),
         "test-uploaded-pdf-with-coverpage.pdf");
+  }
+
+  @Test
+  void sendsXMLAndDocumentUploadsToDakota() throws IOException {
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("identifyCounty", "county", "Dakota");
+
+    application.setFlow(LATER_DOCS);
+    mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
+    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf"))
+        .thenReturn("pdf1of1.pdf");
+    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
+    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+
+    documentConsumer.processUploadedDocuments(application);
+
+    ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
+    verify(mnitClient).send(captor.capture(), eq(countyMap.get(Dakota)), eq(application.getId()),
+        eq(UPLOADED_DOC), any());
+
+    verify(mnitClient).send(eq(xmlApplicationFile), eq(countyMap.get(Dakota)),
+        eq(application.getId()), eq(XML), any());
   }
 
   @Test
