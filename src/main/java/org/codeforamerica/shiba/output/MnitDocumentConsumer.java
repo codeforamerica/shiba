@@ -17,6 +17,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
@@ -128,6 +129,8 @@ public class MnitDocumentConsumer {
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
     for (RoutingDestination routingDestination : routingDestinations) {
+      boolean sendXMLToDakota = routingDestination.getName().equals(County.Dakota.name())
+          && application.getFlow() == FlowType.LATER_DOCS;
       boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
           "submit-docs-via-email-for-hennepin").isOn();
       boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
@@ -137,6 +140,11 @@ public class MnitDocumentConsumer {
             SENDING);
         emailClient.sendHennepinDocUploadsEmails(application, uploadedDocs);
       } else {
+        if (sendXMLToDakota) {
+          ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
+          sendFileAndUpdateStatus(application, XML, xml, routingDestination);
+        }
+
         for (int i = 0; i < uploadedDocs.size(); i++) {
           ApplicationFile uploadedDoc = uploadedDocs.get(i);
           // rename file with filename that is specific to this destination
