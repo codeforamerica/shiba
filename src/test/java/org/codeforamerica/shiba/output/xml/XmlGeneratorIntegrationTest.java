@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.xml;
 
 import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
@@ -11,7 +12,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +36,7 @@ import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +84,7 @@ public class XmlGeneratorIntegrationTest {
                           .getValue());
                       case CHECKBOX -> input.getOptions().getSelectableOptions().subList(0,
                               new Random().nextInt(input.getOptions().getSelectableOptions().size())
-                              + 1).stream()
+                                  + 1).stream()
                           .map(Option::getValue)
                           .collect(Collectors.toList());
                       case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt())
@@ -123,6 +129,78 @@ public class XmlGeneratorIntegrationTest {
         .newValidator();
     assertThatCode(() -> schemaValidator.validate(new DOMSource(document)))
         .doesNotThrowAnyException();
+  }
+
+  @Test
+  void shouldMapPersonalInfoForRegularFlow() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPersonalInfo().build();
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now(clock))
+        .applicationData(applicationData)
+        .county(County.Hennepin)
+        .timeToComplete(Duration.ofSeconds(534))
+        .build();
+    applicationRepository.save(application);
+
+    ApplicationFile applicationFile = xmlGenerator
+        .generate("someId", Document.XML, CASEWORKER);
+
+    String xmlFile = new String(applicationFile.getFileBytes());
+    assertThat(xmlFile).contains("""
+        <ns4:Person>
+                    <ns4:FirstName>Jane</ns4:FirstName>
+                    <ns4:LastName>Doe</ns4:LastName>
+                </ns4:Person>""");
+    assertThat(xmlFile).contains("""
+        <ns4:PersonalInfo>
+                        <ns4:OtherName>
+                            <ns4:FirstName></ns4:FirstName>
+                        </ns4:OtherName>
+                        <ns4:FirstName>Jane</ns4:FirstName>
+                        <ns4:LastName>Doe</ns4:LastName>
+                        <ns4:Gender>Female</ns4:Gender>
+                        <ns4:MaritalStatus>Never Married</ns4:MaritalStatus>
+                        <ns4:DOB>10/04/2020</ns4:DOB>
+                        <ns4:Relationship>Self</ns4:Relationship>
+        """);
+  }
+
+  @Test
+  void shouldMapPersonalInfoForLaterDocs() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("matchInfo", "firstName", "Judy")
+        .withPageData("matchInfo", "lastName", "Garland")
+        .withPageData("matchInfo", "dateOfBirth", List.of("06", "10", "1922"))
+        .build();
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now(clock))
+        .applicationData(applicationData)
+        .county(County.Hennepin)
+        .timeToComplete(Duration.ofSeconds(534))
+        .build();
+    applicationRepository.save(application);
+
+    ApplicationFile applicationFile = xmlGenerator
+        .generate("someId", Document.XML, CASEWORKER);
+
+    String xmlFile = new String(applicationFile.getFileBytes());
+    assertThat(xmlFile).contains("""
+        <ns4:Person>
+                    <ns4:FirstName>Judy</ns4:FirstName>
+                    <ns4:LastName>Garland</ns4:LastName>
+                </ns4:Person>""");
+    assertThat(xmlFile).contains("""
+        <ns4:PersonalInfo>
+                        <ns4:OtherName>
+                        </ns4:OtherName>
+                        <ns4:FirstName>Judy</ns4:FirstName>
+                        <ns4:LastName>Garland</ns4:LastName>
+                        <ns4:DOB>06/10/1922</ns4:DOB>
+                        <ns4:Relationship>Self</ns4:Relationship>
+        """);
   }
 
   private Node byteArrayToDocument(byte[] bytes)
