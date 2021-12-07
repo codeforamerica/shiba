@@ -203,6 +203,32 @@ public class XmlGeneratorIntegrationTest {
         """);
   }
 
+  @Test
+  void shouldMapPersonalInfoForLaterDocsWithEmptyDOB() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("matchInfo", "firstName", "Judy")
+        .withPageData("matchInfo", "lastName", "Garland")
+        .withPageData("matchInfo", "dateOfBirth", List.of("", "", ""))
+        .build();
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now(clock))
+        .applicationData(applicationData)
+        .county(County.Hennepin)
+        .timeToComplete(Duration.ofSeconds(534))
+        .build();
+    applicationRepository.save(application);
+
+    ApplicationFile applicationFile = xmlGenerator
+        .generate("someId", Document.XML, CASEWORKER);
+
+    String xmlFile = new String(applicationFile.getFileBytes());
+    assertThat(xmlFile).contains("""
+                        <ns4:DOB>//</ns4:DOB>
+                        <ns4:Relationship>Self</ns4:Relationship>
+        """);
+  }
+
   private Node byteArrayToDocument(byte[] bytes)
       throws ParserConfigurationException, IOException, SAXException {
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
