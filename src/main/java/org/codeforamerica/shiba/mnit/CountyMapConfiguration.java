@@ -470,7 +470,7 @@ public class CountyMapConfiguration {
         "f6f9ad77-3a2e-4c8f-aed7-194b5eae9c77",
         "A000021300");
     updateCounty(Faribault,
-        "Carol.becker@fmchs.com",
+        "lea.silverthorn@fmchs.com",
         "6bb1caab-bd7f-4bef-938c-47998ffd1eb8",
         "A000022100");
     updateCounty(Fillmore,
@@ -518,7 +518,7 @@ public class CountyMapConfiguration {
         "be86d7e8-c1bb-4025-8b7e-84a3c22c77eb",
         "1396819108");
     updateCounty(Kandiyohi,
-        "Human.Services@kcmn.us",
+        "hs-financial@kcmn.us",
         "57f87edb-c7d9-464a-acb1-c73930822add",
         "A000034500");
     updateCounty(Kittson,
@@ -566,7 +566,7 @@ public class CountyMapConfiguration {
         "16ce4830-ccd7-462c-8f72-cfb17405e008",
         "A000045100");
     updateCounty(Martin,
-        "Carol.becker@fmchs.com",
+        "lea.silverthorn@fmchs.com",
         "d0a5d6b2-be53-4f7e-a927-c267ae0ed77e",
         "A000046900");
     updateCounty(Meeker,
@@ -718,7 +718,7 @@ public class CountyMapConfiguration {
         "6d1b4962-ef66-407c-9191-39a53647de85",
         "1942539846");
     updateCounty(Wilkin,
-        "intake@co.wilkin.mn.us",
+        "cnoetzelman@co.wilkin.mn.us",
         "584963b6-63cc-4b49-a1b7-3dcc8410fae7",
         "1962567529");
     updateCounty(Winona,
