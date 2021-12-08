@@ -87,68 +87,81 @@ public class FilenetWebServiceClient {
   public void send(ApplicationFile applicationFile, RoutingDestination routingDestination,
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {
-    MDC.put("applicationFile", applicationFile.getFileName());
-    CreateDocument createDocument = new CreateDocument();
-    createDocument.setRepositoryId("Programs");
-    setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
-        applicationDocument, flowType, createDocument);
-    setContentStreamOnDocument(applicationFile, createDocument);
+    try {
+      MDC.put("applicationFile", applicationFile.getFileName());
+      CreateDocument createDocument = new CreateDocument();
+      createDocument.setRepositoryId("Programs");
+      setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
+          applicationDocument, flowType, createDocument);
+      setContentStreamOnDocument(applicationFile, createDocument);
 
-    // Create the document in Filenet
-    CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate.marshalSendAndReceive(createDocument, message -> {
-      SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
+      // Create the document in Filenet
+      CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate
+          .marshalSendAndReceive(createDocument, message -> {
+            SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
+            try {
+              SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+              QName securityQName = new QName(
+                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                  "Security", "wsse");
+              QName timestampQName = new QName(
+                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+                  "Timestamp", "wsu");
+              SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
+
+              SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
+              SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
+              ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
+              createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
+              SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
+              expiresElement
+                  .setTextContent(
+                      createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
+
+              SOAPElement usernameTokenElement = securityElement
+                  .addChildElement("UsernameToken", "wsse");
+              SOAPElement usernameElement = usernameTokenElement
+                  .addChildElement("Username", "wsse");
+              usernameElement.setTextContent(username);
+              SOAPElement passwordElement = usernameTokenElement
+                  .addChildElement("Password", "wsse");
+              passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"),
+                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
+              passwordElement.setTextContent(password);
+            } catch (SOAPException e) {
+              logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
+                  applicationDocument,
+                  flowType);
+            }
+          });
+
+      // Now route a copy of the document from Filenet to SFTP
+      String idd = response.getObjectId();
+      log.info("response from FileNet createDocument: " + idd);
+      String routerRequest = String.format("%s/%s", routerUrl, idd);
       try {
-        SOAPHeader soapHeader = soapMessage.getSOAPHeader();
-        QName securityQName = new QName(
-            "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-            "Security", "wsse");
-        QName timestampQName = new QName(
-            "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-            "Timestamp", "wsu");
-        SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
-
-        SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
-        SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
-        ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
-        createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
-        SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
-        expiresElement
-            .setTextContent(createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
-
-        SOAPElement usernameTokenElement = securityElement.addChildElement("UsernameToken", "wsse");
-        SOAPElement usernameElement = usernameTokenElement.addChildElement("Username", "wsse");
-        usernameElement.setTextContent(username);
-        SOAPElement passwordElement = usernameTokenElement.addChildElement("Password", "wsse");
-        passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"),
-            "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-        passwordElement.setTextContent(password);
-      } catch (SOAPException e) {
+        String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+        JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+        JsonElement messageElement = jsonObject.get("message");
+        if (messageElement.isJsonNull()
+            || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
+          String eMessage = String
+              .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+          throw new Exception(eMessage);
+        }
+      } catch (Exception e) {
         logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
             applicationDocument,
             flowType);
       }
-    });
 
-    // Now route a copy of the document from Filenet to SFTP
-    String idd = response.getObjectId();
-    log.info("response from FileNet createDocument: " + idd);
-    String routerRequest = String.format("%s/%s", routerUrl, idd);
-    try {
-	    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
-	    JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
-	    JsonElement messageElement = jsonObject.get("message");
-	    if (messageElement.isJsonNull() || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
-	    	String eMessage = String.format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
-	    	throw new Exception(eMessage);
- 	    }
+      applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+          DELIVERED);
     } catch (Exception e) {
-        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
-                applicationDocument,
-                flowType);
+      logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
+          applicationDocument, flowType);
+      throw e;
     }
-
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
-        DELIVERED);
   }
 
   @Recover
