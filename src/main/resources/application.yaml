@@ -99,10 +99,10 @@ logging:
     org.apache.pdfbox.cos: ERROR
     org.apache.pdfbox.pdmodel.font: ERROR
     org.springframework.web: ERROR
-    org.springframework.ws.client.MessageTracing.sent: DEBUG
-    org.springframework.ws.server.MessageTracing.sent: DEBUG
-    org.springframework.ws.client.MessageTracing.received: DEBUG
-    org.springframework.ws.server.MessageTracing.received: DEBUG
+    org.springframework.ws.client.MessageTracing.sent: TRACE
+    org.springframework.ws.server.MessageTracing.sent: TRACE
+    org.springframework.ws.client.MessageTracing.received: TRACE
+    org.springframework.ws.server.MessageTracing.received: TRACE
 
 pagesConfig: pages-config.yaml
 
