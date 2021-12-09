@@ -106,8 +106,13 @@ logging:
 
 pagesConfig: pages-config.yaml
 
+documentUploadEmails:
+  cronExpression: "0 0 15 * * *" # send document upload emails at 15:00 UTC (10:00 CT) each day
+
 resubmission:
   interval:
-    milliseconds: 10800000 # 3 hours
+    milliseconds: 10800000 # Run the ResubmissionService every 3 hours
+  initialDelay:
+    milliseconds: 0 # Run the process as soon the app first starts up
 
 demo-banner: false

@@ -58,7 +58,7 @@ public class DocumentUploadEmailService {
   //   - have not yet been sent a doc upload email
   //   - has document recommendations
   //   - opted into email communications
-  @Scheduled(cron = "0 0 15 * * *") // at 15:00 UTC (10:00 CT) each day
+  @Scheduled(cron = "${documentUploadEmails.cronExpression}")
   @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m")
   public void sendDocumentUploadEmails() {
     log.info("Checking for applications that need document upload emails");

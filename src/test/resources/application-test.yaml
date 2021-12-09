@@ -47,3 +47,10 @@ mnit-filenet:
   username: someUsername
   password: somePassword
   router-url: some-router-url
+
+documentUploadEmails:
+  cronExpression: "-" # disable process to send document upload emails
+
+resubmission:
+  initialDelay:
+    milliseconds: 2629800000 # Wait a month after the app starts to run the ResubmissionService, i.e don't run it at all

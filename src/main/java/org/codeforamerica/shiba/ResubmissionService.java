@@ -45,7 +45,10 @@ public class ResubmissionService {
     this.routingDecisionService = routingDecisionService;
   }
 
-  @Scheduled(fixedDelayString = "${resubmission.interval.milliseconds}")
+  @Scheduled(
+      fixedDelayString = "${resubmission.interval.milliseconds}",
+      initialDelayString = "${resubmission.initialDelay.milliseconds:0}"
+  )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
