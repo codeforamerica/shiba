@@ -108,6 +108,8 @@ pagesConfig: pages-config.yaml
 
 resubmission:
   interval:
-    milliseconds: 10800000 # 3 hours
+    milliseconds: 10800000 # Run the ResubmissionService every 3 hours
+  initialDelay:
+    milliseconds: 0 # Run the process as soon the app first starts up
 
 demo-banner: false
