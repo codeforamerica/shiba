@@ -94,9 +94,9 @@ class MnitDocumentConsumerTest {
   @Autowired
   private Map<String, TribalNationRoutingDestination> tribalNations;
   @MockBean
-  private AlfrescoWebServiceClient mnitClient;
+  private AlfrescoWebServiceClient mnitAlfrescoClient;
   @MockBean
-  private FilenetWebServiceClient mnitFilenetClient;
+  private FilenetWebServiceClient mnitClient;
   @MockBean
   private EmailClient emailClient;
   @MockBean
@@ -150,7 +150,7 @@ class MnitDocumentConsumerTest {
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.ON);
 
     doReturn(application).when(applicationRepository).find(any());
   }
@@ -559,8 +559,8 @@ class MnitDocumentConsumerTest {
   }
 
   @Test
-  void sendThroughFilenetClientWhenFilenetFeatureIsOn() {
-    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.ON);
+  void sendThroughAlfrescoClientWhenFilenetFeatureIsOff() {
+    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
 
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
@@ -578,17 +578,19 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(mnitFilenetClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitFilenetClient).send(pdfApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+    verify(mnitAlfrescoClient, times(5)).send(any(), any(), any(), any(), any());
+    verify(mnitAlfrescoClient).send(pdfApplicationFile,
+        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
         application.getId(), CAF, FULL);
-    verify(mnitFilenetClient).send(xmlApplicationFile, tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
+    verify(mnitAlfrescoClient).send(xmlApplicationFile,
+        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
         application.getId(), XML, FULL);
-    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+    verify(mnitAlfrescoClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
         CAF, FULL);
-    verify(mnitFilenetClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
+    verify(mnitAlfrescoClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
         XML, FULL);
     // CCAP never goes to Mille Lacs
-    verify(mnitFilenetClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
+    verify(mnitAlfrescoClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
         CCAP, FULL);
     verifyNoInteractions(mnitClient);
   }
