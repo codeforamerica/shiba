@@ -100,11 +100,9 @@ class FilenetWebServiceClientTest {
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
     olmsted = new CountyRoutingDestination();
     olmsted.setDhsProviderId("A000055800");
-    olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 
     hennepin = new CountyRoutingDestination();
     hennepin.setDhsProviderId("A000027200");
-    hennepin.setFolderId("5195b061-9bdc-4d31-9840-90a99902d329");
   }
 
   //TODO: namespaces change order. Need to figure out how to use a wildcard in the xpath assertions.  
@@ -153,7 +151,9 @@ class FilenetWebServiceClientTest {
 
     RoutingDestination routingDestination = new CountyRoutingDestination();
     routingDestination.setDhsProviderId("A000055800");
-    routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
+    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
     filenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
