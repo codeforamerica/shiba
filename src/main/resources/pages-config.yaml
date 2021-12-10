@@ -708,12 +708,14 @@ pageDefinitions:
   - &addHouseholdMembers
     name: addHouseholdMembers
     headerKey: add-household-members.do-you-want-to-add-household-members
-    headerHelpMessageKey: add-household-members.add-everyone-in-your-home
+    contextFragment: householdMemberFragment
     pageTitle: add-household-members.title
     hasPrimaryButton: false
     inputs:
       - name: addHouseholdMembers
         type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: addHouseholdMembersPrompt
   - &startHousehold
     name: startHousehold
     pageTitle: start-household.title
@@ -1594,7 +1596,7 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
-#    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
+  #    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
   - &identifyZipcode
     name: identifyZipcode
     headerKey: identify-zipcode.what-is-your-zip-code
@@ -3004,7 +3006,7 @@ workflow:
   certainPopsConfirm:
     pageConfiguration: *certainPopsConfirm
     nextPages:
-      - pageName: introBasicInfo    
+      - pageName: introBasicInfo
   certainPopsOffboarding:
     pageConfiguration: *certainPopsOffboarding
     nextPages:

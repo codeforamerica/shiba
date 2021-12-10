@@ -1,0 +1,8 @@
+<div th:fragment="addHouseholdMembersPrompt">
+  <ul class="list--bulleted">
+    <li th:text="#{add-household-members.your-children}"></li>
+    <li th:text="#{add-household-members.other-family-members}"></li>
+    <li th:text="#{add-household-members.unmarried-partner}"></li>
+    <li th:if="${programs.contains('SNAP')}" th:text="#{add-household-members.roommates}"></li>
+  </ul>
+</div>
