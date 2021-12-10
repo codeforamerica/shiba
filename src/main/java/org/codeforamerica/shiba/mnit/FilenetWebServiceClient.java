@@ -139,28 +139,21 @@ public class FilenetWebServiceClient {
       String idd = response.getObjectId();
       log.info("response from FileNet createDocument: " + idd);
       String routerRequest = String.format("%s/%s", routerUrl, idd);
-      try {
-        String routerResponse = restTemplate.getForObject(routerRequest, String.class);
-        JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
-        JsonElement messageElement = jsonObject.get("message");
-        if (messageElement.isJsonNull()
-            || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
-          String eMessage = String
-              .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
-          throw new Exception(eMessage);
-        }
-      } catch (Exception e) {
-        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
-            applicationDocument,
-            flowType);
+      String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+      JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+      JsonElement messageElement = jsonObject.get("message");
+      if (messageElement.isJsonNull()
+          || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
+        String eMessage = String
+            .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+        throw new IllegalStateException(eMessage);
       }
 
-      applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
-          DELIVERED);
+      applicationRepository
+          .updateStatus(applicationNumber, applicationDocument, routingDestination, DELIVERED);
     } catch (Exception e) {
       logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
           applicationDocument, flowType);
-      throw e;
     }
   }
 
