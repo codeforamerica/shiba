@@ -49,6 +49,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickLink("This looks correct");
 
     // Add 1 Household Member
+    assertThat(testPage.getElementText("page-form")).contains(
+        "Roommates that you buy and prepare food with");
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
 
@@ -557,7 +559,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\n"
-        + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
+            + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
