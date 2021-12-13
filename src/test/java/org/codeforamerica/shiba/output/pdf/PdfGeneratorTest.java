@@ -12,8 +12,8 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
-import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class PdfGeneratorTest {
   @Test
   void generatesAPdfWithTheCorrectFilename() {
     TribalNationRoutingDestination routingDestination = new TribalNationRoutingDestination(
-        "nationName", "folderId", "dhsProviderId", "email", "phoneNumber");
+        "nationName", "dhsProviderId", "email", "phoneNumber");
     doReturn("destinationSpecificDestination").when(fileNameGenerator)
         .generatePdfFilename(any(), any(), any());
 

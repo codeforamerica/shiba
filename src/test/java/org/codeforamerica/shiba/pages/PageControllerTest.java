@@ -9,14 +9,7 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,12 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.List;
 import java.util.Locale;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
@@ -367,7 +355,7 @@ class PageControllerTest {
         new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe")
     ));
     when(routingDecisionService.getRoutingDestinations(applicationData, CCAP)).thenReturn(List.of(
-        new CountyRoutingDestination(Anoka, "folder", "dhsProviderId", "something@example.com",
+        new CountyRoutingDestination(Anoka, "dhsProviderId", "something@example.com",
             "8675309", null)
     ));
     when(applicationRepository.find(applicationId)).thenReturn(application);

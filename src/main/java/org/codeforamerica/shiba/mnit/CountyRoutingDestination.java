@@ -16,9 +16,9 @@ public class CountyRoutingDestination extends RoutingDestination {
   private Address postOfficeAddress;
 
   @Builder
-  public CountyRoutingDestination(County county, String folderId, String dhsProviderId,
+  public CountyRoutingDestination(County county, String dhsProviderId,
       String email, String phoneNumber, Address postOfficeAddress) {
-    super(folderId, dhsProviderId, email, phoneNumber);
+    super(dhsProviderId, email, phoneNumber);
     this.county = county;
     this.postOfficeAddress = postOfficeAddress;
   }

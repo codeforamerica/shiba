@@ -65,7 +65,6 @@ class ResubmissionServiceTest {
   @BeforeEach
   void setUp() {
     countyMap.setDefaultValue(CountyRoutingDestination.builder()
-        .folderId("defaultFolderId")
         .dhsProviderId("defaultDhsProviderId")
         .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());

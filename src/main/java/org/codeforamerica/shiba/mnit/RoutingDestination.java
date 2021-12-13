@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public abstract class RoutingDestination {
 
-  private String folderId;
   private String dhsProviderId;
   private String email;
   private String phoneNumber;

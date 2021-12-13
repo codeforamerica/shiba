@@ -44,7 +44,6 @@ class FilenameGeneratorTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(emptyList()).build();
     defaultCountyRoutingDestination = CountyRoutingDestination.builder()
-        .folderId("defaultCountyFolderId")
         .dhsProviderId("defaultCountyDhsProviderId")
         .email("defaultCountyEmail@example.com")
         .build();
@@ -244,7 +243,7 @@ class FilenameGeneratorTest {
     @Test
     void shouldIncludeCorrectDhsProviderIdWhenARoutingDestinationIsProvided() {
       String providerId = "someOtherProviderId";
-      RoutingDestination routingDestination = new TribalNationRoutingDestination("test", "",
+      RoutingDestination routingDestination = new TribalNationRoutingDestination("test",
           providerId, "", "");
       String imageName = filenameGenerator.generateUploadedDocumentName(application, 0, "jpg",
           routingDestination);

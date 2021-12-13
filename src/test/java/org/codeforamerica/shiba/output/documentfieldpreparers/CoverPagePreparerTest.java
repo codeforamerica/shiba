@@ -65,7 +65,6 @@ class CoverPagePreparerTest {
         .dhsProviderId("someDhsProviderId")
         .email("someEmail")
         .phoneNumber("555-123-4567")
-        .folderId("someFolderId")
         .build();
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
         any(Document.class)))

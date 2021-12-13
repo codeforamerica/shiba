@@ -28,12 +28,12 @@ class GeneralDeliveryAddressEnrichmentTest {
     countyZipCodeMap.getCounties()
         .putAll(Map.of(
             County.Hennepin,
-            new CountyRoutingDestination(County.Hennepin, null, null, null, "765-4321",
+            new CountyRoutingDestination(County.Hennepin, null, null, "765-4321",
                 new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
             County.OtterTail,
-            new CountyRoutingDestination(County.OtterTail, null, null, null, "123-4567", null),
+            new CountyRoutingDestination(County.OtterTail, null, null, "123-4567", null),
             County.Anoka,
-            new CountyRoutingDestination(County.Anoka, null, null, null, "555-5555", null)));
+            new CountyRoutingDestination(County.Anoka, null, null, "555-5555", null)));
 
     cityInfoConfiguration.getCityToZipAndCountyMapping().putAll(Map.of(
         "Battle Lake",

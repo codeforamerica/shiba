@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
@@ -33,25 +31,35 @@ class RoutingDestinationMessageServiceTest {
   @Test
   void generatesMessageStringsWhenCountyAndTribalNation() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
-    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
+    routingDestinations.add(
+        CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+        "someProviderId", "someEmail", "222-2222"));
+    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
+        messageSource);
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
+        routingDestinations);
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
-        Anoka, true, routingDestinations)).isEqualTo("Anoka County (555-5555) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
+        Anoka, true, routingDestinations)).isEqualTo(
+        "Anoka County (555-5555) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
   }
 
   @Test
   void generatesMessageStringsWithoutPhoneNumbers() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
-    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
+    routingDestinations.add(
+        CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+        "someProviderId", "someEmail", "222-2222"));
+    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
+        messageSource);
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
+        routingDestinations);
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
-        Anoka, false, routingDestinations)).isEqualTo("Anoka County and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency");
+        Anoka, false, routingDestinations)).isEqualTo(
+        "Anoka County and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency");
   }
 
   @Test
@@ -68,11 +76,15 @@ class RoutingDestinationMessageServiceTest {
   @Test
   void generatesMessageStringsWhenTribalNationOnly() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE, "someFolderId", "someProviderId", "someEmail", "222-2222"));
-    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
-    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
+    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+        "someProviderId", "someEmail", "222-2222"));
+    RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
+        messageSource);
+    when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(
+        routingDestinations);
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
-        Anoka, true, routingDestinations)).isEqualTo("Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
+        Anoka, true, routingDestinations)).isEqualTo(
+        "Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
   }
 }
