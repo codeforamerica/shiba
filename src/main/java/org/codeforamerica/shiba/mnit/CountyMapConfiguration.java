@@ -459,7 +459,7 @@ public class CountyMapConfiguration {
         "af92e7fd-a52e-48c9-85f3-d961c1745661",
         "A000018300");
     updateCounty(Dakota,
-        "eearigappresearch@co.dakota.mn.us",
+        "eeadocs@co.dakota.mn.us",
         "cb1db222-a612-475a-9fc5-0a0b5466cb79",
         "1427127620");
     updateCounty(Dodge,
