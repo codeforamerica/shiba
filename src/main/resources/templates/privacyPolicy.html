@@ -21,9 +21,9 @@
       </div>
     </div>
   </section>
-  <section class="slab slab--white">
+  <main id="content" role="main" class="slab slab--white">
     <div class="grid">
-      <div class="grid__item width-one-third">
+      <nav class="grid__item width-one-third">
         <h2 class="h3">Table of Contents</h2>
         <div class="spacing-below-35"><a href="#overview" th:utext="#{privacy-policy.overview}"></a>
         </div>
@@ -43,7 +43,7 @@
         <div class="spacing-below-35 spacing-below-60"><a href="#questions"
                                                           th:utext="#{privacy-policy.questions}"></a>
         </div>
-      </div>
+      </nav>
       <div class="grid__item shift-one-twelfth width-seven-twelfths">
         <div class="grid">
           <a class="h2 spacing-below-35"
@@ -125,7 +125,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </main>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>

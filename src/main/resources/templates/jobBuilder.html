@@ -3,77 +3,85 @@
 <div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
-    <section class="slab slab--shiba">
-        <div class="grid">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
-                <div class="grid__item spacing-above-35">
-                    <h1 class="h2 spacing-above-0"
-                        th:text="#{job-builder.would-you-like-to-add-more-jobs}"></h1>
-                    <p class="text--help spacing-below-10"
-                       th:text="#{income-by-job.this-includes-full-time-part-time-contract-self-employment-work}"></p>
-                </div>
-                <div class="grid__item boxed-content spacing-below-60">
-                    <h2 class="h3 text--centered intro-box__title" th:text="#{${page.headerKey}}"></h2>
-                    <th:block th:each="subworkflow: ${subworkflows}">
-                        <th:block th:with="
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab slab--shiba">
+    <div class="grid">
+      <div th:replace="fragments/cardHeader :: cardHeader"></div>
+      <main id="content" role="main" class="card spacing-above-35">
+        <div class="grid__item spacing-above-35">
+          <h1 class="h2 spacing-above-0"
+              th:text="#{job-builder.would-you-like-to-add-more-jobs}"></h1>
+          <p class="text--help spacing-below-10"
+             th:text="#{income-by-job.this-includes-full-time-part-time-contract-self-employment-work}"></p>
+        </div>
+        <div class="grid__item boxed-content spacing-below-60">
+          <h2 class="h3 text--centered intro-box__title" th:text="#{${page.headerKey}}"></h2>
+          <th:block th:each="subworkflow: ${subworkflows}">
+            <th:block th:with="
                                 fakeApplicantNameAndId='x y applicant',
                                 householdMembers=${#sets.toSet({})}">
-                            <th:block th:each="householdMemberIteration, householdMemberIterationStat: ${subworkflow.value}">
-                                <th:block th:with="
+              <th:block
+                  th:each="householdMemberIteration, householdMemberIterationStat: ${subworkflow.value}">
+                <th:block th:with="
                                         householdSelectionPageData=${householdMemberIteration.getPagesData().get('householdSelectionForIncome')}">
-                                    <th:block th:if="${householdSelectionPageData == null}">
-                                        <th:block th:with="
+                  <th:block th:if="${householdSelectionPageData == null}">
+                    <th:block th:with="
                                                 unused=${householdMembers.add(fakeApplicantNameAndId)}"></th:block>
-                                    </th:block>
-                                    <th:block th:unless="${householdSelectionPageData == null}">
-                                        <th:block th:with="
+                  </th:block>
+                  <th:block th:unless="${householdSelectionPageData == null}">
+                    <th:block th:with="
                                                 householdMemberNameAndId=${householdMemberIteration.getPagesData().get('householdSelectionForIncome').get('whoseJobIsIt').value[0]},
                                                 unused=${householdMembers.add(householdMemberNameAndId)}"></th:block>
-                                    </th:block>
-                                </th:block>
-                            </th:block>
+                  </th:block>
+                </th:block>
+              </th:block>
 
-                            <th:block th:with="sortedHouseholdMembers=${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberSort(householdMembers)}">
-                                <th:block th:each="householdMemberNameAndId, householdMemberStat: ${sortedHouseholdMembers}">
-                                    <th:block th:with="
+              <th:block
+                  th:with="sortedHouseholdMembers=${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberSort(householdMembers)}">
+                <th:block
+                    th:each="householdMemberNameAndId, householdMemberStat: ${sortedHouseholdMembers}">
+                  <th:block th:with="
                                         householdMemberNameAndIdTokens=${householdMemberNameAndId.split(' ')},
                                         householdMemberNameTokens=${#lists.toList(householdMemberNameAndIdTokens).subList(0, householdMemberNameAndIdTokens.length - 1)},
                                         householdMemberName=${#strings.listJoin(householdMemberNameTokens, ' ')},
                                         householdMemberId=${householdMemberNameAndIdTokens[householdMemberNameAndIdTokens.length - 1]}">
-                                        <h2 class="h3 list-header spacing-below-10"
-                                            th:if="${programs.contains('NONE') || data.getPageInputFirstValue('addHouseholdMembers','addHouseholdMembers').equals('true')}"
-                                            th:text="${householdMemberId == 'applicant' ? 'You' : householdMemberName}"></h2>
-                                        <ul class="list--bulleted spacing-above-10 spacing-below-35 builder-list">
-                                            <th:block th:each="jobIteration, jobIterationStat: ${subworkflow.value}">
-                                                <th:block th:with="jobIterationPageData=${jobIteration.getPagesData().get('householdSelectionForIncome')}">
-                                                    <th:block th:with="jobHouseholdMemberNameAndId=${jobIterationPageData == null ? fakeApplicantNameAndId : jobIterationPageData.get('whoseJobIsIt').value[0]}">
-                                                        <th:block th:if="${jobHouseholdMemberNameAndId == householdMemberNameAndId}">
-                                                            <div th:replace="fragments/jobListElement :: job(${jobIteration.getPagesData().get('employersName').get('employersName').value[0]}, ${subworkflow.key}, ${jobIterationStat.index})"></div>
-                                                        </th:block>
-                                                    </th:block>
-                                                </th:block>
-                                            </th:block>
-                                        </ul>
-                                    </th:block>
-                                </th:block>
+                    <h2 class="h3 list-header spacing-below-10"
+                        th:if="${programs.contains('NONE') || data.getPageInputFirstValue('addHouseholdMembers','addHouseholdMembers').equals('true')}"
+                        th:text="${householdMemberId == 'applicant' ? 'You' : householdMemberName}"></h2>
+                    <ul class="list--bulleted spacing-above-10 spacing-below-35 builder-list">
+                      <th:block th:each="jobIteration, jobIterationStat: ${subworkflow.value}">
+                        <th:block
+                            th:with="jobIterationPageData=${jobIteration.getPagesData().get('householdSelectionForIncome')}">
+                          <th:block
+                              th:with="jobHouseholdMemberNameAndId=${jobIterationPageData == null ? fakeApplicantNameAndId : jobIterationPageData.get('whoseJobIsIt').value[0]}">
+                            <th:block
+                                th:if="${jobHouseholdMemberNameAndId == householdMemberNameAndId}">
+                              <div
+                                  th:replace="fragments/jobListElement :: job(${jobIteration.getPagesData().get('employersName').get('employersName').value[0]}, ${subworkflow.key}, ${jobIterationStat.index})"></div>
                             </th:block>
+                          </th:block>
                         </th:block>
-                    </th:block>
-                    <div class="text--centered">
-                        <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
-                            <i class="icon-add"></i>
-                            <span th:text="#{job-builder.add-a-job}"></span>
-                        </a>
-                    </div>
-                </div>
-                <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
-                   th:text="#{job-builder.no-thats-it}"></a>
-            </div>
+                      </th:block>
+                    </ul>
+                  </th:block>
+                </th:block>
+              </th:block>
+            </th:block>
+          </th:block>
+          <div class="text--centered">
+            <a class="button button--secondary"
+               th:href="'/pages/'+${pageName}+'/navigation?option=0'">
+              <i class="icon-add"></i>
+              <span th:text="#{job-builder.add-a-job}"></span>
+            </a>
+          </div>
         </div>
-    </section>
+        <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+           th:text="#{job-builder.no-thats-it}"></a>
+      </main>
+    </div>
+  </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
 </body>

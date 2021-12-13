@@ -8,7 +8,7 @@
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
             <div th:replace="fragments/cardHeader :: cardHeader"></div>
-            <div class="card spacing-above-35">
+            <main id="content" role="main" class="card spacing-above-35">
                 <div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
                 <h1 class="h2" th:text="#{document-recommendation.submit-any-documents-you-have}"></h1>
                 <p class="spacing-below-35">
@@ -24,7 +24,7 @@
                     <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
                        th:text="#{document-recommendation.skip-this-for-now}"></a>
                 </div>
-            </div>
+            </main>
         </div>
     </section>
 </div>

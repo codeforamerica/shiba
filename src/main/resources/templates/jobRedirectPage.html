@@ -7,7 +7,7 @@
   <section class="slab slab--shiba">
     <div class="grid">
       <div th:replace="fragments/cardHeader :: cardHeader"></div>
-      <div class="card spacing-above-35">
+      <main id="content" role="main" class="card spacing-above-35">
         <div class="grid__item spacing-above-35 spacing-below-60">
           <h1 class="h2" th:text="#{${page.headerKey}}"></h1>
           <h2 th:text="#{warning-page.is-that-ok}"></h2>
@@ -21,7 +21,7 @@
           <button id="form-submit-button" class="button spacing-below-60" type="submit"
                   th:text="#{warning-page.yes-go-back-to-the-start}"></button>
         </form>
-      </div>
+      </main>
     </div>
   </section>
 </div>
