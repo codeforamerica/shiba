@@ -2,6 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head(text)">
     <meta charset="UTF-8">
+    <meta name="description" th:content="#{landing.page-description}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
     <title th:text="${text}"></title>
