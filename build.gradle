@@ -25,44 +25,6 @@ repositories {
     mavenCentral()
 }
 
-task genJaxb {
-    ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
-    ext.classesDir = "${buildDir}/classes/jaxb"
-    ext.schema = "src/main/resources/object-service-port.wsdl"
-
-    outputs.dir classesDir
-
-    doLast() {
-        project.ant {
-            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
-                    classpath: configurations.jaxb.asPath
-            mkdir(dir: sourcesDir)
-            mkdir(dir: classesDir)
-
-            xjc(destdir: sourcesDir, schema: schema,
-                    package: "org.codeforamerica.shiba.esbwsdl") {
-                arg(value: "-wsdl")
-                produces(dir: sourcesDir, includes: "**/*.java")
-            }
-
-            javac(destdir: classesDir, source: 1.8, target: 1.8, debug: true,
-                    debugLevel: "lines,vars,source",
-                    includeantruntime: false,
-                    classpath: configurations.jaxb.asPath) {
-                src(path: sourcesDir)
-                include(name: "**/*.java")
-                include(name: "*.java")
-            }
-
-            copy(todir: classesDir) {
-                fileset(dir: sourcesDir, erroronmissingdir: false) {
-                    exclude(name: "**/*.java")
-                }
-            }
-        }
-    }
-}
-
 task genJaxbFilenet {
     ext.sourcesDir = "${buildDir}/generated-sources/jaxbFilenet"
     ext.classesDir = "${buildDir}/classes/jaxb"
@@ -174,7 +136,6 @@ dependencies {
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
 
     implementation("org.springframework.ws:spring-ws-core")
-    implementation(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb(
             "org.glassfish.jaxb:jaxb-runtime",
             "org.glassfish.jaxb:jaxb-xjc",
@@ -203,7 +164,6 @@ dependencies {
 
 compileJava {
     dependsOn(generateGitProperties)
-    dependsOn(genJaxb)
     dependsOn(genJaxbFilenet)
     inputs.files(processResources)
 }

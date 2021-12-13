@@ -45,14 +45,6 @@ client:
   keystore: src/main/resources/shiba-keystore.jks
   truststore: src/main/resources/shiba-truststore.jks
 
-mnit-esb:
-  url: https://test-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
-  jaxb-context-path: org.codeforamerica.shiba.esbwsdl
-  max-attempts: 1
-  delay: 5400000 # 1.5 hours
-  multiplier: 2
-  max-delay: 10800000 # 3 hours
-  timeout-seconds: 300
 mnit-filenet:
   username: ${MNIT-FILENET_USERNAME}
   password: ${MNIT-FILENET_PASSWORD}
@@ -81,7 +73,6 @@ mail-gun:
 
 feature-flag:
   certain-pops: on
-  filenet: on
   submit-via-api: off
   county-dakota: on
   submit-docs-via-email-for-hennepin: on

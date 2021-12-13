@@ -11,9 +11,6 @@ client:
   keystore: src/main/resources/shiba-keystore-production-2021.jks
   truststore: src/main/resources/shiba-truststore-production.jks
 
-mnit-esb:
-  url: https://svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
-
 hennepin-email: hhsews@hennepin.us
 
 mail-gun:
