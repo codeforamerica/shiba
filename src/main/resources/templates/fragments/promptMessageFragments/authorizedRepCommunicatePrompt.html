@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="authorizedRepCommunicatePrompt" class="spacing-below-35">
+            <p th:text="#{general.this-person-can}"></p>
+            <ul class="list--bulleted">
+                <li th:text="#{authorized-rep-communicate.speak-for-you-in-an-interview}"></li>
+                <li th:text="#{authorized-rep-communicate.help-you-complete-forms}"></li>
+                <li th:text="#{authorized-rep-communicate.talk-to-a-service-provider}"></li>
+            </ul>
+        </div>
+    </body>
+</html>
