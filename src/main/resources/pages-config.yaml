@@ -2816,7 +2816,7 @@ pageDefinitions:
     name: authorizedRepSpendOnYourBehalf
     headerKey: authorized-rep-spend-on-your-behalf.do-you-want-your-authorized-rep-to-spend-your-benefits-on-your-behalf
     inputs:
-      - name: SpendOnYourBehalf
+      - name: authorizedRepSpendOnYourBehalf
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: spendOnYourBehalfPrompt
