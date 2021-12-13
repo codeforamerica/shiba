@@ -142,9 +142,7 @@ public class FilenetWebServiceClient {
                   "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
               passwordElement.setTextContent(password);
             } catch (SOAPException e) {
-              logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
-                  applicationDocument,
-                  flowType);
+              throw new IllegalStateException(e);
             }
           });
 

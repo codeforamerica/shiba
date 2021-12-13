@@ -2,9 +2,6 @@ package org.codeforamerica.shiba.application;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 
 import java.security.SecureRandom;
 import java.sql.ResultSet;
@@ -118,12 +115,6 @@ public class ApplicationRepository {
             "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
             +
             "ON CONFLICT DO NOTHING", parameters);
-
-    if (rowCount > 0) {
-      logStatusUpdate(application.getId(), CAF, Status.valueFor(cafStatus));
-      logStatusUpdate(application.getId(), CCAP, Status.valueFor(ccapStatus));
-      logStatusUpdate(application.getId(), CERTAIN_POPS, Status.valueFor(certainPopsStatus));
-    }
   }
 
   public Application find(String id) {
@@ -223,8 +214,8 @@ public class ApplicationRepository {
       default -> null;
     };
 
-    if (statement != null && namedParameterJdbcTemplate.update(statement, parameters) > 0) {
-      logStatusUpdate(id, document, status);
+    if (statement != null) {
+      namedParameterJdbcTemplate.update(statement, parameters);
     }
   }
 
@@ -282,7 +273,6 @@ public class ApplicationRepository {
     if (statement != null) {
       var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
       namedParameterJdbcTemplate.update(statement, parameters);
-      logStatusUpdate(id, document, null);
     }
   }
 
