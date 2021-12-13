@@ -6,7 +6,7 @@
   <section class="slab slab--shiba">
     <div class="grid">
       <div th:replace="fragments/cardHeader :: cardHeader"></div>
-      <div class="card spacing-above-35">
+      <main id="content" role="main" class="card spacing-above-35">
         <th:block th:if="${page.contextFragment != null}">
           <div th:replace="'fragments/contextFragments' :: ${page.contextFragment}"></div>
         </th:block>
@@ -49,7 +49,7 @@
              th:href="|/pages/${page.subtleLinkTargetPage}|"
              th:text="#{${page.subtleLinkTextKey}}"></a>
         </div>
-      </div>
+      </main>
     </div>
   </section>
 </div>

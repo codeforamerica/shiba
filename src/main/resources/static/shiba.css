@@ -1533,3 +1533,17 @@ legend.form-question {
   color: #5F5854;
   font-size: 1.6rem;
 }
+
+#skip-to-content {
+  background-color: #FFF;
+  margin: 0.2em 0.5em;
+  color: #003865;
+  position: absolute;
+  left: -999px;
+  top: 0.7rem;
+  z-index: 99;
+}
+
+#skip-to-content:focus {
+  left: 8px;
+}
