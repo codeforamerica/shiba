@@ -9,7 +9,7 @@
   <section class="slab slab--shiba">
     <div class="grid">
       <div th:replace="fragments/cardHeader :: cardHeader"></div>
-      <div class="card spacing-above-35">
+      <main id="content" role="main" class="card spacing-above-35">
         <div class="grid__item spacing-above-35 spacing-below-60">
           <div th:replace="fragments/icons/icon-delete-document :: icon-delete-document"></div>
           <h1 class="h2"
@@ -24,7 +24,7 @@
         <a class="button spacing-below-60" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
            th:text="#{warning-page.nevermind-lets-keep-them}">
         </a>
-      </div>
+      </main>
     </div>
   </section>
 </div>
