@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.mnit;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +48,24 @@ import org.w3c.dom.Node;
 @ActiveProfiles("test")
 class FilenetWebServiceClientTest {
 
+  private final Map<String, String> namespaceMapping = Map.of(
+      "ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/",
+      "ns3", "http://docs.oasis-open.org/ns/cmis/core/200908/",
+      "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
+  private final String fileContent = "fileContent";
+  private final String fileName = "fileName";
+  private final String filenetIdd = "idd_some-filenet-idd";
+  private final StringSource successResponse = new StringSource("" +
+      "<soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>" +
+      "<soapenv:Body>" +
+      "<b:createDocumentResponse xmlns:b='http://docs.oasis-open.org/ns/cmis/messaging/200908/'>" +
+      "<b:objectId>" + filenetIdd + "</b:objectId>" +
+      "<b:extension si:nil='true' xmlns:si='http://www.w3.org/2001/XMLSchema-instance'/>" +
+      "</b:createDocumentResponse>" +
+      "</soapenv:Body>" +
+      "</soapenv:Envelope>"
+  );
+  private final String routerResponse = "{\n \"message\" : \"Success\" \n}";
   @Autowired
   @Qualifier("filenetWebServiceTemplate")
   private WebServiceTemplate webServiceTemplate;
@@ -68,30 +85,11 @@ class FilenetWebServiceClientTest {
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
-  protected FeatureFlagConfiguration featureFlagConfiguration;
+  private FeatureFlagConfiguration featureFlagConfiguration;
   @MockBean
   private RestTemplate restTemplate;
-
   private RoutingDestination olmsted;
   private RoutingDestination hennepin;
-  private final Map<String, String> namespaceMapping = Map.of(
-      "ns2", "http://docs.oasis-open.org/ns/cmis/messaging/200908/",
-      "ns3", "http://docs.oasis-open.org/ns/cmis/core/200908/",
-      "cmism", "http://docs.oasis-open.org/cmis/CMIS/v1.1/errata01/os/schema/CMIS-Messaging.xsd");
-  private final String fileContent = "fileContent";
-  private final String fileName = "fileName";
-  private final String filenetIdd = "idd_some-filenet-idd";
-  private final StringSource successResponse = new StringSource("" +
-      "<soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/'>" +
-      "<soapenv:Body>" +
-      "<b:createDocumentResponse xmlns:b='http://docs.oasis-open.org/ns/cmis/messaging/200908/'>" +
-      "<b:objectId>" + filenetIdd + "</b:objectId>" +
-      "<b:extension si:nil='true' xmlns:si='http://www.w3.org/2001/XMLSchema-instance'/>" +
-      "</b:createDocumentResponse>" +
-      "</soapenv:Body>" +
-      "</soapenv:Envelope>"
-  );
-  private final String routerResponse = "{\n \"message\" : \"Success\" \n}";
 
   @BeforeEach
   void setUp() {
@@ -100,11 +98,12 @@ class FilenetWebServiceClientTest {
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
     olmsted = new CountyRoutingDestination();
     olmsted.setDhsProviderId("A000055800");
-    olmsted.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
 
     hennepin = new CountyRoutingDestination();
     hennepin.setDhsProviderId("A000027200");
-    hennepin.setFolderId("5195b061-9bdc-4d31-9840-90a99902d329");
+
+    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
   }
 
   //TODO: namespaces change order. Need to figure out how to use a wildcard in the xpath assertions.  
@@ -153,7 +152,9 @@ class FilenetWebServiceClientTest {
 
     RoutingDestination routingDestination = new CountyRoutingDestination();
     routingDestination.setDhsProviderId("A000055800");
-    routingDestination.setFolderId("6875aa2f-8852-426f-a618-d394b9a32be5");
+
+    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
     filenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
@@ -178,7 +179,7 @@ class FilenetWebServiceClientTest {
     filenetWebServiceClient
         .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
-            Document.CAF, any());
+            Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
   }
@@ -205,7 +206,7 @@ class FilenetWebServiceClientTest {
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
     filenetWebServiceClient
-        .send(applicationFile, olmsted, "someId", Document.CAF, any());
+        .send(applicationFile, olmsted, "someId", Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
   }

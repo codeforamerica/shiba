@@ -21,11 +21,23 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import javax.xml.soap.*;
+import javax.xml.soap.SOAPElement;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.filenetwsdl.*;
+import org.codeforamerica.shiba.filenetwsdl.CmisContentStreamType;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertiesType;
+import org.codeforamerica.shiba.filenetwsdl.CmisProperty;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyBoolean;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyId;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyString;
+import org.codeforamerica.shiba.filenetwsdl.CreateDocument;
+import org.codeforamerica.shiba.filenetwsdl.CreateDocumentResponse;
+import org.codeforamerica.shiba.filenetwsdl.ObjectFactory;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
@@ -84,7 +96,8 @@ public class FilenetWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void send(ApplicationFile applicationFile, RoutingDestination routingDestination,
+  public void send(ApplicationFile applicationFile,
+      RoutingDestination routingDestination,
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {
     try {
@@ -139,25 +152,26 @@ public class FilenetWebServiceClient {
       String idd = response.getObjectId();
       log.info("response from FileNet createDocument: " + idd);
       String routerRequest = String.format("%s/%s", routerUrl, idd);
-      try {
-        String routerResponse = restTemplate.getForObject(routerRequest, String.class);
-        JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+      String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+      JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+
+      // Throw exception if this isnt a successful response
+      String eMessage = String
+          .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+      if (jsonObject != null) {
         JsonElement messageElement = jsonObject.get("message");
         if (messageElement.isJsonNull()
-            || messageElement.getAsString().compareToIgnoreCase("Success") != 0) {
-          String eMessage = String
-              .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
-          throw new Exception(eMessage);
+            || !messageElement.getAsString().equalsIgnoreCase("Success")) {
+          throw new IllegalStateException(eMessage);
         }
-      } catch (Exception e) {
-        logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
-            applicationDocument,
-            flowType);
+      } else {
+        throw new IllegalStateException(eMessage);
       }
 
-      applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
-          DELIVERED);
+      applicationRepository
+          .updateStatus(applicationNumber, applicationDocument, routingDestination, DELIVERED);
     } catch (Exception e) {
+      // Retry depends on uncaught exceptions - we want more logging for retries so the exception is rethrown here
       logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
           applicationDocument, flowType);
       throw e;
