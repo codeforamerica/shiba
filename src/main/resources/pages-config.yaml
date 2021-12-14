@@ -2783,70 +2783,71 @@ pageDefinitions:
             - value: "NOT_SURE"
               messageKey: general.inputs.not-sure
     pageTitle: healthcareCoverage.title
-  - &helper
-    name: helper
-    headerKey: helper.do-you-want-to-designate-someone-to-help-with-your-benefits
+  - &authorizedRep
+    name: authorizedRep
+    headerKey: authorized-rep.do-you-want-to
+    headerHelpMessageKey: authorized-rep.this-person-can-help
     inputs:
       - name: helpWithBenefits
         type: YES_NO
-    pageTitle: helper.title
+    pageTitle: authorized-rep.title
     hasPrimaryButton: false
-  - &authorizedRep
-    name: authorizedRep
-    headerKey: authorized-rep.do-you-want-your-helper-to-communicate-with-the-county-on-your-behalf
+  - &authorizedRepCommunicate
+    name: authorizedRepCommunicate
+    headerKey: authorized-rep-communicate.do-you-want-your-helper-to-communicate-with-the-county-on-your-behalf
     inputs:
       - name: communicateOnYourBehalf
         type: YES_NO
         promptMessage:
-          promptMessageFragmentName: authorizedRepPrompt
-    pageTitle: authorized-rep.title
+          promptMessageFragmentName: authorizedRepCommunicatePrompt
+    pageTitle: authorized-rep-communicate.title
     hasPrimaryButton: false
-  - &speakToCounty
-    name: speakToCounty
-    headerKey: speak-to-county.do-you-want-your-helper-to-get-mail-and-notices-for-you
+  - &authorizedRepSpeakToCounty
+    name: authorizedRepSpeakToCounty
+    headerKey: authorized-rep-speak-to-county.do-you-want-your-helper-to-get-mail-and-notices-for-you
     inputs:
       - name: getMailNotices
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: getMailNoticesPrompt
-    pageTitle: speak-to-county.title
+    pageTitle: authorized-rep-speak-to-county.title
     hasPrimaryButton: false
-  - &spendOnYourBehalf
-    name: spendOnYourBehalf
-    headerKey: spend-on-your-behalf.do-you-want-your-helper-to-spend-your-benefits-on-your-behalf
+  - &authorizedRepSpendOnYourBehalf
+    name: authorizedRepSpendOnYourBehalf
+    headerKey: authorized-rep-spend-on-your-behalf.do-you-want-your-authorized-rep-to-spend-your-benefits-on-your-behalf
     inputs:
-      - name: spendOnYourBehalf
+      - name: authorizedRepSpendOnYourBehalf
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: spendOnYourBehalfPrompt
-    pageTitle: spend-on-your-behalf.title
+    pageTitle: authorized-rep-spend-on-your-behalf.title
     hasPrimaryButton: false
-  - &helperContactInfo
-    name: helperContactInfo
-    pageTitle: helper-contact-info.title
-    headerKey: helper-contact-info.lets-get-your-helpers-contact-information
-    headerHelpMessageKey: helper-contact-info.we-need-to-send-this-information-to-your-county
+  - &authorizedRepContactInfo
+    name: authorizedRepContactInfo
+    pageTitle: authorized-rep-contact-info.title
+    headerKey: authorized-rep-contact-info.lets-get-your-authorized-reps-contact-information
+    headerHelpMessageKey: authorized-rep-contact-info.we-need-to-send-this-information-to-your-county
     inputs:
-      - name: helpersFullName
+      - name: authorizedRepFullName
         type: TEXT
         promptMessage:
-          promptMessageKey: helper-contact-info.whats-their-name
-      - name: helpersStreetAddress
+          promptMessageKey: authorized-rep-contact-info.whats-their-name
+      - name: authorizedRepStreetAddress
         type: TEXT
         promptMessage:
-          promptMessageKey: helper-contact-info.whats-their-street-address
-      - name: helpersCity
+          promptMessageKey: authorized-rep-contact-info.whats-their-street-address
+      - name: authorizedRepCity
         type: TEXT
         promptMessage:
-          promptMessageKey: helper-contact-info.what-city-do-they-live-in
-      - name: helpersZipCode
+          promptMessageKey: authorized-rep-contact-info.what-city-do-they-live-in
+      - name: authorizedRepZipCode
         type: TEXT
         promptMessage:
-          promptMessageKey: helper-contact-info.what-is-their-zip-code
-      - name: helpersPhoneNumber
+          promptMessageKey: authorized-rep-contact-info.what-is-their-zip-code
+      - name: authorizedRepPhoneNumber
         type: PHONE
         promptMessage:
-          promptMessageKey: helper-contact-info.what-is-their-phone-number
+          promptMessageKey: authorized-rep-contact-info.what-is-their-phone-number
         validators:
           - validation: PHONE_STARTS_WITH_ONE
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
@@ -3923,34 +3924,34 @@ workflow:
   healthcareCoverage:
     pageConfiguration: *healthcareCoverage
     nextPages:
-      - pageName: helper
-  helper:
-    pageConfiguration: *helper
-    nextPages:
-      - pageName: additionalInfo
-        condition:
-          pageName: helper
-          input: helpWithBenefits
-          value: "false"
       - pageName: authorizedRep
-        condition:
-          pageName: helper
-          input: helpWithBenefits
-          value: "true"
   authorizedRep:
     pageConfiguration: *authorizedRep
     nextPages:
-      - pageName: speakToCounty
-  speakToCounty:
-    pageConfiguration: *speakToCounty
+      - pageName: additionalInfo
+        condition:
+          pageName: authorizedRep
+          input: helpWithBenefits
+          value: "false"
+      - pageName: authorizedRepCommunicate
+        condition:
+          pageName: authorizedRep
+          input: helpWithBenefits
+          value: "true"
+  authorizedRepCommunicate:
+    pageConfiguration: *authorizedRepCommunicate
     nextPages:
-      - pageName: spendOnYourBehalf
-  spendOnYourBehalf:
-    pageConfiguration: *spendOnYourBehalf
+      - pageName: authorizedRepSpeakToCounty
+  authorizedRepSpeakToCounty:
+    pageConfiguration: *authorizedRepSpeakToCounty
     nextPages:
-      - pageName: helperContactInfo
-  helperContactInfo:
-    pageConfiguration: *helperContactInfo
+      - pageName: authorizedRepSpendOnYourBehalf
+  authorizedRepSpendOnYourBehalf:
+    pageConfiguration: *authorizedRepSpendOnYourBehalf
+    nextPages:
+      - pageName: authorizedRepContactInfo
+  authorizedRepContactInfo:
+    pageConfiguration: *authorizedRepContactInfo
     nextPages:
       - pageName: additionalInfo
     skipCondition:
@@ -3959,10 +3960,10 @@ workflow:
         - pageName: authorizedRep
           input: communicateOnYourBehalf
           value: "false"
-        - pageName: speakToCounty
+        - pageName: authorizedRepSpeakToCounty
           input: getMailNotices
           value: "false"
-        - pageName: spendOnYourBehalf
+        - pageName: authorizedRepSpendOnYourBehalf
           input: spendOnYourBehalf
           value: "false"
   jobSearch:

@@ -218,20 +218,20 @@ mappings:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
     registerToVoteSelection: REGISTER_TO_VOTE
-  helper:
-    helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRep:
+    helpWithBenefits: WANT_AUTHORIZED_REP
+  authorizedRepCommunicate:
     communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
-  speakToCounty:
+  authorizedRepSpeakToCounty:
     getMailNotices: AUTHORIZED_REP_GET_NOTICES
-  spendOnYourBehalf:
-    spendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
-  helperContactInfo:
-    helpersFullName: AUTHORIZED_REP_NAME
-    helpersStreetAddress: AUTHORIZED_REP_ADDRESS
-    helpersCity: AUTHORIZED_REP_CITY
-    helpersZipCode: AUTHORIZED_REP_ZIP_CODE
-    helpersPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
+  authorizedRepSpendOnYourBehalf:
+    authorizedRepSpendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF
+  authorizedRepContactInfo:
+    authorizedRepFullName: AUTHORIZED_REP_NAME
+    authorizedRepStreetAddress: AUTHORIZED_REP_ADDRESS
+    authorizedRepCity: AUTHORIZED_REP_CITY
+    authorizedRepZipCode: AUTHORIZED_REP_ZIP_CODE
+    authorizedRepPhoneNumber: AUTHORIZED_REP_PHONE_NUMBER
   employee:
     fullName: EMPLOYEE_FULL_NAME
     grossMonthlyIncome: GROSS_MONTHLY_INCOME

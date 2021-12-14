@@ -374,14 +374,14 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("getMailNotices", YES.getDisplayValue());
 
     // Do you want your helper to spend your benefits on your behalf?
-    testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
+    testPage.enter("authorizedRepSpendOnYourBehalf", YES.getDisplayValue());
 
     // Let's get your helpers contact information
-    testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-    testPage.enter("helpersStreetAddress", "someStreetAddress");
-    testPage.enter("helpersCity", "someCity");
-    testPage.enter("helpersZipCode", "12345");
-    testPage.enter("helpersPhoneNumber", "7234567890");
+    testPage.enter("authorizedRepFullName", "defaultFirstName defaultLastName");
+    testPage.enter("authorizedRepStreetAddress", "someStreetAddress");
+    testPage.enter("authorizedRepCity", "someCity");
+    testPage.enter("authorizedRepZipCode", "12345");
+    testPage.enter("authorizedRepPhoneNumber", "7234567890");
     testPage.clickContinue();
 
     // Is there anything else you want to share?

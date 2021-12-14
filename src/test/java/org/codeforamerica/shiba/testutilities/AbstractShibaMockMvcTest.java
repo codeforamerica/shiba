@@ -852,7 +852,7 @@ public class AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("submittingApplication", "registerToVote");
     postExpectingRedirect("registerToVote", "registerToVote", "YES", "healthcareCoverage");
     postExpectingRedirect("healthcareCoverage", "healthcareCoverage",
-        hasHealthcareCoverage ? "YES" : "NO", "helper");
+        hasHealthcareCoverage ? "YES" : "NO", "authorizedRep");
 
     completeHelperWorkflow(helpWithBenefits);
     postExpectingRedirect("additionalInfo",
@@ -871,19 +871,19 @@ public class AbstractShibaMockMvcTest {
 
   protected void completeHelperWorkflow(boolean helpWithBenefits) throws Exception {
     if (helpWithBenefits) {
-      postExpectingRedirect("helper", "helpWithBenefits", "true", "authorizedRep");
-      postExpectingRedirect("authorizedRep", "communicateOnYourBehalf", "true", "speakToCounty");
-      postExpectingRedirect("speakToCounty", "getMailNotices", "true", "spendOnYourBehalf");
-      postExpectingRedirect("spendOnYourBehalf", "spendOnYourBehalf", "true", "helperContactInfo");
-      postExpectingRedirect("helperContactInfo", Map.of(
-          "helpersFullName", List.of("My Helpful Friend"),
-          "helpersStreetAddress", List.of("helperStreetAddress"),
-          "helpersCity", List.of("helperCity"),
-          "helpersZipCode", List.of("54321"),
-          "helpersPhoneNumber", List.of("7234561111")
+      postExpectingRedirect("authorizedRep", "helpWithBenefits", "true", "authorizedRepCommunicate");
+      postExpectingRedirect("authorizedRepCommunicate", "communicateOnYourBehalf", "true", "authorizedRepSpeakToCounty");
+      postExpectingRedirect("authorizedRepSpeakToCounty", "getMailNotices", "true", "authorizedRepSpendOnYourBehalf");
+      postExpectingRedirect("authorizedRepSpendOnYourBehalf", "spendOnYourBehalf", "true", "authorizedRepContactInfo");
+      postExpectingRedirect("authorizedRepContactInfo", Map.of(
+          "authorizedRepFullName", List.of("My Helpful Friend"),
+          "authorizedRepStreetAddress", List.of("helperStreetAddress"),
+          "authorizedRepCity", List.of("helperCity"),
+          "authorizedRepZipCode", List.of("54321"),
+          "authorizedRepPhoneNumber", List.of("7234561111")
       ), "additionalInfo");
     } else {
-      postExpectingRedirect("helper", "helpWithBenefits", "false", "additionalInfo");
+      postExpectingRedirect("authorizedRep", "helpWithBenefits", "false", "additionalInfo");
     }
   }
 

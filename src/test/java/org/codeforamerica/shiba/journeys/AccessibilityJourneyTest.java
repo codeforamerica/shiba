@@ -20,7 +20,7 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@Tag("a11y")
+//@Tag("a11y")
 public class AccessibilityJourneyTest extends JourneyTest {
 
   protected static List<Rule> resultsList = new ArrayList<>();
@@ -335,12 +335,12 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("helpWithBenefits", YES.getDisplayValue());
     testPage.enter("communicateOnYourBehalf", YES.getDisplayValue());
     testPage.enter("getMailNotices", YES.getDisplayValue());
-    testPage.enter("spendOnYourBehalf", YES.getDisplayValue());
-    testPage.enter("helpersFullName", "defaultFirstName defaultLastName");
-    testPage.enter("helpersStreetAddress", "someStreetAddress");
-    testPage.enter("helpersCity", "someCity");
-    testPage.enter("helpersZipCode", "12345");
-    testPage.enter("helpersPhoneNumber", "7234567890");
+    testPage.enter("authorizedRepSpendOnYourBehalf", YES.getDisplayValue());
+    testPage.enter("authorizedRepFullName", "defaultFirstName defaultLastName");
+    testPage.enter("authorizedRepStreetAddress", "someStreetAddress");
+    testPage.enter("authorizedRepCity", "someCity");
+    testPage.enter("authorizedRepZipCode", "12345");
+    testPage.enter("authorizedRepPhoneNumber", "7234567890");
     testPage.clickContinue();
     driver.findElement(By.id("additionalInfo"))
         .sendKeys("Some additional information about my application");
