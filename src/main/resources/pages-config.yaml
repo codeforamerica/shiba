@@ -2792,6 +2792,7 @@ pageDefinitions:
         type: YES_NO
     pageTitle: authorized-rep.title
     hasPrimaryButton: false
+    contextFragment: authorizedRepContextFragment
   - &authorizedRepCommunicate
     name: authorizedRepCommunicate
     headerKey: authorized-rep-communicate.do-you-want-your-helper-to-communicate-with-the-county-on-your-behalf
@@ -2802,6 +2803,7 @@ pageDefinitions:
           promptMessageFragmentName: authorizedRepCommunicatePrompt
     pageTitle: authorized-rep-communicate.title
     hasPrimaryButton: false
+    contextFragment: authorizedRepContextFragment
   - &authorizedRepSpeakToCounty
     name: authorizedRepSpeakToCounty
     headerKey: authorized-rep-speak-to-county.do-you-want-your-helper-to-get-mail-and-notices-for-you
@@ -2812,6 +2814,7 @@ pageDefinitions:
           promptMessageFragmentName: getMailNoticesPrompt
     pageTitle: authorized-rep-speak-to-county.title
     hasPrimaryButton: false
+    contextFragment: authorizedRepContextFragment
   - &authorizedRepSpendOnYourBehalf
     name: authorizedRepSpendOnYourBehalf
     headerKey: authorized-rep-spend-on-your-behalf.do-you-want-your-authorized-rep-to-spend-your-benefits-on-your-behalf
@@ -2822,6 +2825,7 @@ pageDefinitions:
           promptMessageFragmentName: spendOnYourBehalfPrompt
     pageTitle: authorized-rep-spend-on-your-behalf.title
     hasPrimaryButton: false
+    contextFragment: authorizedRepContextFragment
   - &authorizedRepContactInfo
     name: authorizedRepContactInfo
     pageTitle: authorized-rep-contact-info.title
@@ -2853,6 +2857,7 @@ pageDefinitions:
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
           - validation: PHONE
             errorMessageKey: general.validation.make-sure-to-enter-a-phone-number-with-10-digits
+    contextFragment: authorizedRepContextFragment
   - &additionalInfo
     name: additionalInfo
     headerKey: additional-info.is-there-anything-else-you-want-to-share
