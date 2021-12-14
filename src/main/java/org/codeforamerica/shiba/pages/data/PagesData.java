@@ -4,25 +4,13 @@ import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.config.OptionsWithDataSourceTemplate.createOptionsWithDataSourceTemplate;
 
 import java.io.Serial;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.inputconditions.Condition;
-import org.codeforamerica.shiba.pages.config.ConditionalValue;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.config.FormInput;
-import org.codeforamerica.shiba.pages.config.FormInputTemplate;
-import org.codeforamerica.shiba.pages.config.PageConfiguration;
-import org.codeforamerica.shiba.pages.config.PageDatasource;
-import org.codeforamerica.shiba.pages.config.PageTemplate;
-import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
-import org.codeforamerica.shiba.pages.config.Value;
+import org.codeforamerica.shiba.pages.config.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -93,7 +81,7 @@ public class PagesData extends HashMap<String, PageData> {
 
   public List<String> safeGetPageInputValue(String pageName, String inputName) {
     return Optional.ofNullable(get(pageName))
-        .flatMap(pageData -> Optional.ofNullable(pageData.get(inputName)))
+        .map(pageData -> pageData.get(inputName))
         .map(InputData::getValue)
         .orElse(List.of());
   }
