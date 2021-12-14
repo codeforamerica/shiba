@@ -18,18 +18,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -48,7 +37,6 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
-import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
@@ -93,8 +81,7 @@ class MnitDocumentConsumerTest {
   private CountyMap<CountyRoutingDestination> countyMap;
   @Autowired
   private Map<String, TribalNationRoutingDestination> tribalNations;
-  @MockBean
-  private AlfrescoWebServiceClient mnitAlfrescoClient;
+
   @MockBean
   private FilenetWebServiceClient mnitClient;
   @MockBean
@@ -556,43 +543,6 @@ class MnitDocumentConsumerTest {
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
     verify(applicationRepository, times(2)).updateStatus(application.getId(), UPLOADED_DOC,
         routingDestination, SENDING);
-  }
-
-  @Test
-  void sendThroughAlfrescoClientWhenFilenetFeatureIsOff() {
-    when(featureFlagConfig.get("filenet")).thenReturn(FeatureFlag.OFF);
-
-    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
-    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
-    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
-
-    application.setApplicationData(new TestApplicationDataBuilder()
-        .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
-        .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
-        .withPageData("homeAddress", "county", List.of("Olmsted"))
-        .withPageData("identifyCounty", "county", Olmsted.name())
-        .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
-        .withPageData("verifyHomeAddress", "useEnrichedAddress", List.of("true"))
-        .build());
-
-    documentConsumer.processCafAndCcap(application);
-
-    verify(mnitAlfrescoClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitAlfrescoClient).send(pdfApplicationFile,
-        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-        application.getId(), CAF, FULL);
-    verify(mnitAlfrescoClient).send(xmlApplicationFile,
-        tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE),
-        application.getId(), XML, FULL);
-    verify(mnitAlfrescoClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
-        CAF, FULL);
-    verify(mnitAlfrescoClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(),
-        XML, FULL);
-    // CCAP never goes to Mille Lacs
-    verify(mnitAlfrescoClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(),
-        CCAP, FULL);
-    verifyNoInteractions(mnitClient);
   }
 
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,

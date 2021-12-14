@@ -14,7 +14,7 @@ public class EsbRetryListener extends RetryListenerSupport {
 
   private final String maxAttempts;
 
-  public EsbRetryListener(@Value("${mnit-esb.max-attempts}") String maxAttempts) {
+  public EsbRetryListener(@Value("${mnit-filenet.max-attempts}") String maxAttempts) {
     this.maxAttempts = maxAttempts;
   }
 

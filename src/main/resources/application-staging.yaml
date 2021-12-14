@@ -3,11 +3,7 @@ spring:
     url: ${DATABASE_URL}
     driverClassName: org.postgresql.Driver
 
-mnit-esb:
-  url: https://uat-svcs.dhs.mn.gov/WebServices/Alfresco/CreateDocument
-
 feature-flag:
-  filenet: on
   submit-via-api: on
   submit-docs-via-email-for-hennepin: on
 

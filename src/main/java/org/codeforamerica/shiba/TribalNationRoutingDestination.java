@@ -41,11 +41,10 @@ public class TribalNationRoutingDestination extends RoutingDestination {
 
   public TribalNationRoutingDestination(
       String name,
-      String folderId,
       String dhsProviderId,
       String email,
       String phoneNumber) {
-    super(folderId, dhsProviderId, email, phoneNumber);
+    super(dhsProviderId, email, phoneNumber);
     this.name = name;
   }
 

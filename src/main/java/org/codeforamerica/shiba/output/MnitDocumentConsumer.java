@@ -19,7 +19,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.mnit.AlfrescoWebServiceClient;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
@@ -37,7 +36,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MnitDocumentConsumer {
 
-  private final AlfrescoWebServiceClient mnitClient;
   private final EmailClient emailClient;
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
@@ -48,8 +46,7 @@ public class MnitDocumentConsumer {
   private final FilenetWebServiceClient mnitFilenetClient;
   private final FilenameGenerator filenameGenerator;
 
-  public MnitDocumentConsumer(AlfrescoWebServiceClient mnitClient,
-      EmailClient emailClient,
+  public MnitDocumentConsumer(EmailClient emailClient,
       XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
@@ -58,7 +55,6 @@ public class MnitDocumentConsumer {
       FeatureFlagConfiguration featureFlagConfiguration,
       FilenetWebServiceClient mnitFilenetClient,
       FilenameGenerator filenameGenerator) {
-    this.mnitClient = mnitClient;
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
@@ -130,7 +126,7 @@ public class MnitDocumentConsumer {
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
     for (RoutingDestination routingDestination : routingDestinations) {
       boolean sendXMLToDakota = routingDestination.getName().equals(County.Dakota.name())
-          && application.getFlow() == FlowType.LATER_DOCS;
+                                && application.getFlow() == FlowType.LATER_DOCS;
       boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
           "submit-docs-via-email-for-hennepin").isOn();
       boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
@@ -207,12 +203,9 @@ public class MnitDocumentConsumer {
         document.name(),
         routingDestination.getName(),
         application.getId()));
-    if (featureFlagConfiguration.get("filenet").isOn()) {
-      mnitFilenetClient.send(file, routingDestination, application.getId(), document,
-          application.getFlow());
-    } else {
-      mnitClient.send(file, routingDestination, application.getId(), document,
-          application.getFlow());
-    }
+
+    mnitFilenetClient.send(file, routingDestination, application.getId(), document,
+        application.getFlow());
+
   }
 }

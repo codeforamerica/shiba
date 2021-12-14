@@ -2,11 +2,7 @@ package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Beltrami;
-import static org.codeforamerica.shiba.Program.CASH;
-import static org.codeforamerica.shiba.Program.CCAP;
-import static org.codeforamerica.shiba.Program.EA;
-import static org.codeforamerica.shiba.Program.GRH;
-import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.OTHER_FEDERALLY_RECOGNIZED_TRIBE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
@@ -175,7 +171,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
     RoutingDestination routingDestination = routingDestinations.get(0);
-    assertThat(routingDestination.getFolderId()).isEqualTo("3b0aa880-db45-483d-fa0-7987c9b0c02d");
     assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
     assertThat(routingDestination.getEmail()).isEqualTo("help+dev@mnbenefits.org");
     assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
