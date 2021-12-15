@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.mnit;
 
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -18,11 +20,10 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,13 +84,11 @@ class FilenetWebServiceClientTest {
   private String routerUrl;
   private MockWebServiceServer mockWebServiceServer;
   @MockBean
-  private ApplicationRepository applicationRepository;
-  @MockBean
-  private FeatureFlagConfiguration featureFlagConfiguration;
+  private ApplicationStatusRepository applicationStatusRepository;
   @MockBean
   private RestTemplate restTemplate;
-  private RoutingDestination olmsted;
-  private RoutingDestination hennepin;
+  private CountyRoutingDestination olmsted;
+  private CountyRoutingDestination hennepin;
 
   @BeforeEach
   void setUp() {
@@ -97,9 +96,11 @@ class FilenetWebServiceClientTest {
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
     olmsted = new CountyRoutingDestination();
+    olmsted.setCounty(Olmsted);
     olmsted.setDhsProviderId("A000055800");
 
     hennepin = new CountyRoutingDestination();
+    hennepin.setCounty(Hennepin);
     hennepin.setDhsProviderId("A000027200");
 
     String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
@@ -150,18 +151,15 @@ class FilenetWebServiceClientTest {
             .evaluatesTo("Inbound"))
         .andRespond(withSoapEnvelope(successResponse));
 
-    RoutingDestination routingDestination = new CountyRoutingDestination();
-    routingDestination.setDhsProviderId("A000055800");
-
     String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
     filenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
-        routingDestination, "someId", Document.CAF, FlowType.FULL
+        olmsted, "someId", Document.CAF, FlowType.FULL
     );
 
-    verify(applicationRepository).updateStatus("someId", Document.CAF, routingDestination,
+    verify(applicationStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
         DELIVERED);
 
     mockWebServiceServer.verify();

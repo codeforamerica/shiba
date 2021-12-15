@@ -14,7 +14,7 @@ import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
@@ -49,7 +49,7 @@ public class MailGunEmailClient implements EmailClient {
   private final int maxAttachmentSize;
   private final WebClient webClient;
   private final String activeProfile;
-  private final ApplicationRepository applicationRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
   private final MessageSource messageSource;
 
   public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
@@ -62,7 +62,7 @@ public class MailGunEmailClient implements EmailClient {
       @Value("${mail-gun.shouldCC}") boolean shouldCC,
       @Value("${mail-gun.max-attachment-size}") int maxAttachmentSize,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
-      ApplicationRepository applicationRepository,
+      ApplicationStatusRepository applicationStatusRepository,
       MessageSource messageSource
   ) {
     this.senderEmail = senderEmail;
@@ -75,7 +75,7 @@ public class MailGunEmailClient implements EmailClient {
     this.maxAttachmentSize = maxAttachmentSize;
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
     this.activeProfile = activeProfile;
-    this.applicationRepository = applicationRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
     this.messageSource = messageSource;
   }
 
@@ -182,7 +182,7 @@ public class MailGunEmailClient implements EmailClient {
           filesToSend, true);
     }
 
-    applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, County.Hennepin.name(),
+    applicationStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC, County.Hennepin.name(),
         Status.DELIVERED);
   }
 

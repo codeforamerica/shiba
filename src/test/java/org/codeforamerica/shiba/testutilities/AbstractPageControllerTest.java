@@ -7,6 +7,7 @@ import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
@@ -67,6 +68,8 @@ public class AbstractPageControllerTest {
   protected RoutingDecisionService routingDecisionService;
   @MockBean
   protected RoutingDestinationMessageService routingDestinationMessageService;
+  @MockBean
+  protected ApplicationStatusRepository applicationStatusRepository;
 
   @Autowired
   protected MockMvc mockMvc;

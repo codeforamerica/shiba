@@ -27,7 +27,7 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.filenetwsdl.CmisContentStreamType;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertiesType;
@@ -65,7 +65,7 @@ public class FilenetWebServiceClient {
   private final String username;
   private final String password;
   private final String routerUrl;
-  private final ApplicationRepository applicationRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
 
   @Autowired
   private RestTemplate restTemplate;
@@ -77,13 +77,13 @@ public class FilenetWebServiceClient {
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
       @Value("${mnit-filenet.router-url}") String routerUrl,
-      ApplicationRepository applicationRepository) {
+      ApplicationStatusRepository applicationStatusRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
     this.routerUrl = routerUrl;
-    this.applicationRepository = applicationRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
   }
 
   @Retryable(
@@ -166,8 +166,9 @@ public class FilenetWebServiceClient {
         throw new IllegalStateException(eMessage);
       }
 
-      applicationRepository
-          .updateStatus(applicationNumber, applicationDocument, routingDestination, DELIVERED);
+      applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+          routingDestination.getName(),
+          DELIVERED);
     } catch (Exception e) {
       // Retry depends on uncaught exceptions - we want more logging for retries so the exception is rethrown here
       logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
@@ -180,7 +181,8 @@ public class FilenetWebServiceClient {
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
-    applicationRepository.updateStatus(applicationNumber, applicationDocument, routingDestination,
+    applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+        routingDestination.getName(),
         DELIVERY_FAILED);
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }

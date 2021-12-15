@@ -11,7 +11,7 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatus;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -29,20 +29,20 @@ public class ResubmissionService {
 
   private final ApplicationRepository applicationRepository;
   private final EmailClient emailClient;
-  private final CountyMap<CountyRoutingDestination> countyMap;
   private final PdfGenerator pdfGenerator;
   private final RoutingDecisionService routingDecisionService;
+  private final ApplicationStatusRepository applicationStatusRepository;
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ResubmissionService(ApplicationRepository applicationRepository,
-      EmailClient emailClient, CountyMap<CountyRoutingDestination> countyMap,
+      EmailClient emailClient,
       PdfGenerator pdfGenerator,
-      RoutingDecisionService routingDecisionService) {
+      RoutingDecisionService routingDecisionService,
+      ApplicationStatusRepository applicationStatusRepository) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
-    this.countyMap = countyMap;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
+    this.applicationStatusRepository = applicationStatusRepository;
   }
 
   @Scheduled(
@@ -52,7 +52,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    List<ApplicationStatus> applicationsToResubmit = applicationRepository.getApplicationStatusToResubmit();
+    List<ApplicationStatus> applicationsToResubmit = applicationStatusRepository.getApplicationStatusToResubmit();
 
     if (applicationsToResubmit.isEmpty()) {
       log.info("There are no applications to resubmit");
@@ -78,11 +78,11 @@ public class ResubmissionService {
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        applicationRepository.updateStatus(id, document, routingDestinationName, DELIVERED);
+        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationRepository.updateStatus(id, document, routingDestinationName,
+        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName,
             RESUBMISSION_FAILED);
       }
     });
