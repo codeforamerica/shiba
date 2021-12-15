@@ -8,7 +8,6 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -52,38 +51,5 @@ public class Application {
   public void setCompletedAtTime(Clock clock) {
     completedAt = ZonedDateTime.now(clock);
     setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
-  }
-
-  @Deprecated
-  public Status getCafApplicationStatus() {
-    return getApplicationStatus(Document.CAF, null);
-  }
-
-  @Deprecated
-  public Status getCcapApplicationStatus() {
-    return getApplicationStatus(Document.CCAP, null);
-  }
-
-  @Deprecated
-  public Status getCertainPopsApplicationStatus() {
-    return getApplicationStatus(Document.CERTAIN_POPS, null);
-  }
-
-  @Deprecated
-  public Status getUploadDocumentStatus() {
-    return getApplicationStatus(Document.UPLOADED_DOC, null);
-  }
-
-  public Status getApplicationStatus(Document document, String routingDestination) {
-    if (applicationStatuses != null) {
-      return applicationStatuses.stream()
-          .filter(appStatus -> appStatus.getDocumentType() == document
-              && (appStatus.getRoutingDestinationName() == null
-              || appStatus.getRoutingDestinationName()
-              .equals(routingDestination)))
-          .findFirst()
-          .map(ApplicationStatus::getStatus).orElse(null);
-    }
-    return null;
   }
 }
