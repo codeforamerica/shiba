@@ -50,14 +50,16 @@ public class DocumentUploadEmailService {
     this.docRecommendationMessageService = docRecommendationMessageService;
   }
 
-  // Sends document upload emails to any applications that
-  //   - Are not laterdocs apps
-  //   - were submitted between 48 and 12 hours ago
-  //   - do not have any uploaded docs
-  //   - have an email address
-  //   - have not yet been sent a doc upload email
-  //   - has document recommendations
-  //   - opted into email communications
+  /**
+   * Sends document upload emails to any applications that
+   * - Are not laterdocs apps
+   * - were submitted between 48 and 12 hours ago
+   * - do not have any uploaded docs
+   * - have an email address
+   * - have not yet been sent a doc upload email
+   * - has document recommendations
+   * - opted into email communications
+   */
   @Scheduled(cron = "${documentUploadEmails.cronExpression}")
   @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m")
   public void sendDocumentUploadEmails() {
