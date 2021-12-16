@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -37,25 +38,13 @@ public class PageData extends HashMap<String, InputData> {
         .map(formInput -> {
           List<String> value = ofNullable(model)
               .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
-              .orElse(null);
-          if (value != null && !value.isEmpty()) {
-            System.out.println("=== DATA BEFORE ===");
-            value.forEach(System.out::println);
-            //text = text.replaceAll("\\u0000", "");
-            value.forEach(newString -> {
-              newString.replaceAll("\\u0000", "");
-              //replace string with new one
-            });
+              .orElse(emptyList());
 
-            System.out.println("=== DATA AFTER ===");
-            value.forEach(System.out::println);
-          }
-          InputData inputData = new InputData(value, formInput.getValidators());
-          /*
-           * if(!inputData.getValue().isEmpty()) {//TODO emj only prints first item String
-           * data = inputData.getValue(0); System.out.println("===== DATA ======= " +
-           * data); }
-           */
+          // Remove unicode null character if present
+          List<String> sanitizedValue = value.stream()
+              .map(v -> v.replace("\u0000", ""))
+              .toList();
+          InputData inputData = new InputData(sanitizedValue, formInput.getValidators());
           return Map.entry(formInput.getName(), inputData);
         })
         .collect(toMap(Entry::getKey, Entry::getValue));

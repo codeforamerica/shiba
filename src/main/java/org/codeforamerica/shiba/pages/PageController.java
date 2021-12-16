@@ -524,7 +524,6 @@ public class PageController {
           .ifPresent(pageData::putAll);
 
       Application application = applicationFactory.newApplication(applicationData);
-      application.setLastViewedPage(pageName);
       applicationRepository.save(application);
       if (applicationConfiguration.getLandmarkPages().isInProgressStatusPage(pageName)) {
         applicationRepository.updateStatusToInProgress(application, routingDecisionService);
