@@ -53,7 +53,6 @@ public class ApplicationData implements Serializable {
   private Subworkflows subworkflows = new Subworkflows();
   private Map<String, PagesData> incompleteIterations = new HashMap<>();
   private List<UploadedDocument> uploadedDocs = new ArrayList<>();
-  private List<String> routingDestinationNames = new ArrayList<>(); // just informational, not used by application
 
   public void setStartTimeOnce(Instant instant) {
     if (startTime == null) {

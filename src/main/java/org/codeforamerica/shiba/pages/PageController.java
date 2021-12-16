@@ -349,10 +349,6 @@ public class PageController {
         routingDestinations.addAll(routingDestinationsForThisDoc);
       });
 
-      // set the routing destination names for the application in the database
-      List<String> routingDestinationNames =
-          routingDestinations.stream().map(RoutingDestination::getName).toList();
-      application.getApplicationData().setRoutingDestinationNames(routingDestinationNames);
       applicationRepository.save(application);
 
       // Generate human-readable list of routing destinations for success page
