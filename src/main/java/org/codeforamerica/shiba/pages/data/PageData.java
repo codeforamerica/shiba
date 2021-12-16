@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.codeforamerica.shiba.pages.PageUtils.getFormInputName;
@@ -32,12 +33,18 @@ public class PageData extends HashMap<String, InputData> {
   }
 
   public static PageData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
-    Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
+    Map<String, InputData> inputDataMap = page.getFlattenedInputs()
+        .stream()
         .map(formInput -> {
           List<String> value = ofNullable(model)
               .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
-              .orElse(null);
-          InputData inputData = new InputData(value, formInput.getValidators());
+              .orElse(emptyList());
+
+          // Remove unicode null character if present
+          List<String> sanitizedValue = value.stream()
+              .map(v -> v.replace("\u0000", ""))
+              .toList();
+          InputData inputData = new InputData(sanitizedValue, formInput.getValidators());
           return Map.entry(formInput.getName(), inputData);
         })
         .collect(toMap(Entry::getKey, Entry::getValue));

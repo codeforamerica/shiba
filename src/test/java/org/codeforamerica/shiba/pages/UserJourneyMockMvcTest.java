@@ -136,6 +136,28 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
+  void shouldNotAllowNonPrintableUnicode() throws Exception {
+    getToPersonalInfoScreen("CCAP");
+    postExpectingSuccess("personalInfo", Map.of(
+        // unicode null
+        "firstName", List.of("Amanda" + "\u0000"),
+        // \n is another unicode ctrl character, but that one we want to keep
+        "lastName", List.of("Sm\nith"),
+        "dateOfBirth", List.of("01", "12", "1928")
+    ));
+
+    // remove the null character
+    String firstName = applicationData.getPagesData()
+        .safeGetPageInputValue("personalInfo", "firstName").get(0);
+    assertThat(firstName).isEqualTo("Amanda");
+
+    // We should keep the \n character
+    String lastName = applicationData.getPagesData()
+        .safeGetPageInputValue("personalInfo", "lastName").get(0);
+    assertThat(lastName).isEqualTo("Sm\nith");
+  }
+
+  @Test
   void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() throws Exception {
     var applicantPrograms = new String[]{"SNAP", "CASH", "CCAP", "EA", "GRH"};
     completeFlowFromLandingPageThroughReviewInfo(applicantPrograms);
