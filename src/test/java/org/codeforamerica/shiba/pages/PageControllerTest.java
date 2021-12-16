@@ -25,7 +25,7 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.ApplicationStatusRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -75,7 +75,7 @@ class PageControllerTest {
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
-  private ApplicationStatusRepository applicationStatusRepository;
+  private DocumentStatusRepository documentStatusRepository;
   @MockBean
   private ApplicationFactory applicationFactory;
   @MockBean
@@ -277,8 +277,8 @@ class PageControllerTest {
         .param("foo[]", "some other value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-    verify(applicationStatusRepository, times(1))
-        .createOrUpdateAllDocuments(application, IN_PROGRESS);
+    verify(documentStatusRepository, times(1))
+        .createOrUpdateAll(application, IN_PROGRESS);
     assertThat(applicationData.getId()).isEqualTo(applicationId);
   }
 
@@ -485,7 +485,7 @@ class PageControllerTest {
         .andExpect(status().is(200));
 
     routingDestinations.forEach(
-        routingDestination -> verify(applicationStatusRepository).createOrUpdate(application.getId(),
+        routingDestination -> verify(documentStatusRepository).createOrUpdate(application.getId(),
             UPLOADED_DOC, routingDestination.getName(), IN_PROGRESS));
   }
 

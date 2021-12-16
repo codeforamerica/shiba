@@ -20,7 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
-import org.codeforamerica.shiba.application.ApplicationStatusRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -84,7 +84,7 @@ class FilenetWebServiceClientTest {
   private String routerUrl;
   private MockWebServiceServer mockWebServiceServer;
   @MockBean
-  private ApplicationStatusRepository applicationStatusRepository;
+  private DocumentStatusRepository documentStatusRepository;
   @MockBean
   private RestTemplate restTemplate;
   private CountyRoutingDestination olmsted;
@@ -159,7 +159,7 @@ class FilenetWebServiceClientTest {
         olmsted, "someId", Document.CAF, FlowType.FULL
     );
 
-    verify(applicationStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
+    verify(documentStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
         DELIVERED);
 
     mockWebServiceServer.verify();

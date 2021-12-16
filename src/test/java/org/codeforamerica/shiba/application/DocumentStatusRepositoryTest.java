@@ -31,19 +31,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
+public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  private ApplicationStatusRepository applicationStatusRepository;
+  private DocumentStatusRepository documentStatusRepository;
 
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
   private RoutingDestination routingDestination;
 
   @BeforeEach
   void setUp() {
-    applicationStatusRepository = new ApplicationStatusRepository(jdbcTemplate,
+    documentStatusRepository = new DocumentStatusRepository(jdbcTemplate,
         routingDecisionService);
     routingDestination = CountyRoutingDestination.builder().county(Olmsted)
         .build();
@@ -54,9 +54,9 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void createOrUpdateShouldCreateOrUpdateStatusesFromAnIdDocTypeDestinationAndStatus() {
-    applicationStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
-    applicationStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
-    assertThat(applicationStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
+    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
+    assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
         new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED)
     );
   }
@@ -74,8 +74,8 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
 
-    applicationStatusRepository.createOrUpdateAllDocuments(application, IN_PROGRESS);
-    List<ApplicationStatus> resultingStatuses = applicationStatusRepository.findAll(
+    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
@@ -86,8 +86,8 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("CCAP"));
-    applicationStatusRepository.createOrUpdateAllDocuments(application, IN_PROGRESS);
-    resultingStatuses = applicationStatusRepository.findAll(applicationData.getId());
+    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
             IN_PROGRESS),
@@ -100,18 +100,18 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void getApplicationStatusToResubmitShouldOnlyReturnFailedSubmissions() {
-    applicationStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED);
-    applicationStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED);
+    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED);
 
-    applicationStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
-    applicationStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
+    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING);
 
-    applicationStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", IN_PROGRESS);
-    applicationStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", IN_PROGRESS);
+    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", IN_PROGRESS);
+    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", IN_PROGRESS);
 
-    applicationStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
+    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
-    List<ApplicationStatus> failedApplications = applicationStatusRepository.getApplicationStatusToResubmit();
+    List<ApplicationStatus> failedApplications = documentStatusRepository.getApplicationStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
         new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
         new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
