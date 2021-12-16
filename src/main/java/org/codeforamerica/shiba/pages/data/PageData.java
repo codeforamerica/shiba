@@ -32,12 +32,29 @@ public class PageData extends HashMap<String, InputData> {
   }
 
   public static PageData fillOut(PageConfiguration page, MultiValueMap<String, String> model) {
-    Map<String, InputData> inputDataMap = page.getFlattenedInputs().stream()
-        .map(formInput -> {
+    Map<String, InputData> inputDataMap = page.getFlattenedInputs()
+    		.stream()
+    		.map(formInput -> {
           List<String> value = ofNullable(model)
               .map(modelMap -> modelMap.get(getFormInputName(formInput.getName())))
               .orElse(null);
+          if(value != null && !value.isEmpty()) {
+        	  System.out.println("=== DATA BEFORE ===");
+        	  value.forEach(System.out::println);
+        	  //text = text.replaceAll("\\u0000", "");
+        	  value.forEach( newString -> {newString.replaceAll("\\u0000", "");
+        	  //replace string with new one
+        	  });
+        			  
+        	  System.out.println("=== DATA AFTER ===");
+        	  value.forEach(System.out::println);
+          }
           InputData inputData = new InputData(value, formInput.getValidators());
+				/*
+				 * if(!inputData.getValue().isEmpty()) {//TODO emj only prints first item String
+				 * data = inputData.getValue(0); System.out.println("===== DATA ======= " +
+				 * data); }
+				 */
           return Map.entry(formInput.getName(), inputData);
         })
         .collect(toMap(Entry::getKey, Entry::getValue));

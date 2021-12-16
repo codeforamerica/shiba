@@ -134,6 +134,26 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     ));
     assertFalse(new FormPage(getPage("personalInfo")).hasInputError());
   }
+  
+  
+  @Test
+  void shouldNotAllowNullCharacter() throws Exception {
+    getToPersonalInfoScreen("CCAP");
+    postExpectingSuccess("personalInfo", Map.of(
+        "firstName", List.of("u\\0000"),
+        "lastName", List.of("%00  0x00"),
+        "dateOfBirth", List.of("01", "12", "1928")
+    ));
+    List<String> firstName = applicationData.getPagesData().safeGetPageInputValue("personalInfo", "firstName");
+    String name = firstName.get(0);
+    System.out.println("FIRSTNAME = " +  name);
+    assertFalse(name.contains("u\\0000"));
+    List<String> lastName = applicationData.getPagesData().safeGetPageInputValue("personalInfo", "lastName");
+    String lname = lastName.get(0);
+    System.out.println("LASTNAME = " +  lname);
+    //assertFalse(lname.contains("u\\0000"));
+    //assertFalse(new FormPage(getPage("personalInfo")).hasInputError());
+  }
 
   @Test
   void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() throws Exception {
