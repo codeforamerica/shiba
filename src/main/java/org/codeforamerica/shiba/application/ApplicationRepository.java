@@ -75,7 +75,6 @@ public class ApplicationRepository {
     parameters.put("docUploadEmailStatus",
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
-    parameters.put("lastViewedPage", application.getLastViewedPage());
 
     String cafStatus = String.valueOf(application.getCafApplicationStatus());
     String ccapStatus = String.valueOf(application.getCcapApplicationStatus());
