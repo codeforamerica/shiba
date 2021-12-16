@@ -822,8 +822,13 @@ pageDefinitions:
               promptMessageKey: household-member-info.what-state-did-they-move-from
       - name: relationship
         type: SELECT
+        validators:
+           - validation: NOT_BLANK
+             errorMessageKey: general.validation.make-sure-to-select-a-relationship
         options:
           selectableOptions:
+            - value: ''
+              messageKey: household-member-info.select-relationship
             - value: child
               messageKey: household-member-info.child
             - value: step-child
