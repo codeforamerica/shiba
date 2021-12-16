@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -81,7 +80,6 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     MockMultipartFile image = new MockMultipartFile("image", originalFilename, contentType,
         "test".getBytes());
     applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", contentType);
-    applicationData.setRoutingDestinationNames(List.of("White Earth", "Olmsted"));
 
     Application application = Application.builder()
         .id("someid")
@@ -99,7 +97,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
     assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
-    assertThat(savedApplication.getApplicationStatuses()).isEmpty();
+    assertThat(savedApplication.getDocumentStatuses()).isEmpty();
 
     UploadedDocument uploadedDoc = savedApplication.getApplicationData().getUploadedDocs().get(0);
     assertThat(uploadedDoc.getFilename()).isEqualTo(originalFilename);
@@ -107,9 +105,6 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(uploadedDoc.getThumbnailFilepath()).isEqualTo("someDataUrl");
     assertThat(uploadedDoc.getType()).isEqualTo(contentType);
     assertThat(uploadedDoc.getSize()).isEqualTo(4L);
-
-    assertThat(savedApplication.getApplicationData().getRoutingDestinationNames()).containsExactly(
-        "White Earth", "Olmsted");
   }
 
   @Test
@@ -166,7 +161,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .sentiment(Sentiment.HAPPY)
         .feedback("someUpdatedFeedback")
         .flow(FlowType.EXPEDITED)
-        .applicationStatuses(emptyList())
+        .documentStatuses(emptyList())
         .build();
 
     applicationRepository.save(updatedApplication);

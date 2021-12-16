@@ -366,8 +366,6 @@ class PageControllerTest {
     mockMvc.perform(get("/pages/terminalPage"));
 
     verify(applicationRepository).save(application);
-    assertThat(application.getApplicationData().getRoutingDestinationNames())
-        .containsExactlyInAnyOrder("Mille Lacs Band of Ojibwe", "Anoka");
   }
 
   @Test

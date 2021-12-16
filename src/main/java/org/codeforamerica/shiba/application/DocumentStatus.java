@@ -6,7 +6,7 @@ import org.codeforamerica.shiba.output.Document;
 
 @Data
 @AllArgsConstructor
-public class ApplicationStatus {
+public class DocumentStatus {
 
   private String applicationId;
   private Document documentType;

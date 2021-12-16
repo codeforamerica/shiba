@@ -27,7 +27,7 @@ public class Application {
   private Sentiment sentiment;
   private String feedback;
   private Status docUploadEmailStatus;
-  private List<ApplicationStatus> applicationStatuses;
+  private List<DocumentStatus> documentStatuses;
 
   public Application addFeedback(Feedback feedback) {
     var sentiment = Optional.ofNullable(feedback.sentiment()).orElse(this.sentiment);
@@ -44,7 +44,7 @@ public class Application {
         sentiment,
         feedbackText,
         docUploadEmailStatus,
-        applicationStatuses
+        documentStatuses
     );
   }
 

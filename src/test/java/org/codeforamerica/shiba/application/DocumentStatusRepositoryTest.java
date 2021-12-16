@@ -57,7 +57,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
     documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
     assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
-        new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED)
+        new DocumentStatus("someId", CAF, "Hennepin", DELIVERED)
     );
   }
 
@@ -75,12 +75,12 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
-    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
+    List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
+        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
             IN_PROGRESS),
-        new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
             IN_PROGRESS)
     );
 
@@ -89,11 +89,11 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
+        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
             IN_PROGRESS),
-        new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
             IN_PROGRESS),
-        new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
+        new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             IN_PROGRESS)
     );
   }
@@ -111,11 +111,11 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
     documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
-    List<ApplicationStatus> failedApplications = documentStatusRepository.getApplicationStatusToResubmit();
+    List<DocumentStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
-        new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
-        new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
-        new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
+        new DocumentStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
+        new DocumentStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
+        new DocumentStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
     );
   }
 }

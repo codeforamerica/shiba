@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.ApplicationStatus;
+import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -52,7 +52,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    List<ApplicationStatus> applicationsToResubmit = documentStatusRepository.getApplicationStatusToResubmit();
+    List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
 
     if (applicationsToResubmit.isEmpty()) {
       log.info("There are no applications to resubmit");

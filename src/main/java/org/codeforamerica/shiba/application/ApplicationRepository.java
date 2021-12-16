@@ -93,7 +93,7 @@ public class ApplicationRepository {
   public Application find(String id) {
     Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    Objects.requireNonNull(application).setApplicationStatuses(
+    Objects.requireNonNull(application).setDocumentStatuses(
         jdbcTemplate.query("SELECT * FROM document_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
@@ -155,11 +155,11 @@ public class ApplicationRepository {
             .build();
   }
 
-  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
+  private static class ApplicationStatusRowMapper implements RowMapper<DocumentStatus> {
 
     @Override
-    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new ApplicationStatus(
+    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new DocumentStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

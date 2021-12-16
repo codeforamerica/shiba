@@ -28,9 +28,9 @@ public class DocumentStatusRepository {
     this.routingDecisionService = routingDecisionService;
   }
 
-  public List<ApplicationStatus> findAll(String applicationId) {
+  public List<DocumentStatus> findAll(String applicationId) {
     return jdbcTemplate.query("SELECT * FROM document_status WHERE application_id = ?",
-        new ApplicationStatusRowMapper(), applicationId);
+        new DocumentStatusRowMapper(), applicationId);
   }
 
   public void createOrUpdateAll(Application application,
@@ -80,10 +80,10 @@ public class DocumentStatusRepository {
 
   }
 
-  public List<ApplicationStatus> getApplicationStatusToResubmit() {
+  public List<DocumentStatus> getDocumentStatusToResubmit() {
     return jdbcTemplate.query(
         "SELECT * FROM document_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
-        new ApplicationStatusRowMapper());
+        new DocumentStatusRowMapper());
   }
 
   private void logStatusUpdate(String id, Document document, String routingDestination,
@@ -102,10 +102,10 @@ public class DocumentStatusRepository {
     }
   }
 
-  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
+  private static class DocumentStatusRowMapper implements RowMapper<DocumentStatus> {
     @Override
-    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new ApplicationStatus(
+    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new DocumentStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),
