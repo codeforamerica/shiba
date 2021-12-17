@@ -2904,7 +2904,7 @@ pageDefinitions:
         options:
           selectableOptions:
             - value: AMERICAN_INDIAN_OR_ALASKA_NATIVE
-              messageKey: race-and-ethnicity.american-indian-or-alaska-native
+              messageKey: race-and-ethnicity.native-american-or-alaska-native
             - value: ASIAN
               messageKey: race-and-ethnicity.asian
             - value: BLACK_OR_AFRICAN_AMERICAN
