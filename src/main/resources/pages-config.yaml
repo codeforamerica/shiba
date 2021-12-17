@@ -824,6 +824,8 @@ pageDefinitions:
         type: SELECT
         options:
           selectableOptions:
+            - value: ''
+              messageKey: household-member-info.select-relationship
             - value: child
               messageKey: household-member-info.child
             - value: step-child
