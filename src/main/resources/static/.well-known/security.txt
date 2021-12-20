@@ -1,0 +1,5 @@
+Contact: security@mnbenefits.org
+
+Policy: https://mn.gov/mnit/government/policies/security/
+
+Expires: 2022-12-20T22:22:00.000Z
