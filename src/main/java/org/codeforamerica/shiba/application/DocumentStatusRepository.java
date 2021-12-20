@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.application;
 
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,6 +13,7 @@ import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -38,14 +42,18 @@ public class DocumentStatusRepository {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());
 
     for (Document document : documents) {
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-          application.getApplicationData(), document);
-      routingDestinations.forEach(
-          routingDestination -> createOrUpdate(application.getId(), document, routingDestination.getName(),
-              status));
+      createOrUpdateAllForDocumentType(application.getApplicationData(), status, document);
     }
   }
 
+  public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status, Document document) {
+		List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+				applicationData, document);
+	      routingDestinations.forEach(
+	          routingDestination -> createOrUpdate(applicationData.getId(), document, routingDestination.getName(),
+	              status));
+  }
+  
   public void createOrUpdate(String id, Document document, String routingDestinationName, Status status) {
     if (document == null || routingDestinationName == null) {
       return;

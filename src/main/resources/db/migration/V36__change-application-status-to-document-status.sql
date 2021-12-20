@@ -1,1 +1,0 @@
-ALTER TABLE application_status RENAME TO document_status

@@ -599,9 +599,7 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC).forEach(
-          routingDestination -> documentStatusRepository.createOrUpdate(applicationData.getId(),
-              UPLOADED_DOC, routingDestination.getName(), IN_PROGRESS));
+      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
 
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
