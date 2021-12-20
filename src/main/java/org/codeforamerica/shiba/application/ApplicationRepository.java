@@ -1,8 +1,5 @@
 package org.codeforamerica.shiba.application;
 
-import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-
 import java.security.SecureRandom;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,13 +10,11 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.application.parsers.DocumentListParser;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
@@ -76,27 +71,8 @@ public class ApplicationRepository {
         Optional.ofNullable(application.getDocUploadEmailStatus()).map(Status::toString)
             .orElse(null));
 
-    String cafStatus = String.valueOf(application.getCafApplicationStatus());
-    String ccapStatus = String.valueOf(application.getCcapApplicationStatus());
-    String certainPopsStatus = String.valueOf(application.getCertainPopsApplicationStatus());
-
-    if (application.getCafApplicationStatus() != DELIVERED) {
-      cafStatus = applicationData.isCAFApplication() ? IN_PROGRESS.toString() : "null";
-    }
-    if (application.getCcapApplicationStatus() != DELIVERED) {
-      ccapStatus = applicationData.isCCAPApplication() ? IN_PROGRESS.toString() : "null";
-    }
-    if (application.getCertainPopsApplicationStatus() != DELIVERED) {
-      certainPopsStatus =
-          applicationData.isCertainPopsApplication() ? IN_PROGRESS.toString() : "null";
-    }
-
-    parameters.put("cafStatus", cafStatus);
-    parameters.put("ccapStatus", ccapStatus);
-    parameters.put("certainPopsStatus", certainPopsStatus);
-
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    int rowCount = namedParameterJdbcTemplate.update(
+    namedParameterJdbcTemplate.update(
         "UPDATE applications SET " +
             "completed_at = :completedAt, " +
             "application_data = :applicationData ::jsonb, " +
@@ -105,11 +81,8 @@ public class ApplicationRepository {
             "sentiment = :sentiment, " +
             "feedback = :feedback, " +
             "doc_upload_email_status = :docUploadEmailStatus, " +
-            "caf_application_status = :cafStatus, " +
-            "ccap_application_status = :ccapStatus, " +
-            "certain_pops_application_status = :certainPopsStatus, " +
             "flow = :flow WHERE id = :id", parameters);
-    rowCount += namedParameterJdbcTemplate.update(
+    namedParameterJdbcTemplate.update(
         "INSERT INTO applications (id, completed_at, application_data, county, time_to_complete, sentiment, feedback, flow, doc_upload_email_status) "
             +
             "VALUES (:id, :completedAt, :applicationData ::jsonb, :county, :timeToComplete, :sentiment, :feedback, :flow, :docUploadEmailStatus) "
@@ -120,7 +93,7 @@ public class ApplicationRepository {
   public Application find(String id) {
     Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    application.setApplicationStatuses(
+    Objects.requireNonNull(application).setDocumentStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
@@ -136,150 +109,6 @@ public class ApplicationRepository {
     return Optional.ofNullable(dateTime)
         .map(time -> Timestamp.from(time.toInstant()))
         .orElse(null);
-  }
-
-  public void updateStatusToInProgress(Application application,
-      RoutingDecisionService routingDecisionService) {
-    List<Document> documents = DocumentListParser.parse(application.getApplicationData());
-
-    for (Document document : documents) {
-      List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-          application.getApplicationData(), document);
-      updateStatus(application.getId(), document, routingDestinations, IN_PROGRESS);
-    }
-  }
-
-  public void updateStatus(String id, Document document,
-      List<RoutingDestination> routingDestinations, Status status) {
-    routingDestinations.forEach(
-        routingDestination -> updateStatus(id, document, routingDestination.getName(), status));
-  }
-
-  public void updateStatus(String id, Document document, RoutingDestination routingDestination,
-      Status status) {
-    updateStatus(id, document, routingDestination.getName(), status);
-  }
-
-  /**
-   * Try to update existing status - if it's not found, add a new one.
-   */
-  public void updateStatus(String id, Document document, String routingDestination, Status status) {
-    updateStatus(id, document, status);
-    if (document == null || routingDestination == null) {
-      return;
-    }
-
-    String updateStatement = """
-        UPDATE application_status SET status = :status WHERE application_id = :application_id
-        AND document_type = :document_type AND routing_destination = :routing_destination
-        """;
-
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put("application_id", id);
-    parameters.put("status", status.toString());
-    parameters.put("document_type", document.name());
-    parameters.put("routing_destination", routingDestination);
-
-    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-
-    int rowCount = namedParameterJdbcTemplate.update(updateStatement, parameters);
-    if (rowCount == 0) {
-      // Not found, add a new entry
-      String insertStatement = """
-          INSERT INTO application_status (application_id, status, document_type, routing_destination)
-          VALUES (:application_id, :status, :document_type, :routing_destination)
-          """;
-      rowCount = namedParameterJdbcTemplate.update(insertStatement, parameters);
-    }
-
-    if (rowCount != 0) {
-      logStatusUpdate(id, document, routingDestination, status);
-    }
-
-  }
-
-  @Deprecated
-  public void updateStatus(String id, Document document, Status status) {
-    Map<String, Object> parameters = Map.of(
-        "status", status.toString(),
-        "id", id
-    );
-
-    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    String statement = switch (document) {
-      case CAF -> getUpdateStatusQueryString("caf_application_status", status);
-      case CCAP -> getUpdateStatusQueryString("ccap_application_status", status);
-      case UPLOADED_DOC -> getUpdateStatusQueryString("uploaded_documents_status", status);
-      case CERTAIN_POPS -> getUpdateStatusQueryString("certain_pops_application_status", status);
-      default -> null;
-    };
-
-    if (statement != null) {
-      namedParameterJdbcTemplate.update(statement, parameters);
-    }
-  }
-
-  private String getUpdateStatusQueryString(String column, Status status) {
-    if (status != DELIVERED) {
-      return String.format(
-          "UPDATE applications SET %s = :status WHERE id = :id and (%s != 'delivered' or %s is NULL)",
-          column, column, column);
-    }
-    return String.format("UPDATE applications SET %s = :status WHERE id = :id", column);
-  }
-
-  private void logStatusUpdate(String id, Document document, Status status) {
-    if (status == null) {
-      log.info(String.format("%s #%s application status has been updated to null", document, id));
-      return;
-    }
-
-    final String msg = String.format("%s #%s has been updated to %s", document, id, status);
-    switch (status) {
-      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
-      default -> log.info(msg);
-    }
-  }
-
-  private void logStatusUpdate(String id, Document document, String routingDestination,
-      Status status) {
-    if (status == null) {
-      log.info(String.format("%s to %s #%s application status has been updated to null", document,
-          routingDestination, id));
-      return;
-    }
-
-    final String msg = String.format("%s to %s #%s has been updated to %s", document,
-        routingDestination, id, status);
-    switch (status) {
-      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
-      default -> log.info(msg);
-    }
-  }
-
-  public void updateStatusToNull(Document document, String id) {
-    Map<String, Object> parameters = Map.of(
-        "id", id
-    );
-
-    String statement = switch (document) {
-      case CAF -> "UPDATE applications SET caf_application_status = null WHERE id = :id";
-      case CCAP -> "UPDATE applications SET ccap_application_status = null WHERE id = :id";
-      case UPLOADED_DOC -> "UPDATE applications SET uploaded_documents_status = null WHERE id = :id";
-      case CERTAIN_POPS -> "UPDATE applications SET certain_pops_application_status = null WHERE id = :id";
-      default -> null;
-    };
-
-    if (statement != null) {
-      var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-      namedParameterJdbcTemplate.update(statement, parameters);
-    }
-  }
-
-  public List<ApplicationStatus> getApplicationStatusToResubmit() {
-    return jdbcTemplate.query(
-        "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
-        new ApplicationStatusRowMapper());
   }
 
   public void setDocUploadEmailStatus(String applicationId, Status status) {
@@ -326,11 +155,11 @@ public class ApplicationRepository {
             .build();
   }
 
-  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
+  private static class ApplicationStatusRowMapper implements RowMapper<DocumentStatus> {
 
     @Override
-    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new ApplicationStatus(
+    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new DocumentStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

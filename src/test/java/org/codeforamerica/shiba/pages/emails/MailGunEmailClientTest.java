@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
@@ -83,7 +83,7 @@ class MailGunEmailClientTest {
   @MockBean
   private ClientRegistrationRepository springSecurityFilterChain;
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-  ApplicationRepository applicationRepository;
+  DocumentStatusRepository documentStatusRepository;
   int port;
   BasicCredentials credentials;
   List<String> programs;
@@ -101,7 +101,7 @@ class MailGunEmailClientTest {
     wireMockServer = new WireMockServer(options);
     wireMockServer.start();
     port = wireMockServer.port();
-    applicationRepository = mock(ApplicationRepository.class);
+    documentStatusRepository = mock(DocumentStatusRepository.class);
     WireMock.configureFor(port);
     mailGunEmailClient = new MailGunEmailClient(
         senderEmail,
@@ -114,7 +114,7 @@ class MailGunEmailClientTest {
         false,
         MAX_ATTACHMENT_SIZE,
         activeProfile,
-        applicationRepository,
+        documentStatusRepository,
         messageSource);
     programs = List.of(Program.SNAP);
     credentials = new BasicCredentials("api", mailGunApiKey);
@@ -222,7 +222,7 @@ class MailGunEmailClientTest {
     when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
 
     mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
-    verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, "Hennepin",
+    verify(documentStatusRepository).createOrUpdate("someId", UPLOADED_DOC, "Hennepin",
         Status.DELIVERED);
 
     wireMockServer.verify(1, postToMailgun()
@@ -278,7 +278,7 @@ class MailGunEmailClientTest {
     when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
 
     mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
-    verify(applicationRepository).updateStatus("someId", UPLOADED_DOC, "Hennepin",
+    verify(documentStatusRepository).createOrUpdate("someId", UPLOADED_DOC, "Hennepin",
         Status.DELIVERED);
 
     wireMockServer.verify(2, postToMailgun()
@@ -485,7 +485,7 @@ class MailGunEmailClientTest {
           false,
           MAX_ATTACHMENT_SIZE,
           "demo",
-          applicationRepository,
+          documentStatusRepository,
           messageSource);
     }
 

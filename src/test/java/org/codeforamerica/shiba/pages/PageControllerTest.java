@@ -25,6 +25,7 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -73,6 +74,8 @@ class PageControllerTest {
   private Clock clock;
   @MockBean
   private ApplicationRepository applicationRepository;
+  @MockBean
+  private DocumentStatusRepository documentStatusRepository;
   @MockBean
   private ApplicationFactory applicationFactory;
   @MockBean
@@ -274,8 +277,8 @@ class PageControllerTest {
         .param("foo[]", "some other value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
-    verify(applicationRepository, times(1))
-        .updateStatusToInProgress(application, routingDecisionService);
+    verify(documentStatusRepository, times(1))
+        .createOrUpdateAll(application, IN_PROGRESS);
     assertThat(applicationData.getId()).isEqualTo(applicationId);
   }
 
@@ -363,8 +366,6 @@ class PageControllerTest {
     mockMvc.perform(get("/pages/terminalPage"));
 
     verify(applicationRepository).save(application);
-    assertThat(application.getApplicationData().getRoutingDestinationNames())
-        .containsExactlyInAnyOrder("Mille Lacs Band of Ojibwe", "Anoka");
   }
 
   @Test
@@ -480,9 +481,8 @@ class PageControllerTest {
                 .param("dataURL", "someDataUrl")
                 .param("type", "jpg"))
         .andExpect(status().is(200));
-
-    verify(applicationRepository).updateStatus(application.getId(), UPLOADED_DOC,
-        routingDestinations, IN_PROGRESS);
+    
+    verify(documentStatusRepository).createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
   }
 
   @Test

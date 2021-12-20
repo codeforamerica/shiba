@@ -23,6 +23,7 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -73,6 +74,7 @@ public class PageController {
   private final RoutingDecisionService routingDecisionService;
   private final DocumentRepository documentRepository;
   private final RoutingDestinationMessageService routingDestinationMessageService;
+  private final DocumentStatusRepository documentStatusRepository;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -92,7 +94,8 @@ public class PageController {
       RoutingDecisionService routingDecisionService,
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository,
-      RoutingDestinationMessageService routingDestinationMessageService) {
+      RoutingDestinationMessageService routingDestinationMessageService,
+      DocumentStatusRepository documentStatusRepository) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -111,6 +114,7 @@ public class PageController {
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
     this.routingDestinationMessageService = routingDestinationMessageService;
+    this.documentStatusRepository = documentStatusRepository;
   }
 
   @GetMapping("/")
@@ -345,10 +349,6 @@ public class PageController {
         routingDestinations.addAll(routingDestinationsForThisDoc);
       });
 
-      // set the routing destination names for the application in the database
-      List<String> routingDestinationNames =
-          routingDestinations.stream().map(RoutingDestination::getName).toList();
-      application.getApplicationData().setRoutingDestinationNames(routingDestinationNames);
       applicationRepository.save(application);
 
       // Generate human-readable list of routing destinations for success page
@@ -526,7 +526,7 @@ public class PageController {
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);
       if (applicationConfiguration.getLandmarkPages().isInProgressStatusPage(pageName)) {
-        applicationRepository.updateStatusToInProgress(application, routingDecisionService);
+        documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
       }
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
@@ -599,9 +599,7 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      applicationRepository.updateStatus(applicationData.getId(), UPLOADED_DOC,
-          routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC),
-          IN_PROGRESS);
+      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
 
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {

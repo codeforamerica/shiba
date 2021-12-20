@@ -4,11 +4,21 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.security.GeneralSecurityException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,8 +58,8 @@ public class V34__BackfillApplicationStatus extends BaseJavaMigration {
     for (Map<String, Object> rs : queryResults) {
       try {
         // Default to county if routing destinations not provided
-        ApplicationData applicationData =
-            objectMapper.readValue(rs.get("application_data").toString(), ApplicationData.class);
+        V34ApplicationData applicationData =
+            objectMapper.readValue(rs.get("application_data").toString(), V34ApplicationData.class);
         List<String> routingDestinationNames = applicationData.getRoutingDestinationNames();
         if (routingDestinationNames == null || routingDestinationNames.isEmpty()) {
           routingDestinationNames = List.of(rs.get("county").toString());
@@ -76,5 +86,25 @@ public class V34__BackfillApplicationStatus extends BaseJavaMigration {
           ON CONFLICT DO NOTHING""", parameter);
     }
   }
+
+  @Data
+  protected static class V34ApplicationData implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 5573310526258484730L;
+
+    private String id;
+    @Setter(AccessLevel.NONE)
+    private Instant startTime;
+    private String utmSource;
+    private FlowType flow = FlowType.UNDETERMINED;
+    private boolean isSubmitted = false;
+    private PagesData pagesData = new PagesData();
+    private Subworkflows subworkflows = new Subworkflows();
+    private Map<String, PagesData> incompleteIterations = new HashMap<>();
+    private List<UploadedDocument> uploadedDocs = new ArrayList<>();
+    private List<String> routingDestinationNames = new ArrayList<>(); // required for this migration
+  }
+
 
 }

@@ -16,7 +16,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
@@ -41,7 +41,7 @@ public class MnitDocumentConsumer {
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
-  private final ApplicationRepository applicationRepository;
+  private final DocumentStatusRepository documentStatusRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final FilenetWebServiceClient mnitFilenetClient;
   private final FilenameGenerator filenameGenerator;
@@ -51,7 +51,7 @@ public class MnitDocumentConsumer {
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      ApplicationRepository applicationRepository,
+      DocumentStatusRepository documentStatusRepository,
       FeatureFlagConfiguration featureFlagConfiguration,
       FilenetWebServiceClient mnitFilenetClient,
       FilenameGenerator filenameGenerator) {
@@ -59,7 +59,7 @@ public class MnitDocumentConsumer {
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
-    this.applicationRepository = applicationRepository;
+    this.documentStatusRepository = documentStatusRepository;
     this.emailClient = emailClient;
     this.featureFlagConfiguration = featureFlagConfiguration;
     this.mnitFilenetClient = mnitFilenetClient;
@@ -132,7 +132,7 @@ public class MnitDocumentConsumer {
       boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
 
       if (sendToHennepinViaEmail && isHennepin) {
-        applicationRepository.updateStatus(application.getId(), UPLOADED_DOC, routingDestination,
+        documentStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC, routingDestination.getName(),
             SENDING);
         emailClient.sendHennepinDocUploadsEmails(application, uploadedDocs);
       } else {
@@ -155,13 +155,14 @@ public class MnitDocumentConsumer {
     }
   }
 
-  // Returns a list of uploaded docs that have been renamed to meet the standards of MNIT, converted
-  // to PDFs (when possible), and have had cover pages added (when possible)
-  //
-  // Note: the filenames for these documents will include the county dhsProviderId. Those filenames
-  // are changed later to include the dhsProviderId specific to whatever RoutingDestination the file
-  // is being sent to
-  private List<ApplicationFile> prepareUploadedDocsForSending(Application application) {
+/**
+ * Returns a list of uploaded docs that have been renamed to meet the standards of MNIT, converted
+ * to PDFs (when possible), and have had cover pages added (when possible)
+ * Note: the filenames for these documents will include the county dhsProviderId. Those filenames
+ * are changed later to include the dhsProviderId specific to whatever RoutingDestination the file
+ * is being sent to
+ */
+private List<ApplicationFile> prepareUploadedDocsForSending(Application application) {
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     List<ApplicationFile> applicationFiles = new ArrayList<>();
     byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
@@ -186,10 +187,11 @@ public class MnitDocumentConsumer {
 
     String id = application.getId();
     try {
-      applicationRepository.updateStatus(id, documentType, routingDestination, SENDING);
+      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(), SENDING);
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
-      applicationRepository.updateStatus(id, documentType, routingDestination, DELIVERY_FAILED);
+      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
+          DELIVERY_FAILED);
       log.error("Failed to send document %s to recipient %s for application %s with error, "
           .formatted(documentType, routingDestination.getName(), id), e);
     }

@@ -63,7 +63,6 @@ public class TestUtils {
     applicationData.setUploadedDocs(new ArrayList<>());
     applicationData.setFlow(FlowType.UNDETERMINED);
     applicationData.setSubmitted(false);
-    applicationData.setRoutingDestinationNames(new ArrayList<>());
   }
 
   @NotNull
