@@ -481,10 +481,8 @@ class PageControllerTest {
                 .param("dataURL", "someDataUrl")
                 .param("type", "jpg"))
         .andExpect(status().is(200));
-
-    routingDestinations.forEach(
-        routingDestination -> verify(documentStatusRepository).createOrUpdate(application.getId(),
-            UPLOADED_DOC, routingDestination.getName(), IN_PROGRESS));
+    
+    verify(documentStatusRepository).createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
   }
 
   @Test
