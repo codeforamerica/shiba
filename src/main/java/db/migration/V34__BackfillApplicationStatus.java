@@ -28,7 +28,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 /**
  * 1. Get applications with non-null statuses
  * <p>
- * 2. Backfill rows in application_status
+ * 2. Backfill rows in document_status
  */
 public class V34__BackfillApplicationStatus extends BaseJavaMigration {
 
@@ -81,7 +81,7 @@ public class V34__BackfillApplicationStatus extends BaseJavaMigration {
         new NamedParameterJdbcTemplate(jdbcTemplate);
     for (Map<String, Object> parameter : parametersForInsert) {
       namedParameterJdbcTemplate.update("""
-          INSERT INTO application_status (application_id, document_type, routing_destination, status)
+          INSERT INTO document_status (application_id, document_type, routing_destination, status)
           VALUES (:application_id, :document_type, :routing_destination, :status)
           ON CONFLICT DO NOTHING""", parameter);
     }

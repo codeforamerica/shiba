@@ -94,7 +94,7 @@ public class ApplicationRepository {
     Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
     Objects.requireNonNull(application).setDocumentStatuses(
-        jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
+        jdbcTemplate.query("SELECT * FROM document_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
   }
