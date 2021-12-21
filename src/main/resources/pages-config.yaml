@@ -1867,12 +1867,12 @@ pageDefinitions:
     name: retroactiveCoverage
     pageTitle: retroactive-coverage.title
     headerKey: retroacvtive-coverage.help-paying-for-medical-bills-from-the-last-3-months
+    headerHelpMessageKey: retroactive-coverage.you-might-be-eligible-for-retroactive-coverage
     contextFragment: retroactiveCoverageFragment
     hasPrimaryButton: false
     inputs:
       - name: retroactiveCoverageQuestion
         type: YES_NO
-        helpMessageKey: retroactive-coverage.you-might-be-eligible-for-retroactive-coverage
   - &medicalInOtherState
     name: medicalInOtherState
     pageTitle: medical-in-other-state.title
