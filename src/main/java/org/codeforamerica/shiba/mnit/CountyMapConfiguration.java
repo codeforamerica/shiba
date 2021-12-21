@@ -554,7 +554,7 @@ public class CountyMapConfiguration {
         "cnoetzelman@co.wilkin.mn.us",
         "1962567529");
     updateCounty(Winona,
-        "HHS@co.winona.mn.us",
+        "dhs@co.winona.mn.us",
         "A000085000");
     updateCounty(Wright,
         "HSFSPrograms@co.wright.mn.us",
