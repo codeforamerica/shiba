@@ -2935,18 +2935,6 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: prepareToApply
-        condition:
-          pageName: identifyCounty
-          input: county
-          matcher: DOES_NOT_CONTAIN
-          value: Dakota
-      - pageName: prepareToApply
-        flag: county-dakota
-        condition:
-          pageName: identifyCounty
-          input: county
-          value: Dakota
-      - pageName: goToApplyMn
     subtleLinkTargetPage: identifyZipcodeBeforeApplying
   identifyZipcodeBeforeApplying:
     pageConfiguration: *identifyZipcode
@@ -2954,22 +2942,10 @@ workflow:
     nextPages:
       - pageName: prepareToApply
         condition:
-          logicalOperator: AND
-          conditions:
-            - pageName: identifyZipcode
-              input: mappedCounty
-              matcher: DOES_NOT_CONTAIN
-              value: Dakota
-            - pageName: identifyZipcode
-              input: mappedCounty
-              matcher: DOES_NOT_CONTAIN
-              value: Other
-      - pageName: prepareToApply
-        flag: county-dakota
-        condition:
           pageName: identifyZipcode
           input: mappedCounty
-          value: Dakota
+          matcher: DOES_NOT_CONTAIN
+          value: Other
       - pageName: goToApplyMn
     subtleLinkTargetPage: identifyCountyBeforeApplying
   goToApplyMn:
@@ -4202,13 +4178,6 @@ workflow:
     nextPages:
       - pageName: matchInfo
         flow: LATER_DOCS
-        condition:
-          pageName: identifyCounty
-          input: county
-          matcher: DOES_NOT_CONTAIN
-          value: Dakota
-      - pageName: emailDocsToYourCounty
-        flow: LATER_DOCS
     subtleLinkTargetPage: identifyZipcode
   identifyZipcode:
     pageConfiguration: *identifyZipcode
@@ -4217,23 +4186,10 @@ workflow:
       - pageName: matchInfo
         flow: LATER_DOCS
         condition:
-          logicalOperator: AND
-          conditions:
-            - pageName: identifyZipcode
-              input: mappedCounty
-              matcher: DOES_NOT_CONTAIN
-              value: Dakota
-            - pageName: identifyZipcode
-              input: mappedCounty
-              matcher: DOES_NOT_CONTAIN
-              value: Other
-      - pageName: matchInfo
-        flow: LATER_DOCS
-        flag: county-dakota
-        condition:
           pageName: identifyZipcode
           input: mappedCounty
-          value: Dakota
+          matcher: DOES_NOT_CONTAIN
+          value: Other
       - pageName: emailDocsToYourCounty
         flow: LATER_DOCS
     subtleLinkTargetPage: identifyCounty
