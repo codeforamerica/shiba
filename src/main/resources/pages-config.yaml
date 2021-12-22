@@ -1667,8 +1667,6 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: contact-info.whats-your-phone-number
         validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-to-provide-a-phone-number
           - validation: PHONE_STARTS_WITH_ONE
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
             condition:
