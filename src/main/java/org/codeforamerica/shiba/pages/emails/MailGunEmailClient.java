@@ -182,7 +182,8 @@ public class MailGunEmailClient implements EmailClient {
           filesToSend, true);
     }
 
-    documentStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC, County.Hennepin.name(),
+    documentStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC,
+        County.Hennepin.name(),
         Status.DELIVERED);
   }
 
@@ -224,7 +225,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = "MN Benefits Application %s Resubmission".formatted(application.getId());
     String body = emailContentCreator.createResubmitEmailContent(document, ENGLISH);
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), body, List.of(applicationFile),
-        true);
+        false);
   }
 
   @Override
