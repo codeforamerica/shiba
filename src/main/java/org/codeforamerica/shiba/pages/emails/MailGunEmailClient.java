@@ -223,7 +223,8 @@ public class MailGunEmailClient implements EmailClient {
     MDC.put("applicationFile", applicationFile.getFileName());
     String subject = "MN Benefits Application %s Resubmission".formatted(application.getId());
     String body = emailContentCreator.createResubmitEmailContent(document, ENGLISH);
-    sendEmail(subject, senderEmail, recipientEmail, body, List.of(applicationFile));
+    sendEmail(subject, senderEmail, recipientEmail, emptyList(), body, List.of(applicationFile),
+        true);
   }
 
   @Override
