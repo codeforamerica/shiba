@@ -89,7 +89,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("maritalStatus", "Divorced");
     testPage.enter("sex", "Female");
     testPage.enter("livedInMnWholeLife", "No");
-    testPage.enter("relationship", "My spouse (ex: wife, husband)");
+    testPage.enter("relationship", "My spouse (e.g. wife, husband)");
     testPage.enter("programs", "None");
     testPage.clickContinue();
 
@@ -98,7 +98,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     Select relationshipSelectWithRemovedSpouseOption = new Select(
         driver.findElementById("relationship"));
     assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream()
-        .noneMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+        .noneMatch(option -> option.getText().equals("My spouse (e.g. wife, husband)"))).isTrue();
     testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
@@ -108,7 +108,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickLink("Add a person");
     Select relationshipSelectWithSpouseOption = new Select(driver.findElementById("relationship"));
     assertThat(relationshipSelectWithSpouseOption.getOptions().stream()
-        .anyMatch(option -> option.getText().equals("My spouse (ex: wife, husband)"))).isTrue();
+        .anyMatch(option -> option.getText().equals("My spouse (e.g. wife, husband)"))).isTrue();
     testPage.goBack();
     testPage.clickButton("Yes, that's everyone");
 
