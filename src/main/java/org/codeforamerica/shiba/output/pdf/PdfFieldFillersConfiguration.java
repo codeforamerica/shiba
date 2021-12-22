@@ -22,10 +22,9 @@ public class PdfFieldFillersConfiguration {
   @Bean
   public PdfFieldFiller caseworkerCafFiller(
       @Value("classpath:cover-pages.pdf") Resource coverPages,
-      @Value("classpath:caf-body.pdf") Resource cafBody,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:caf-body.pdf") Resource cafBody
   ) {
-    return new PDFBoxFieldFiller(List.of(coverPages, cafBody), font);
+    return new PDFBoxFieldFiller(List.of(coverPages, cafBody));
   }
 
   @Bean
@@ -33,12 +32,11 @@ public class PdfFieldFillersConfiguration {
       @Value("classpath:cover-pages.pdf") Resource coverPages,
       @Value("classpath:caf-standard-headers.pdf") Resource standardHeaders,
       @Value("classpath:caf-body.pdf") Resource cafBody,
-      @Value("classpath:caf-standard-footers.pdf") Resource standardFooters,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:caf-standard-footers.pdf") Resource standardFooters
   ) {
     return new PDFBoxFieldFiller(List.of(
         coverPages, standardHeaders, cafBody, standardFooters
-    ), font);
+    ));
   }
 
   @Bean
@@ -47,12 +45,11 @@ public class PdfFieldFillersConfiguration {
       @Value("classpath:ccap-body-caseworker-page1.pdf") Resource ccapPage1,
       @Value("classpath:ccap-body.pdf") Resource ccapBody,
       @Value("classpath:ccap-body-perjury-and-general-declarations.pdf") Resource ccapDeclarations,
-      @Value("classpath:ccap-body-additional-room.pdf") Resource ccapAdditionalRoom,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:ccap-body-additional-room.pdf") Resource ccapAdditionalRoom
   ) {
     return new PDFBoxFieldFiller(List.of(
         coverPages, ccapPage1, ccapBody, ccapDeclarations, ccapAdditionalRoom
-    ), font);
+    ));
   }
 
   @Bean
@@ -64,39 +61,35 @@ public class PdfFieldFillersConfiguration {
       @Value("classpath:ccap-body-authorize-info-sharing.pdf") Resource ccapInfoSharing,
       @Value("classpath:ccap-body-perjury-and-general-declarations.pdf") Resource ccapDeclarations,
       @Value("classpath:ccap-body-additional-room.pdf") Resource ccapAdditionalRoom,
-      @Value("classpath:ccap-footers.pdf") Resource ccapFooters,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:ccap-footers.pdf") Resource ccapFooters
   ) {
     return new PDFBoxFieldFiller(List.of(
         coverPages, ccapHeaders, ccapPage1, ccapBody, ccapInfoSharing, ccapDeclarations,
         ccapAdditionalRoom, ccapFooters
-    ), font);
+    ));
   }
 
   @Bean
   public PdfFieldFiller caseworkerCertainPopsFiller(
       @Value("classpath:cover-pages.pdf") Resource coverPages,
-      @Value("classpath:certain-pops.pdf") Resource certainPops,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:certain-pops.pdf") Resource certainPops
   ) {
-    return new PDFBoxFieldFiller(List.of(coverPages, certainPops), font);
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops));
   }
 
   @Bean
   public PdfFieldFiller clientCertainPopsFiller(
       @Value("classpath:cover-pages.pdf") Resource coverPages,
-      @Value("classpath:certain-pops.pdf") Resource certainPops,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:certain-pops.pdf") Resource certainPops
   ) {
-    return new PDFBoxFieldFiller(List.of(coverPages, certainPops), font);
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops));
   }
 
   @Bean
   public PdfFieldFiller uploadedDocCoverPageFilter(
-      @Value("classpath:uploaded-document-cover-page.pdf") Resource coverPage,
-      @Value("classpath:LiberationSans-Regular.ttf") Resource font
+      @Value("classpath:uploaded-document-cover-page.pdf") Resource coverPage
   ) {
-    return new PDFBoxFieldFiller(List.of(coverPage), font);
+    return new PDFBoxFieldFiller(List.of(coverPage));
   }
 
   @Bean

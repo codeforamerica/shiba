@@ -22,8 +22,7 @@ class PDFBoxFieldFillerTest {
       List.of(
           new ClassPathResource("test-cover-pages.pdf"),
           new ClassPathResource("test-caf.pdf")
-      ),
-      new ClassPathResource("LiberationSans-Regular.ttf")
+      )
   );
 
   @Test
@@ -94,9 +93,9 @@ class PDFBoxFieldFillerTest {
   }
 
   @Test
-  void shouldStripUnsupportedUnicode() throws IOException {
+  void shouldSupportEmojis() throws IOException {
     String submittedValue = "Michael😃";
-    String expectedValue = "Michael";
+    String expectedValue = "Michael😃";
 
     Collection<PdfField> fields = List.of(
         new SimplePdfField("TEXT_FIELD", submittedValue)

@@ -18,17 +18,7 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepath;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import de.redsix.pdfcompare.PdfComparator;
@@ -430,9 +420,10 @@ class MnitDocumentConsumerTest {
     verify(mnitClient, times(0)).send(any(), any(),
         eq(application.getId()), eq(XML), any()); // XMLs only for Dakota
 
-    // Uncomment the following line to regenerate the test files (useful if the files or cover page have changed)
-//         writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
-//         writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
+    // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
+    //    Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
+    //    Utils.writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
+
     // Assert that converted file contents are as expected
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
     verifyGeneratedPdf(captor.getAllValues().get(1).getFileBytes(),

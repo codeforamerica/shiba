@@ -66,7 +66,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         Map.of("applicantSignature", List.of("aЕкатерина")));
     var caf = downloadCaf();
 
-    assertPdfFieldEquals("APPLICANT_SIGNATURE", "a", caf);
+    assertPdfFieldEquals("APPLICANT_SIGNATURE", "aЕкатерина", caf);
   }
 
   @Test
