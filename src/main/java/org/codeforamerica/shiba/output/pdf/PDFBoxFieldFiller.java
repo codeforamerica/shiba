@@ -68,6 +68,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     try {
       PDDocument loadedDoc = PDDocument.load(pdfResource.getInputStream());
       PDAcroForm acroForm = loadedDoc.getDocumentCatalog().getAcroForm();
+      acroForm.setNeedAppearances(true);
 //      PDFont font = PDType0Font.load(loadedDoc, fontResource.getInputStream(), false);
 //      PDResources res = acroForm.getDefaultResources();
 //      String fontName = res.add(font).getName();
