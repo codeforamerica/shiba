@@ -28,7 +28,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
 
   @Override
   public ApplicationFile fill(Collection<PdfField> fields, String applicationId, String filename) {
-    PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();/**/
+    PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
 
     byte[] fileContents = pdfs.stream()
         .map(pdfResource -> fillOutPdfs(fields, pdfResource))
