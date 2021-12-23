@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -19,9 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -41,6 +44,7 @@ class FileDownloadControllerTest {
 
   XmlGenerator xmlGenerator = mock(XmlGenerator.class);
   ApplicationData applicationData;
+  Application application;
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
   ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
 
@@ -48,6 +52,10 @@ class FileDownloadControllerTest {
   void setUp() {
     applicationData = new ApplicationData();
     applicationData.setId("some-app-id");
+    application = Application.builder()
+        .completedAt(ZonedDateTime.now())
+        .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED)))
+        .build();
     mockMvc = MockMvcBuilders.standaloneSetup(
             new FileDownloadController(
                 xmlGenerator,
@@ -65,7 +73,7 @@ class FileDownloadControllerTest {
         .thenReturn(new ApplicationFile("".getBytes(), ""));
 
     mockMvc.perform(
-        get("/download"))
+            get("/download"))
         .andExpect(status().is2xxSuccessful());
 
     verify(pdfGenerator).generate(applicationData.getId(), CAF, CLIENT);
@@ -73,26 +81,54 @@ class FileDownloadControllerTest {
 
   @Test
   void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-    when(pdfGenerator.generate(anyString(), any(), any()))
+    application.setDocumentStatuses(List.of(new DocumentStatus("9870000123", CAF, "", DELIVERED)));
+    when(applicationRepository.find("9870000123")).thenReturn(application);
+    when(pdfGenerator.generate(eq(application), any(), any()))
         .thenReturn(new ApplicationFile("".getBytes(), ""));
 
-    mockMvc.perform(
-        get("/download-caf/9870000123"))
+    mockMvc.perform(get("/download-caf/9870000123"))
         .andExpect(status().is2xxSuccessful());
 
-    verify(pdfGenerator).generate("9870000123", CAF, CASEWORKER);
+    verify(pdfGenerator).generate(application, CAF, CASEWORKER);
   }
 
   @Test
   void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
-    when(pdfGenerator.generate(anyString(), any(), any()))
+    when(applicationRepository.find("9870000123")).thenReturn(application);
+    when(pdfGenerator.generate(eq(application), any(), any()))
         .thenReturn(new ApplicationFile("".getBytes(), ""));
 
-    mockMvc.perform(
-        get("/download-ccap/9870000123"))
+    mockMvc.perform(get("/download-ccap/9870000123"))
         .andExpect(status().is2xxSuccessful());
 
-    verify(pdfGenerator).generate("9870000123", CCAP, CASEWORKER);
+    verify(pdfGenerator).generate(application, CCAP, CASEWORKER);
+  }
+
+  @Test
+  void shouldNotifyForNonCAFApplication() throws Exception {
+    when(applicationRepository.find("9870000123")).thenReturn(application);
+
+    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
+        .andExpect(status().is2xxSuccessful())
+        .andReturn()
+        .getResponse().getContentAsString();
+
+    assertThat(responseContent).isEqualTo(
+        "Could not find a CAF application with this ID for download");
+  }
+
+  @Test
+  void shouldNotifyForIncompleteApplication() throws Exception {
+    application.setCompletedAt(null);
+    when(applicationRepository.find("9870000123")).thenReturn(application);
+
+    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
+        .andExpect(status().is2xxSuccessful())
+        .andReturn()
+        .getResponse().getContentAsString();
+
+    assertThat(responseContent).isEqualTo(
+        "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.");
   }
 
   @Test
@@ -102,8 +138,7 @@ class FileDownloadControllerTest {
     ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
     when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(applicationFile);
 
-    MvcResult result = mockMvc.perform(
-        get("/download"))
+    MvcResult result = mockMvc.perform(get("/download"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header()
@@ -121,7 +156,7 @@ class FileDownloadControllerTest {
         .thenReturn(new ApplicationFile(fileBytes, fileName));
 
     MvcResult result = mockMvc.perform(
-        get("/download-xml"))
+            get("/download-xml"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header()
@@ -190,7 +225,7 @@ class FileDownloadControllerTest {
         .thenReturn(new ApplicationFile(null, null));
 
     MvcResult result = mockMvc.perform(
-        get("/download-docs/9870000123"))
+            get("/download-docs/9870000123"))
         .andExpect(status().is4xxClientError())
         .andReturn();
 

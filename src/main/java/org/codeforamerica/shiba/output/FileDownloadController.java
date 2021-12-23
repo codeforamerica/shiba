@@ -33,7 +33,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class FileDownloadController {
 
-  private static final String NOT_FOUND_MESSAGE = "Could not find application for download";
+  private static final String NOT_FOUND_MESSAGE = "Could not find any application with this ID for download";
+  private static final String UNSUBMITTED_APPLICATION_MESSAGE = "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.";
+  private static final String NON_APPLICABLE_DOCUMENT_TYPE = "Could not find a %s application with this ID for download";
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final ApplicationData applicationData;
@@ -148,7 +150,23 @@ public class FileDownloadController {
    */
   private ResponseEntity<byte[]> createResponse(String applicationId, Document document) {
     try {
-      ApplicationFile applicationFile = pdfGenerator.generate(applicationId, document, CASEWORKER);
+      Application application = applicationRepository.find(applicationId);
+      if (application.getCompletedAt() == null) {
+        // The submitted time was not set - The application is still in progress or the time was
+        // cleared somehow
+        log.info(UNSUBMITTED_APPLICATION_MESSAGE);
+        return ResponseEntity.ok().body(UNSUBMITTED_APPLICATION_MESSAGE.getBytes());
+      }
+
+      if (application.getDocumentStatuses() == null || application.getDocumentStatuses().stream()
+          .noneMatch(documentStatus -> documentStatus.getDocumentType() == document)) {
+        // The application exists, but not for this document type
+        String msg = String.format(NON_APPLICABLE_DOCUMENT_TYPE, document);
+        log.info(msg);
+        return ResponseEntity.ok().body(msg.getBytes());
+      }
+
+      ApplicationFile applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
       return createResponse(applicationFile);
     } catch (EmptyResultDataAccessException e) {
       log.info(NOT_FOUND_MESSAGE);
