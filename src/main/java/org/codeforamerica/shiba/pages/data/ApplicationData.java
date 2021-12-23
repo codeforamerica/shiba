@@ -47,6 +47,7 @@ public class ApplicationData implements Serializable {
   @Setter(AccessLevel.NONE)
   private Instant startTime;
   private String utmSource;
+  private String lastPageViewed;
   private FlowType flow = FlowType.UNDETERMINED;
   private boolean isSubmitted = false;
   private PagesData pagesData = new PagesData();

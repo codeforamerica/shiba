@@ -517,6 +517,10 @@ public class PageController {
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());
       }
+      
+      if (pageName != null || !pageName.isEmpty()) {
+          applicationData.setLastPageViewed(pageName);
+      }
 
       ofNullable(pageWorkflow.getEnrichment())
           .map(applicationEnrichment::getEnrichment)

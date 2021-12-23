@@ -28,6 +28,7 @@ public class ApplicationFactory {
     copy.setFlow(applicationData.getFlow());
     copy.setStartTimeOnce(applicationData.getStartTime());
     copy.setUtmSource(applicationData.getUtmSource());
+    copy.setLastPageViewed(applicationData.getLastPageViewed());
     monitoringService.setApplicationId(applicationData.getId());
 
     return Application.builder()
