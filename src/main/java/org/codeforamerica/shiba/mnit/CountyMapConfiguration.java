@@ -324,7 +324,7 @@ public class CountyMapConfiguration {
         "FrontDesk1@co.brown.mn.us",
         "A000008600");
     updateCounty(Carlton,
-        "patti.hart@co.carlton.mn.us",
+        "IMOSS@co.carlton.mn.us",
         "1003921875");
     updateCounty(Carver,
         "cssfinancial@co.carver.mn.us",
@@ -354,7 +354,7 @@ public class CountyMapConfiguration {
         "cwcss@crowwing.us",
         "A000018300");
     updateCounty(Dakota,
-        "eeadocs@co.dakota.mn.us",
+        "EEARIGAppResearch@CO.DAKOTA.MN.US",
         "1427127620");
     updateCounty(Dodge,
         "OSS@MNPrairie.org",
@@ -363,7 +363,7 @@ public class CountyMapConfiguration {
         "dcss@co.douglass.mn.us",
         "A000021300");
     updateCounty(Faribault,
-        "lea.silverthorn@fmchs.com",
+        "lea.silverthorn@fmchs.com ",
         "A000022100");
     updateCounty(Fillmore,
         "SS-FAX@co.fillmore.mn.us",
