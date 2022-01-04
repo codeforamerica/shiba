@@ -11,8 +11,7 @@ _Note: these instructions are specific to macOS, but the same dependencies do ne
 
 #### Java Development Kit:
 ```
-brew tap AdoptOpenJDK/openjdk
-brew install --cask adoptopenjdk16
+brew install openjdk
 ```
 #### Set up jenv to manage your jdk versions
 
@@ -26,7 +25,7 @@ eval "$(jenv init -)"
 
 Reload your terminal, then finally run this from the SHIBA repo's directory
 ```
-jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home
+jenv add /Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/
 ```
 
 #### Gradle

@@ -1,4 +1,4 @@
-FROM openjdk:16.0
+FROM openjdk:17.0
 COPY . .
 RUN ./gradlew assemble
 RUN cp build/libs/*.jar app.jar

@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-java@v2.5.0
         with:
           distribution: 'adopt'
-          java-version: '16'
+          java-version: '17'
           cache: 'gradle'
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2.5.1
