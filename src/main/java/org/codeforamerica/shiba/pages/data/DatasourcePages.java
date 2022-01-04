@@ -35,8 +35,7 @@ public class DatasourcePages extends HashMap<String, PageData> {
 
     PageData pageData = this.get(condition.getPageName());
     if (pageData == null || !pageData.containsKey(condition.getInput())) {
-      // This page's skipCondition was satisfied, so the client didn't provide an answer, so this condition can't be satisfied
-      return false;
+      return false; // The client didn't provide an answer, so this condition can't be satisfied.
     } else {
       return condition.matches(pageData, this);
     }
