@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -65,11 +67,12 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
       Recipient recipient) {
     var programsInput = getPrograms(application);
     var fullNameInput = getFullName(application);
+    var tribalAffiliationInput = getTribalAffiliation(application);
     var householdMemberInputs = getHouseholdMembers(application);
     var countyInstructionsInput = getCountyInstructions(application, recipient, document);
     var utmSourceInput = getUtmSource(application, document);
     return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
-        utmSourceInput, householdMemberInputs);
+        utmSourceInput, householdMemberInputs, tribalAffiliationInput);
   }
 
   @Nullable
@@ -87,10 +90,11 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   @NotNull
   private List<DocumentField> combineCoverPageInputs(DocumentField programsInput,
       DocumentField fullNameInput, DocumentField countyInstructionsInput,
-      DocumentField utmSourceInput, List<DocumentField> householdMemberInputs) {
+      DocumentField utmSourceInput, List<DocumentField> householdMemberInputs, DocumentField tribalAffiliationInput) {
     var everythingExceptHouseholdMembers = new ArrayList<DocumentField>();
     everythingExceptHouseholdMembers.add(programsInput);
     everythingExceptHouseholdMembers.add(fullNameInput);
+    everythingExceptHouseholdMembers.add(tribalAffiliationInput);
     everythingExceptHouseholdMembers.add(countyInstructionsInput);
     everythingExceptHouseholdMembers.add(utmSourceInput);
     everythingExceptHouseholdMembers.addAll(householdMemberInputs);
@@ -114,6 +118,12 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     }
     return new DocumentField("coverPage", "fullName", value, SINGLE_VALUE);
   }
+  
+  private DocumentField getTribalAffiliation(Application application) {
+	    var value = getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
+	    		
+	    return new DocumentField("coverPage", "tribal", value, SINGLE_VALUE);
+	  }
 
   private List<DocumentField> getHouseholdMembers(Application application) {
     var householdSubworkflow = ofNullable(

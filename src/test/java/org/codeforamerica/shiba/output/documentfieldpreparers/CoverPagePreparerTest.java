@@ -112,6 +112,27 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE
         ));
   }
+  
+  @Test
+  void shouldIncludeTribalAffiliation() {
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("selectTheTribe", "selectedTribe", "Mille Lacs Band of Ojibwe");
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .county(Other)
+        .build();
+
+    List<DocumentField> documentFields = preparer
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
+
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "tribal",
+            List.of("Mille Lacs Band of Ojibwe"),
+            DocumentFieldType.SINGLE_VALUE
+        ));
+  }
 
   @Test
   void shouldIncludeSubworkflowProgramsInputWithCombinedProgramSelection() {
