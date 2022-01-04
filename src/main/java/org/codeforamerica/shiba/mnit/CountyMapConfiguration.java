@@ -455,7 +455,7 @@ public class CountyMapConfiguration {
         "M000051500");
     updateCounty(Nicollet,
         "hhsinfo@co.nicollet.mn.us",
-        "M000052300");
+        "1083845127");
     updateCounty(Nobles,
         "CommunityServices@co.nobles.mn.us",
         "M000053100");
