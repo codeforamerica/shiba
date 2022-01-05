@@ -259,6 +259,7 @@ mappings:
     programs: PROGRAMS
     countyInstructions: COUNTY_INSTRUCTIONS
     fullName: FULL_NAME
+    tribal: TRIBAL_NATION
   incomePerPayPeriod:
     incomePerPayPeriod: INCOME_PER_PAY_PERIOD
   totalIncome:

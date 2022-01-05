@@ -442,6 +442,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("UTM_SOURCE", "");
     assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
+    assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
     assertCcapFieldEquals("PROGRAMS_0", "CCAP");
     assertCcapFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
     assertCcapFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
@@ -562,6 +563,7 @@ public class FullFlowJourneyTest extends JourneyTest {
             + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
+    assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCafFieldEquals("PROGRAMS_0", "CCAP");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");

@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -39,8 +41,8 @@ import org.springframework.stereotype.Component;
 public class CoverPagePreparer implements DocumentFieldPreparer {
 
   public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
-  private static final Map<String, String> UTM_SOURCE_MAPPING = Map
-      .of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
+  private static final Map<String, String> UTM_SOURCE_MAPPING =
+      Map.of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
   private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private final CountyMap<CountyRoutingDestination> countyInformationMapping;
   private final MessageSource messageSource;
@@ -49,8 +51,7 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public CoverPagePreparer(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
-      CountyMap<CountyRoutingDestination> countyInformationMapping,
-      MessageSource messageSource,
+      CountyMap<CountyRoutingDestination> countyInformationMapping, MessageSource messageSource,
       RoutingDecisionService routingDecisionService,
       RoutingDestinationMessageService routingDestinationMessageService) {
     this.countyInstructionsMapping = countyInstructionsMapping;
@@ -65,11 +66,12 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
       Recipient recipient) {
     var programsInput = getPrograms(application);
     var fullNameInput = getFullName(application);
+    var tribalAffiliationInput = getTribalAffiliation(application);
     var householdMemberInputs = getHouseholdMembers(application);
     var countyInstructionsInput = getCountyInstructions(application, recipient, document);
     var utmSourceInput = getUtmSource(application, document);
     return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
-        utmSourceInput, householdMemberInputs);
+        utmSourceInput, householdMemberInputs, tribalAffiliationInput);
   }
 
   @Nullable
@@ -87,10 +89,12 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   @NotNull
   private List<DocumentField> combineCoverPageInputs(DocumentField programsInput,
       DocumentField fullNameInput, DocumentField countyInstructionsInput,
-      DocumentField utmSourceInput, List<DocumentField> householdMemberInputs) {
+      DocumentField utmSourceInput, List<DocumentField> householdMemberInputs,
+      DocumentField tribalAffiliationInput) {
     var everythingExceptHouseholdMembers = new ArrayList<DocumentField>();
     everythingExceptHouseholdMembers.add(programsInput);
     everythingExceptHouseholdMembers.add(fullNameInput);
+    everythingExceptHouseholdMembers.add(tribalAffiliationInput);
     everythingExceptHouseholdMembers.add(countyInstructionsInput);
     everythingExceptHouseholdMembers.add(utmSourceInput);
     everythingExceptHouseholdMembers.addAll(householdMemberInputs);
@@ -101,8 +105,7 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     List<String> programs = prepareProgramSelections(application);
 
     if (!programs.isEmpty()) {
-      return new DocumentField("coverPage", "programs", String.join(", ", programs),
-          SINGLE_VALUE);
+      return new DocumentField("coverPage", "programs", String.join(", ", programs), SINGLE_VALUE);
     }
     return null;
   }
@@ -115,11 +118,16 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     return new DocumentField("coverPage", "fullName", value, SINGLE_VALUE);
   }
 
+  private DocumentField getTribalAffiliation(Application application) {
+    var value =
+        getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
+    return new DocumentField("coverPage", "tribal", value, SINGLE_VALUE);
+  }
+
   private List<DocumentField> getHouseholdMembers(Application application) {
-    var householdSubworkflow = ofNullable(
-        getGroup(application.getApplicationData(), Group.HOUSEHOLD));
-    return householdSubworkflow.map(this::getApplicationInputsForSubworkflow)
-        .orElse(emptyList());
+    var householdSubworkflow =
+        ofNullable(getGroup(application.getApplicationData(), Group.HOUSEHOLD));
+    return householdSubworkflow.map(this::getApplicationInputsForSubworkflow).orElse(emptyList());
   }
 
   @NotNull
@@ -157,15 +165,14 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
 
     var county = application.getCounty();
-    var routingDestinations = routingDecisionService.getRoutingDestinations(
-        application.getApplicationData(), document);
+    var routingDestinations =
+        routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
     var coverPageMessageStrings = List.of(
         routingDestinationMessageService.generatePhrase(locale, county, false, routingDestinations),
         routingDestinationMessageService.generatePhrase(locale, county, true, routingDestinations));
 
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 
-    return new DocumentField("coverPage", "countyInstructions", countyInstructions,
-        SINGLE_VALUE);
+    return new DocumentField("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
   }
 }
