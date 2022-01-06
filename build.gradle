@@ -116,7 +116,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.google.crypto.tink:tink:1.6.1")
-    implementation("org.flywaydb:flyway-core:8.3.0")
+    implementation("org.flywaydb:flyway-core:8.4.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.mixpanel:mixpanel-java:1.5.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
