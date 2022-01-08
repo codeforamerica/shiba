@@ -184,7 +184,9 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("moveToMnDate", "02/18/1776");
     testPage.enter("moveToMnPreviousCity", "Chicago");
     testPage.clickContinue();
-
+    
+    fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "homeApartmentNumber");
+            
     // Enter incorrect phone number to throw error and check aria properties
     testPage.enter("phoneNumber", "134567890");
     //testPage.enter("phoneOrEmail", "It's okay to text me");
@@ -194,15 +196,16 @@ public class AccessibilityJourneyTest extends JourneyTest {
         "phoneNumber-error-p phoneNumber-label");
     assertThat(testPage.getInputAriaDescribedBy("phoneNumber")).isEqualTo(
         "phoneNumber-error-message-2 phoneNumber-error-message-1");
-
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
     testPage.enter("phoneOrEmail", "It's okay to text me");
-    testPage.clickContinue();
-    fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "homeApartmentNumber");
+    testPage.clickContinue();   
+    
     testPage.clickLink("This looks correct");
+    
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
+    
     testPage.enter("relationship", "Other");
     testPage.enter("programs", PROGRAM_CCAP);
     testPage.enter("firstName", "householdMemberFirstName");
@@ -216,9 +219,11 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("moveToMnDate", "02/18/1950");
     testPage.enter("moveToMnPreviousState", "Illinois");
     testPage.clickContinue();
+    
     testPage.clickButton("Yes, that's everyone");
     testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
     testPage.clickContinue();
+    
     testPage.enter("whoHasAParentNotLivingAtHome",
         "None of the children have parents living outside the home");
     testPage.clickContinue();

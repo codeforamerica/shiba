@@ -27,11 +27,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     super.setUp();
     mockMvc.perform(get("/pages/identifyCountyBeforeApplying").session(session)); // start timer
     postExpectingSuccess("identifyCountyBeforeApplying", "county", "Hennepin");
-    postExpectingSuccess("languagePreferences", Map.of(
-        "writtenLanguage", List.of("ENGLISH"),
-        "spokenLanguage", List.of("ENGLISH"),
-        "needInterpreter", List.of("true"))
-    );
+    postExpectingSuccess("languagePreferences", Map.of("writtenLanguage", List.of("ENGLISH"),
+        "spokenLanguage", List.of("ENGLISH"), "needInterpreter", List.of("true")));
 
     postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
   }
@@ -61,8 +58,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldSupportCyrillicCharacters() throws Exception {
     selectPrograms("CASH");
 
-    postToUrlExpectingSuccess("/submit",
-        "/pages/signThisApplication/navigation",
+    postToUrlExpectingSuccess("/submit", "/pages/signThisApplication/navigation",
         Map.of("applicantSignature", List.of("aЕкатерина")));
     var caf = downloadCaf();
 
@@ -75,19 +71,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithCCAP();
 
     String jimHalpertId = getFirstHouseholdMemberId();
-    postExpectingSuccess("childrenInNeedOfCare",
-        "whoNeedsChildCare",
-        List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
-    );
+    postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare",
+        List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId));
 
-    postExpectingSuccess("whoHasParentNotAtHome",
-        "whoHasAParentNotLivingAtHome",
-        List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId)
-    );
-    postExpectingSuccess("parentNotAtHomeNames", Map.of(
-        "whatAreTheParentsNames", List.of("", "Jim's Parent"),
-        "childIdMap", List.of("applicant", jimHalpertId)
-    ));
+    postExpectingSuccess("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome",
+        List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId));
+    postExpectingSuccess("parentNotAtHomeNames", Map.of("whatAreTheParentsNames",
+        List.of("", "Jim's Parent"), "childIdMap", List.of("applicant", jimHalpertId)));
 
     var ccap = submitAndDownloadCcap();
     assertPdfFieldEquals("CHILD_NEEDS_CHILDCARE_FULL_NAME_0", "Dwight Schrute", ccap);
@@ -106,10 +96,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     addHouseholdMembersWithCCAP();
 
-    postExpectingSuccess("childrenInNeedOfCare",
-        "whoNeedsChildCare",
-        List.of("Dwight Schrute applicant", getJimFullNameAndId())
-    );
+    postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare",
+        List.of("Dwight Schrute applicant", getJimFullNameAndId()));
 
     postExpectingSuccess("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome",
         "NONE_OF_THE_ABOVE");
@@ -276,13 +264,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   private void testThatCorrectCountyInstructionsAreDisplayed(String city, String zip,
       String expectedCountyInstructions) throws Exception {
-    postExpectingSuccess("homeAddress", Map.of(
-        "streetAddress", List.of("2168 7th Ave"),
-        "city", List.of(city),
-        "zipCode", List.of(zip),
-        "state", List.of("MN"),
-        "sameMailingAddress", List.of("true")
-    ));
+    postExpectingSuccess("homeAddress",
+        Map.of("streetAddress", List.of("2168 7th Ave"), "city", List.of(city), "zipCode",
+            List.of(zip), "state", List.of("MN"), "sameMailingAddress", List.of("true")));
     postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
     var ccap = submitAndDownloadCcap();
@@ -304,14 +288,11 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       String originalApt = "originalApt";
       String originalCity = "originalCity";
       String originalZipCode = "54321";
-      postExpectingSuccess("homeAddress", Map.of(
-          "streetAddress", List.of(originalStreetAddress),
-          "apartmentNumber", List.of(originalApt),
-          "city", List.of(originalCity),
-          "zipCode", List.of(originalZipCode),
-          "state", List.of("MN"),
-          "sameMailingAddress", List.of("false")
-      ));
+      postExpectingSuccess("homeAddress",
+          Map.of("streetAddress", List.of(originalStreetAddress), "apartmentNumber",
+              List.of(originalApt), "city", List.of(originalCity), "zipCode",
+              List.of(originalZipCode), "state", List.of("MN"), "sameMailingAddress",
+              List.of("false")));
       postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
       var ccap = submitAndDownloadCcap();
@@ -342,22 +323,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       String enrichedApartmentNumber = "someApt";
       String enrichedState = "someState";
       when(locationClient.validateAddress(any()))
-          .thenReturn(Optional.of(new Address(
-              enrichedStreetValue,
-              enrichedCityValue,
-              enrichedState,
-              enrichedZipCodeValue,
-              enrichedApartmentNumber,
-              "Hennepin")));
+          .thenReturn(Optional.of(new Address(enrichedStreetValue, enrichedCityValue, enrichedState,
+              enrichedZipCodeValue, enrichedApartmentNumber, "Hennepin")));
 
-      postExpectingSuccess("homeAddress", Map.of(
-          "streetAddress", List.of("originalStreetAddress"),
-          "apartmentNumber", List.of("originalApt"),
-          "city", List.of("originalCity"),
-          "zipCode", List.of("54321"),
-          "state", List.of("MN"),
-          "sameMailingAddress", List.of()
-      ));
+      postExpectingSuccess("homeAddress",
+          Map.of("streetAddress", List.of("originalStreetAddress"), "apartmentNumber",
+              List.of("originalApt"), "city", List.of("originalCity"), "zipCode", List.of("54321"),
+              "state", List.of("MN"), "sameMailingAddress", List.of()));
 
       postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
@@ -421,8 +393,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapLivingSituationToUnknownIfNoneOfTheseIsSelectedAndShouldNotMapTemporarilyWithFriendsOrFamilyYesNo()
-        throws
-        Exception {
+        throws Exception {
       fillInRequiredPages();
 
       postExpectingSuccess("livingSituation", "livingSituation", "UNKNOWN");
@@ -450,8 +421,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     @Test
     void shouldMapLivingWithFamilyAndFriendsDueToEconomicHardship() throws Exception {
       fillInRequiredPages();
-      postExpectingSuccess("livingSituation",
-          "livingSituation",
+      postExpectingSuccess("livingSituation", "livingSituation",
           "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
 
       var caf = submitAndDownloadCaf();
@@ -590,18 +560,14 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         selectPrograms(Program.CCAP);
         postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
         postExpectingSuccess("employmentStatus", "areYouWorking", "false");
-        postExpectingRedirect("unearnedIncome",
-            "unearnedIncome",
-            "NO_UNEARNED_INCOME_SELECTED",
+        postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
             "unearnedIncomeCcap");
-        postExpectingRedirect("unearnedIncomeCcap",
-            "unearnedIncomeCcap",
-            "NO_UNEARNED_INCOME_CCAP_SELECTED",
-            "additionalIncomeInfo");
+        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
+            "NO_UNEARNED_INCOME_CCAP_SELECTED", "additionalIncomeInfo");
 
         var additionalIncomeInfo = "Here's something else about my situation";
-        postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
-            additionalIncomeInfo, "startExpenses");
+        postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo", additionalIncomeInfo,
+            "startExpenses");
 
         var caf = submitAndDownloadCaf();
         var ccap = downloadCcap();
@@ -613,19 +579,15 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       @Test
       void shouldMapOriginalHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsFalse()
-          throws
-          Exception {
+          throws Exception {
         String originalStreetAddress = "originalStreetAddress";
         String originalApt = "originalApt";
         String originalCity = "originalCity";
         String originalZipCode = "54321";
-        postExpectingSuccess("homeAddress", Map.of(
-            "streetAddress", List.of(originalStreetAddress),
-            "apartmentNumber", List.of(originalApt),
-            "city", List.of(originalCity),
-            "zipCode", List.of(originalZipCode),
-            "state", List.of("MN")
-        ));
+        postExpectingSuccess("homeAddress",
+            Map.of("streetAddress", List.of(originalStreetAddress), "apartmentNumber",
+                List.of(originalApt), "city", List.of(originalCity), "zipCode",
+                List.of(originalZipCode), "state", List.of("MN")));
         postExpectingSuccess("mailingAddress", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
 
@@ -655,28 +617,19 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       @Test
       void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue()
-          throws
-          Exception {
+          throws Exception {
         String enrichedStreetValue = "testStreet";
         String enrichedCityValue = "testCity";
         String enrichedZipCodeValue = "testZipCode";
         String enrichedApartmentNumber = "someApt";
         String enrichedState = "someState";
         when(locationClient.validateAddress(any()))
-            .thenReturn(Optional.of(new Address(
-                enrichedStreetValue,
-                enrichedCityValue,
-                enrichedState,
-                enrichedZipCodeValue,
-                enrichedApartmentNumber,
-                "Hennepin")));
-        postExpectingSuccess("homeAddress", Map.of(
-            "streetAddress", List.of("originalStreetAddress"),
-            "apartmentNumber", List.of("originalApt"),
-            "city", List.of("originalCity"),
-            "zipCode", List.of("54321"),
-            "state", List.of("MN")
-        ));
+            .thenReturn(Optional.of(new Address(enrichedStreetValue, enrichedCityValue,
+                enrichedState, enrichedZipCodeValue, enrichedApartmentNumber, "Hennepin")));
+        postExpectingSuccess("homeAddress",
+            Map.of("streetAddress", List.of("originalStreetAddress"), "apartmentNumber",
+                List.of("originalApt"), "city", List.of("originalCity"), "zipCode",
+                List.of("54321"), "state", List.of("MN")));
         postExpectingSuccess("mailingAddress", "sameMailingAddress", "true"); // THE KEY DIFFERENCE
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
@@ -693,29 +646,23 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       @Test
       void shouldMapToOriginalMailingAddressIfSameMailingAddressIsFalseAndUseEnrichedAddressIsFalse()
-          throws
-          Exception {
-        postExpectingSuccess("homeAddress", Map.of(
-            "isHomeless", List.of(""),
-            "streetAddress", List.of("originalHomeStreetAddress"),
-            "apartmentNumber", List.of("originalHomeApt"),
-            "city", List.of("originalHomeCity"),
-            "zipCode", List.of("54321"),
-            "state", List.of("MN"),
-            "sameMailingAddress", List.of("") // THE KEY DIFFERENCE
-        ));
+          throws Exception {
+        postExpectingSuccess("homeAddress",
+            Map.of("isHomeless", List.of(""), "streetAddress", List.of("originalHomeStreetAddress"),
+                "apartmentNumber", List.of("originalHomeApt"), "city", List.of("originalHomeCity"),
+                "zipCode", List.of("54321"), "state", List.of("MN"), "sameMailingAddress",
+                List.of("") // THE KEY DIFFERENCE
+            ));
         String originalStreetAddress = "originalStreetAddress";
         String originalApt = "originalApt";
         String originalCity = "originalCity";
         String originalState = "IL";
-        postExpectingSuccess("mailingAddress", Map.of(
-            "streetAddress", List.of(originalStreetAddress),
-            "apartmentNumber", List.of(originalApt),
-            "city", List.of(originalCity),
-            "zipCode", List.of("54321"),
-            "state", List.of(originalState),
-            "sameMailingAddress", List.of("false") // THE KEY DIFFERENCE
-        ));
+        postExpectingSuccess("mailingAddress",
+            Map.of("streetAddress", List.of(originalStreetAddress), "apartmentNumber",
+                List.of(originalApt), "city", List.of(originalCity), "zipCode", List.of("54321"),
+                "state", List.of(originalState), "sameMailingAddress", List.of("false") // THE KEY
+                                                                                        // DIFFERENCE
+            ));
         postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
 
         var caf = submitAndDownloadCaf();
@@ -741,8 +688,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInRequiredPages();
       postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
       selectPrograms("CERTAIN_POPS");
-      postExpectingRedirect("basicCriteria",
-          "basicCriteria",
+      postExpectingRedirect("basicCriteria", "basicCriteria",
           List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
               "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
           "certainPopsConfirm");
@@ -801,8 +747,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICANT_HOME_COUNTY", "", pdf);
       assertPdfFieldEquals("APPLICANT_MAILING_COUNTY", "someCounty", pdf);
       assertPdfFieldEquals("LIVING_SITUATION_COUNTY", "Anoka", pdf);
-      assertPdfFieldEquals("LIVING_SITUATION", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING",
-          pdf);
+      assertPdfFieldEquals("LIVING_SITUATION", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING", pdf);
       assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
 
       // Section 7 & appendix B: Authorized Rep
@@ -817,15 +762,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       // Section 9
       assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
-      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "Dwight Schrute",
-          pdf);
+      assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "Dwight Schrute", pdf);
       assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
       assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "", pdf);
 
       // Section 10
       assertPdfFieldEquals("IS_WORKING", "Yes", pdf);
-      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0",
-          "Dwight Schrute", pdf);
+      assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", "Dwight Schrute", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
@@ -837,9 +780,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInRequiredPages();
       postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
       selectPrograms("CERTAIN_POPS", "SNAP");
-      postExpectingRedirect("basicCriteria",
-          "basicCriteria",
-          List.of("NONE"),
+      postExpectingRedirect("basicCriteria", "basicCriteria", List.of("NONE"),
           "certainPopsOffboarding");
 
       submitApplication();

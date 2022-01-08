@@ -207,19 +207,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("moveToMnDate", "10/20/1993");
     testPage.enter("moveToMnPreviousCity", "Chicago");
     testPage.clickContinue();
-
-    // Check that we get the no phone number confirmation screen if no phone number is entered
-    testPage.enter("email", "some@example.com");
-    testPage.clickContinue();
-    assertThat(testPage.getTitle()).contains("No phone number confirmation");
-    testPage.goBack();
-
-    // How can we get in touch with you?
-    testPage.enter("phoneNumber", "7234567890");
-    testPage.enter("email", "some@example.com");
-    assertThat(testPage.getCheckboxValues("phoneOrEmail")).contains("It's okay to text me",
-        "It's okay to email me");
-    testPage.clickContinue();
   }
 
   protected void fillOutHomeAndMailingAddress(String homeZip, String homeCity,
@@ -242,11 +229,33 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.clickContinue();
     testPage.clickElementById("enriched-address");
     testPage.clickContinue();
-
-    // Let's review your info
-    assertThat(driver.findElementById("mailingAddress-address_street").getText())
-        .isEqualTo("smarty street");
   }
+  
+  
+  protected void fillOutContactAndReview(boolean isReview) {   
+    // Check that we get the no phone number confirmation screen if no phone number is entered
+    testPage.enter("email", "some@example.com");
+    testPage.clickContinue();
+    assertThat(testPage.getTitle()).contains("No phone number confirmation");
+    testPage.goBack();
+
+    // How can we get in touch with you?
+    testPage.enter("phoneNumber", "7234567890");
+    testPage.enter("email", "some@example.com");
+    assertThat(testPage.getCheckboxValues("phoneOrEmail")).contains("It's okay to text me",
+        "It's okay to email me");
+    testPage.clickContinue();
+    
+    if (isReview)
+    {
+      // Let's review your info
+      assertThat(driver.findElementById("mailingAddress-address_street").getText())
+          .isEqualTo("smarty street");           
+    }
+    
+  }
+  
+ 
 
   protected void assertApplicationSubmittedEventWasPublished(String applicationId,
       FlowType flowType,

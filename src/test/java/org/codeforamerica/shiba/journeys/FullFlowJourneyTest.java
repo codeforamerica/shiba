@@ -46,7 +46,10 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Where are you currently Living?
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
+    fillOutContactAndReview(true);
     testPage.clickLink("This looks correct");
+    
+    
 
     // Add 1 Household Member
     assertThat(testPage.getElementText("page-form")).contains(

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -24,6 +25,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
+import org.codeforamerica.shiba.testutilities.FormPage;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -545,11 +547,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "state", List.of("IL"),
         "sameMailingAddress", List.of()
     ));
-    postExpectingNextPageElementText("verifyMailingAddress",
-        "useEnrichedAddress",
-        "true",
-        "mailingAddress-address_street",
-        "smarty street");
+        
+    postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "true");
+    
+    var returnPage = new FormPage(getPage("reviewInfo"));
+    assertThat(returnPage.getElementTextById("mailingAddress-address_street")).isEqualTo("smarty street");
   }
 
   private void goThroughShortMfipFlow(String county, String nationName, String[] programs)

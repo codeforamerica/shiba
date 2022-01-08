@@ -12,7 +12,9 @@ spring:
 client:
   keystore: src/test/resources/test-keystore.jks
   truststore: src/test/resources/test-truststore.jks
-
+  keystore-password: changeit
+  truststore-password: changeit
+  
 sender-email: sender@email.org
 security-email: security@email.org
 audit-email: audit@email.org

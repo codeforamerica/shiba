@@ -3006,7 +3006,7 @@ workflow:
     pageConfiguration: *personalInfo
     enrichment: personalInfoDateOfBirthEnrichment
     nextPages:
-      - pageName: contactInfo
+      - pageName: homeAddress
   contactInfo:
     pageConfiguration: *contactInfo
     nextPages:
@@ -3015,12 +3015,12 @@ workflow:
           pageName: contactInfo
           input: phoneNumber
           matcher: EMPTY
-      - pageName: homeAddress
+      - pageName: reviewInfo
   noPhoneNumberConfirmation:
     pageConfiguration: *noPhoneNumberConfirmation
     nextPages:
       - pageName: contactInfo
-      - pageName: homeAddress
+      - pageName: reviewInfo
   homeAddress:
     pageConfiguration: *homeAddress
     enrichment: homeAddressEnrichment
@@ -3044,7 +3044,7 @@ workflow:
   generalDeliveryAddress:
     pageConfiguration: *generalDeliveryAddress
     nextPages:
-      - pageName: reviewInfo
+      - pageName: contactInfo
     datasources:
       - pageName: cityForGeneralDelivery
   mailingAddress:
@@ -3083,7 +3083,7 @@ workflow:
       - pageName: mailingAddress
       - pageName: homeAddress
     nextPages:
-      - pageName: reviewInfo
+      - pageName: contactInfo
       - pageName: mailingAddress
   reviewInfo:
     subtleLinkTargetPage: doYouNeedHelpImmediately

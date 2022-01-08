@@ -680,11 +680,12 @@ public class AbstractShibaMockMvcTest {
     fillOutHomeAddress();
     postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "false");
     fillOutMailingAddress();
-    postExpectingNextPageElementText("verifyMailingAddress",
-        "useEnrichedAddress",
-        "true",
-        "mailingAddress-address_street",
-        "smarty street");
+    
+    postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "true");
+    
+    var returnPage = new FormPage(getPage("reviewInfo"));
+    assertThat(returnPage.getElementTextById("mailingAddress-address_street")).isEqualTo("smarty street");
+    
   }
 
   protected void completeFlowFromIsPregnantThroughTribalNations(boolean hasHousehold)

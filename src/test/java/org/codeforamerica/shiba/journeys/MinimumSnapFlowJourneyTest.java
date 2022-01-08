@@ -56,9 +56,12 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(generalDeliveryText).contains("Main Post Office.");
     assertThat(generalDeliveryText).contains("100 S 1st St");
     assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
-
-    // Let's review your info
     testPage.clickContinue();
+    
+    // Contact 
+    fillOutContactAndReview(false);    
+    
+    // Let's review your info  
     assertThat(driver.findElementById("homeAddress-address_message").getText())
         .isEqualTo("No permanent address");
     assertThat(testPage.findElementById("generalDelivery_streetAddress").getText())
@@ -118,6 +121,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     String homeStreetAddress = "someStreetAddress";
     String homeApartmentNumber = "someApartmentNumber";
     fillOutHomeAndMailingAddress(homeZip, homeCity, homeStreetAddress, homeApartmentNumber);
+    fillOutContactAndReview(true);
 
     testPage.clickLink("Submit application now with only the above information.");
 
