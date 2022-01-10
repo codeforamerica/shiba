@@ -48,6 +48,10 @@ public class FormInputTemplate {
         type != FormInputType.PEOPLE_CHECKBOX;
   }
 
+  public boolean hasPromptMessageKey() {
+	  return promptMessage != null && promptMessage.getPromptMessageKey() != null;
+  }
+  
   public boolean isRadioOrCheckbox() {
     return type == CHECKBOX || type == RADIO;
   }

@@ -287,8 +287,22 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     testPage.enter("hoursAWeek", "30");
     testPage.clickContinue();
+    testPage.clickButton("No, that's it.");
+    // drill down to futureIncome page
+    testPage.clickButton("No");
+    testPage.clickButton("Continue");
+    testPage.enter("unearnedIncome", "None of the above");
+    testPage.clickButton("Continue");
+    testPage.enter("unearnedIncomeCcap", "None of the above");
+    testPage.clickButton("Continue");
+    assertThat(testPage.getInputAriaLabelledBy("div", "earnLessMoneyThisMonth-div")).isEqualTo("page-header page-header-help-message");
+    // now back up to jobBuilder page
     testPage.goBack();
-    testPage.clickButton("No, I'd rather keep going");
+    testPage.goBack();
+    testPage.goBack();
+    testPage.goBack();
+    testPage.goBack();
+    
     testPage.clickButton("No, that's it.");
     testPage.enter("currentlyLookingForJob", NO.getDisplayValue());
     testPage.clickContinue();

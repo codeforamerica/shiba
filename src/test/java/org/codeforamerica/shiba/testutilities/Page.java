@@ -254,7 +254,11 @@ public class Page {
   }
 
   public String getInputAriaLabelledBy(String inputName) {
-    return driver.findElement(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+	return getInputAriaLabelledBy("input", inputName);
+  }
+
+  public String getInputAriaLabelledBy(String elementType, String elementName) {
+    return driver.findElement(By.cssSelector(String.format("%s[name='%s[]']", elementType, elementName)))
         .getAttribute("aria-labelledby");
   }
 

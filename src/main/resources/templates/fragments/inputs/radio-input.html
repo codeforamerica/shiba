@@ -8,8 +8,11 @@
                    needsAriaLabel=${input.needsAriaLabel()}">
     <div class="form-group"
          th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
-        <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
-            <fieldset>
+        <div role="group" th:name="${input.name + '-div[]'}" aria-labelledby="page-header page-header-help-message"
+        	th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
+        <div role="group" th:name="${input.name + '-div[]'}" aria-labelledby="page-header page-header-help-message"
+        	th:remove="${page.isSingleCheckboxOrRadioInputPage() || input.hasPromptMessageKey()}? tag">
+           <fieldset>
                 <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
                 <p class="text--help"
                    th:if="${input.helpMessageKey != null}"
@@ -27,6 +30,7 @@
                     </label>
                 </th:block>
             </fieldset>
+        </div>
         </div>
         <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
     </div>
