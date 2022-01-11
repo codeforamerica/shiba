@@ -46,7 +46,7 @@ public class AzureDocumentRepository implements DocumentRepository {
   }
 
   public void upload(String filepath, MultipartFile file) throws IOException {
-    log.info("Uploading file {} to Azure at filepath {}", file.getOriginalFilename(), filepath);
+    log.info("Uploading file to Azure at filepath {}", filepath);
     try (var inputStream = file.getInputStream()) {
       uploadToAzure(filepath, file.getSize(), inputStream);
     }
