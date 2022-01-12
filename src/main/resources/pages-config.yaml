@@ -343,6 +343,12 @@ pageDefinitions:
     alertBox:
       type: CHOOSE_NONE_WARNING
       message: choose-programs.you-will-be-asked
+  - &expeditedNotice
+    name: expeditedNotice
+    pageTitle: expedited-notice.title
+    headerKey: expedited-notice.we-will-check-to-see
+    contextFragment: expeditedNoticeContextFragment
+    hasPrimaryButton: false      
   - &basicCriteria
     name: basicCriteria
     pageTitle: basic-criteria.title
@@ -2962,6 +2968,22 @@ workflow:
       - pageName: choosePrograms
   choosePrograms:
     pageConfiguration: *choosePrograms
+    nextPages:
+      - pageName: expeditedNotice
+        condition:
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: SNAP
+      - pageName: basicCriteria
+        condition:
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: CERTAIN_POPS
+      - pageName: introBasicInfo
+  expeditedNotice:
+    pageConfiguration: *expeditedNotice
     nextPages:
       - pageName: basicCriteria
         condition:
