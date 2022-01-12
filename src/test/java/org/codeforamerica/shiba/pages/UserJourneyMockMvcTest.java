@@ -51,7 +51,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
     FormPage reviewInfoPage = new FormPage(getPage("reviewInfo"));
     reviewInfoPage
-        .assertLinkWithTextHasCorrectUrl("Submit application now with only the above information.",
+        .assertLinkWithTextHasCorrectUrl("Submit an incomplete application now with only the above information.",
             "/pages/doYouNeedHelpImmediately");
 
     getNavigationPageWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately",
