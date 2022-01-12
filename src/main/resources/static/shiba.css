@@ -1547,3 +1547,10 @@ legend.form-question {
 #skip-to-content:focus {
   left: 8px;
 }
+
+.accordion__button:after{
+    background-image: url(/images/icon_accordion_close.svg);
+}
+.accordion--is-closed .accordion__button:after{
+    background-image: url(/images/icon_accordion_open.svg);
+}

@@ -57,17 +57,17 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(generalDeliveryText).contains("100 S 1st St");
     assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
     testPage.clickContinue();
-    
-    // Contact 
-    fillOutContactAndReview(false);    
-    
-    // Let's review your info  
+
+    // Contact
+    fillOutContactAndReview(false);
+
+    // Let's review your info
     assertThat(driver.findElementById("homeAddress-address_message").getText())
         .isEqualTo("No permanent address");
     assertThat(testPage.findElementById("generalDelivery_streetAddress").getText())
         .isEqualTo("100 S 1st St");
 
-    testPage.clickLink("Submit application now with only the above information.");
+    testPage.clickLink("Submit an incomplete application now with only the above information.");
 
     // Opt not to answer expedited questions
     testPage.clickLink("Finish application now");
@@ -123,7 +123,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     fillOutHomeAndMailingAddress(homeZip, homeCity, homeStreetAddress, homeApartmentNumber);
     fillOutContactAndReview(true);
 
-    testPage.clickLink("Submit application now with only the above information.");
+    testPage.clickLink("Submit an incomplete application now with only the above information.");
 
     // Answer expedited questions such that we will be expedited
     testPage.clickLink("Yes, I want to see if I qualify");
@@ -176,11 +176,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testFeedbackScreen();
 
     // PDF assertions
-    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId, """
-        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
+    assertCafContainsAllFieldsForMinimumSnapFlow(applicationId,
+        """
+            This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
 
-        For more support, you can call Hennepin County (612-596-1300)."""
-    );
+            For more support, you can call Hennepin County (612-596-1300).""");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("DRUG_FELONY", "Yes");
@@ -251,7 +251,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
   }
 
   private void testFeedbackScreen() {
-    //should load back to success page, check to see if button is no longer shown
+    // should load back to success page, check to see if button is no longer shown
     testPage.clickButton("Give us feedback");
     assertThat(testPage.getTitle()).isEqualTo("Feedback");
     assertThat(driver.findElementById("happy")).isNotNull();
