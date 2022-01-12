@@ -20,4 +20,4 @@ feature-flag:
   send-download-alert: on
   submit-via-api: on
   certain-pops: off
-  submit-docs-via-email-for-hennepin: on
+  submit-docs-via-email-for-hennepin: off
