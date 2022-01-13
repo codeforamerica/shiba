@@ -24,7 +24,7 @@
               
          <th:block th:if="${expeditedSnap.equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
             <div class="notice--success">
-                <span th:text="#{success.You-were-recommended-for-expedited-snap}"></span>
+                <span id="snapExpeditedNotice" th:text="#{success.You-were-recommended-for-expedited-snap}"></span>
             </div>
          </th:block>
         </div>
