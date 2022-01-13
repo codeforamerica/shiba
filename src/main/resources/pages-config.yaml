@@ -348,7 +348,7 @@ pageDefinitions:
     pageTitle: expedited-notice.title
     headerKey: expedited-notice.we-will-check-to-see
     contextFragment: expeditedNoticeContextFragment
-    hasPrimaryButton: false      
+    hasPrimaryButton: false 
   - &basicCriteria
     name: basicCriteria
     pageTitle: basic-criteria.title
@@ -2969,28 +2969,22 @@ workflow:
   choosePrograms:
     pageConfiguration: *choosePrograms
     nextPages:
+      - pageName: basicCriteria
+        condition:
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: CERTAIN_POPS
       - pageName: expeditedNotice
         condition:
           pageName: choosePrograms
           input: programs
           matcher: CONTAINS
-          value: SNAP
-      - pageName: basicCriteria
-        condition:
-          pageName: choosePrograms
-          input: programs
-          matcher: CONTAINS
-          value: CERTAIN_POPS
+          value: SNAP      
       - pageName: introBasicInfo
   expeditedNotice:
     pageConfiguration: *expeditedNotice
     nextPages:
-      - pageName: basicCriteria
-        condition:
-          pageName: choosePrograms
-          input: programs
-          matcher: CONTAINS
-          value: CERTAIN_POPS
       - pageName: introBasicInfo
   basicCriteria:
     pageConfiguration: *basicCriteria
@@ -3010,6 +3004,12 @@ workflow:
   certainPopsConfirm:
     pageConfiguration: *certainPopsConfirm
     nextPages:
+      - pageName: expeditedNotice
+        condition:
+            pageName: choosePrograms
+            input: programs
+            matcher: CONTAINS
+            value: SNAP      
       - pageName: introBasicInfo
   certainPopsOffboarding:
     pageConfiguration: *certainPopsOffboarding
