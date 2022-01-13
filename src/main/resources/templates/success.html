@@ -21,6 +21,12 @@
           <p class="spacing-below-35 spacing-above-15 text--help"
              id="submission-date"
              th:text="#{success.application-submitted-generic(${routingDestinationList}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+              
+         <th:block th:if="${expeditedSnap.equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
+            <div class="notice--success">
+                <span th:text="#{success.You-were-recommended-for-expedited-snap}"></span>
+            </div>
+         </th:block>
         </div>
 
         <div class="grid__item spacing-above-35 bottom-horizontal-line-dark-grey">

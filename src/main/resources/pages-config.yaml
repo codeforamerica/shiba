@@ -3011,6 +3011,8 @@ workflow:
             matcher: CONTAINS
             value: SNAP      
       - pageName: introBasicInfo
+    datasources:
+      - pageName: choosePrograms
   certainPopsOffboarding:
     pageConfiguration: *certainPopsOffboarding
     nextPages:
