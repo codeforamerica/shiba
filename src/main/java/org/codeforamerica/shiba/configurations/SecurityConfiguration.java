@@ -18,8 +18,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static final List<String> ADMIN_EMAILS = List.of(
-      "aedstrom@codeforamerica.org",
-      "agonzalez@codeforamerica.org",
       "ashukla@codeforamerica.org",
       "axie@codeforamerica.org",
       "bcalegari@codeforamerica.org",
@@ -36,14 +34,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "kerry@codeforamerica.org",
       "lhaynes@codeforamerica.org",
       "lmoore@codeforamerica.org",
-      "lraymontanez@codeforamerica.org",
-      "luigi@codeforamerica.org",
       "mloew@codeforamerica.org",
-      "mrotondo@codeforamerica.org",
       "nmartinez@codeforamerica.org",
       "sgole@codeforamerica.org",
-      "tpatterson@codeforamerica.org",
-      "sprasad@codeforamerica.org"
+      "tpatterson@codeforamerica.org"
   );
 
   @Override
