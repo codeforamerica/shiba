@@ -191,7 +191,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
       assertThat(testPage.getTitle()).isEqualTo("Certain Pops Confirmation");
       testPage.clickContinue();
     }
-
+    if(programSelections.contains(PROGRAM_SNAP)) {
+      assertThat(testPage.getTitle()).isEqualTo("Expedited Notice");
+      testPage.clickContinue();
+    }
     // Getting to know you (Personal Info intro page)
     testPage.clickContinue();
 

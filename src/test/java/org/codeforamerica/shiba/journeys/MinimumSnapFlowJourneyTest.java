@@ -9,6 +9,7 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 
 import java.util.List;
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -171,6 +172,9 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     // Finish Application
     applicationId = signApplicationAndDownloadPdfs(signature, true, false);
+    SuccessPage successPage = new SuccessPage(driver);
+    assertThat(successPage.findElementById("snapExpeditedNotice").getText()).contains(
+        "You were recommended for expedited food assistance (SNAP).");
     assertApplicationSubmittedEventWasPublished(applicationId, EXPEDITED, 1);
 
     testFeedbackScreen();

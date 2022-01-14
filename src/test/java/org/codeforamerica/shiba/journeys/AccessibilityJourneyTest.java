@@ -173,6 +173,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     programSelections.forEach(program -> testPage.enter("programs", program));
     testPage.clickContinue();
     testPage.clickContinue();
+    testPage.clickContinue();//for Expedited Notice page
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("otherName", "defaultOtherName");
