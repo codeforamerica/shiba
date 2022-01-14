@@ -187,9 +187,9 @@ class EmailContentCreatorTest {
         CcapExpeditedEligibility.ELIGIBLE,
         ENGLISH);
     assertThat(emailContent).contains(
-        "<html><body><strong>You Are Eligible for Expedited SNAP:</strong><br>"
+        "<html><body><strong>You May Be Eligible for Expedited SNAP:</strong><br>"
         + "Within 24 hours, <strong>expect a call</strong> from your county or tribal servicing agency about your food assistance application.<br><br>"
-        + "<strong>You Are Eligible for Expedited CCAP:</strong><br>"
+        + "<strong>You May Be Eligible for Expedited CCAP:</strong><br>"
         + "Within 5 days, your county or tribal servicing agency will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.<br><br>"
         + "<strong>Time to Hear Back:</strong><br>"
         + "In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county or tribal servicing agency about your emergency assistance application. The letter will explain your next steps.<br><br>"
