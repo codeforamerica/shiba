@@ -126,43 +126,32 @@ public class MnitDocumentConsumer {
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
     for (RoutingDestination routingDestination : routingDestinations) {
       boolean sendXMLToDakota = routingDestination.getName().equals(County.Dakota.name())
-                                && application.getFlow() == FlowType.LATER_DOCS;
-      boolean sendToHennepinViaEmail = featureFlagConfiguration.get(
-          "submit-docs-via-email-for-hennepin").isOn();
-      boolean isHennepin = routingDestination.getName().equals(County.Hennepin.name());
+          && application.getFlow() == FlowType.LATER_DOCS;
+      if (sendXMLToDakota) {
+        ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
+        sendFileAndUpdateStatus(application, XML, xml, routingDestination);
+      }
 
-      if (sendToHennepinViaEmail && isHennepin) {
-        documentStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC, routingDestination.getName(),
-            SENDING);
-        emailClient.sendHennepinDocUploadsEmails(application, uploadedDocs);
-      } else {
-        if (sendXMLToDakota) {
-          ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
-          sendFileAndUpdateStatus(application, XML, xml, routingDestination);
-        }
-
-        for (int i = 0; i < uploadedDocs.size(); i++) {
-          ApplicationFile uploadedDoc = uploadedDocs.get(i);
-          // rename file with filename that is specific to this destination
-          String extension = Utils.getFileType(uploadedDoc.getFileName());
-          String newFilename = filenameGenerator.generateUploadedDocumentName(application, i,
-              extension, routingDestination);
-          ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
-              newFilename);
-          sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);
-        }
+      for (int i = 0; i < uploadedDocs.size(); i++) {
+        ApplicationFile uploadedDoc = uploadedDocs.get(i);
+        // rename file with filename that is specific to this destination
+        String extension = Utils.getFileType(uploadedDoc.getFileName());
+        String newFilename = filenameGenerator.generateUploadedDocumentName(application, i,
+            extension, routingDestination);
+        ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
+            newFilename);
+        sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);
       }
     }
   }
 
-/**
- * Returns a list of uploaded docs that have been renamed to meet the standards of MNIT, converted
- * to PDFs (when possible), and have had cover pages added (when possible)
- * Note: the filenames for these documents will include the county dhsProviderId. Those filenames
- * are changed later to include the dhsProviderId specific to whatever RoutingDestination the file
- * is being sent to
- */
-private List<ApplicationFile> prepareUploadedDocsForSending(Application application) {
+  /**
+   * Returns a list of uploaded docs that have been renamed to meet the standards of MNIT, converted
+   * to PDFs (when possible), and have had cover pages added (when possible) Note: the filenames for
+   * these documents will include the county dhsProviderId. Those filenames are changed later to
+   * include the dhsProviderId specific to whatever RoutingDestination the file is being sent to
+   */
+  private List<ApplicationFile> prepareUploadedDocsForSending(Application application) {
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     List<ApplicationFile> applicationFiles = new ArrayList<>();
     byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
@@ -187,7 +176,8 @@ private List<ApplicationFile> prepareUploadedDocsForSending(Application applicat
 
     String id = application.getId();
     try {
-      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(), SENDING);
+      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
+          SENDING);
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
       documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),

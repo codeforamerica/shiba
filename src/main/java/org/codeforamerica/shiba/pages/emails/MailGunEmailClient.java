@@ -3,27 +3,20 @@ package org.codeforamerica.shiba.pages.emails;
 import static java.util.Collections.emptyList;
 import static java.util.Locale.ENGLISH;
 import static java.util.stream.Collectors.toList;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 import static org.springframework.web.reactive.function.BodyInserters.fromMultipartData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
-import org.codeforamerica.shiba.application.FlowType;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,40 +35,28 @@ public class MailGunEmailClient implements EmailClient {
   private final String senderEmail;
   private final String securityEmail;
   private final String auditEmail;
-  private final String hennepinEmail;
   private final String mailGunApiKey;
   private final EmailContentCreator emailContentCreator;
-  private final boolean shouldCC;
-  private final int maxAttachmentSize;
   private final WebClient webClient;
   private final String activeProfile;
-  private final DocumentStatusRepository documentStatusRepository;
   private final MessageSource messageSource;
 
   public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
       @Value("${security-email}") String securityEmail,
       @Value("${audit-email}") String auditEmail,
-      @Value("${hennepin-email}") String hennepinEmail,
       @Value("${mail-gun.url}") String mailGunUrl,
       @Value("${mail-gun.api-key}") String mailGunApiKey,
       EmailContentCreator emailContentCreator,
-      @Value("${mail-gun.shouldCC}") boolean shouldCC,
-      @Value("${mail-gun.max-attachment-size}") int maxAttachmentSize,
       @Value("${spring.profiles.active:Unknown}") String activeProfile,
-      DocumentStatusRepository documentStatusRepository,
       MessageSource messageSource
   ) {
     this.senderEmail = senderEmail;
     this.securityEmail = securityEmail;
     this.auditEmail = auditEmail;
-    this.hennepinEmail = hennepinEmail;
     this.mailGunApiKey = mailGunApiKey;
     this.emailContentCreator = emailContentCreator;
-    this.shouldCC = shouldCC;
-    this.maxAttachmentSize = maxAttachmentSize;
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
     this.activeProfile = activeProfile;
-    this.documentStatusRepository = documentStatusRepository;
     this.messageSource = messageSource;
   }
 
@@ -142,72 +123,6 @@ public class MailGunEmailClient implements EmailClient {
     var emailBody = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale);
     sendEmailFromFormData("Caseworker CAF downloaded", securityEmail, auditEmail, emailBody);
     log.info("Download CAF Alert Email sent for " + confirmationId);
-  }
-
-  @Override
-  public void sendHennepinDocUploadsEmails(Application application,
-      List<ApplicationFile> filesToSend) {
-    PageData personalInfo = application.getApplicationData().getPageData("personalInfo");
-    PageData contactInfo = application.getApplicationData().getPageData("contactInfo");
-
-    if (application.getFlow() == FlowType.LATER_DOCS) {
-      personalInfo = application.getApplicationData().getPageData("matchInfo");
-      contactInfo = application.getApplicationData().getPageData("matchInfo");
-    }
-
-    String fullName = String.join(" ", personalInfo.get("firstName").getValue(0),
-        personalInfo.get("lastName").getValue(0));
-    String subject = "Verification docs for " + fullName;
-
-    // Generate email content
-    String emailBody = emailContentCreator.createHennepinDocUploadsHTML(
-        getEmailContentArgsForHennepinDocUploads(personalInfo, contactInfo, fullName));
-
-    // Check total filesize
-    long totalAttachmentSize = filesToSend.stream()
-        .mapToLong(fileToSend -> fileToSend.getFileBytes().length).sum();
-
-    if (totalAttachmentSize >= maxAttachmentSize) {
-      log.info("Exceeded max attachment size. Sending separately.");
-      for (ApplicationFile fileToSend : filesToSend) {
-        if (fileToSend.getFileBytes().length >= maxAttachmentSize) {
-          // Let's see how often this happens
-          log.warn("File might be too big to send.");
-        }
-        sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
-            List.of(fileToSend), true);
-      }
-    } else if (!filesToSend.isEmpty()) {
-      sendEmail(subject, senderEmail, hennepinEmail, emptyList(), emailBody,
-          filesToSend, true);
-    }
-
-    documentStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC,
-        County.Hennepin.name(),
-        Status.DELIVERED);
-  }
-
-  @NotNull
-  private HashMap<String, String> getEmailContentArgsForHennepinDocUploads(
-      PageData personalInfo,
-      PageData contactInfo,
-      String fullName) {
-    var emailContentArgs = new HashMap<String, String>();
-    emailContentArgs.put("name", fullName);
-    var dob = personalInfo.get("dateOfBirth");
-    if (dob.getValue(0).isBlank()) {
-      emailContentArgs.put("dob", "");
-    } else {
-      emailContentArgs.put("dob", dob.getValue(0) + "/" + dob.getValue(1) + "/" + dob.getValue(2));
-    }
-    if (personalInfo.get("ssn").getValue(0).isBlank()) {
-      emailContentArgs.put("last4SSN", "");
-    } else {
-      emailContentArgs.put("last4SSN", personalInfo.get("ssn").getValue(0).substring(7));
-    }
-    emailContentArgs.put("phoneNumber", contactInfo.get("phoneNumber").getValue(0));
-    emailContentArgs.put("email", contactInfo.get("email").getValue(0));
-    return emailContentArgs;
   }
 
   @Override

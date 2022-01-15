@@ -5,6 +5,5 @@ spring:
 
 feature-flag:
   submit-via-api: on
-  submit-docs-via-email-for-hennepin: on
 
 demo-banner: true
