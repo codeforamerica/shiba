@@ -448,7 +448,7 @@ pageDefinitions:
               matcher: NOT_EMPTY
         promptMessage:
           promptMessageKey: personal-info.whats-your-social-security-number
-        helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+        helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -888,7 +888,7 @@ pageDefinitions:
                   matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: household-member-info.whats-their-social-security-number
-            helpMessageKey: household-member-info.if-they-have-one-we-strongly-recommend-including-it-here-your-caseworker-will
+            helpMessageKey: household-member-info.if-they-have-one-we-strongly-recommend-including-it-here
         validators:
           - validation: SELECT_AT_LEAST_ONE
             errorMessageKey: general.validation.make-sure-you-answer-this-question

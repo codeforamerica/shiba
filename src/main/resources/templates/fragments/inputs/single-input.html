@@ -9,7 +9,7 @@
     <p class="text--help"
        th:id="${input.name + '-help-message'}"
        th:if="${hasHelpMessage}"
-       th:text="#{${input.helpMessageKey}}"></p>
+       th:utext="#{${input.helpMessageKey}}"></p>
     <th:block th:switch="${input.type}"
               th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}">
         <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
