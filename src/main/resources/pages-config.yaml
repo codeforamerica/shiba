@@ -210,12 +210,6 @@ conditionDefinitions:
             value: VISION_INSURANCE_PREMIUMS
             matcher: DOES_NOT_CONTAIN
       - *noOneChoseCCAP?
-  - &skipDocumentUpload?
-    conditions:
-      - *skipRecommendationForProofOfIncome?
-      - *skipRecommendationForProofOfHousingCosts?
-      - *skipRecommendationForProofOfJobLoss?
-      - *skipRecommendationForProofOfMedicalExpenses?
   - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
@@ -4112,7 +4106,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   howToAddDocuments:
     pageConfiguration: *howToAddDocuments
     nextPages:
@@ -4127,7 +4121,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
@@ -4143,7 +4137,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   uploadDocuments:
     pageConfiguration: *uploadDocuments
     nextPages:
@@ -4158,7 +4152,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   uploadDocumentsDeleteWarningPage:
     pageConfiguration: *uploadDocumentsDeleteWarningPage
     nextPages:
@@ -4178,7 +4172,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   documentOffboarding:
     pageConfiguration: *documentOffboarding
     nextPages:
@@ -4194,7 +4188,7 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-    skipCondition: *skipDocumentUpload?
+
   identifyCounty:
     pageConfiguration: *identifyCounty
     nextPages:
