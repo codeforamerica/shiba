@@ -112,7 +112,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.apache.httpcomponents:httpclient")
-    implementation("io.sentry:sentry-logback:5.5.2")
+    implementation("io.sentry:sentry-logback:5.5.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.google.crypto.tink:tink:1.6.1")
