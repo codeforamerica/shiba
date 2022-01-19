@@ -157,39 +157,6 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     assertThat(lastName).isEqualTo("Sm\nith");
   }
 
-  @Test
-  void shouldSkipDocumentUploadFlowIfNotApplicableRegardlessOfPrograms() throws Exception {
-    var applicantPrograms = new String[]{"SNAP", "CASH", "CCAP", "EA", "GRH"};
-    completeFlowFromLandingPageThroughReviewInfo(applicantPrograms);
-    completeFlowFromReviewInfoToDisability(applicantPrograms);
-
-    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
-    assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
-    postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
-    postExpectingRedirect("jobSearch", "currentlyLookingForJob", "false", "incomeUpNext");
-
-    assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
-    postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "unearnedIncomeCcap");
-    var formPage = postAndFollowRedirect(
-        "unearnedIncomeCcap", "unearnedIncomeCcap", "NO_UNEARNED_INCOME_CCAP_SELECTED");
-    assertEquals(formPage.getTitle(), "Additional Income Info");
-
-    postExpectingRedirect("additionalIncomeInfo",
-        "additionalIncomeInfo",
-        "my income is literally $0",
-        "startExpenses");
-    assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
-    postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
-
-    // skipping ahead to medical expenses
-    postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE",
-        "supportAndCare");
-
-    // skipping ahead to signing application
-    submitApplication();
-    assertNavigationRedirectsToCorrectNextPage("signThisApplication", "nextSteps");
-  }
 
   protected void completeFlowFromReviewInfoToDisability(String... applicantPrograms)
       throws Exception {
