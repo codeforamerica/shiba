@@ -37,12 +37,10 @@ jenv add /Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/
 
 ### Setup IntelliJ for the project:
 
-- Configure an additional dictionary in `preferences > editor > proofreading > spelling` using `.idea/dictionaries/shiba.xml`
-- Install the Lombok plugin
 - Install the EnvFile plugin
 - Enable annotation processing
-- Set the Project SDK to Java 16 in `File > Project Structure`
-- Set the Gradle JVM version to 16 in `Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle`
+- Set the Project SDK to Java 17 in `File > Project Structure`
+- Set the Gradle JVM version to 17 in `Preferences -> Build, Execution, Deployment -> Build Tools -> Gradle`
 - Create `.env` file in the root of the project directory
 - Paste in values from `SHIBA application-secrets.yaml` in LastPass with the format `ENV_VAR_NAME=ENV_VAR_VALUE`, translating the property notation to environment variable notation as follows:
     - `shiba.username: someUsername` --> `SHIBA_USERNAME=someUsername`
@@ -60,8 +58,8 @@ jenv add /Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home/
 
 ### Start the local databases:
 
-- Install PostgreSQL via an [official download](https://www.postgresql.org/download/)
-    - Or on macOS, through homebrew: `brew install postgres`
+- Install PostgreSQL 11 via an [official download](https://www.postgresql.org/download/)
+    - Or on macOS, through homebrew: `brew install postgresql@11`
 - Create the database using the command line:
     - `$ createuser -s shiba`
     - `$ createdb shiba`
