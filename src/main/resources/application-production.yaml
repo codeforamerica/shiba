@@ -11,12 +11,9 @@ client:
   keystore: src/main/resources/shiba-keystore-production-2021.jks
   truststore: src/main/resources/shiba-truststore-production.jks
 
-hennepin-email: hhsews@hennepin.us
-
 mail-gun:
   shouldCC: true
 
 feature-flag:
   submit-via-api: on
   certain-pops: off
-  submit-docs-via-email-for-hennepin: on

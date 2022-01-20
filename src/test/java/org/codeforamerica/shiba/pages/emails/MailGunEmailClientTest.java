@@ -10,13 +10,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.matching.MultipartValuePattern.MatchingType.ANY;
 import static java.util.Locale.ENGLISH;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.UNDETERMINED;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
@@ -40,7 +38,6 @@ import java.util.Map;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
@@ -48,14 +45,12 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
-import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -107,14 +102,10 @@ class MailGunEmailClientTest {
         senderEmail,
         securityEmail,
         auditEmail,
-        hennepinEmail,
         "http://localhost:" + port,
         mailGunApiKey,
         emailContentCreator,
-        false,
-        MAX_ATTACHMENT_SIZE,
         activeProfile,
-        documentStatusRepository,
         messageSource);
     programs = List.of(Program.SNAP);
     credentials = new BasicCredentials("api", mailGunApiKey);
@@ -195,168 +186,6 @@ class MailGunEmailClientTest {
         .withRequestBodyPart(requestBodyPart("html", emailContent))
     );
   }
-
-  @Test
-  void sendsHennepinConsolidatedSmallDocUploadsEmail() {
-    wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-    var phoneNumber = "(603) 879-1111";
-    var email = "jane@example.com";
-    var applicationData = new TestApplicationDataBuilder()
-        .withPersonalInfo()
-        .withPageData("contactInfo", "phoneNumber", phoneNumber)
-        .withPageData("contactInfo", "email", email)
-        .build();
-
-    ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
-    UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
-    UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "", 1000);
-    applicationData.setUploadedDocs(List.of(doc1, doc2));
-    Application application = Application.builder()
-        .id("someId")
-        .completedAt(ZonedDateTime.now())
-        .applicationData(applicationData)
-        .county(Hennepin)
-        .timeToComplete(null)
-        .build();
-    var emailContent = "content";
-    when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
-    verify(documentStatusRepository).createOrUpdate("someId", UPLOADED_DOC, "Hennepin",
-        Status.DELIVERED);
-
-    wireMockServer.verify(1, postToMailgun()
-        .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
-        .withRequestBodyPart(requestBodyPart("from", senderEmail))
-        .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
-        .withRequestBodyPart(requestBodyPart("html", emailContent))
-        .withRequestBodyPart(aMultipart()
-            .withName("subject")
-            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
-            .withBody(containing("Verification docs for Jane Doe"))
-            .matchingType(ANY)
-            .build())
-    );
-
-    @SuppressWarnings("unchecked") ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor
-        .forClass(Map.class);
-    verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
-    Map<String, String> actual = captor.getValue();
-    assertThat(actual).containsAllEntriesOf(Map.of(
-        "name", "Jane Doe",
-        "dob", "10/04/2020",
-        "last4SSN", "6789",
-        "phoneNumber", phoneNumber,
-        "email", email));
-  }
-
-  @Test
-  void sendsHennepinIndividualLargeDocUploadsEmail() {
-    wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-    var phoneNumber = "(603) 879-1111";
-    var email = "jane@example.com";
-    var applicationData = new TestApplicationDataBuilder()
-        .withPersonalInfo()
-        .withPageData("contactInfo", "phoneNumber", phoneNumber)
-        .withPageData("contactInfo", "email", email)
-        .build();
-
-    ApplicationFile testFile = new ApplicationFile(new byte[MAX_ATTACHMENT_SIZE - 1], "");
-    UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "",
-        MAX_ATTACHMENT_SIZE - 1);
-    UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "",
-        MAX_ATTACHMENT_SIZE - 1);
-    applicationData.setUploadedDocs(List.of(doc1, doc2));
-    Application application = Application.builder()
-        .id("someId")
-        .completedAt(ZonedDateTime.now())
-        .applicationData(applicationData)
-        .county(Hennepin)
-        .timeToComplete(null)
-        .build();
-    var emailContent = "content";
-    when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
-    verify(documentStatusRepository).createOrUpdate("someId", UPLOADED_DOC, "Hennepin",
-        Status.DELIVERED);
-
-    wireMockServer.verify(2, postToMailgun()
-        .withBasicAuth(new BasicCredentials("api", mailGunApiKey))
-        .withRequestBodyPart(requestBodyPart("from", senderEmail))
-        .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
-        .withRequestBodyPart(requestBodyPart("html", emailContent))
-        .withRequestBodyPart(aMultipart()
-            .withName("subject")
-            .withHeader(CONTENT_TYPE, containing(TEXT_PLAIN_VALUE))
-            .withBody(containing("Verification docs for Jane Doe"))
-            .matchingType(ANY)
-            .build())
-    );
-
-    @SuppressWarnings("unchecked") ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor
-        .forClass(Map.class);
-    verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
-    Map<String, String> actual = captor.getValue();
-    assertThat(actual).containsAllEntriesOf(Map.of(
-        "name", "Jane Doe",
-        "dob", "10/04/2020",
-        "last4SSN", "6789",
-        "phoneNumber", phoneNumber,
-        "email", email));
-  }
-
-  @Test
-  void sendsHennepinDocUploadsEmailAsLaterDocs() {
-    wireMockServer.stubFor(post(anyUrl()).willReturn(aResponse().withStatus(200)));
-    var applicationData = new ApplicationData();
-    var phoneNumber = "(603) 879-1111";
-    var email = "jane@example.com";
-    var pagesData = new PagesDataBuilder()
-        .withPageData("matchInfo", Map.of(
-            "firstName", "Jane",
-            "lastName", "Doe",
-            "dateOfBirth", List.of("10", "04", "2020"),
-            "ssn", "123-45-6789",
-            "phoneNumber", phoneNumber,
-            "email", email)).build();
-    applicationData.setPagesData(pagesData);
-    ApplicationFile testFile = new ApplicationFile("testfile".getBytes(), "");
-    UploadedDocument doc1 = new UploadedDocument("somefile1", "", "", "", 1000);
-    UploadedDocument doc2 = new UploadedDocument("somefile2", "", "", "", 1000);
-    applicationData.setUploadedDocs(List.of(doc1, doc2));
-    Application application = Application.builder()
-        .id("someId")
-        .completedAt(ZonedDateTime.now())
-        .applicationData(applicationData)
-        .county(Hennepin)
-        .timeToComplete(null)
-        .flow(LATER_DOCS)
-        .build();
-    var emailContent = "content";
-    when(emailContentCreator.createHennepinDocUploadsHTML(anyMap())).thenReturn(emailContent);
-
-    mailGunEmailClient.sendHennepinDocUploadsEmails(application, List.of(testFile, testFile));
-
-    wireMockServer.verify(1, postToMailgun()
-        .withBasicAuth(credentials)
-        .withRequestBodyPart(requestBodyPart("from", senderEmail))
-        .withRequestBodyPart(requestBodyPart("to", hennepinEmail))
-        .withRequestBodyPart(requestBodyPart("html", emailContent))
-        .withRequestBodyPart(requestBodyPart("subject", "Verification docs for Jane Doe"))
-    );
-
-    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
-    verify(emailContentCreator).createHennepinDocUploadsHTML(captor.capture());
-    Map<String, String> actual = captor.getValue();
-    assertThat(actual).containsAllEntriesOf(Map.of(
-        "name", "Jane Doe",
-        "dob", "10/04/2020",
-        "last4SSN", "6789",
-        "phoneNumber", phoneNumber,
-        "email", email));
-  }
-
 
   @Test
   void sendsDownloadCafAlertEmail() {
@@ -478,14 +307,10 @@ class MailGunEmailClientTest {
           senderEmail,
           securityEmail,
           auditEmail,
-          hennepinEmail,
           "http://localhost:" + port,
           mailGunApiKey,
           emailContentCreator,
-          false,
-          MAX_ATTACHMENT_SIZE,
           "demo",
-          documentStatusRepository,
           messageSource);
     }
 
