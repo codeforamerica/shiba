@@ -215,6 +215,10 @@ conditionDefinitions:
     conditions:
       - *isApplicantsJob?
       - *livesAlone?
+  - &isNoSSN?
+    pageName: personalInfo
+    input: ssn
+    matcher: NOT_EMPTY  
 pageDefinitions:
   - &landing
     name: landing
@@ -420,6 +424,8 @@ pageDefinitions:
       - name: dateOfBirth
         type: DATE
         validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-provide-a-dob
           - validation: DATE
             errorMessageKey: general.validation.please-enter-your-birthday-in-this-format
             condition:
@@ -443,6 +449,37 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: personal-info.whats-your-social-security-number
         helpMessageKey: personal-info.if-you-have-one-we-strongly-recommend-including-it-here
+      - name: noSSNCheck
+        type: CHECKBOX
+        condition: *applicantChoseCERTAINPOPS?
+        validators:
+          - validation: SELECTED
+            errorMessageKey: general.validation.SSN-is-provided
+            condition: *isNoSSN?
+        options:
+          selectableOptions:
+            - value: "dont-have-ssn"
+              messageKey: personal-info.dont-have-ssn
+              flag: certain-pops
+        followUpValues:
+          - "dont-have-ssn"
+        followUps:
+          - name: appliedForSSN
+            type: RADIO
+            validators:
+             - validation: SELECT_AT_LEAST_ONE
+               errorMessageKey: general.validation.make-sure-to-choose-Yes-or-No
+               condition:
+                 input: noSSNCheck
+                 matcher: NOT_EMPTY
+            promptMessage:
+               promptMessageKey: personal-info.have-you-applied-for-ssn
+            options:
+              selectableOptions:
+              - value: "true"
+                messageKey: general.inputs.yes
+              - value: "false"
+                messageKey: general.inputs.no
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -3025,6 +3062,8 @@ workflow:
     enrichment: personalInfoDateOfBirthEnrichment
     nextPages:
       - pageName: homeAddress
+    datasources:
+      - pageName: choosePrograms
   contactInfo:
     pageConfiguration: *contactInfo
     nextPages:

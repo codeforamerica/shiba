@@ -204,6 +204,15 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("otherName", "defaultOtherName");
     testPage.enter("dateOfBirth", "01/12/1928");
     testPage.enter("ssn", "123456789");
+    if (programSelections.contains(PROGRAM_CERTAIN_POPS)) {
+      testPage.enter("noSSNCheck", "I don't have a social security number.");
+      assertThat(testPage.getCheckboxValues("noSSNCheck")).contains("I don't have a social security number.", "I don't have a social security number.");
+      testPage.enter("appliedForSSN", "Yes");
+      testPage.clickContinue();
+      //SSN textbox is filled and Checkbox is checked, so page won't advance and error shows 
+      assertThat(testPage.getTitle()).contains("Personal Info");
+      testPage.enter("noSSNCheck", "I don't have a social security number.");//deselect the SSN checkbox
+    }
     testPage.enter("maritalStatus", "Never married");
     testPage.enter("sex", "Female");
     testPage.enter("livedInMnWholeLife", "Yes");

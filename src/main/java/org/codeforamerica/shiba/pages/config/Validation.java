@@ -15,6 +15,7 @@ public enum Validation {
   NOT_BLANK(strings -> !String.join("", strings).isBlank()),
   NONE_BLANK(strings -> strings.stream().noneMatch(String::isBlank)),
   SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
+  SELECTED(strings -> strings.size() == 0),
   SSN(strings -> String.join("", strings).replace("-", "").matches("\\d{9}")),
   DATE(strings -> {
     return String.join("", strings).matches("^[0-9]*$") &&
