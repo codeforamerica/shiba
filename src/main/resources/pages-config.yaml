@@ -981,6 +981,7 @@ pageDefinitions:
         customInputFragment: parentNotAtHomeNameInput
         promptMessage:
           promptMessageKey: parent-not-at-home-names.what-is-the-parents-name
+        helpMessageKey: parent-not-at-home-names.what-is-the-parents-name
         options:
           datasources:
             - pageName: whoHasParentNotAtHome
