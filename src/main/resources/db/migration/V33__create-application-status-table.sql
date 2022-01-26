@@ -1,4 +1,4 @@
-CREATE TABLE application_status
+CREATE TABLE document_status
 (
     application_id      VARCHAR,
     document_type       VARCHAR,
@@ -9,7 +9,7 @@ CREATE TABLE application_status
 );
 
 CREATE INDEX application_status_index
-    ON application_status (application_id, document_type, routing_destination);
+    ON document_status (application_id, document_type, routing_destination);
 
 -- See V32 migration
 -- Previously we were making separate db calls for updating each document status, and we were making
@@ -18,7 +18,7 @@ CREATE INDEX application_status_index
 --  `updated_at` column gets updated via a db trigger whenever we save to the `applications` table.
 CREATE TRIGGER set_timestamp_on_application_status
     BEFORE UPDATE
-    ON application_status
+    ON document_status
     FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 

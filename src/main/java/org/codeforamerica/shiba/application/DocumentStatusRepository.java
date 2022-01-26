@@ -33,7 +33,7 @@ public class DocumentStatusRepository {
   }
 
   public List<DocumentStatus> findAll(String applicationId) {
-    return jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
+    return jdbcTemplate.query("SELECT * FROM document_status WHERE application_id = ?",
         new DocumentStatusRowMapper(), applicationId);
   }
 
@@ -60,7 +60,7 @@ public class DocumentStatusRepository {
     }
 
     String updateStatement = """
-        UPDATE application_status SET status = :status WHERE application_id = :application_id
+        UPDATE document_status SET status = :status WHERE application_id = :application_id
         AND document_type = :document_type AND routing_destination = :routing_destination
         """;
 
@@ -76,7 +76,7 @@ public class DocumentStatusRepository {
     if (rowCount == 0) {
       // Not found, add a new entry
       String insertStatement = """
-          INSERT INTO application_status (application_id, status, document_type, routing_destination)
+          INSERT INTO document_status (application_id, status, document_type, routing_destination)
           VALUES (:application_id, :status, :document_type, :routing_destination)
           """;
       rowCount = namedParameterJdbcTemplate.update(insertStatement, parameters);
@@ -90,7 +90,7 @@ public class DocumentStatusRepository {
 
   public List<DocumentStatus> getDocumentStatusToResubmit() {
     return jdbcTemplate.query(
-        "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
+        "SELECT * FROM document_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
         new DocumentStatusRowMapper());
   }
 

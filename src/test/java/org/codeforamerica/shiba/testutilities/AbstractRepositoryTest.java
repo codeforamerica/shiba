@@ -18,7 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 @JdbcTest
 @AutoConfigureTestDatabase(replace = NONE)
 @Sql(statements = {"ALTER SEQUENCE application_id RESTART WITH 12", "TRUNCATE TABLE applications",
-    "TRUNCATE TABLE application_status"})
+    "TRUNCATE TABLE document_status"})
 @ContextConfiguration(classes = {
     NonSessionScopedApplicationData.class,
     ApplicationDataEncryptor.class,
