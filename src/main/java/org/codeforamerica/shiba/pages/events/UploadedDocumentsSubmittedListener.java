@@ -38,8 +38,8 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
   @Async
   @EventListener
   public void send(UploadedDocumentsSubmittedEvent event) {
+	log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
     Application application = getApplicationFromEvent(event);
-    log.info("Processing uploaded documents");
     mnitDocumentConsumer.processUploadedDocuments(application);
     MDC.clear();
   }

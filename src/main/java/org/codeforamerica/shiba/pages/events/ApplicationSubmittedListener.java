@@ -28,6 +28,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class ApplicationSubmittedListener extends ApplicationEventListener {
 
@@ -62,6 +65,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   @Async
   @EventListener
   public void sendViaApi(ApplicationSubmittedEvent event) {
+	log.info("sendViaApi received ApplicationSubmittetdEvent with application ID: " + event.getApplicationId());
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
       mnitDocumentConsumer.processCafAndCcap(application);
