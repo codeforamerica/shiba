@@ -15,10 +15,14 @@ CREATE TABLE IF NOT EXISTS applications
     flow                            varchar,
     application_data                jsonb,
     updated_at                      varchar,
+    caf_application_status          varchar,
+    ccap_application_status         varchar,
+    certain_pops_application_status varchar,
+    uploaded_documents_status       varchar,
     doc_upload_email_status         varchar
 );
 
-CREATE TABLE IF NOT EXISTS  document_status
+CREATE TABLE IF NOT EXISTS  application_status
 (
     application_id      VARCHAR,
     document_type       VARCHAR,
@@ -31,8 +35,8 @@ CREATE TABLE IF NOT EXISTS  document_status
 CREATE INDEX IF NOT EXISTS idx_application_id
     ON applications (id);
 
-CREATE INDEX IF NOT EXISTS document_status_index
-  ON document_status (application_id, document_type, routing_destination);
+CREATE INDEX IF NOT EXISTS application_status_index
+  ON application_status (application_id, document_type, routing_destination);
 
 CREATE TABLE IF NOT EXISTS spring_session
 (
