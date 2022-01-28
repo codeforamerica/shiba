@@ -142,7 +142,6 @@ public class MnitDocumentConsumer {
         ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
             newFilename);
         sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);
-        log.info("File sent: " + renamedFile.getFileName() + " To: " + routingDestination.getName());
       }
     }
   }

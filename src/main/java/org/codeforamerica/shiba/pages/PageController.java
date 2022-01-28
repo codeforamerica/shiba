@@ -561,6 +561,7 @@ public class PageController {
       Application application = applicationFactory.newApplication(applicationData);
       application.setCompletedAtTime(clock);
       applicationRepository.save(application);
+      log.info("Invoking pageEventPublisher for application submission: " + application.getId());
       pageEventPublisher.publish(
           new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
               application.getFlow(), LocaleContextHolder.getLocale())
@@ -648,6 +649,7 @@ public class PageController {
     }
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
+      log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));
