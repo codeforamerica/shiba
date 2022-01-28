@@ -103,7 +103,18 @@ public class ApplicationRepository {
         "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at <= ? AND id IN ("
         + "    SELECT application_id FROM application_status WHERE status= 'in_progress'"
         + "                                        AND (document_type='CAF' OR document_type='CCAP')"
-        + "    )",
+        + "    ) LIMIT 10",
+        applicationRowMapper(),
+        twelveHoursAgo);
+  }
+
+  public List<Application> findUploadedDocumentsStuckInProgress() {
+    Timestamp twelveHoursAgo = Timestamp.from(Instant.now().minus(Duration.ofHours(12)));
+    return jdbcTemplate.query(
+        "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at <= ? AND id IN ("
+        + "    SELECT application_id FROM application_status WHERE status= 'in_progress'"
+        + "                                        AND (document_type='UPLOADED_DOC')"
+        + "    )  LIMIT 10",
         applicationRowMapper(),
         twelveHoursAgo);
   }

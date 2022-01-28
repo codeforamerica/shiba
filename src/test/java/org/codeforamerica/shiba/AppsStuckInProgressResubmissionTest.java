@@ -13,6 +13,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -45,11 +46,15 @@ class AppsStuckInProgressResubmissionTest {
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
     // actually try to resubmit it
-    resubmissionService.resubmitFailedAndInProgressApplications();
+    resubmissionService.resubmitFailedApplications();
 
     /// make sure that application had an applicationSubmittedEvent triggered
     verify(pageEventPublisher).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdToResubmit,
             LocaleContextHolder.getLocale()));
 
     // Other applications should not have the event triggered
@@ -85,11 +90,19 @@ class AppsStuckInProgressResubmissionTest {
         .build();
     applicationRepository.save(inProgressApplicationThatShouldBeCompleted);
 
+    // Save CAF
     documentStatusRepository.createOrUpdate(
         applicationId,
         Document.CAF,
         "Anoka",
         Status.IN_PROGRESS);
+
+    documentStatusRepository.createOrUpdate(
+        applicationId,
+        Document.UPLOADED_DOC,
+        "Anoka",
+        Status.IN_PROGRESS);
+
     return applicationId;
   }
 
