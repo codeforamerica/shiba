@@ -5,7 +5,9 @@ import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -104,16 +106,25 @@ public class ResubmissionService {
     log.info("Checking for applications that are stuck in progress");
 
     // Publish ApplicationSubmittedEvents for CAF and CCAPs
+    // TODO this should handle certain pops too
     List<Application> cafAndCcapApplicationsToResubmit = applicationRepository.findApplicationsStuckInProgress();
+
+    Set<String> appIdsAlreadyProcessed = new HashSet<>();
     for (Application application : cafAndCcapApplicationsToResubmit) {
+      if (appIdsAlreadyProcessed.contains(application.getId())) {
+        // We only want to fire a new ApplicationSubmittedEvent for each application once,
+        // even if both the CCAP and the CAF are stuck in_progress.
+        continue;
+      }
+
       log.info(
           "Retriggering CAF and/or CCAP submission for application with id " + application.getId());
-      // TODO certain pops too
       MDC.put("applicationId", application.getId());
 
       pageEventPublisher.publish(
           new ApplicationSubmittedEvent("resubmission", application.getId(), application.getFlow(),
               application.getApplicationData().getLocale()));
+      appIdsAlreadyProcessed.add(application.getId());
     }
 
     // Publish UploadedDocumentSubmittedEvents for literally everything else
