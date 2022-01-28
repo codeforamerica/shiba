@@ -72,7 +72,7 @@ mail-gun:
 
 feature-flag:
   certain-pops: on
-  submit-via-api: off
+  submit-via-api: on
   white-earth-and-red-lake-routing: on
 
 document-upload:
@@ -91,6 +91,7 @@ logging:
     org.springframework.ws.server.MessageTracing.sent: DEBUG
     org.springframework.ws.client.MessageTracing.received: DEBUG
     org.springframework.ws.server.MessageTracing.received: DEBUG
+    org.springframework.context.event.EventListener: TRACE
 
 pagesConfig: pages-config.yaml
 

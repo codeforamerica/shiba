@@ -78,7 +78,7 @@ public class MnitDocumentConsumer {
       try {
         thread.join();
       } catch (InterruptedException e) {
-        log.error("Thread interrupted", e);
+        log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });
   }
@@ -102,6 +102,7 @@ public class MnitDocumentConsumer {
         ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
         Thread thread = new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd));
         thread.start();
+        log.info("Started Thread for: " + doc.name() + " with filename: " + pdf.getFileName() + " to: " + rd.getName());
         threads.add(thread);
       }
     });

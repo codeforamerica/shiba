@@ -9,6 +9,8 @@ public class FlywayMigrationStrategyImpl implements FlywayMigrationStrategy {
 
   @Override
   public void migrate(Flyway flyway) {
+//    flyway.clean();
+//    flyway.repair();
     flyway.migrate();
   }
 }
