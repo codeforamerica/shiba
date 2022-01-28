@@ -52,7 +52,7 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${failed-resubmission.interval.milliseconds}", // how often to run (every 12 hours)
+      fixedDelayString = "${failed-resubmission.interval.milliseconds}", // how often to run (every 3 hours)
       initialDelayString = "${failed-resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
@@ -96,7 +96,7 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (every 12 hours)
+      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (every 3 hours)
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
@@ -126,6 +126,12 @@ public class ResubmissionService {
           new UploadedDocumentsSubmittedEvent("resubmission", application.getId(),
               application.getApplicationData().getLocale()));
     }
+
+    // documents that are stuck in the `sending` state need to be resumbitted via esb
+    // BUT not have confirmation emails resent
+    // And probably only after they are definitely done with retries, (12 hours later or more)
+
+    // in_progress -> sending -> delivered
 
     MDC.clear();
   }
