@@ -46,7 +46,7 @@ class AppsStuckInProgressResubmissionTest {
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
     // actually try to resubmit it
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitInProgressApplicationsViaEsb();
 
     /// make sure that application had an applicationSubmittedEvent triggered
     verify(pageEventPublisher).publish(
