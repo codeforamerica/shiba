@@ -19,6 +19,8 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -32,17 +34,20 @@ public class ResubmissionService {
   private final PdfGenerator pdfGenerator;
   private final RoutingDecisionService routingDecisionService;
   private final DocumentStatusRepository documentStatusRepository;
+  private final PageEventPublisher pageEventPublisher;
 
   public ResubmissionService(ApplicationRepository applicationRepository,
       EmailClient emailClient,
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService,
-      DocumentStatusRepository documentStatusRepository) {
+      DocumentStatusRepository documentStatusRepository,
+      PageEventPublisher pageEventPublisher) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
     this.documentStatusRepository = documentStatusRepository;
+    this.pageEventPublisher = pageEventPublisher;
   }
 
   @Scheduled(
@@ -50,7 +55,32 @@ public class ResubmissionService {
       initialDelayString = "${resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
-  public void resubmitFailedApplications() {
+  public void resubmitFailedAndInProgressApplications() {
+    resubmitFailedApplicationsViaEmail();
+
+    triggerSubmissionOfAppsStuckInProgress();
+  }
+
+  private void triggerSubmissionOfAppsStuckInProgress() {
+    log.info("Checking for applications that are stuck in progress");
+
+    // go find the applications
+    List<Application> applications = applicationRepository.findApplicationsStuckInProgress();
+
+    // publish events for them
+    for (Application application : applications) {
+      log.info("Retriggering submission for application with id " + application.getId());
+      MDC.put("applicationId", application.getId());
+
+      pageEventPublisher.publish(
+          new ApplicationSubmittedEvent("resubmission", application.getId(), application.getFlow(),
+              application.getApplicationData().getLocale()));
+    }
+
+    MDC.clear();
+  }
+
+  private void resubmitFailedApplicationsViaEmail() {
     log.info("Checking for applications that failed to send");
     List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
 
@@ -65,7 +95,7 @@ public class ResubmissionService {
       Document document = applicationStatus.getDocumentType();
       String routingDestinationName = applicationStatus.getRoutingDestinationName();
       log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
-          + " for application id " + id);
+               + " for application id " + id);
       try {
         Application application = applicationRepository.find(id);
         RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(

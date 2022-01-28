@@ -15,11 +15,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
-import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
@@ -32,6 +28,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,6 +61,8 @@ class ResubmissionServiceTest {
   private ResubmissionService resubmissionService;
   @Mock
   private DocumentStatusRepository documentStatusRepository;
+  @Mock
+  private PageEventPublisher pageEventPublisher;
 
   @BeforeEach
   void setUp() {
@@ -79,7 +78,7 @@ class ResubmissionServiceTest {
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
         FeatureFlagConfiguration.class));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
-        pdfGenerator, routingDecisionService, documentStatusRepository);
+        pdfGenerator, routingDecisionService, documentStatusRepository, pageEventPublisher);
   }
 
   @Test
@@ -92,7 +91,7 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
     verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Olmsted",
@@ -110,7 +109,7 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     verify(emailClient, times(1)).resubmitFailedEmail(any(), any(), any(),
         any());
@@ -132,7 +131,7 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
@@ -159,7 +158,7 @@ class ResubmissionServiceTest {
     doThrow(new RuntimeException()).when(emailClient)
         .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile, application);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
     verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED);
     verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
         RESUBMISSION_FAILED);
@@ -190,7 +189,7 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generateForUploadedDocument(uploadedDocs.get(1), 1, application, coverPage))
         .thenReturn(applicationFile2);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(emailClient, times(2))
@@ -227,7 +226,7 @@ class ResubmissionServiceTest {
     var ccapFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CCAP, Recipient.CASEWORKER)).thenReturn(ccapFile);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     // Make sure we sent it
     var applicationFileCaptor = ArgumentCaptor.forClass(ApplicationFile.class);
@@ -267,7 +266,7 @@ class ResubmissionServiceTest {
         .generateForUploadedDocument(applicationData.getUploadedDocs().get(0), 0, application,
             coverPage)).thenThrow(RuntimeException.class);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     verify(emailClient, never())
         .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
@@ -290,7 +289,7 @@ class ResubmissionServiceTest {
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
     when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
 
-    resubmissionService.resubmitFailedApplications();
+    resubmissionService.resubmitFailedAndInProgressApplications();
 
     verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED);
     verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Invalid County",
