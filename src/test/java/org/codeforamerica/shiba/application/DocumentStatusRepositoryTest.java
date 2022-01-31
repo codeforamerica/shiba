@@ -7,11 +7,7 @@ import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
-import static org.codeforamerica.shiba.output.Document.CAF;
-import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Document.XML;
+import static org.codeforamerica.shiba.output.Document.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -89,10 +85,6 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-//        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-//            IN_PROGRESS),
-//        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-//            IN_PROGRESS),
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             IN_PROGRESS)
     );
