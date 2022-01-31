@@ -100,7 +100,7 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (every 3 hours)
+      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (currently every 10 minutes)
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
