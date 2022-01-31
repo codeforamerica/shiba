@@ -36,14 +36,6 @@ public class DocumentStatusRepository {
         new DocumentStatusRowMapper(), applicationId);
   }
 
-  /**do statuses already exist
-   - findALL
-  //which statuses exist
-  //whats the diff in what needs to exist now
-  //delete whats unnecessary **/
-
-
-
   public void createOrUpdateAll(Application application,
       Status status) {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());

@@ -200,8 +200,4 @@ class AppsStuckInProgressResubmissionTest {
         Status.DELIVERED);
     return applicationId;
   }
-
-  // TODO uploaded doc submitted event
-
-  // TODO xml is in progress????
 }
