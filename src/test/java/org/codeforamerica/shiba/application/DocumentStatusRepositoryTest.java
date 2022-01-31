@@ -89,10 +89,10 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            IN_PROGRESS),
-        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            IN_PROGRESS),
+//        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+//            IN_PROGRESS),
+//        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+//            IN_PROGRESS),
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             IN_PROGRESS)
     );
