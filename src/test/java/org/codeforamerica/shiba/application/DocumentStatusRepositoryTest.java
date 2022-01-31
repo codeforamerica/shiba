@@ -118,4 +118,45 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         new DocumentStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
     );
   }
+
+  @Test
+  void deleteApplicationStatusesNoLongerUsed() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
+        .build();
+    Application application = Application.builder()
+        .id(applicationData.getId())
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(applicationData)
+        .county(Olmsted)
+        .build();
+    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
+        applicationData.getId());
+    assertThat(resultingStatuses).containsExactlyInAnyOrder(
+        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+            IN_PROGRESS),
+        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+            IN_PROGRESS)
+    );
+
+    ApplicationData applicationData2 = new TestApplicationDataBuilder()
+        .base()
+        .withApplicantPrograms(List.of("SNAP", "CCAP"))
+        .build();
+
+    application.setApplicationData(applicationData2);
+    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    List<DocumentStatus> resultingStatuses2 = documentStatusRepository.findAll(
+        applicationData.getId());
+    assertThat(resultingStatuses2).containsExactlyInAnyOrder(
+        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+            IN_PROGRESS),
+        new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
+            IN_PROGRESS)
+    );
+
+
+  }
 }
