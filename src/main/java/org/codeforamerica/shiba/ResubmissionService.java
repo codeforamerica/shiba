@@ -63,7 +63,7 @@ public class ResubmissionService {
     List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
 
     if (applicationsToResubmit.isEmpty()) {
-      log.info("There are no applications to resubmit");
+      log.info("There are no applications to resubmit from failure status");
       return;
     }
 
@@ -109,6 +109,7 @@ public class ResubmissionService {
     // TODO this should handle certain pops too
     List<Application> cafAndCcapApplicationsToResubmit = applicationRepository.findApplicationsStuckInProgress();
 
+    log.info("Found " + cafAndCcapApplicationsToResubmit.size()  + " CAF/CCAP applications at in_porgress");
     Set<String> appIdsAlreadyProcessed = new HashSet<>();
     for (Application application : cafAndCcapApplicationsToResubmit) {
       if (appIdsAlreadyProcessed.contains(application.getId())) {
@@ -129,6 +130,7 @@ public class ResubmissionService {
 
     // Publish UploadedDocumentSubmittedEvents for literally everything else
     List<Application> uploadedDocumentsToResubmit = applicationRepository.findUploadedDocumentsStuckInProgress();
+    log.info("Found " + uploadedDocumentsToResubmit.size()  + " CAF/CCAP applications at in_porgress");
     for (Application application : uploadedDocumentsToResubmit) {
       log.info("Retriggering UPLOADED_DOCs for application with id " + application.getId());
       MDC.put("applicationId", application.getId());
