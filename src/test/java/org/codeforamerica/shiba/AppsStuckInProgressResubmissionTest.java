@@ -40,37 +40,70 @@ class AppsStuckInProgressResubmissionTest {
   private PageEventPublisher pageEventPublisher;
 
   @Test
-  void itTriggersAnEventForAppsStuckInProgress() throws Exception {
-    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted();
+  void itTriggersAnEventFor5AppsStuckInProgress() {
+    for (int i = 0; i < 6; i++) {
+      makeApplicationThatShouldBeResubmitted(i);
+    }
+
+    // actually try to resubmit it
+    resubmissionService.resubmitInProgressApplicationsViaEsb();
+
+    // make sure that the first 5 applications had an applicationSubmittedEvent triggered
+    for (int i = 0; i < 5; i++) {
+      verify(pageEventPublisher).publish(
+          new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
+              LocaleContextHolder.getLocale()));
+      verify(pageEventPublisher).publish(
+          new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(i),
+              LocaleContextHolder.getLocale()));
+    }
+
+    // Other applications should not have the event triggered
+    verify(pageEventPublisher, never()).publish(
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(5), FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(5),
+            LocaleContextHolder.getLocale()));
+  }
+
+  @Test
+  void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
+    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
     String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
     // actually try to resubmit it
     resubmissionService.resubmitInProgressApplicationsViaEsb();
 
-    /// make sure that application had an applicationSubmittedEvent triggered
     verify(pageEventPublisher).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
             LocaleContextHolder.getLocale()));
-
     verify(pageEventPublisher).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", applicationIdToResubmit,
             LocaleContextHolder.getLocale()));
 
-    // Other applications should not have the event triggered
     verify(pageEventPublisher, never()).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
             FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher, never()).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdThatIsNotInProgress,
             FlowType.FULL,
             LocaleContextHolder.getLocale()));
-
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatIsNotInProgress,
+            LocaleContextHolder.getLocale()));
   }
 
   @NotNull
-  private String makeApplicationThatShouldBeResubmitted() {
+  private String makeApplicationThatShouldBeResubmitted(int id) {
+    String applicationId = String.valueOf(id);
+
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(new PagesDataBuilder()
         .withPageData("contactInfo", Map.of(
@@ -79,7 +112,7 @@ class AppsStuckInProgressResubmissionTest {
         .withPageData("employmentStatus", "areYouWorking", "true")
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
-    String applicationId = "resubmitMePlz";
+
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(20)) // important that this is completed!!!
         .county(County.Anoka)
@@ -116,7 +149,7 @@ class AppsStuckInProgressResubmissionTest {
         .withPageData("employmentStatus", "areYouWorking", "true")
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
-    String applicationId = "dontResubmitMePlz";
+    String applicationId = "6";
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(1)) // important that this is completed!!!
         .county(County.Anoka)
@@ -145,7 +178,7 @@ class AppsStuckInProgressResubmissionTest {
         .withPageData("employmentStatus", "areYouWorking", "true")
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
-    String applicationId = "alsoDontResubmitMePlz";
+    String applicationId = "7";
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(24)) // important that this is completed!!!
         .county(County.Anoka)

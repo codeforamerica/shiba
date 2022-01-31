@@ -1,13 +1,15 @@
 package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -105,47 +107,41 @@ public class ResubmissionService {
   public void resubmitInProgressApplicationsViaEsb() {
     log.info("Checking for applications that are stuck in progress");
 
-    // Publish ApplicationSubmittedEvents for CAF and CCAPs
-    // TODO this should handle certain pops too
-    List<Application> cafAndCcapApplicationsToResubmit = applicationRepository.findApplicationsStuckInProgress();
+    List<Application> applicationsStuckInProgress = applicationRepository.findApplicationsStuckInProgress();
+    log.info(
+        "Resubmitting " + applicationsStuckInProgress.size() + " applications stuck in_progress");
 
-    log.info("Found " + cafAndCcapApplicationsToResubmit.size()  + " CAF/CCAP applications at in_porgress");
-    Set<String> appIdsAlreadyProcessed = new HashSet<>();
-    for (Application application : cafAndCcapApplicationsToResubmit) {
-      if (appIdsAlreadyProcessed.contains(application.getId())) {
-        // We only want to fire a new ApplicationSubmittedEvent for each application once,
-        // even if both the CCAP and the CAF are stuck in_progress.
-        continue;
+    for (Application application : applicationsStuckInProgress) {
+      String id = application.getId();
+      // Add applicationId to the logs to make it easier to query for in datadog
+      MDC.put("applicationId", id);
+      log.info("Retriggering submission for application with id " + id);
+
+      boolean shouldRefireAppSubmittedEvent = application.getDocumentStatuses().stream()
+          .anyMatch(documentStatus ->
+              documentStatus.getStatus().equals(IN_PROGRESS) &&
+              List.of(CAF, CCAP, CERTAIN_POPS).contains(documentStatus.getDocumentType()));
+      if (shouldRefireAppSubmittedEvent) {
+        log.info("Retriggering ApplicationSubmittedEvent for application with id " + id);
+        pageEventPublisher.publish(new ApplicationSubmittedEvent("resubmission", id,
+            application.getFlow(),
+            application.getApplicationData().getLocale()));
       }
 
-      log.info(
-          "Retriggering CAF and/or CCAP submission for application with id " + application.getId());
-      MDC.put("applicationId", application.getId());
+      boolean shouldRefireUploadedDocSubmittedEvent = application.getDocumentStatuses().stream()
+          .anyMatch(documentStatus ->
+              documentStatus.getStatus().equals(IN_PROGRESS) &&
+              documentStatus.getDocumentType().equals(UPLOADED_DOC));
+      if (shouldRefireUploadedDocSubmittedEvent) {
+        log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
 
-      pageEventPublisher.publish(
-          new ApplicationSubmittedEvent("resubmission", application.getId(), application.getFlow(),
-              application.getApplicationData().getLocale()));
-      appIdsAlreadyProcessed.add(application.getId());
+        pageEventPublisher.publish(
+            new UploadedDocumentsSubmittedEvent("resubmission", id,
+                application.getApplicationData().getLocale()));
+      }
     }
 
-    // Publish UploadedDocumentSubmittedEvents for literally everything else
-    List<Application> uploadedDocumentsToResubmit = applicationRepository.findUploadedDocumentsStuckInProgress();
-    log.info("Found " + uploadedDocumentsToResubmit.size()  + " CAF/CCAP applications at in_porgress");
-    for (Application application : uploadedDocumentsToResubmit) {
-      log.info("Retriggering UPLOADED_DOCs for application with id " + application.getId());
-      MDC.put("applicationId", application.getId());
-
-      pageEventPublisher.publish(
-          new UploadedDocumentsSubmittedEvent("resubmission", application.getId(),
-              application.getApplicationData().getLocale()));
-    }
-
-    // documents that are stuck in the `sending` state need to be resumbitted via esb
-    // BUT not have confirmation emails resent
-    // And probably only after they are definitely done with retries, (12 hours later or more)
-
-    // in_progress -> sending -> delivered
-
+    // remove last applicationId from the mdc so it doesn't pollute future logs
     MDC.clear();
   }
 
