@@ -22,9 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
 @ActiveProfiles("test")
+// drop all applications and application statuses before this test runs to avoid test pollution
+@Sql(statements = {"TRUNCATE TABLE applications", "TRUNCATE TABLE application_status"})
 class AppsStuckInProgressResubmissionTest {
 
   @Autowired
@@ -41,6 +44,7 @@ class AppsStuckInProgressResubmissionTest {
 
   @Test
   void itTriggersAnEventFor5AppsStuckInProgress() {
+    // Only the first 5 of these should be resubmitted.
     for (int i = 0; i < 6; i++) {
       makeApplicationThatShouldBeResubmitted(i);
     }
