@@ -1,13 +1,12 @@
 package org.codeforamerica.shiba.application;
 
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -40,9 +39,23 @@ public class DocumentStatusRepository {
   public void createOrUpdateAll(Application application,
       Status status) {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());
+    handleDocumentDifference(application, documents);
 
     for (Document document : documents) {
       createOrUpdateAllForDocumentType(application.getApplicationData(), status, document);
+    }
+  }
+
+  private void handleDocumentDifference(Application application, List<Document> documents) {
+    List<Document> previousDocuments = new ArrayList<>();
+    List<DocumentStatus> listOfStatuses = findAll(application.getId());
+    listOfStatuses.forEach(ds -> previousDocuments.add(ds.getDocumentType()));
+    List<Document> docsToDelete = previousDocuments.stream()
+        .filter(docType -> !documents.contains(docType))
+        .collect(Collectors.toList());
+
+    for(Document document : docsToDelete) {
+      delete(application.getId(), document);
     }
   }
 
@@ -54,7 +67,8 @@ public class DocumentStatusRepository {
 	              status));
   }
   
-  public void createOrUpdate(String id, Document document, String routingDestinationName, Status status) {
+  public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
+      Status status) {
     if (document == null || routingDestinationName == null) {
       return;
     }
@@ -65,7 +79,7 @@ public class DocumentStatusRepository {
         """;
 
     Map<String, Object> parameters = new HashMap<>();
-    parameters.put("application_id", id);
+    parameters.put("application_id", applicationId);
     parameters.put("status", status.toString());
     parameters.put("document_type", document.name());
     parameters.put("routing_destination", routingDestinationName);
@@ -83,8 +97,23 @@ public class DocumentStatusRepository {
     }
 
     if (rowCount != 0) {
-      logStatusUpdate(id, document, routingDestinationName, status);
+      logStatusUpdate(applicationId, document, routingDestinationName, status);
     }
+
+  }
+
+  public void delete(String applicationId, Document document){
+    String deleteStatement = """
+        DELETE FROM application_status WHERE application_id = :application_id
+        AND document_type = :document_type
+        """;
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("application_id", applicationId);
+    parameters.put("document_type", document.name());
+
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    namedParameterJdbcTemplate.update(deleteStatement, parameters);
 
   }
 

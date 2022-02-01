@@ -15,11 +15,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
-import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.application.*;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
@@ -32,6 +28,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,6 +61,8 @@ class ResubmissionServiceTest {
   private ResubmissionService resubmissionService;
   @Mock
   private DocumentStatusRepository documentStatusRepository;
+  @Mock
+  private PageEventPublisher pageEventPublisher;
 
   @BeforeEach
   void setUp() {
@@ -79,7 +78,7 @@ class ResubmissionServiceTest {
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
         FeatureFlagConfiguration.class));
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
-        pdfGenerator, routingDecisionService, documentStatusRepository);
+        pdfGenerator, routingDecisionService, documentStatusRepository, pageEventPublisher);
   }
 
   @Test
