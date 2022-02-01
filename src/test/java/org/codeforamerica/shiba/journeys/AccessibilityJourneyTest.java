@@ -196,7 +196,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(testPage.getInputAriaLabelledBy("phoneNumber")).isEqualTo(
         "phoneNumber-error-p phoneNumber-label");
     assertThat(testPage.getInputAriaDescribedBy("phoneNumber")).isEqualTo(
-        "phoneNumber-error-message-2 phoneNumber-error-message-1");
+        "phoneNumber-error-message-2 phoneNumber-error-message-1 phoneNumber-help-message");
     testPage.enter("phoneNumber", "7234567890");
     testPage.enter("email", "some@example.com");
     testPage.enter("phoneOrEmail", "It's okay to text me");
