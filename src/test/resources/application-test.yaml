@@ -44,6 +44,10 @@ mnit-filenet:
 documentUploadEmails:
   cronExpression: "-" # disable process to send document upload emails
 
-resubmission:
+failed-resubmission:
   initialDelay:
-    milliseconds: 2629800000 # Wait a month after the app starts to run the ResubmissionService, i.e don't run it at all
+    milliseconds: 2629800000 # Wait a month after the app starts to run the method, i.e don't run it at all
+
+in-progress-resubmission:
+  initialDelay:
+    milliseconds: 2629800000 # Wait a month after the app starts to run the method, i.e don't run it at all

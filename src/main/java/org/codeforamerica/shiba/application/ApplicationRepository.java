@@ -5,13 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
@@ -91,12 +88,33 @@ public class ApplicationRepository {
   }
 
   public Application find(String id) {
+    // TODO use a single sql query with a join instead of doing two separate sql queries
     Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
     Objects.requireNonNull(application).setDocumentStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
+  }
+
+  public List<Application> findApplicationsStuckInProgress() {
+    Timestamp twelveHoursAgo = Timestamp.from(Instant.now().minus(Duration.ofHours(12)));
+    List<Application> applicationsStuckInProgress = jdbcTemplate.query(
+        "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at <= ? AND id IN ("
+        + "    SELECT application_id FROM application_status WHERE status= 'in_progress'"
+        + "          AND (document_type='CAF' OR document_type='CCAP' OR document_type='UPLOADED_DOC' OR document_type='CERTAIN_POPS')"
+        + "    ) ORDER BY id LIMIT 5",
+        applicationRowMapper(),
+        twelveHoursAgo);
+
+    // add document statuses to apps
+    for (Application app : applicationsStuckInProgress) {
+      app.setDocumentStatuses(
+          jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
+              new ApplicationStatusRowMapper(), app.getId()));
+    }
+
+    return applicationsStuckInProgress;
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {

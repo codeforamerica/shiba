@@ -559,7 +559,7 @@ public class PageController {
         applicationData.setId(applicationRepository.getNextId());
       }
       Application application = applicationFactory.newApplication(applicationData);
-      application.setCompletedAtTime(clock);
+      application.setCompletedAtTime(clock); // how we mark that the application is complete
       applicationRepository.save(application);
       log.info("Invoking pageEventPublisher for application submission: " + application.getId());
       pageEventPublisher.publish(
