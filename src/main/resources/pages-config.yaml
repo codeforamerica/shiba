@@ -548,6 +548,7 @@ pageDefinitions:
         type: PHONE
         promptMessage:
           promptMessageKey: contact-info.whats-your-phone-number
+        helpMessageKey: contact-info.phone-number-helper
         validators:
           - validation: PHONE_STARTS_WITH_ONE
             errorMessageKey: general.validation.area-codes-can-not-begin-with-1
