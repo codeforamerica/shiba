@@ -54,9 +54,7 @@ public class DocumentStatusRepository {
         .filter(docType -> !documents.contains(docType))
         .collect(Collectors.toList());
 
-    for(Document document : docsToDelete) {
-      delete(application.getId(), document);
-    }
+    delete(application.getId(), docsToDelete);
   }
 
   public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status, Document document) {
@@ -102,19 +100,19 @@ public class DocumentStatusRepository {
 
   }
 
-  public void delete(String applicationId, Document document){
-    String deleteStatement = """
+  public void delete(String applicationId, List <Document> documents){
+    if (!documents.isEmpty()) {
+      String deleteStatement = """
         DELETE FROM application_status WHERE application_id = :application_id
-        AND document_type = :document_type
+        AND document_type in (:document_types)
         """;
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put("application_id", applicationId);
-    parameters.put("document_type", document.name());
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put("application_id", applicationId);
+      parameters.put("document_types", documents.stream().map(Enum::toString).toList());
 
-
-    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-    namedParameterJdbcTemplate.update(deleteStatement, parameters);
-
+      var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+      namedParameterJdbcTemplate.update(deleteStatement, parameters);
+    }
   }
 
   public List<DocumentStatus> getDocumentStatusToResubmit() {
