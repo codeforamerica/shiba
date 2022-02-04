@@ -40,10 +40,22 @@ public class DocumentStatusRepository {
   public void createOrUpdateAll(Application application,
       Status status) {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());
+    handleDocumentDifference(application, documents);
 
     for (Document document : documents) {
       createOrUpdateAllForDocumentType(application.getApplicationData(), status, document);
     }
+  }
+
+  private void handleDocumentDifference(Application application, List<Document> documents) {
+    List<Document> previousDocuments = new ArrayList<>();
+    List<DocumentStatus> listOfStatuses = findAll(application.getId());
+    listOfStatuses.forEach(ds -> previousDocuments.add(ds.getDocumentType()));
+    List<Document> docsToDelete = previousDocuments.stream()
+        .filter(docType -> !documents.contains(docType))
+        .collect(Collectors.toList());
+
+    delete(application.getId(), docsToDelete);
   }
 
   public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status, Document document) {
@@ -86,6 +98,21 @@ public class DocumentStatusRepository {
       logStatusUpdate(id, document, routingDestinationName, status);
     }
 
+  }
+
+  public void delete(String applicationId, List <Document> documents){
+    if (!documents.isEmpty()) {
+      String deleteStatement = """
+        DELETE FROM application_status WHERE application_id = :application_id
+        AND document_type in (:document_types)
+        """;
+      Map<String, Object> parameters = new HashMap<>();
+      parameters.put("application_id", applicationId);
+      parameters.put("document_types", documents.stream().map(Enum::toString).toList());
+
+      var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+      namedParameterJdbcTemplate.update(deleteStatement, parameters);
+    }
   }
 
   public List<DocumentStatus> getDocumentStatusToResubmit() {
