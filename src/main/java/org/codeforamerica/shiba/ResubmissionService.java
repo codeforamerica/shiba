@@ -10,6 +10,8 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -117,24 +119,26 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
-      boolean shouldRefireAppSubmittedEvent = application.getDocumentStatuses().stream()
-          .anyMatch(documentStatus ->
-              documentStatus.getStatus().equals(IN_PROGRESS) &&
-              List.of(CAF, CCAP, CERTAIN_POPS).contains(documentStatus.getDocumentType()));
-      if (shouldRefireAppSubmittedEvent) {
+      List<Document> inProgressDocs = application.getDocumentStatuses().stream()
+          .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS) &&
+              List.of(CAF, CCAP, CERTAIN_POPS, UPLOADED_DOC).contains(documentStatus.getDocumentType())).map(
+                  DocumentStatus::getDocumentType
+          ).collect(Collectors.toList());
+
+      documentStatusRepository.delete(id, inProgressDocs);
+
+      boolean shouldRefireAppSubmittedEvent = inProgressDocs.stream().anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
+      if (shouldRefireAppSubmittedEvent){
         log.info("Retriggering ApplicationSubmittedEvent for application with id " + id);
         pageEventPublisher.publish(new ApplicationSubmittedEvent("resubmission", id,
             application.getFlow(),
             application.getApplicationData().getLocale()));
       }
 
-      boolean shouldRefireUploadedDocSubmittedEvent = application.getDocumentStatuses().stream()
-          .anyMatch(documentStatus ->
-              documentStatus.getStatus().equals(IN_PROGRESS) &&
-              documentStatus.getDocumentType().equals(UPLOADED_DOC));
+      boolean shouldRefireUploadedDocSubmittedEvent = inProgressDocs.stream().anyMatch(document -> Objects.equals(
+          UPLOADED_DOC, document));
       if (shouldRefireUploadedDocSubmittedEvent) {
         log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
-
         pageEventPublisher.publish(
             new UploadedDocumentsSubmittedEvent("resubmission", id,
                 application.getApplicationData().getLocale()));
