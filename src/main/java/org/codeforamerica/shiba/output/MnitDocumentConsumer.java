@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
@@ -78,7 +79,7 @@ public class MnitDocumentConsumer {
       try {
         thread.join();
       } catch (InterruptedException e) {
-        log.error("Thread interrupted", e);
+        log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });
   }
@@ -102,6 +103,9 @@ public class MnitDocumentConsumer {
         ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
         Thread thread = new Thread(() -> sendFileAndUpdateStatus(application, doc, pdf, rd));
         thread.start();
+        log.info(
+            "Started Thread for: " + doc.name() + " with filename: " + pdf.getFileName() + " to: "
+                + rd.getName());
         threads.add(thread);
       }
     });
@@ -118,10 +122,6 @@ public class MnitDocumentConsumer {
 
   public void processUploadedDocuments(Application application) {
     List<ApplicationFile> uploadedDocs = prepareUploadedDocsForSending(application);
-    sendUploadedDocs(application, uploadedDocs);
-  }
-
-  private void sendUploadedDocs(Application application, List<ApplicationFile> uploadedDocs) {
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
     for (RoutingDestination routingDestination : routingDestinations) {
@@ -131,7 +131,7 @@ public class MnitDocumentConsumer {
         ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
         sendFileAndUpdateStatus(application, XML, xml, routingDestination);
       }
-
+      log.info("Uploaded docs to submit %s".formatted(uploadedDocs.size()));
       for (int i = 0; i < uploadedDocs.size(); i++) {
         ApplicationFile uploadedDoc = uploadedDocs.get(i);
         // rename file with filename that is specific to this destination
