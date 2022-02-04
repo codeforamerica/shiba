@@ -8,6 +8,7 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -54,12 +55,18 @@ public class FileDownloadController {
 
   @GetMapping("/download")
   ResponseEntity<byte[]> downloadPdf() {
+	if (applicationData.getId() == null) {
+		return createRootPageResponse();
+	}
     ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CAF, CLIENT);
     return createResponse(applicationFile);
   }
 
   @GetMapping("/download-ccap")
   ResponseEntity<byte[]> downloadCcapPdf() {
+	if (applicationData.getId() == null) {
+		return createRootPageResponse();
+	}
     ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CCAP, CLIENT);
     return createResponse(applicationFile);
   }
@@ -76,6 +83,9 @@ public class FileDownloadController {
 
   @GetMapping("/download-xml")
   ResponseEntity<byte[]> downloadXml() {
+	if (applicationData.getId() == null) {
+		return createRootPageResponse();
+	}
     ApplicationFile applicationFile = xmlGenerator.generate(applicationData.getId(), CAF, CLIENT);
     return createResponse(applicationFile);
   }
@@ -172,5 +182,13 @@ public class FileDownloadController {
       log.info(NOT_FOUND_MESSAGE);
       return ResponseEntity.ok().body(NOT_FOUND_MESSAGE.getBytes());
     }
+  }
+
+  /**
+   * Builds & returns a response the will cause a redirect to the landing page. 
+   * @return
+   */
+  private ResponseEntity<byte[]> createRootPageResponse() {
+		return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/")).build();
   }
 }

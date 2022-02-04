@@ -83,6 +83,8 @@ class SecurityConfigurationTest {
   @Test
   void doesNotRequireAuthenticationOnAnyOtherEndpoint() throws Exception {
     mockMvc.perform(get("/download"))
-        .andExpect(status().is2xxSuccessful());
+        .andExpect(status().is3xxRedirection());
+    mockMvc.perform(get("/download-ccap"))
+    	.andExpect(status().is3xxRedirection());
   }
 }
