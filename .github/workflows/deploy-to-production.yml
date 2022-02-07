@@ -47,7 +47,7 @@ jobs:
       uses: innocarpe/actions-slack@v1
       with:
         status: ${{ job.status }}
-        success_text: 'Deploy to MNIT production succeeded :smile: <!subteam^S0209RR14KB> <@U01DU77UREG> <@U019GSLR63H>'
+        success_text: 'Deploy to MNIT production succeeded :smile: <!subteam^S0209RR14KB> <@U019GSLR63H>'
         failure_text: 'Deploy to MNIT production failed :frowning:'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
