@@ -103,7 +103,7 @@ public class ApplicationRepository {
         "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at BETWEEN '2021-12-06' AND ? AND id IN ("
         + "    SELECT application_id FROM application_status WHERE status= 'in_progress'"
         + "          AND (document_type='CAF' OR document_type='CCAP' OR document_type='UPLOADED_DOC' OR document_type='CERTAIN_POPS')"
-        + "    ) ORDER BY id LIMIT 5",
+        + "    ) ORDER BY completed_at LIMIT 5",
         applicationRowMapper(),
         twelveHoursAgo);
 
