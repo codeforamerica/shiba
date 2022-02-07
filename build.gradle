@@ -3,7 +3,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.1"
-    id("com.gorylenko.gradle-git-properties") version "2.3.2"
+    id("com.gorylenko.gradle-git-properties") version "2.4.0"
 }
 
 group = "org.codeforamerica"
