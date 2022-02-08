@@ -1,6 +1,10 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.Program.CASH;
+import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.GRH;
+import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
@@ -30,6 +34,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -66,7 +71,30 @@ class FileDownloadControllerTest {
         .build();
 
   }
-
+  @Test
+  void shouldPassScreensToServiceWithApplicationIDToGeneratePdfFile() throws Exception {
+    
+    var applicationId = "9870000123";
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId(applicationId);
+   
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH, GRH, EA))
+        .build());
+  
+    Application application = Application.builder().applicationData(applicationData)
+         .build();
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+  
+    when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("TEST".getBytes(), ""));
+    MvcResult result = mockMvc.perform(get("/download/9870000123"))
+            .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
+                    String.format("filename=\"%s\"", "MNB_application_"+applicationId + ".zip")))
+            .andExpect(status().is2xxSuccessful()).andReturn();
+    
+    byte[] actualBytes = result.getResponse().getContentAsByteArray();
+    assertThat(actualBytes).hasSizeGreaterThan(22);
+  }
   @Test
   void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
     when(pdfGenerator.generate(anyString(), any(), any()))
@@ -193,7 +221,7 @@ class FileDownloadControllerTest {
     MvcResult result = mockMvc.perform(
             get("/download-docs/9870000123"))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
-            String.format("filename=\"%s\"", applicationId + ".zip")))
+            String.format("filename=\"%s\"", "MNB_application_"+applicationId + ".zip")))
         .andExpect(status().is2xxSuccessful())
         .andReturn();
 
