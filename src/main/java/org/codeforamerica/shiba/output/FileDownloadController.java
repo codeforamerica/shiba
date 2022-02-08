@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -20,6 +21,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.slf4j.MDC;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,12 +54,16 @@ public class FileDownloadController {
     this.applicationData = applicationData;
     this.applicationRepository = applicationRepository;
   }
-
   @GetMapping("/download")
-  ResponseEntity<byte[]> downloadPdf() {
-	if (applicationData.getId() == null) {
-		return createRootPageResponse();
-	}
+  ResponseEntity<byte[]> downloadPdf(HttpSession httpSession) {
+    if (applicationData == null || applicationData.getId() == null){
+      log.info("Application is empty or the applicationId is null when client attempts to download pdfs.");
+      return createRootPageResponse();
+    }
+    MDC.put("applicationId", applicationData.getId());
+    MDC.put("sessionId", httpSession.getId());
+    log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
+
     ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CAF, CLIENT);
     return createResponse(applicationFile);
   }
