@@ -1294,6 +1294,12 @@ input[type=number] {
   display: none !important;
 }
 
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 60%;
+}
+
 .underline {
   text-decoration: underline;
 }
