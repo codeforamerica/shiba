@@ -86,10 +86,11 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
   void partialFlow() throws Exception {
     getToDocumentUploadScreen();
     completeDocumentUploadFlow();
+
     FormPage page = new FormPage(getPage("success"));
-    assertThat(page.getLinksContainingText("Download your application")).hasSizeGreaterThan(0);
-    assertThat(page.getLinksContainingText("Download your application").get(0).attr("href"))
-        .contains("/download/");
+    assertThat(page.getLinksContainingText("Emergency Application")).hasSizeGreaterThan(0);
+    assertThat(page.getLinksContainingText("Emergency Application").get(0).attr("href"))
+        .isEqualTo("/download");
 
     PDAcroForm caf = this.downloadCaf();
     assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);

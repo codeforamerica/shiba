@@ -39,10 +39,20 @@
             <div class="grid__item width-five-sixths">
               <div class="spacing-above-0 spacing-below-15"
                    th:text="#{success.download-my-application}"></div>
+              <th:block
+                  th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CAF)}">
                 <div class="spacing-below-10">
-                  <a class="link--subtle" th:href="@{/download/{id}(id=${applicationId})}" id="download"
-                     th:text="#{success.download-your-application}"></a>
+                  <a class="link--subtle" href="/download" id="download-caf"
+                     th:text="#{success.combined-application(${combinedFormText})}"></a>
                 </div>
+              </th:block>
+              <th:block
+                  th:if="${documents.contains(T(org.codeforamerica.shiba.output.Document).CCAP)}">
+                <div>
+                  <a class="link--subtle spacing-below-0" href="/download-ccap" id="download-ccap"
+                     th:text="#{success.child-care-application}"></a>
+                </div>
+              </th:block>
             </div>
           </div>
 

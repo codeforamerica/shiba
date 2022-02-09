@@ -7,15 +7,12 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import java.io.BufferedOutputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +21,6 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
@@ -90,64 +85,15 @@ public abstract class AbstractBasePageTest {
 
   protected Map<Document, PDAcroForm> getAllFiles() {
     return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
-        .filter(file -> file.getName().endsWith(".pdf")).sorted((f1,f2)-> Long.compare(f2.lastModified(), f1.lastModified()))
+        .filter(file -> file.getName().endsWith(".pdf"))
         .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
           try {
             return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
           } catch (IOException e) {
             throw new IllegalStateException(e);
           }
-        }, (r1, r2) -> r1));
+        }));
   }
-
-  protected List<File> getZipFile() {
-    return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
-        .filter(file -> file.getName().endsWith(".zip")).toList();
-  }
-
-  protected void unzipFiles() {
-    List<File> filesList = Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
-        .filter(file -> file.getName().endsWith(".zip")).collect(Collectors.toCollection(() -> new ArrayList<File>()));
-    unzip(filesList);
-   
-  }
-
-  
-  protected List<File> unzip(List<File> filesList) {
-    List<File> fileList = new ArrayList<File>();
-    for(File file: filesList) {
-    try {
-      FileInputStream inputStream = new FileInputStream(file);
-      ZipInputStream zipStream = new ZipInputStream(inputStream);
-      ZipEntry zEntry = null;
-      String destination = path.toFile().getPath();
-      while ((zEntry = zipStream.getNextEntry()) != null) {
-        if(zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP") ) {
-          if (!zEntry.isDirectory()) {
-            File files = new File(destination, zEntry.getName());
-            FileOutputStream fout = new FileOutputStream(files);
-            BufferedOutputStream bufout = new BufferedOutputStream(fout);
-            byte[] buffer = new byte[1024];
-            int read = 0;
-            while ((read = zipStream.read(buffer)) != -1) {
-              bufout.write(buffer, 0, read);
-            }
-            zipStream.closeEntry();//This will delete zip folder after extraction
-            bufout.close();
-            fout.close();
-            fileList.add(files);
-          }
-        }
-      }
-      zipStream.close();//This will delete zip folder after extraction
-    } catch (Exception e) {
-      System.out.println("Unzipping failed");
-      e.printStackTrace();
-    }
-    }
-    return fileList;
-  }
-
 
   private Document getDocumentType(File file) {
     String fileName = file.getName();

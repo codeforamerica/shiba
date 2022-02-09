@@ -107,7 +107,7 @@ public class PdfGenerator implements FileGenerator {
         log.warn("Unsupported file-type: " + extension);
       }
 
-      if (extension.equals("pdf") && coverPage != null) {
+      if (extension.equals("pdf")) {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
 
