@@ -39,6 +39,8 @@ public class FileDownloadController {
   private static final String NOT_FOUND_MESSAGE = "Could not find any application with this ID for download";
   private static final String UNSUBMITTED_APPLICATION_MESSAGE = "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.";
   private static final String NON_APPLICABLE_DOCUMENT_TYPE = "Could not find a %s application with this ID for download";
+  private static final String DOWNLOAD_DOCUMENT_ZIP = "Download zip file for application ID %s";
+  private static final String NO_DOWNLOAD_DOCUMENT_ZIP = "No documents to download in zip file for application ID %s";
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final ApplicationData applicationData;
@@ -66,6 +68,54 @@ public class FileDownloadController {
 
     ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CAF, CLIENT);
     return createResponse(applicationFile);
+  }
+  
+  @GetMapping("/download/{applicationId}")
+  ResponseEntity<byte[]> downloadAllDocumentsWithApplicationId(@PathVariable String applicationId, HttpSession httpSession) 
+          throws IOException{
+    if (applicationData == null || applicationData.getId() == null){
+      log.info("Application is empty or the applicationId is null when client attempts to download pdfs zip file.");
+      return createRootPageResponse();
+    }
+    MDC.put("applicationId", applicationData.getId());
+    MDC.put("sessionId", httpSession.getId());
+    log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
+    Application application = applicationRepository.find(applicationId);  
+    List<ApplicationFile> applicationFiles = new ArrayList<>();
+
+    if(applicationData.isCAFApplication()) {
+        ApplicationFile applicationFileCAF = pdfGenerator.generate(applicationId, CAF, CLIENT);
+        if (null != applicationFileCAF && applicationFileCAF.getFileBytes().length > 0) {
+            applicationFiles.add(applicationFileCAF);
+          }
+    }
+    if(applicationData.isCCAPApplication()) {
+        ApplicationFile applicationFileCCAP = pdfGenerator.generate(applicationId, CCAP, CLIENT);
+        if (null != applicationFileCCAP && applicationFileCCAP.getFileBytes().length > 0) {
+            applicationFiles.add(applicationFileCCAP);
+          }
+    }
+    if(applicationData.isCertainPopsApplication()) {
+        ApplicationFile applicationFileCP = pdfGenerator.generate(applicationId, CERTAIN_POPS, CLIENT);
+        if (null != applicationFileCP && applicationFileCP.getFileBytes().length > 0) {
+            applicationFiles.add(applicationFileCP);
+          }
+    }
+    
+    List<UploadedDocument> uploadedDocs = applicationData.getUploadedDocs();
+    if(null !=uploadedDocs) {
+      for (int i = 0; i < uploadedDocs.size(); i++) {
+        UploadedDocument uploadedDocument = uploadedDocs.get(i);
+        ApplicationFile fileToSend = pdfGenerator
+            .generateForUploadedDocument(uploadedDocument, i, application, null);
+  
+        if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
+          applicationFiles.add(fileToSend);
+        }
+      }
+    }
+    
+    return createZipFileFromApplications(applicationFiles, applicationId);
   }
 
   @GetMapping("/download-ccap")
@@ -118,20 +168,24 @@ public class FileDownloadController {
         applicationFiles.add(fileToSend);
       }
     }
-
-    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos)) {
+    return createZipFileFromApplications(applicationFiles, applicationId);
+  }
+     
+  private ResponseEntity<byte[]> createZipFileFromApplications(List<ApplicationFile> applicationFiles,
+      String applicationId) throws IOException {
+  try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          ZipOutputStream zos = new ZipOutputStream(baos)) {
 
       applicationFiles.forEach(file -> {
-        ZipEntry entry = new ZipEntry(file.getFileName());
-        entry.setSize(file.getFileBytes().length);
-        try {
-          zos.putNextEntry(entry);
-          zos.write(file.getFileBytes());
-          zos.closeEntry();
-        } catch (IOException e) {
-          log.error("Unable to write file, " + file.getFileName(), e);
-        }
+          ZipEntry entry = new ZipEntry(file.getFileName());
+          entry.setSize(file.getFileBytes().length);
+          try {
+              zos.putNextEntry(entry);
+              zos.write(file.getFileBytes());
+              zos.closeEntry();
+          } catch (IOException e) {
+              log.error("Unable to write file, " + file.getFileName(), e);
+          }
       });
 
       zos.close();
@@ -139,14 +193,17 @@ public class FileDownloadController {
 
       // The minimum size of a .ZIP file is 22 bytes even when empty because of metadata
       if (baos.size() > 22) {
-        return createResponse(baos.toByteArray(), applicationId + ".zip");
+          String msg = String.format(DOWNLOAD_DOCUMENT_ZIP, applicationId);
+          log.info(msg);
+          return createResponse(baos.toByteArray(), "MNB_application_" + applicationId + ".zip");
       } else {
-        // Applicant should not have been able to "submit" documents without uploading any.
-        log.warn("No documents to download");
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+          // Applicant should not have been able to "submit" documents without uploading any.
+          String msg = String.format(NO_DOWNLOAD_DOCUMENT_ZIP, applicationId);
+          log.warn(msg);
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND);
       }
-    }
   }
+}
 
   private ResponseEntity<byte[]> createResponse(ApplicationFile applicationFile) {
     return createResponse(applicationFile.getFileBytes(), applicationFile.getFileName());

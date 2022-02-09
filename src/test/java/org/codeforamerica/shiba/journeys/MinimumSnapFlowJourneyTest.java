@@ -89,7 +89,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Finish Application
-    applicationId = signApplicationAndDownloadPdfs(signature, true, false);
+    applicationId = signApplicationAndDownloadApplicationZipFiles(signature);
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
     // PDF assertions
@@ -171,7 +171,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Finish Application
-    applicationId = signApplicationAndDownloadPdfs(signature, true, false);
+    applicationId = signApplicationAndDownloadApplicationZipFiles(signature);
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("snapExpeditedNotice").getText()).contains(
         "You were recommended for expedited food assistance (SNAP).");
