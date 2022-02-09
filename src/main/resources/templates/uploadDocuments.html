@@ -296,6 +296,7 @@
             '/pages/uploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
         removeLink.innerText = [[#{general.delete}]].toLowerCase();
         thumbnail.classList.remove("hidden");
+        $('#submit-my-documents').removeClass("disabled");
       });
 
       // This lets dropzone know to process the queue after each file has completed
@@ -309,6 +310,10 @@
       this.on('destroy', function (file) {
         myDropZone.removeFile(file);
         showNumberOfAddedFiles()
+      });
+      
+      this.on('processing', function (file) {
+       $('#submit-my-documents').addClass("disabled");
       });
 
       // Add all previously uploaded files to the list of uploads
