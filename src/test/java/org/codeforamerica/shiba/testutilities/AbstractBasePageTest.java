@@ -88,9 +88,6 @@ public abstract class AbstractBasePageTest {
     driver.navigate().to(baseUrl + "/pages/" + pageName);
   }
 
-
-  // The Java Stream map() method converts (maps) an element to another object.
-  // I need to convert the zip file into a list of files?
   protected Map<Document, PDAcroForm> getAllFiles() {
     return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
         .filter(file -> file.getName().endsWith(".pdf")).sorted((f1,f2)-> Long.compare(f2.lastModified(), f1.lastModified()))

@@ -82,28 +82,27 @@ public class FileDownloadController {
     log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
     Application application = applicationRepository.find(applicationId);  
     List<ApplicationFile> applicationFiles = new ArrayList<>();
-    ApplicationData applicationDatas = application.getApplicationData();
-    
-    if(applicationData.isCAFApplication() || applicationDatas.isCAFApplication()) {  
+
+    if(applicationData.isCAFApplication()) {
         ApplicationFile applicationFileCAF = pdfGenerator.generate(applicationId, CAF, CLIENT);
         if (null != applicationFileCAF && applicationFileCAF.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCAF);
           }
     }
-    if(applicationData.isCCAPApplication() || applicationDatas.isCCAPApplication()) {
+    if(applicationData.isCCAPApplication()) {
         ApplicationFile applicationFileCCAP = pdfGenerator.generate(applicationId, CCAP, CLIENT);
         if (null != applicationFileCCAP && applicationFileCCAP.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCCAP);
           }
     }
-    if(applicationData.isCertainPopsApplication() || applicationDatas.isCertainPopsApplication()) {
+    if(applicationData.isCertainPopsApplication()) {
         ApplicationFile applicationFileCP = pdfGenerator.generate(applicationId, CERTAIN_POPS, CLIENT);
         if (null != applicationFileCP && applicationFileCP.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCP);
           }
     }
     
-    List<UploadedDocument> uploadedDocs = applicationDatas.getUploadedDocs();
+    List<UploadedDocument> uploadedDocs = applicationData.getUploadedDocs();
     if(null !=uploadedDocs) {
       for (int i = 0; i < uploadedDocs.size(); i++) {
         UploadedDocument uploadedDocument = uploadedDocs.get(i);

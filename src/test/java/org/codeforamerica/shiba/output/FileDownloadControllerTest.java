@@ -57,6 +57,9 @@ class FileDownloadControllerTest {
   void setUp() {
     applicationData = new ApplicationData();
     applicationData.setId("some-app-id");
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH, GRH, EA))
+        .build());
     application = Application.builder()
         .completedAt(ZonedDateTime.now())
         .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED)))
@@ -77,16 +80,12 @@ class FileDownloadControllerTest {
     var applicationId = "9870000123";
     ApplicationData applicationData = new ApplicationData();
     applicationData.setId(applicationId);
-   
-    applicationData.setPagesData(new PagesDataBuilder()
-        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH, GRH, EA))
-        .build());
-  
+
     Application application = Application.builder().applicationData(applicationData)
          .build();
-    when(applicationRepository.find(applicationId)).thenReturn(application);
-  
+
     when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("TEST".getBytes(), ""));
+    when(applicationRepository.find(applicationId)).thenReturn(application);
     MvcResult result = mockMvc.perform(get("/download/9870000123"))
             .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
                     String.format("filename=\"%s\"", "MNB_application_"+applicationId + ".zip")))

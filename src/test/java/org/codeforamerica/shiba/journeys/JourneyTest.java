@@ -117,8 +117,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
   protected String downloadPdfs() {
     // Download CAF
     SuccessPage successPage = new SuccessPage(driver);
-    //assertThat(successPage.CAFdownloadPresent()).isEqualTo(shouldHaveCafDownloadLink);
-    //assertThat(successPage.CCAPdownloadPresent()).isEqualTo(shouldHaveCcapDownloadLink);
     successPage.downloadPdfZipFile();
     await().until(zipDownloadCompletes(successPage));
     unzipFiles();
