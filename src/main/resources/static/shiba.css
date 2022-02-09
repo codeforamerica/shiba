@@ -1297,7 +1297,7 @@ input[type=number] {
 .disabled {
   pointer-events: none;
   cursor: default;
-  opacity: 0.6;
+  opacity: 60%;
 }
 
 .underline {
