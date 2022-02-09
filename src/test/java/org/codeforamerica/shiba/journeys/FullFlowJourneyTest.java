@@ -689,6 +689,8 @@ public class FullFlowJourneyTest extends JourneyTest {
 
   private void testDocumentUploads() {
     // Uploading a file should change the page styling
+    uploadButtonDisabledCheck();
+    deleteAFile();
     assertStylingOfEmptyDocumentUploadPage();
     uploadJpgFile();
     waitForDocumentUploadToComplete();

@@ -388,8 +388,6 @@ public abstract class AbstractBasePageTest {
     testPage.clickElementById("drag-and-drop-box"); // is this needed?
     WebElement upload = driver.findElement(By.className("dz-hidden-input"));
     upload.sendKeys(filepath);
-    assertThat(driver.findElementById("submit-my-documents").getAttribute("class"))
-    .contains("disabled");
     await().until(
         () -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML")
             .isBlank());
@@ -397,6 +395,19 @@ public abstract class AbstractBasePageTest {
 
   protected void uploadJpgFile() {
     uploadFile(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
+    assertThat(driver.findElement(By.id("document-upload")).getText())
+        .contains(UPLOADED_JPG_FILE_NAME);
+  }
+  
+  protected void uploadButtonDisabledCheck() {
+    testPage.clickElementById("drag-and-drop-box"); // is this needed?
+    WebElement upload = driver.findElement(By.className("dz-hidden-input"));
+    upload.sendKeys(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
+    assertThat(driver.findElementById("submit-my-documents").getAttribute("class"))
+    .contains("disabled");
+    await().until(
+        () -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML")
+            .isBlank());
     assertThat(driver.findElement(By.id("document-upload")).getText())
         .contains(UPLOADED_JPG_FILE_NAME);
   }
