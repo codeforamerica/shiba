@@ -469,7 +469,7 @@ public class CountyMapConfiguration {
         "imques@co.ottertail.mn.us",
         "A000056600");
     updateCounty(Pennington,
-        "Afcasebank@co.pennington.mn.us",
+        "jasjostrand@co.pennington.mn.us",
         "A000057400");
     updateCounty(Pine,
         "income.proof@co.pine.mn.us",
@@ -485,7 +485,7 @@ public class CountyMapConfiguration {
         "crystal.zaviska@westernprairiemn.us",
         "A000061200");
     updateCounty(Ramsey,
-        "CHSFASScreeners@co.ramsey.mn.us",
+        "fas.forms@co.ramsey.mn.us",
         "1811055957");
     updateCounty(RedLake,
         "sswintake@mail.co.red-lake.mn.us",
