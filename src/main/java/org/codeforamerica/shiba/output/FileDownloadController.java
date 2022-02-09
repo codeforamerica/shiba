@@ -73,9 +73,13 @@ public class FileDownloadController {
   @GetMapping("/download/{applicationId}")
   ResponseEntity<byte[]> downloadAllDocumentsWithApplicationId(@PathVariable String applicationId, HttpSession httpSession) 
           throws IOException{
-    if (applicationData == null || applicationData.getId() == null){
-      log.info("Application is empty or the applicationId is null when client attempts to download pdfs zip file.");
-      return createRootPageResponse();
+    if (applicationData == null ||
+        applicationData.getId() == null ||
+        // Make sure the active sessions application ID matches the application ID being downloaded
+        // TODO remove this check potentially when we add O Auth back to this end point
+        !applicationId.equals(applicationData.getId())) {
+          log.info("Application is empty or the applicationId is null when client attempts to download pdfs zip file.");
+          return createRootPageResponse();
     }
     MDC.put("applicationId", applicationData.getId());
     MDC.put("sessionId", httpSession.getId());
