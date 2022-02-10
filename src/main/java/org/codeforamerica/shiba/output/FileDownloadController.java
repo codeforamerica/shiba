@@ -57,8 +57,8 @@ public class FileDownloadController {
     this.applicationRepository = applicationRepository;
   }
   @GetMapping("/download")
-  ResponseEntity<byte[]> downloadPdf(HttpSession httpSession) {
-    if (applicationData == null || applicationData.getId() == null){
+  ResponseEntity<byte[]> downloadPdf(HttpSession httpSession) throws IOException {
+    if (applicationData == null || applicationData.getId() == null) {
       log.info("Application is empty or the applicationId is null when client attempts to download pdfs.");
       return createRootPageResponse();
     }
@@ -66,18 +66,52 @@ public class FileDownloadController {
     MDC.put("sessionId", httpSession.getId());
     log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
 
-    ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CAF, CLIENT);
-    return createResponse(applicationFile);
+    String applicationId = applicationData.getId();
+    Application application = applicationRepository.find(applicationId);
+    List<ApplicationFile> applicationFiles = new ArrayList<>();
+
+    if (applicationData.isCAFApplication()) {
+      ApplicationFile applicationFileCAF = pdfGenerator.generate(applicationId, CAF, CLIENT);
+      if (null != applicationFileCAF && applicationFileCAF.getFileBytes().length > 0) {
+        applicationFiles.add(applicationFileCAF);
+      }
+    }
+    if (applicationData.isCCAPApplication()) {
+      ApplicationFile applicationFileCCAP = pdfGenerator.generate(applicationId, CCAP, CLIENT);
+      if (null != applicationFileCCAP && applicationFileCCAP.getFileBytes().length > 0) {
+        applicationFiles.add(applicationFileCCAP);
+      }
+    }
+    if (applicationData.isCertainPopsApplication()) {
+      ApplicationFile applicationFileCP = pdfGenerator.generate(applicationId, CERTAIN_POPS, CLIENT);
+      if (null != applicationFileCP && applicationFileCP.getFileBytes().length > 0) {
+        applicationFiles.add(applicationFileCP);
+      }
+    }
+
+    List<UploadedDocument> uploadedDocs = applicationData.getUploadedDocs();
+    if (null !=uploadedDocs) {
+      for (int i = 0; i < uploadedDocs.size(); i++) {
+        UploadedDocument uploadedDocument = uploadedDocs.get(i);
+        ApplicationFile fileToSend = pdfGenerator
+            .generateForUploadedDocument(uploadedDocument, i, application, null);
+
+        if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
+          applicationFiles.add(fileToSend);
+        }
+      }
+    }
+
+    return createZipFileFromApplications(applicationFiles, applicationId);
   }
   
   @GetMapping("/download/{applicationId}")
   ResponseEntity<byte[]> downloadAllDocumentsWithApplicationId(@PathVariable String applicationId, HttpSession httpSession) 
           throws IOException{
     if (applicationData == null ||
-        applicationData.getId() == null ||
-        // Make sure the active sessions application ID matches the application ID being downloaded
+        applicationData.getId() == null
         // TODO remove this check potentially when we add O Auth back to this end point
-        !applicationId.equals(applicationData.getId())) {
+        ) {
           log.info("Application is empty or the applicationId is null when client attempts to download pdfs zip file.");
           return createRootPageResponse();
     }
@@ -122,24 +156,24 @@ public class FileDownloadController {
     return createZipFileFromApplications(applicationFiles, applicationId);
   }
 
-  @GetMapping("/download-ccap")
-  ResponseEntity<byte[]> downloadCcapPdf() {
-	if (applicationData.getId() == null) {
-		return createRootPageResponse();
-	}
-    ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CCAP, CLIENT);
-    return createResponse(applicationFile);
-  }
-
-  @GetMapping("/download-ccap/{applicationId}")
-  ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(@PathVariable String applicationId) {
-    return createResponse(applicationId, CCAP);
-  }
-
-  @GetMapping("/download-certain-pops/{applicationId}")
-  ResponseEntity<byte[]> downloadCertainPopsWithApplicationId(@PathVariable String applicationId) {
-    return createResponse(applicationId, CERTAIN_POPS);
-  }
+//  @GetMapping("/download-ccap")
+//  ResponseEntity<byte[]> downloadCcapPdf() {
+//	if (applicationData.getId() == null) {
+//		return createRootPageResponse();
+//	}
+//    ApplicationFile applicationFile = pdfGenerator.generate(applicationData.getId(), CCAP, CLIENT);
+//    return createResponse(applicationFile);
+//  }
+//
+//  @GetMapping("/download-ccap/{applicationId}")
+//  ResponseEntity<byte[]> downloadCcapPdfWithApplicationId(@PathVariable String applicationId) {
+//    return createResponse(applicationId, CCAP);
+//  }
+//
+//  @GetMapping("/download-certain-pops/{applicationId}")
+//  ResponseEntity<byte[]> downloadCertainPopsWithApplicationId(@PathVariable String applicationId) {
+//    return createResponse(applicationId, CERTAIN_POPS);
+//  }
 
   @GetMapping("/download-xml")
   ResponseEntity<byte[]> downloadXml() {
@@ -150,30 +184,30 @@ public class FileDownloadController {
     return createResponse(applicationFile);
   }
 
-  @GetMapping("/download-caf/{applicationId}")
-  ResponseEntity<byte[]> downloadPdfWithAppJlicationId(@PathVariable String applicationId) {
-    return createResponse(applicationId, CAF);
-  }
-
-  @GetMapping("/download-docs/{applicationId}")
-  ResponseEntity<byte[]> downloadDocsWithApplicationId(@PathVariable String applicationId)
-      throws IOException {
-    Application application = applicationRepository.find(applicationId);
-    List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
-
-    List<ApplicationFile> applicationFiles = new ArrayList<>();
-    byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
-    for (int i = 0; i < uploadedDocs.size(); i++) {
-      UploadedDocument uploadedDocument = uploadedDocs.get(i);
-      ApplicationFile fileToSend = pdfGenerator
-          .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-
-      if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
-        applicationFiles.add(fileToSend);
-      }
-    }
-    return createZipFileFromApplications(applicationFiles, applicationId);
-  }
+//  @GetMapping("/download-caf/{applicationId}")
+//  ResponseEntity<byte[]> downloadPdfWithApplicationId(@PathVariable String applicationId) {
+//    return createResponse(applicationId, CAF);
+//  }
+//
+//  @GetMapping("/download-docs/{applicationId}")
+//  ResponseEntity<byte[]> downloadDocsWithApplicationId(@PathVariable String applicationId)
+//      throws IOException {
+//    Application application = applicationRepository.find(applicationId);
+//    List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
+//
+//    List<ApplicationFile> applicationFiles = new ArrayList<>();
+//    byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
+//    for (int i = 0; i < uploadedDocs.size(); i++) {
+//      UploadedDocument uploadedDocument = uploadedDocs.get(i);
+//      ApplicationFile fileToSend = pdfGenerator
+//          .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
+//
+//      if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
+//        applicationFiles.add(fileToSend);
+//      }
+//    }
+//    return createZipFileFromApplications(applicationFiles, applicationId);
+//  }
      
   private ResponseEntity<byte[]> createZipFileFromApplications(List<ApplicationFile> applicationFiles,
       String applicationId) throws IOException {

@@ -50,6 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests(r ->
             r.antMatchers(
+                    "/download/??????????",
                     "/download-caf/??????????",
                     "/download-ccap/??????????",
                     "/download-certain-pops/??????????",

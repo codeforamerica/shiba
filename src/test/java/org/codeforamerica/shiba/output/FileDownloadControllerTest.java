@@ -74,6 +74,7 @@ class FileDownloadControllerTest {
         .build();
 
   }
+
   @Test
   void shouldPassScreensToServiceWithApplicationIDToGeneratePdfFile() throws Exception {
     

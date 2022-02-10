@@ -270,7 +270,7 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCaf() throws Exception {
-    var cafBytes = mockMvc.perform(get("/download")
+    var cafBytes = mockMvc.perform(get("/download-caf")
             .with(oauth2Login()
                 .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
             .session(session))
