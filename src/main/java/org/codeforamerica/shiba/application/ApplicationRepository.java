@@ -97,15 +97,15 @@ public class ApplicationRepository {
     return application;
   }
 
-  public List<Application> findApplicationsStuckInProgress() {
-    Timestamp twelveHoursAgo = Timestamp.from(Instant.now().minus(Duration.ofHours(16)));
+  public List<Application> findApplicationsStuckInProgressAndSending() {
+    Timestamp sixteenHoursAgo = Timestamp.from(Instant.now().minus(Duration.ofHours(16)));
     List<Application> applicationsStuckInProgress = jdbcTemplate.query(
         "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at BETWEEN '2021-12-06' AND ? AND id IN ("
         + "    SELECT application_id FROM application_status WHERE status= 'in_progress' OR status ='sending'"
         + "          AND (document_type='CAF' OR document_type='CCAP' OR document_type='UPLOADED_DOC' OR document_type='CERTAIN_POPS')"
         + "    ) ORDER BY completed_at LIMIT 5",
         applicationRowMapper(),
-        twelveHoursAgo);
+        sixteenHoursAgo);
 
     // add document statuses to apps
     for (Application app : applicationsStuckInProgress) {

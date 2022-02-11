@@ -16,7 +16,6 @@ import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,7 +50,7 @@ class AppsStuckInProgressResubmissionTest {
     }
 
     // actually try to resubmit it
-    resubmissionService.resubmitInProgressApplicationsViaEsb();
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     // make sure that the first 5 applications had an applicationSubmittedEvent triggered
     for (int i = 0; i < 5; i++) {
@@ -75,15 +74,15 @@ class AppsStuckInProgressResubmissionTest {
   @Test
   void itTriggersAnEventFor5AppsStuckSending() {
     // Only the first 5 of these should be resubmitted.
-    for (int i = 0; i < 6; i++) {
+    for (int i = 10; i < 16; i++) {
       makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
     }
 
     // actually try to resubmit it
-    resubmissionService.resubmitInProgressApplicationsViaEsb();
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     // make sure that the first 5 applications had an applicationSubmittedEvent triggered
-    for (int i = 0; i < 5; i++) {
+    for (int i = 10; i < 15; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -91,14 +90,6 @@ class AppsStuckInProgressResubmissionTest {
           new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(i),
               LocaleContextHolder.getLocale()));
     }
-
-    // Other applications should not have the event triggered
-    verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", String.valueOf(5), FlowType.FULL,
-            LocaleContextHolder.getLocale()));
-    verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(5),
-            LocaleContextHolder.getLocale()));
   }
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
@@ -107,7 +98,7 @@ class AppsStuckInProgressResubmissionTest {
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
     // actually try to resubmit it
-    resubmissionService.resubmitInProgressApplicationsViaEsb();
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     verify(pageEventPublisher).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
