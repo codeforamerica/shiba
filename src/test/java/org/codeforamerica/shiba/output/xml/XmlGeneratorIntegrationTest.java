@@ -148,12 +148,12 @@ public class XmlGeneratorIntegrationTest {
         .generate("someId", Document.XML, CASEWORKER);
 
     String xmlFile = new String(applicationFile.getFileBytes());
-    assertThat(xmlFile).contains("""
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:Person>
                     <ns4:FirstName>Jane</ns4:FirstName>
                     <ns4:LastName>Doe</ns4:LastName>
                 </ns4:Person>""");
-    assertThat(xmlFile).contains("""
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:PersonalInfo>
                         <ns4:OtherName>
                             <ns4:FirstName></ns4:FirstName>
@@ -187,12 +187,12 @@ public class XmlGeneratorIntegrationTest {
         .generate("someId", Document.XML, CASEWORKER);
 
     String xmlFile = new String(applicationFile.getFileBytes());
-    assertThat(xmlFile).contains("""
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:Person>
                     <ns4:FirstName>Judy</ns4:FirstName>
                     <ns4:LastName>Garland</ns4:LastName>
                 </ns4:Person>""");
-    assertThat(xmlFile).contains("""
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:PersonalInfo>
                         <ns4:OtherName>
                         </ns4:OtherName>
@@ -223,7 +223,7 @@ public class XmlGeneratorIntegrationTest {
         .generate("someId", Document.XML, CASEWORKER);
 
     String xmlFile = new String(applicationFile.getFileBytes());
-    assertThat(xmlFile).contains("""
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
                         <ns4:DOB>//</ns4:DOB>
                         <ns4:Relationship>Self</ns4:Relationship>
         """);
