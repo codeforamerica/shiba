@@ -14,6 +14,9 @@ xml:
       lastName: PERSONALINFO_LASTNAME
       otherName: PERSONALINFO_OTHERNAME
       ssn: PERSONALINFO_SSN
+      noSSNCheck: 
+        true: NO_SSN
+      appliedForSSN: APPLIED_FOR_SSN
       maritalStatus: PERSONALINFO_MARITALSTATUS
       sex: PERSONALINFO_SEX
       dateOfBirth: PERSONALINFO_DATE_OF_BIRTH

@@ -729,6 +729,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICANT_FIRST_NAME", "Dwight", pdf);
       assertPdfFieldEquals("DATE_OF_BIRTH", "01/12/1928", pdf);
       assertPdfFieldEquals("APPLICANT_SSN", "123456789", pdf);
+      assertPdfFieldEquals("NO_SSN", "Yes", pdf);
       assertPdfFieldEquals("MARITAL_STATUS", "NEVER_MARRIED", pdf);
       assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", pdf);
       assertPdfFieldEquals("NEED_INTERPRETER", "Yes", pdf);

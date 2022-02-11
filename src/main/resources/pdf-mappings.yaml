@@ -10,6 +10,8 @@ mappings:
     otherName: APPLICANT_OTHER_NAME
     dateOfBirth: DATE_OF_BIRTH
     ssn: APPLICANT_SSN
+    noSSNCheck: NO_SSN
+    appliedForSSN: APPLIED_FOR_SSN
     sex: APPLICANT_SEX
     moveToMnDate: DATE_OF_MOVING_TO_MN
     moveToMnPreviousCity: APPLICANT_PREVIOUS_STATE
