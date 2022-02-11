@@ -16,6 +16,7 @@ import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +47,7 @@ class AppsStuckInProgressResubmissionTest {
   void itTriggersAnEventFor5AppsStuckInProgress() {
     // Only the first 5 of these should be resubmitted.
     for (int i = 0; i < 6; i++) {
-      makeApplicationThatShouldBeResubmitted(i);
+      makeApplicationThatShouldBeResubmitted(i, Status.IN_PROGRESS);
     }
 
     // actually try to resubmit it
@@ -72,8 +73,36 @@ class AppsStuckInProgressResubmissionTest {
   }
 
   @Test
+  void itTriggersAnEventFor5AppsStuckSending() {
+    // Only the first 5 of these should be resubmitted.
+    for (int i = 0; i < 6; i++) {
+      makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
+    }
+
+    // actually try to resubmit it
+    resubmissionService.resubmitInProgressApplicationsViaEsb();
+
+    // make sure that the first 5 applications had an applicationSubmittedEvent triggered
+    for (int i = 0; i < 5; i++) {
+      verify(pageEventPublisher).publish(
+          new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
+              LocaleContextHolder.getLocale()));
+      verify(pageEventPublisher).publish(
+          new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(i),
+              LocaleContextHolder.getLocale()));
+    }
+
+    // Other applications should not have the event triggered
+    verify(pageEventPublisher, never()).publish(
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(5), FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(5),
+            LocaleContextHolder.getLocale()));
+  }
+  @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
+    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1, Status.IN_PROGRESS);
     String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
@@ -105,7 +134,7 @@ class AppsStuckInProgressResubmissionTest {
   }
 
   @NotNull
-  private String makeApplicationThatShouldBeResubmitted(int id) {
+  private String makeApplicationThatShouldBeResubmitted(int id, Status status) {
     String applicationId = String.valueOf(id);
 
     ApplicationData applicationData = new ApplicationData();
@@ -132,13 +161,13 @@ class AppsStuckInProgressResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        Status.IN_PROGRESS);
+        status);
 
     documentStatusRepository.createOrUpdate(
         applicationId,
         Document.UPLOADED_DOC,
         "Anoka",
-        Status.IN_PROGRESS);
+        status);
 
     return applicationId;
   }
