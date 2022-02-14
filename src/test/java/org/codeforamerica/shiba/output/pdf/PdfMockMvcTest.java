@@ -802,7 +802,20 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       var caf = submitAndDownloadCaf();
 
       assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
-      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0", caf);
+      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0.00", caf);
+    }
+    
+    @Test
+    void shouldMapZeroLiquidAssetsAmountAsYesSavingsWhenLeftBlank() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      postExpectingSuccess("savings", "haveSavings", "true");
+      postExpectingSuccess("savingsAmount", "liquidAssets", "");
+
+      var caf = submitAndDownloadCaf();
+
+      assertPdfFieldEquals("HAVE_SAVINGS", "Yes", caf);
+      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0.00", caf);
     }
 
     @Test
@@ -814,7 +827,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       var caf = submitAndDownloadCaf();
 
       assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
-      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "", caf);
+      assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0.00", caf);
     }
   }
 }

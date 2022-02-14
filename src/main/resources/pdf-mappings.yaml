@@ -72,7 +72,7 @@ mappings:
     selectedApartmentNumber: APPLICANT_MAILING_APT_NUMBER
     selectedCounty: APPLICANT_MAILING_COUNTY
   liquidAssets:
-    liquidAssets: EXPEDITED_QUESTION_2
+    liquidAssetsValue: EXPEDITED_QUESTION_2
   utilityPayments:
     HEATING: HEAT
     COOLING: AIR_CONDITIONING
