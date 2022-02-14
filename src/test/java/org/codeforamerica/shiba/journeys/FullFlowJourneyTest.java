@@ -633,7 +633,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("GOING_TO_SCHOOL", "Yes");
     assertCafFieldEquals("IS_PREGNANT", "Yes");
     assertCafFieldEquals("IS_US_CITIZEN", "No");
-    assertCafFieldEquals("EXPEDITED_QUESTION_2", "1234");
+    assertCafFieldEquals("EXPEDITED_QUESTION_2", "1234.00");
     assertCafFieldEquals("HOUSING_EXPENSES", "123321.50");
     assertCafFieldEquals("HEAT", "Yes");
     assertCafFieldEquals("SUPPORT_AND_CARE", "Yes");
