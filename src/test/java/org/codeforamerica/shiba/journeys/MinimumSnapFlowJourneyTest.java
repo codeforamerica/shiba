@@ -141,7 +141,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     // Do you have savings?
     testPage.enter("haveSavings", YES.getDisplayValue());
-    String liquidAssets = "1";
+    String liquidAssets = "1.00";
     testPage.enter("liquidAssets", liquidAssets);
     testPage.clickContinue();
 
