@@ -63,18 +63,18 @@ class SecurityConfigurationTest {
 
   @Test
   void requiresAuthenticationAndAuthorizationOnDownloadCafEndpoint() throws Exception {
-    mockMvc.perform(get("/download-caf/9870000123"))
+    mockMvc.perform(get("/download/9870000123"))
         .andExpect(unauthenticated());
 
-    mockMvc.perform(get("/download-caf/9870000123")
+    mockMvc.perform(get("/download/9870000123")
             .with(oauth2Login().attributes(attrs -> attrs.put("email", "invalid@x.org"))))
         .andExpect(status().is4xxClientError());
 
-    mockMvc.perform(get("/download-caf/9870000123")
+    mockMvc.perform(get("/download/9870000123")
             .with(oauth2Login().attributes(attrs -> attrs.put("email", "invalid@codeforamerica.org"))))
         .andExpect(status().is4xxClientError());
 
-    mockMvc.perform(get("/download-caf/9870000123")
+    mockMvc.perform(get("/download/9870000123")
             .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
         .andExpect(authenticated())
         .andExpect(status().is2xxSuccessful());
@@ -84,7 +84,7 @@ class SecurityConfigurationTest {
   void doesNotRequireAuthenticationOnAnyOtherEndpoint() throws Exception {
     mockMvc.perform(get("/download"))
         .andExpect(status().is3xxRedirection());
-    mockMvc.perform(get("/download-ccap"))
-    	.andExpect(status().is3xxRedirection());
+//    mockMvc.perform(get("/download-ccap"))
+//    	.andExpect(status().is3xxRedirection());
   }
 }

@@ -126,7 +126,7 @@ class FileDownloadControllerTest {
     when(pdfGenerator.generate(eq(application), any(), any()))
         .thenReturn(new ApplicationFile("".getBytes(), ""));
 
-    mockMvc.perform(get("/download-ccap/9870000123"))
+    mockMvc.perform(get("/download-ccap/9870000123Ï"))
         .andExpect(status().is2xxSuccessful());
 
     verify(pdfGenerator).generate(application, CCAP, CASEWORKER);

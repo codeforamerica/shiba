@@ -6,6 +6,7 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
+import io.sentry.protocol.App;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -70,37 +71,7 @@ public class FileDownloadController {
     Application application = applicationRepository.find(applicationId);
     List<ApplicationFile> applicationFiles = new ArrayList<>();
 
-    if (applicationData.isCAFApplication()) {
-      ApplicationFile applicationFileCAF = pdfGenerator.generate(applicationId, CAF, CLIENT);
-      if (null != applicationFileCAF && applicationFileCAF.getFileBytes().length > 0) {
-        applicationFiles.add(applicationFileCAF);
-      }
-    }
-    if (applicationData.isCCAPApplication()) {
-      ApplicationFile applicationFileCCAP = pdfGenerator.generate(applicationId, CCAP, CLIENT);
-      if (null != applicationFileCCAP && applicationFileCCAP.getFileBytes().length > 0) {
-        applicationFiles.add(applicationFileCCAP);
-      }
-    }
-    if (applicationData.isCertainPopsApplication()) {
-      ApplicationFile applicationFileCP = pdfGenerator.generate(applicationId, CERTAIN_POPS, CLIENT);
-      if (null != applicationFileCP && applicationFileCP.getFileBytes().length > 0) {
-        applicationFiles.add(applicationFileCP);
-      }
-    }
-
-    List<UploadedDocument> uploadedDocs = applicationData.getUploadedDocs();
-    if (null !=uploadedDocs) {
-      for (int i = 0; i < uploadedDocs.size(); i++) {
-        UploadedDocument uploadedDocument = uploadedDocs.get(i);
-        ApplicationFile fileToSend = pdfGenerator
-            .generateForUploadedDocument(uploadedDocument, i, application, null);
-
-        if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
-          applicationFiles.add(fileToSend);
-        }
-      }
-    }
+    getApplicationDocuments(applicationId, application, applicationFiles);
 
     return createZipFileFromApplications(applicationFiles, applicationId);
   }
@@ -108,52 +79,58 @@ public class FileDownloadController {
   @GetMapping("/download/{applicationId}")
   ResponseEntity<byte[]> downloadAllDocumentsWithApplicationId(@PathVariable String applicationId, HttpSession httpSession) 
           throws IOException{
-    if (applicationData == null ||
-        applicationData.getId() == null
-        // TODO remove this check potentially when we add O Auth back to this end point
-        ) {
-          log.info("Application is empty or the applicationId is null when client attempts to download pdfs zip file.");
-          return createRootPageResponse();
-    }
-    MDC.put("applicationId", applicationData.getId());
-    MDC.put("sessionId", httpSession.getId());
-    log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
-    Application application = applicationRepository.find(applicationId);  
-    List<ApplicationFile> applicationFiles = new ArrayList<>();
+    Application application;
+    try {
+      application = applicationRepository.find(applicationId);
+      MDC.put("applicationId", application.getApplicationData().getId());
+      MDC.put("sessionId", httpSession.getId());
+      log.info("Client with session: " + httpSession.getId() + " Downloading application with id: " + applicationData.getId());
+      List<ApplicationFile> applicationFiles = new ArrayList<>();
 
-    if(applicationData.isCAFApplication()) {
+      getApplicationDocuments(applicationId, application, applicationFiles);
+
+      return createZipFileFromApplications(applicationFiles, applicationId);
+    } catch(Exception e) {
+      log.info("This exception was thrown: " + e);
+      return createRootPageResponse();
+
+    }
+
+  }
+
+  private void getApplicationDocuments(String applicationId, Application application,
+      List<ApplicationFile> applicationFiles) {
+    if(application.getApplicationData().isCAFApplication()) {
         ApplicationFile applicationFileCAF = pdfGenerator.generate(applicationId, CAF, CLIENT);
         if (null != applicationFileCAF && applicationFileCAF.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCAF);
           }
     }
-    if(applicationData.isCCAPApplication()) {
+    if(application.getApplicationData().isCCAPApplication()) {
         ApplicationFile applicationFileCCAP = pdfGenerator.generate(applicationId, CCAP, CLIENT);
         if (null != applicationFileCCAP && applicationFileCCAP.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCCAP);
           }
     }
-    if(applicationData.isCertainPopsApplication()) {
+    if(application.getApplicationData().isCertainPopsApplication()) {
         ApplicationFile applicationFileCP = pdfGenerator.generate(applicationId, CERTAIN_POPS, CLIENT);
         if (null != applicationFileCP && applicationFileCP.getFileBytes().length > 0) {
             applicationFiles.add(applicationFileCP);
           }
     }
-    
-    List<UploadedDocument> uploadedDocs = applicationData.getUploadedDocs();
+
+    List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
     if(null !=uploadedDocs) {
       for (int i = 0; i < uploadedDocs.size(); i++) {
         UploadedDocument uploadedDocument = uploadedDocs.get(i);
         ApplicationFile fileToSend = pdfGenerator
             .generateForUploadedDocument(uploadedDocument, i, application, null);
-  
+
         if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
           applicationFiles.add(fileToSend);
         }
       }
     }
-    
-    return createZipFileFromApplications(applicationFiles, applicationId);
   }
 
 //  @GetMapping("/download-ccap")
