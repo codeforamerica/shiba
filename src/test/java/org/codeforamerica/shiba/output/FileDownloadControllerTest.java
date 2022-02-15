@@ -62,6 +62,7 @@ class FileDownloadControllerTest {
         .build());
     application = Application.builder()
         .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
         .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED)))
         .build();
     mockMvc = MockMvcBuilders.standaloneSetup(
@@ -72,33 +73,14 @@ class FileDownloadControllerTest {
                 applicationRepository))
         .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
         .build();
+    when(applicationRepository.find(any())).thenReturn(application);
 
   }
 
-  @Test
-  void shouldPassScreensToServiceWithApplicationIDToGeneratePdfFile() throws Exception {
-    
-    var applicationId = "9870000123";
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setId(applicationId);
-
-    Application application = Application.builder().applicationData(applicationData)
-         .build();
-
-    when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("TEST".getBytes(), ""));
-    when(applicationRepository.find(applicationId)).thenReturn(application);
-    MvcResult result = mockMvc.perform(get("/download/9870000123"))
-            .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
-                    String.format("filename=\"%s\"", "MNB_application_"+applicationId + ".zip")))
-            .andExpect(status().is2xxSuccessful()).andReturn();
-    
-    byte[] actualBytes = result.getResponse().getContentAsByteArray();
-    assertThat(actualBytes).hasSizeGreaterThan(22);
-  }
   @Test
   void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
     when(pdfGenerator.generate(anyString(), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
+        .thenReturn(new ApplicationFile("Test".getBytes(), "Test"));
 
     mockMvc.perform(
             get("/download"))
@@ -108,59 +90,7 @@ class FileDownloadControllerTest {
   }
 
   @Test
-  void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-    application.setDocumentStatuses(List.of(new DocumentStatus("9870000123", CAF, "", DELIVERED)));
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-    when(pdfGenerator.generate(eq(application), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful());
-
-    verify(pdfGenerator).generate(application, CAF, CASEWORKER);
-  }
-
-  @Test
-  void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-    when(pdfGenerator.generate(eq(application), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    mockMvc.perform(get("/download-ccap/9870000123Ï"))
-        .andExpect(status().is2xxSuccessful());
-
-    verify(pdfGenerator).generate(application, CCAP, CASEWORKER);
-  }
-
-  @Test
-  void shouldNotifyForNonCAFApplication() throws Exception {
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-
-    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn()
-        .getResponse().getContentAsString();
-
-    assertThat(responseContent).isEqualTo(
-        "Could not find a CAF application with this ID for download");
-  }
-
-  @Test
-  void shouldNotifyForIncompleteApplication() throws Exception {
-    application.setCompletedAt(null);
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-
-    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn()
-        .getResponse().getContentAsString();
-
-    assertThat(responseContent).isEqualTo(
-        "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.");
-  }
-
-  @Test
-  void shouldReturnTheGeneratedPdf() throws Exception {
+  void shouldReturnTheGeneratedZip() throws Exception {
     byte[] pdfBytes = "here is the pdf".getBytes();
     String fileName = "filename.pdf";
     ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
@@ -170,10 +100,8 @@ class FileDownloadControllerTest {
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header()
-            .string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
+            .string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"MNB_application_%s.zip\"", applicationData.getId())))
         .andReturn();
-
-    assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(pdfBytes);
   }
 
   @Test
@@ -193,72 +121,5 @@ class FileDownloadControllerTest {
 
     verify(xmlGenerator).generate(applicationData.getId(), CAF, CLIENT);
     assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
-  }
-
-  @Test
-  void shouldReturnDocumentsForApplicationId() throws Exception {
-    var image = getFileContentsAsByteArray("shiba+file.jpg");
-    var applicationId = "9870000123";
-    ApplicationFile imageFile = new ApplicationFile(image, "");
-    UploadedDocument uploadedDoc = new UploadedDocument("shiba+file.jpg", "", "", "", image.length);
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setId(applicationId);
-    applicationData.setUploadedDocs(List.of(uploadedDoc));
-    applicationData.setFlow(FlowType.LATER_DOCS);
-    Application application = Application.builder()
-        .applicationData(applicationData)
-        .flow(FlowType.LATER_DOCS)
-        .build();
-
-    when(applicationRepository.find(applicationId)).thenReturn(
-        application
-    );
-    when(pdfGenerator.generateCoverPageForUploadedDocs(any(Application.class)))
-        .thenReturn(imageFile.getFileBytes());
-    when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class),
-            any())).thenReturn(imageFile);
-    MvcResult result = mockMvc.perform(
-            get("/download-docs/9870000123"))
-        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
-            String.format("filename=\"%s\"", "MNB_application_"+applicationId + ".zip")))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn();
-
-    verify(pdfGenerator).generateCoverPageForUploadedDocs(application);
-    verify(pdfGenerator)
-        .generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
-
-    byte[] actualBytes = result.getResponse().getContentAsByteArray();
-
-    assertThat(actualBytes).hasSizeGreaterThan(22);
-  }
-
-  @Test
-  void shouldReturn404StatusForApplicationIdWithoutDocuments() throws Exception {
-    var applicationId = "9870000123";
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setId(applicationId);
-    applicationData.setFlow(FlowType.LATER_DOCS);
-    Application application = Application.builder()
-        .applicationData(applicationData)
-        .flow(FlowType.LATER_DOCS)
-        .build();
-
-    when(applicationRepository.find(applicationId)).thenReturn(
-        application
-    );
-
-    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
-        .thenReturn(new ApplicationFile(null, null));
-
-    MvcResult result = mockMvc.perform(
-            get("/download-docs/9870000123"))
-        .andExpect(status().is4xxClientError())
-        .andReturn();
-
-    byte[] actualBytes = result.getResponse().getContentAsByteArray();
-
-    assertThat(actualBytes).hasSizeLessThanOrEqualTo(22);
   }
 }

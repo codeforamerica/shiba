@@ -1,17 +1,20 @@
 package org.codeforamerica.shiba;
 
+import static java.util.Collections.emptyList;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.springSecurity;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.ZonedDateTime;
@@ -32,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -71,37 +75,39 @@ class SecurityConfigurationTest {
         .withPageData("employmentStatus", "areYouWorking", "true")
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
-//    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        .apply(springSecurity())
+        .build();
+    doReturn(Application.builder()
+        .id("9870000123")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .build()).when(applicationRepository).find(any());
+    doReturn(emptyList()).when(preparers).prepareDocumentFields(any(), any(), any());
+    doReturn("").when(fileNameGenerator).generatePdfFilename(any(), any());
+
+//    application = Application.builder()
+//        .applicationData(applicationData)
+//        .id("9870000123")
+//        .completedAt(ZonedDateTime.now()).build();
+//
+//    mockMvc = MockMvcBuilders.standaloneSetup(
+//            new FileDownloadController(
+//                xmlGenerator,
+//                pdfGenerator,
+//                applicationData,
+//                applicationRepository
+//            ))
+//        .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
 //        .apply(springSecurity())
 //        .build();
-//    doReturn(Application.builder()
-//        .id("9870000123")
-//        .completedAt(ZonedDateTime.now())
-//        .applicationData(applicationData)
-//        .county(null)
-//        .timeToComplete(null)
-//        .build()).when(applicationRepository).find(any());
-//    doReturn(emptyList()).when(preparers).prepareDocumentFields(any(), any(), any());
-//    doReturn("").when(fileNameGenerator).generatePdfFilename(any(), any());
-
-    application = Application.builder()
-        .applicationData(applicationData)
-        .id("9870000123")
-        .completedAt(ZonedDateTime.now()).build();
-
-    mockMvc = MockMvcBuilders.standaloneSetup(
-            new FileDownloadController(
-                xmlGenerator,
-                pdfGenerator,
-                applicationData,
-                applicationRepository
-            ))
-        .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
-        .build();
   }
 
   @Test
   void requiresAuthenticationAndAuthorizationOnDownloadByApplicationIdEndpoint() throws Exception {
+    String applicationId = "9870000123";
     mockMvc.perform(get("/download/9870000123"))
         .andExpect(unauthenticated());
 
@@ -116,18 +122,27 @@ class SecurityConfigurationTest {
     mockMvc.perform(get("/download/9870000123")
             .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
         .andExpect(authenticated())
-        .andExpect(status().is2xxSuccessful());
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
+        String.format("filename=\"%s\"", "MNB_application_" + applicationId + ".zip")));
   }
 
   @Test
   void doesNotRequireAuthenticationOnDownloadEndpoint() throws Exception {
     when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(new ApplicationFile("TEST".getBytes(), ""));
-    when(applicationRepository.find(any())).thenReturn(application);
+//    when(applicationRepository.find(any())).thenReturn(application);
     //Check that download is set to unauthenticated
     mockMvc.perform(get("/download"))
         .andExpect(unauthenticated());
     //Check that download is allowed for the current application when the user is not authenticated
     mockMvc.perform(get("/download"))
         .andExpect(status().is2xxSuccessful());
+//    verify(pdfGenerator).generateCoverPageForUploadedDocs(application);
+//    verify(pdfGenerator)
+//        .generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
+//
+//    byte[] actualBytes = result.getResponse().getContentAsByteArray();
+//
+//    assertThat(actualBytes).hasSizeGreaterThan(22);
   }
 }
