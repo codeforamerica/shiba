@@ -1,0 +1,282 @@
+[
+  {
+    "product": "itext-core",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 7,
+      "minor": 2
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "B16ZPCVRCeq1NVnBUYrrTZ/ZEFp/1kLUYcb4A3OhFeuH7lGzmzmi2cG7OknxiOh7qH1Nf4uPzId9uzyS+qCIb99w9at59cjXbVQM/JqYANlUsQO0b58nnv1Jt+wO+7l9P+6BQxyaMLib15FamoHklVN7JJDdMcPwMw4Q2TFJIg5/lAo3ID3Br9IjRlPP4NeR26RKJVuL1mb/qgBCTr0xpZdxtrzbXzrfif/vD5pyynTZH0we5994RjtuucSTcqtWGG1yUyLyIBjJxkGkWQ+rvkCrGrmw2ocWEUBDX3k32UbO/oI81OzzI5NY7515M/0JpOc1p3wNFhZaq8wZPdtJqr+yL6yrb35ATuu3O+/1r61XP7fv/F2FwgoNqhC3nhJVheaAvgTAelznHbJyjL8jJZwl2MG4CgahfIBYjPz1QiV+rJmmpXgcHnkoeXiROEx1sQ+2ayn6pXgRw7+lqdtRHL1VincKxP92/QQwke4OUVD7my70iZW5j2YQajA49+BjVYGzi6JijKcRExglCQFk1VsmOL7ndE7RenwnBlf3eWnoWFTsZAXDHOZPzlApanjjc2biepKDsz6wGt8hgvynb7vBymP7NUDIaFvB5eb6py5/Wn48ZYXs2VTe/UxUpYIx7I0xtAUyZojkOlWhE+UrEYyf3xYCtIA+jkIuuLmPOJ8="
+  },
+  {
+    "product": "pdfXfa",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 3,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "eO3OMtje0UAOVl/KUWTcpFq8oG/U/rt1py/mjZdfYRoBOKXcSYCK7BabjZxZpHlz3lfOiZXu/X+9cZPJDYEPPWExJBGvbpfsbjxKX9goK1sjzVm1zcMRsCDYNcMaJwOh+1f5jtsZw3ncBGIlVsOYxJDrMeNct09/7loR21MMH/k9yg2bevHX1Kd7oHqFkmS05tRiy+d/0embozZgJz12Lue7pGYUySsyZ39Lc9ttEotf0uaCU7KuH5rT5SsZkglnqfm7Eac6/9a2NueNWvDN7yLNZUY0ZTu4JlJUlZy+AmNoWVZzExY8imj0uQd9x0H0i+2OLtAcejYypZRbmU/fgazXnVDlh8XBj+Dkk44KaqRXRDbEPsA+X59OG9bDqRp17bwWiStfUEh9fCx3i9Zuszs3gSRV3+n4K3YWXo3O2nVZnZwdKoHpu/yKXr7GKdATHCdSMrdszLU0uOStFwbPJJyyfduKtko6KfVKKjTAKylnqX5885Qtpwc8I7DL83h+musUycMnQY7j91Xb2zLKVIuBT54FQy7ZnFCtfdbcXjUebN2MGdJb1RdNI+hCrMlcrD6OPYeCcOGRQwxDLAkQVfCejaZfqkfrrChO6TeYI1SBKZmsoN5L/zcp0wYAuIfHmZzvUlbxIimIS9y/tcfquTC9asOX+x1rceowmFa8kyg="
+  },
+  {
+    "product": "pdfSweep",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 3,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "d7IOW3XZR9ahBhM7Q+4gSsUmMDvx2cDTvkMGMuJzBz2mw4msbHp64XM6YXPbWzulyJ8AJOw0xKzZGJLg+vWHht0a9fXoC9B9/9jZwB929EvysfIShad3uC360NSTX/cqOzA6e/sUUAsg7gHWybnFwdpwXA+ykJWsPIe3Z4Bxu4NsjFTEvyaW2GhHnwmT1cXKukbMJ3LsChbboovVXRlNIXf4Uiet7eAO0FTywLooOOowquw36UMaFKWpn/XE/hq5L5JPpEh0BeBbTczA1E73WyqEapw6fSpGE+FMb0gdz0CLYK+iFnBgLPrnV30FlnxKFTaLI1aLHSQ7GHaVljevnqG5yUlygVSASdQiUuKQ2rglKP2y/+lC6bWdjxLxT824yPYTWzhYcKzerCtgvJ9WxqWih44hJzPwsrQ/c0sc3uOqQzYxbRxIRBoptJAHcvospnQ2UL+yWNtl0fyqSCxziPDrOCL1hxq+qah3N+6Hm9bK/v7zLBWg9+4SnZsClyznUaNG7ZkHrDydJwHeHL2shILq3liyh2sif3Nvrx0aQUWdfEAMC2wgKk/Do8mtSTHKZ5njkAXZikPZphkAlNNcUT6b1H76OIj/54HCxm4N5gSftTpSyIdtopzs5gj7+gtVQFqSuXUXHTqr+lL0l+wFnvwQwf7E/8foN7SGzBjtPjU="
+  },
+  {
+    "product": "pdfRender",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 2,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "FHNne4psxwn30sWQA5DT9hWAvaBmDNUzntE6Rj5KQHio5JfI4KkxQc8DE+3J5BuMK03ixjiMuoV6vl9VIeNxPWOYhUZ4LZGZxzNErRo6ErjwDnS71Wd8oxyfZq+uWCe1cACb84ppm6Z084CggX6pvjqQN6Fa3wCLfrStWFIGyAwzwIDRQwTsIVNPy+TQB3v7doq/bwfNNJ3ZrWpVRO3Gd2BMgla0/hq0U8bT3kGrUmomuiQQT9VopqncNJLhOofpmpzACVOFgGfc7HR98r+4E19raqVBWDFlf4oDkd8Mhb1xzgGw94J6k+jrkdastvIdBNzpywSag0802nzLvqwFxPNvn1JTmaowlm/1eWd+1BpejGb0NICl5yd5IOONjycECeb3I3N5xON4weXyY56STpzPeHzUsw6txBoO6d46zhqj6H/TK+3YmHXIFku0ApslJZJUOYnd0Mp0Y1ip2DoIywOK2Hk497Ldz2UyHMcWt/buW9R61f48WbvyR2Le2LSuCS+hZjZ4uQ2RfRn0TWVPV3J0E3RFUTE6ub9DBMUF/zIO4HRU/wv0dGetUyrgjhhy5bIB9eFbURRlQcrQIdAlspvQ+MeSLuTPw3PLcpNZKUB2bxcCZrmvIgEvh9LBHcuBnGblYu6NTmQcQZBMoXzRXkqjeNhejxneInsfUf8m92s="
+  },
+  {
+    "product": "pdfOcr-tesseract4",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 2,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "DuWm9dZjrTe5EjeLDjdUlQwfMZBEzmytoY5ioHlNrVlQibHY2UWzzVysZJFH8YrSNpHUz2LwIzeqDb4qXjf27sf291FdR3OFsB+TJPiJONd1fQB6eHx/JXn1RMm3ZZdUsXKBJ2ONr8oH785tnY7m603b22ykgbCo8YMeFzqAWkeSANOXo0/TB/rdBzYhufqLxApvz1qv+aXMYqXa/P9ASBjYRrMU8uGVFq6cwFZXBkjdlxDjZwlNPzoi/27kJLsMZXGg+DgL5Su95AYTD3lrh/f3JbDvdbj3Q2WENt5d4yKoyE1ecHw80l8D54CujZGRW/2RyVKJntpg/edOElHT7N9ckAtXRUDgHOKSvspo4IroTqh4AyZnv6tFRzoO0tQS6Y2BZpRau5V4oGtWAD55C/jNIIwRbm4pQCm+GgdddsnJq3ndk2HyaVxgPrX7+sIBSDi+bzzGnjgo4Mb2arJ7HmH1t+HMaKxb6ii8ZoNSbeSUfDKIv5uazAPjVuq8onbtSfKhWnSWaAzdiBCBCy83dNtXX94SJULhO97yWRzG5nPRV0DYj7QgfKe9B5CJvHaHjzQGGM5zw0ojFTv556j3PyAHRj0Pj6XbeTXsQ1fMzmaozSWjT1z7xfIsjbxBietprWCtN82kWDXIkALA4j9IRSfRCyki9x8NDBwccgak6Vg="
+  },
+  {
+    "product": "pdfOptimizer",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 2,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "BGV4k7evhSXpBs7B8S0uD2gdk8N05l1bc0/rchHr9qYN7nxGWZGZESHZ5ytJZYuN83g5LI0tOeDooJhP2CYR5aiK4w7agA+PoVgzoRmsJ79kUvOidl1nmywGDiBxhtRr69GuPjc29n6IZJ3EoHW/k0siXN9gn3hKcpCsXa3fQhe/CnYN+3jdy3sRcE8g5M/5UGszwkS3JQLD+LEFYt/UOjFsZ8Qg03tu5KPBIRoyBz/xcxKwY7uzKboOCAOBmJudfwH9+4fK1lrdgjo4hex4y+sFvaF+W+QtcQ1QUbPhRp5lNQPkv31gFvWRqLEIoivyPUQ4iG/5UbiP1O7mqC2JZwg9Esx5INL/fJEpsl6UYJIrIPcNDwo+1Z9VAnKEv5KF/GPvy5+a6DPLlhM/5PZOueFgxtsSvCccinCIDRr8tLONT9DyWsbBzcU5+TLtXmGzpJj95ti3SqkuMaQhZ1RG4FFDKHIOAyhPK3blLd0GfSqGg6DaDgsdPyY8s+d+WROoRswNCsIivsvg/5LfXOzUb1vzqHzDL0tbkLGdAeZzDFXlDD8HcGL8z/BXgpMfM+dQ9Y+FLHCCBV/UtosHUXRqKlpZCT+rOtGgcWL2bi0Witm+WIJFYRxLjKhRwZiMEqFAimGQm7PQ0FwxCkqbCJf4a/g+wdYKeXtOBnv4EShMA10="
+  },
+  {
+    "product": "pdfHtml",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 4,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "hXW8nEJgpylEno0PtRxN1VmO/CLK4duzIdy+KxYDQfkiAKZblauo4TsJLgSSxgk/hrijEOW2p3k3eIuami6uX0UJGPe8f18qyzPluFjj1YDIggL/w1emYtPzF5vChuUVixtquqilh0CY2rEr84G73O8GsZRN9BfJzqS5MG6gB2DE/qB0UjShLeXsBnR7lYOOB+Zl6P8uva2iNXBUH+Mxa92NjOnuFTz7D9HmY1BLjA5CSvc58soqDYJoZamIojUH4MN7kszW1hFmGl9H7k0Roxhu20u54frevWFU+QXtUNMg7tufbW0I+/EMoT9kSflAjY6pKO5rdqf7a/PHxSVIobzvDyxiDseXL9N6mcG5HsyTo3xim+46o/nZIH/rUU+Bim9IV/ncBAlgA75j0ZX0c0JlZ3R3kS70g7PiJ/PHKPadfZU6kiNZVDQHi1fgw7TbVVPuSlL6r8FwsrRIgN9nNzsrB35nMqxX0CfiDlo/oslv1tFdr/lqSju+2Y+6FKoMppkntyWag6ZdKs13NCTfvsJaNdxCeU44dqUQ+Nl+J2hV1T3QPCeWj9GMjfSBhwNPj5gyiLksPJ8/hRFEkddoENZrmXSnITs645XYqSowDlvxgesqsabex2Xci7nARqcvmyu1V4zIyK1gOVgLdVGQcIsmA0C2anIgjNlbMV7YOrY="
+  },
+  {
+    "product": "pdfCalligraph",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 3,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "G03uJldYYNC55UG+Z1t+pNcNf5ogDmMqMPJwp4UlfTJEPbHd090QfhnXympLPzkkbm4n3/yWpwEfMMWCpw7OSttDERqck2yZ/1LlXIWkm3nugb3IwCJ5thx6s4FRe5ThwxBRt61FRO++y4klOwPtU6a1Sv9QX3fWivcF9Xl3Y3XRamXJ+kTQ0S20vEaM+vfQdrHPwV6rFxsnmGvhSbaTtJ7RYDtQougN7yOjzKyt950sRHJr9zupORW1JS3SKggbPddGcTqQnVOBvvB3l4/zLmQ5UJgond5FgV3+WinkqZEHi9rKOAF41YPlI1ix2xh78FCaUhJ6t7LrO1MRM1Qy6YvBQCeqcehCGMYh5fbJtB9TiwxewgK52eQgs4DFBuFHDbkCW+ghj1HXJA1wX+JS7F40TXXAAQweuQKdudvntOOxcza0Nm6UDms5CMc2LUkejhR3hjFJz1PINQwT+WQcGUFH4SJXArRMbOzsukgAGWmFtLkYsUX02+ccI2d/z2iXfPgbMJWEuJfvBURzCVy1s67724Sm2TTDaInmIdEEr3UVKK3OVdMq/BYjOnkr2VgcZu+pXLwoJDsph9QzT9zrp3hhKIRCSODXQAC0ObcY4LbtuVOmdYYf6F66xzDQcr1yXMonu9S+sbS2o+ojM1oVfZM63LuujRJO+frW3PqN9vE="
+  },
+  {
+    "product": "pdf2Data",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 3,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "WCIBz5+sok9Dx99ITlJub7ORyVtUa0pDLbBS1iSYCMwMjwyzfoh9+aNtIMS89zJgQ70ihmpiNJpOpOrtelJX6dLmNjmSnzFsaYEID6Q47yCkMzACMVfBvr7p7VLqCx5IE5c5GX5rpZ6jn5IVU7cSHuCLI3Qc3gpOxHgmIf/Pla6smdsQVX9QJEgtBx5lxNPnrCfsFLbtsqKX5rY/YKyEtCfeIZI7n5vEAEL1503lOkRl6/Q7WECLXtL/+5/Th8kbknxfYN8pymWvxuTDlPeeTyxD0OtNQd3fFnRuSJErVPdSXtKp5vxY60tf+hCLeMokjIB7SlN1CeE0PVpRgnlYVw9jCAXwjZ6tEjpvSuZIm/q6SXIU8WGKHnHxfRyq+w13t6L2/trVKmySoLyx/NE5J/RgTQTyp4zZD2OWu1uCnICICX1rZB4JRLEbFeSqcMlG3OcX7KM8YJcJrryuMq972caSaim4cc1LAzgkBnHcxT2lJc1bJOem5/U2TqPCJ7jGkKgfzUJmQimadxnEH+FUoEUWPVfJy+aBwCHwtCmUkxhNtfeZyxio9/kbTCIlHQMwDJd8c1MJBGhq09zNF3dyHqd1AjXPp0SOiq7HYq50xbFz4ramfOrkgQXPU8u/rJ/W7XNsPNcb9ABT/L+mgr9ZPTTiOoVhCtopBTqalNW8ZnQ="
+  },
+  {
+    "product": "pdfOffice",
+    "licensee": {
+      "company": "N/A",
+      "name": "Eric Johnson",
+      "email": "eric.m.johnson@state.mn.us"
+    },
+    "key": "427ae70b7ca97805a8ad4fb86a97fdb5fd035606bbbd948db4ba1adb1d6f9842",
+    "creationDate": "2022-02-15",
+    "expirationDate": "2022-03-15",
+    "onExpiration": "grace",
+    "gracePeriod": "1d0h0m",
+    "platform": "any",
+    "licenseType": "trial",
+    "productVersion": {
+      "major": 2,
+      "minor": 0
+    },
+    "limits": {
+      "default": {
+        "limitType": "unlimited",
+        "sendEvents": false
+      }
+    },
+    "licenseVersion": "1.0.0",
+    "sendStatistics": "disabled",
+    "signature": "cyzc2/jTERJGVB8+ni0eaWKuztXZ5tiC8zQgJcy53lBKnPSmTeCeDU1xVwWOcIiKXBSJ8dyp6LKXMgrGnclyGGKxFCTyoxiVJPk7BnrsXxP7qnflsRmFmKNFkqg/0kIwzL2URKiGS75pHlEXA2pCsIv0GAlrXcuKALzKGUgBsoB+XmSGNbTI8zpIPnGAPLfVp0ucTNbsGvB0vW55Z8tZftLxESXmrYa+LEFTzJsAKt09Sng2E4HdFbnxAhDyFuT6unwqUhenIlbLuWe+V6oDv4V6LBRinFJihN8RNVs+j1P41XgenNPSnfbFibRoyzU3bygMTmdnrL4+h0VK9ekNVzjVy86xYgf8ksZjzJL1h8lamRT8LYOlf5BtXXiePUGfc12gN9Tm5lBGTlh/w9YBOqXO33B1okf3DVYm8K29HYjClhIWtYDc+sJcdHfMLM7tEIeEz36JGsyrWtrpae3WEa7PeHmiwolUloEPzHTdfVy8PxoUntFDFQtIBFJdIMcCMt8onfr983PoGFB/PkIMxhptXf5EZJoC7h+fh45ptzk2QE931ntNZ5D2t7WH+1mlgGZneg9AYspX4HvN9/GpfXsmYOAI/zAmxCAgMnmW9K1TM2TLkJ/ZoIYwx02XbnnoVDN4VTmtAIVLpkr6DNWa0ymBgaJvMdOJd2V7Ch5ZsNQ="
+  }
+]

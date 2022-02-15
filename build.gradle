@@ -23,6 +23,9 @@ configurations {
 
 repositories {
     mavenCentral()
+        maven {
+        url "https://repo.itextsupport.com/list/releases"
+    }
 }
 
 task genJaxbFilenet {
@@ -102,6 +105,16 @@ dependencies {
         exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
     }
 
+
+// https://mvnrepository.com/artifact/com.itextpdf.licensing/licensing-base
+implementation("com.itextpdf.licensing:licensing-base:4.0.1")
+// https://mvnrepository.com/artifact/com.itextpdf.licensing/licensing-root
+//implementation("com.itextpdf.licensing:licensing-root:4.0.1")
+// https://mvnrepository.com/artifact/com.itextpdf.licensing/licensing-remote
+//implementation("com.itextpdf.licensing:licensing-remote:4.0.1")
+
+
+    implementation("com.itextpdf:itext7-core:7.2.1")
     implementation("com.azure:azure-storage-blob:12.14.4")
     implementation("org.postgresql:postgresql")
     implementation("org.glassfish.jaxb:jaxb-runtime")
