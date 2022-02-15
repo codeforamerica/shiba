@@ -3,6 +3,7 @@ package org.codeforamerica.shiba;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
@@ -106,10 +107,10 @@ public class ResubmissionService {
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
-  public void resubmitInProgressApplicationsViaEsb() {
+  public void resubmitInProgressAndSendingApplicationsViaEsb() {
     log.info("Checking for applications that are stuck in progress");
 
-    List<Application> applicationsStuckInProgress = applicationRepository.findApplicationsStuckInProgress();
+    List<Application> applicationsStuckInProgress = applicationRepository.findApplicationsStuckInProgressAndSending();
     log.info(
         "Resubmitting " + applicationsStuckInProgress.size() + " applications stuck in_progress");
 
@@ -120,7 +121,7 @@ public class ResubmissionService {
       log.info("Retriggering submission for application with id " + id);
 
       List<Document> inProgressDocs = application.getDocumentStatuses().stream()
-          .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS) &&
+          .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS) || documentStatus.getStatus().equals(SENDING) &&
               List.of(CAF, CCAP, CERTAIN_POPS, UPLOADED_DOC).contains(documentStatus.getDocumentType())).map(
                   DocumentStatus::getDocumentType
           ).collect(Collectors.toList());

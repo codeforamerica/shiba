@@ -46,11 +46,11 @@ class AppsStuckInProgressResubmissionTest {
   void itTriggersAnEventFor5AppsStuckInProgress() {
     // Only the first 5 of these should be resubmitted.
     for (int i = 0; i < 6; i++) {
-      makeApplicationThatShouldBeResubmitted(i);
+      makeApplicationThatShouldBeResubmitted(i, Status.IN_PROGRESS);
     }
 
     // actually try to resubmit it
-    resubmissionService.resubmitInProgressApplicationsViaEsb();
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     // make sure that the first 5 applications had an applicationSubmittedEvent triggered
     for (int i = 0; i < 5; i++) {
@@ -72,13 +72,33 @@ class AppsStuckInProgressResubmissionTest {
   }
 
   @Test
+  void itTriggersAnEventFor5AppsStuckSending() {
+    // Only the first 5 of these should be resubmitted.
+    for (int i = 10; i < 16; i++) {
+      makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
+    }
+
+    // actually try to resubmit it
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
+
+    // make sure that the first 5 applications had an applicationSubmittedEvent triggered
+    for (int i = 10; i < 15; i++) {
+      verify(pageEventPublisher).publish(
+          new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
+              LocaleContextHolder.getLocale()));
+      verify(pageEventPublisher).publish(
+          new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(i),
+              LocaleContextHolder.getLocale()));
+    }
+  }
+  @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
+    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1, Status.IN_PROGRESS);
     String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
     String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
 
     // actually try to resubmit it
-    resubmissionService.resubmitInProgressApplicationsViaEsb();
+    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     verify(pageEventPublisher).publish(
         new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
@@ -105,7 +125,7 @@ class AppsStuckInProgressResubmissionTest {
   }
 
   @NotNull
-  private String makeApplicationThatShouldBeResubmitted(int id) {
+  private String makeApplicationThatShouldBeResubmitted(int id, Status status) {
     String applicationId = String.valueOf(id);
 
     ApplicationData applicationData = new ApplicationData();
@@ -132,13 +152,13 @@ class AppsStuckInProgressResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        Status.IN_PROGRESS);
+        status);
 
     documentStatusRepository.createOrUpdate(
         applicationId,
         Document.UPLOADED_DOC,
         "Anoka",
-        Status.IN_PROGRESS);
+        status);
 
     return applicationId;
   }
