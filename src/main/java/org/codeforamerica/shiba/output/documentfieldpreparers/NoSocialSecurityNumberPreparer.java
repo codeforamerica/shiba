@@ -17,18 +17,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class NoSocialSecurityNumberPreparer implements DocumentFieldPreparer {
 
-	@Override
-	public List<DocumentField> prepareDocumentFields(Application application, Document document, Recipient recipient) {
-	    PagesData pagesData = application.getApplicationData().getPagesData();
-	    String firstValue = getFirstValue(pagesData, PERSONAL_INFO_NO_SSN);
-	    String ssn = getFirstValue(pagesData, PERSONAL_INFO_SSN);
-	    if (firstValue == null && ssn.isBlank()) {//checkbox not selected and ssn is blank
-	    	return List.of(); //do not check either radio button
-	    }else if(firstValue == null) {
-	    	return List.of(new DocumentField("personalInfo", "noSSNCheck", "true", SINGLE_VALUE));//yes radio button
-	    }else {
-	    	return List.of(new DocumentField("personalInfo", "noSSNCheck", "false", SINGLE_VALUE));//no radio button
-	    }
-	}
+    @Override
+    public List<DocumentField> prepareDocumentFields(Application application, Document document, Recipient recipient) {
+        PagesData pagesData = application.getApplicationData().getPagesData();
+        String noSSNCheckbox = getFirstValue(pagesData, PERSONAL_INFO_NO_SSN);
+        String ssn = getFirstValue(pagesData, PERSONAL_INFO_SSN);
+        if (noSSNCheckbox == null && (ssn == null || ssn.isBlank())) { //checkbox not selected and ssn is blank
+            return List.of(); //do not check either radio button
+        } else if (noSSNCheckbox == null) {
+            return List.of(new DocumentField("personalInfo", "noSSNCheck", "true", SINGLE_VALUE)); // yes radio button
+        } else {
+            return List.of(new DocumentField("personalInfo", "noSSNCheck", "false", SINGLE_VALUE)); // no radio button
+        }
+    }
 
 }
