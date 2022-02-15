@@ -263,7 +263,7 @@ public class FileDownloadController {
   }
 
   /**
-   * Builds & returns a response the will cause a redirect to the landing page. 
+   * Builds & returns a response that will cause a redirect to the landing page.
    * @return
    */
   private ResponseEntity<byte[]> createRootPageResponse() {
