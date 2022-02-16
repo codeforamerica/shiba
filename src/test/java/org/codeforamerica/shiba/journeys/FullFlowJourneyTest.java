@@ -420,7 +420,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
         "Your application was submitted to Hennepin County (612-596-1300) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) on January 1, 2020.");
-    applicationId = downloadPdfs(true, true);
+    applicationId = downloadPdfs();
 
     // CCAP fields
     assertCcapFieldEquals("APPLICATION_ID", applicationId);
