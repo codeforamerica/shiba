@@ -22,6 +22,7 @@ import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.slf4j.MDC;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -94,12 +95,10 @@ public class FileDownloadController {
       getApplicationDocuments(applicationId, application, applicationFiles, CASEWORKER);
 
       return createZipFileFromApplications(applicationFiles, applicationId);
-    } catch(Exception e) {
-      log.info("This exception was thrown: " + e);
-      return createRootPageResponse();
-
+    } catch(EmptyResultDataAccessException e) {
+      log.info(NOT_FOUND_MESSAGE);
+      return ResponseEntity.ok().body(NOT_FOUND_MESSAGE.getBytes());
     }
-
   }
 
   private void getApplicationDocuments(String applicationId, Application application,
@@ -124,11 +123,12 @@ public class FileDownloadController {
     }
 
     List<UploadedDocument> uploadedDocs = application.getApplicationData().getUploadedDocs();
+    byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     if(null !=uploadedDocs) {
       for (int i = 0; i < uploadedDocs.size(); i++) {
         UploadedDocument uploadedDocument = uploadedDocs.get(i);
         ApplicationFile fileToSend = pdfGenerator
-            .generateForUploadedDocument(uploadedDocument, i, application, null);
+            .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
 
         if (null != fileToSend && fileToSend.getFileBytes().length > 0) {
           applicationFiles.add(fileToSend);
