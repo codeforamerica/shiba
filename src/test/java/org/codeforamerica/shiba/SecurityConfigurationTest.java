@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba;
 
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -98,5 +100,36 @@ class SecurityConfigurationTest {
         .andExpect(status().is2xxSuccessful())
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
         String.format("filename=\"%s\"", "MNB_application_" + applicationId + ".zip")));
+  }
+
+  @Test
+  void shouldNotifyForIncompleteApplication() throws Exception {
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId("9870000123");
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of("test@example.com"),
+            "phoneOrEmail", List.of("EMAIL")))
+        .withPageData("employmentStatus", "areYouWorking", "true")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
+
+    Application application = Application.builder()
+        .id("9870000123")
+        .completedAt(null)
+        .applicationData(applicationData)
+        .county(null)
+        .timeToComplete(null)
+        .build();
+    when(applicationRepository.find("9870000123")).thenReturn(application);
+
+    String responseContent = mockMvc.perform(get("/download/9870000123")
+        .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL))))
+        .andExpect(status().is2xxSuccessful())
+        .andReturn()
+        .getResponse().getContentAsString();
+
+    assertThat(responseContent).isEqualTo(
+        "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.");
   }
 }

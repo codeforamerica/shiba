@@ -10,6 +10,8 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -26,9 +28,11 @@ import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.DocumentStatus;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +77,7 @@ class FileDownloadControllerTest {
   }
 
   @Test
-  void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
+  void shouldGenerateExpectedPdfsOnDownload() throws Exception {
     when(pdfGenerator.generate(anyString(), any(), any()))
         .thenReturn(new ApplicationFile("Test".getBytes(), "Test"));
 
@@ -116,5 +120,51 @@ class FileDownloadControllerTest {
 
     verify(xmlGenerator).generate(applicationData.getId(), CAF, CLIENT);
     assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(fileBytes);
+  }
+
+  @Test
+  void shouldReturnDocumentsForApplicationId() throws Exception {
+    var image = getFileContentsAsByteArray("shiba+file.jpg");
+    var applicationId = "9870000123";
+    ApplicationFile imageFile = new ApplicationFile(image, "");
+    UploadedDocument uploadedDoc = new UploadedDocument("shiba+file.jpg", "", "", "", image.length);
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId(applicationId);
+    applicationData.setUploadedDocs(List.of(uploadedDoc));
+    applicationData.setFlow(FlowType.LATER_DOCS);
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .flow(FlowType.LATER_DOCS)
+        .build();
+    mockMvc = MockMvcBuilders.standaloneSetup(
+            new FileDownloadController(
+                xmlGenerator,
+                pdfGenerator,
+                applicationData,
+                applicationRepository))
+        .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
+        .build();
+
+    when(applicationRepository.find(applicationId)).thenReturn(
+        application
+    );
+    when(pdfGenerator.generateCoverPageForUploadedDocs(any(Application.class)))
+        .thenReturn(imageFile.getFileBytes());
+    when(pdfGenerator
+        .generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class),
+            any())).thenReturn(imageFile);
+    MvcResult result = mockMvc.perform(
+            get("/download"))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "filename=\"MNB_application_9870000123.zip\""))
+        .andExpect(status().is2xxSuccessful())
+        .andReturn();
+
+    verify(pdfGenerator).generateCoverPageForUploadedDocs(application);
+    verify(pdfGenerator)
+        .generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
+
+    byte[] actualBytes = result.getResponse().getContentAsByteArray();
+
+    assertThat(actualBytes).hasSizeGreaterThan(22);
   }
 }

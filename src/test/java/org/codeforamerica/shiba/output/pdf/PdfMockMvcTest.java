@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.output.pdf;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.caf.CoverPagePreparer.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldIsEmpty;
@@ -60,7 +62,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     postToUrlExpectingSuccess("/submit", "/pages/signThisApplication/navigation",
         Map.of("applicantSignature", List.of("aЕкатерина")));
-    var caf = downloadCaf();
+    var caf = downloadCafClientPDF();
 
     assertPdfFieldEquals("APPLICANT_SIGNATURE", "aЕкатерина", caf);
   }
@@ -310,7 +312,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       var caf = submitAndDownloadCaf();
       assertPdfFieldEquals("SELF_EMPLOYED", "No", caf);
 
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYERS_NAME_0", "someEmployerName", ccap);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", ccap);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "4.00", ccap);
@@ -335,7 +337,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       List.of(caf, ccap).forEach(pdf -> {
         assertPdfFieldEquals("APPLICANT_HOME_STREET_ADDRESS", enrichedStreetValue, pdf);
@@ -354,7 +356,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       addFirstJob(jim, "someEmployerName");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("EMPLOYEE_FULL_NAME_0", "Jim Halpert", caf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", "Jim Halpert", ccap);
@@ -383,7 +385,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("lastThirtyDaysJobIncome", "lastThirtyDaysJobIncome", "");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("GROSS_MONTHLY_INCOME_0", "123.00", caf);
       assertPdfFieldEquals("MONEY_MADE_LAST_MONTH", "123.00", caf);
@@ -400,7 +402,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("livingSituation", "livingSituation", "UNKNOWN");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", caf);
       assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", ccap);
@@ -413,7 +415,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postWithoutData("livingSituation");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", caf);
       assertPdfFieldEquals("LIVING_SITUATION", "UNKNOWN", ccap);
@@ -426,7 +428,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
       assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
@@ -520,7 +522,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS");
 
       var caf = submitAndDownloadCaf();
-      var ccap = downloadCcap();
+      var ccap = downloadCcapClientPDF();
 
       assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", ccap);
       assertPdfFieldEquals("LIVING_SITUATION", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY", caf);
@@ -571,7 +573,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             "startExpenses");
 
         var caf = submitAndDownloadCaf();
-        var ccap = downloadCcap();
+        var ccap = downloadCcapClientPDF();
         List.of(caf, ccap).forEach(pdf -> {
           assertPdfFieldEquals("ADDITIONAL_INCOME_INFO", additionalIncomeInfo, pdf);
           assertPdfFieldEquals("ADDITIONAL_INCOME_INFO", additionalIncomeInfo, pdf);
@@ -635,7 +637,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyHomeAddress", "useEnrichedAddress", "true");
 
         var caf = submitAndDownloadCaf();
-        var ccap = downloadCcap();
+        var ccap = downloadCcapClientPDF();
         List.of(caf, ccap).forEach(pdf -> {
           assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", enrichedStreetValue, pdf);
           assertPdfFieldEquals("APPLICANT_MAILING_CITY", enrichedCityValue, pdf);
@@ -667,7 +669,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
 
         var caf = submitAndDownloadCaf();
-        var ccap = downloadCcap();
+        var ccap = downloadCcapClientPDF();
         List.of(caf, ccap).forEach(pdf -> {
           assertPdfFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", originalStreetAddress, pdf);
           assertPdfFieldEquals("APPLICANT_MAILING_CITY", originalCity, pdf);
@@ -709,7 +711,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       completeHelperWorkflow(true);
 
       submitApplication();
-      var pdf = downloadCertainPops(applicationData.getId());
+      var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
       // Assert that cover page is present
       assertPdfFieldEquals("PROGRAMS", "CERTAIN_POPS", pdf);
@@ -785,10 +787,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "certainPopsOffboarding");
 
       submitApplication();
-      var pdf = downloadCertainPops(applicationData.getId());
+      var zippedFiles = downloadAllClientPDFs();
       var caf = submitAndDownloadCaf();
 
-      assertPdfFieldEquals("PROGRAMS", "SNAP", pdf);
+      assertThat(zippedFiles.stream().noneMatch(file -> getDocumentType(file).equals(CERTAIN_POPS))).isEqualTo(true);
       assertPdfFieldEquals("PROGRAMS", "SNAP", caf);
     }
 
