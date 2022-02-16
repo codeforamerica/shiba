@@ -148,6 +148,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Test
   void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() throws Exception {
+    selectPrograms("CCAP");
     fillInRequiredPages();
     postExpectingSuccess("unearnedIncomeCcap", "unearnedIncomeCcap",
         "NO_UNEARNED_INCOME_CCAP_SELECTED");
@@ -557,7 +558,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       @Test
       void shouldUseAdditionalIncomeInfoAsFutureIncomeWhenIncomeIs0() throws Exception {
-        selectPrograms(Program.CCAP);
+        selectPrograms("CASH", Program.CCAP);
         postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
         postExpectingSuccess("employmentStatus", "areYouWorking", "false");
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",

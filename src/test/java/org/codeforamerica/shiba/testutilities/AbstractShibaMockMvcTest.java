@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.testutilities;
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.CCAP;
+import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
@@ -302,24 +304,32 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCcap() throws Exception {
-    var ccapBytes = mockMvc.perform(get("/download-ccap")
+    var zipBytes = mockMvc.perform(get("/download")
             .with(oauth2Login()
                 .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
             .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();
-    return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipBytes);
+    ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
+    List<File> zippedFiles = unzip(zipFile);
+    File ccapFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CCAP)).toList().get(0);
+    return PDDocument.load(FileUtils.readFileToByteArray(ccapFile)).getDocumentCatalog().getAcroForm();
   }
 
   protected PDAcroForm downloadCertainPops(String applicationId) throws Exception {
-    var ccapBytes = mockMvc.perform(get("/download-certain-pops/" + applicationId)
+    var zipBytes = mockMvc.perform(get("/download/" + applicationId)
             .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
             .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();
-    return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipBytes);
+    ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
+    List<File> zippedFiles = unzip(zipFile);
+    File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CERTAIN_POPS)).toList().get(0);
+    return PDDocument.load(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
   }
 
   private Document getDocumentType(File file) {
@@ -328,6 +338,8 @@ public class AbstractShibaMockMvcTest {
       return Document.CAF;
     } else if (fileName.contains("_CCAP")) {
       return Document.CCAP;
+    } else if (fileName.contains("_CERTAIN_POPS")) {
+      return Document.CERTAIN_POPS;
     } else {
       return Document.CAF;
     }
@@ -339,7 +351,6 @@ public class AbstractShibaMockMvcTest {
       ZipEntry zEntry = null;
       Path destination = Files.createTempDirectory("");
       while ((zEntry = zipStream.getNextEntry()) != null) {
-        if (zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP")) {
           if (!zEntry.isDirectory()) {
             File files = new File(String.valueOf(destination), zEntry.getName());
             FileOutputStream fout = new FileOutputStream(files);
@@ -354,7 +365,6 @@ public class AbstractShibaMockMvcTest {
             fout.close();
             fileList.add(files);
           }
-        }
       }
       zipStream.close();//This will delete zip folder after extraction
     } catch (Exception e) {
