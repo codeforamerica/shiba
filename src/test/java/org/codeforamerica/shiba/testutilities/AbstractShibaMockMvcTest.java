@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.testutilities;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.testutilities.TestUtils.ADMIN_EMAIL;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
@@ -19,14 +20,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.assertj.core.api.Assertions;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
@@ -270,14 +287,18 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCaf() throws Exception {
-    var cafBytes = mockMvc.perform(get("/download-caf")
+    var zipBytes = mockMvc.perform(get("/download")
             .with(oauth2Login()
                 .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
             .session(session))
         .andReturn()
         .getResponse()
         .getContentAsByteArray();
-    return PDDocument.load(cafBytes).getDocumentCatalog().getAcroForm();
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipBytes);
+    ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
+    List<File> zippedFiles = unzip(zipFile);
+    File cafFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CAF)).toList().get(0);
+    return PDDocument.load(FileUtils.readFileToByteArray(cafFile)).getDocumentCatalog().getAcroForm();
   }
 
   protected PDAcroForm downloadCcap() throws Exception {
@@ -299,6 +320,48 @@ public class AbstractShibaMockMvcTest {
         .getResponse()
         .getContentAsByteArray();
     return PDDocument.load(ccapBytes).getDocumentCatalog().getAcroForm();
+  }
+
+  private Document getDocumentType(File file) {
+    String fileName = file.getName();
+    if (fileName.contains("_CAF")) {
+      return Document.CAF;
+    } else if (fileName.contains("_CCAP")) {
+      return Document.CCAP;
+    } else {
+      return Document.CAF;
+    }
+  }
+
+  protected List<File> unzip(ZipInputStream zipStream) {
+    List<File> fileList = new ArrayList<File>();
+    try {
+      ZipEntry zEntry = null;
+      Path destination = Files.createTempDirectory("");
+      while ((zEntry = zipStream.getNextEntry()) != null) {
+        if (zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP")) {
+          if (!zEntry.isDirectory()) {
+            File files = new File(String.valueOf(destination), zEntry.getName());
+            FileOutputStream fout = new FileOutputStream(files);
+            BufferedOutputStream bufout = new BufferedOutputStream(fout);
+            byte[] buffer = new byte[1024];
+            int read = 0;
+            while ((read = zipStream.read(buffer)) != -1) {
+              bufout.write(buffer, 0, read);
+            }
+            zipStream.closeEntry();//This will delete zip folder after extraction
+            bufout.close();
+            fout.close();
+            fileList.add(files);
+          }
+        }
+      }
+      zipStream.close();//This will delete zip folder after extraction
+    } catch (Exception e) {
+      System.out.println("Unzipping failed");
+      e.printStackTrace();
+    }
+    return fileList;
   }
 
   protected void fillInRequiredPages() throws Exception {

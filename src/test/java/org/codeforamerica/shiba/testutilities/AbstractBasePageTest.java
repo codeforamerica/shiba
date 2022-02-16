@@ -64,8 +64,10 @@ public abstract class AbstractBasePageTest {
 
   @Autowired
   protected RemoteWebDriver driver;
+
   @Autowired
   protected Path path;
+
   protected String baseUrl;
 
   @LocalServerPort

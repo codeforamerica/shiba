@@ -8,13 +8,10 @@ import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
-import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,11 +26,9 @@ import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.DocumentStatus;
-import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,7 +91,7 @@ class FileDownloadControllerTest {
     ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
     when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(applicationFile);
 
-    MvcResult result = mockMvc.perform(get("/download"))
+    mockMvc.perform(get("/download"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header()
