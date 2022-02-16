@@ -8,8 +8,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
@@ -51,11 +49,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
-
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.licensing.base.LicenseKey;
 
 @Controller
 @Slf4j
@@ -612,7 +605,7 @@ public class PageController {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
       documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
-System.out.println("========== PageController upload doc type = " + type);
+
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
         if (type.contains("pdf")) {
@@ -629,21 +622,6 @@ System.out.println("========== PageController upload doc type = " + type);
                 lms.getMessage("upload-documents.this-pdf-is-password-protected"),
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
-        }else if(type.contains("msword")) {
-        	LicenseKey.loadLicenseFile(new File("C:/Users/pwemj35/GitRepo/shiba/src/main/resources/itextLicense.json"));
-      	    PdfDocument pdf = null;
-    			try {
-    				pdf = new PdfDocument(new PdfWriter("C:/Users/pwemj35/temp/itextText.pdf"));
-    			} catch (FileNotFoundException e) {
-    				// TODO Auto-generated catch block
-    				e.printStackTrace();
-    			}
-      	    com.itextpdf.layout.Document document = new com.itextpdf.layout.Document(pdf);
-      	    String line = "Hello! Welcome to iTextPdf";
-      	    document.add(new Paragraph(line));
-      	    document.close();
-
-      	    System.out.println("Awesome PDF just got created.");
         }
 
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
@@ -655,7 +633,6 @@ System.out.println("========== PageController upload doc type = " + type);
 
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
-    	e.printStackTrace();
       // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(
           lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),

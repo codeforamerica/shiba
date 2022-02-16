@@ -1,10 +1,14 @@
 package org.codeforamerica.shiba;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -33,4 +37,10 @@ public class Utils {
       log.error("Error while attempting to write byte array to file: " + filename, e);
     }
   }
+  
+  public static File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
+	    File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
+	    multipart.transferTo(convFile);
+	    return convFile;
+	}
 }

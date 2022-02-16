@@ -3,8 +3,12 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -35,19 +39,23 @@ public class PdfGenerator implements FileGenerator {
 
   private static final List<String> IMAGE_TYPES_TO_CONVERT_TO_PDF = List
       .of("jpg", "jpeg", "png", "gif");
+  private static final List<String> DOC_TYPES_TO_CONVERT_TO_PDF = List
+	      .of("doc", "docx");
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
+  private final PDFWordConverter pdfWordConverter;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
-      FilenameGenerator fileNameGenerator
+      FilenameGenerator fileNameGenerator,
+      PDFWordConverter pdfWordConverter
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
@@ -55,6 +63,7 @@ public class PdfGenerator implements FileGenerator {
     this.documentRepository = documentRepository;
     this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
+    this.pdfWordConverter = pdfWordConverter;
   }
 
   @Override
@@ -95,17 +104,32 @@ public class PdfGenerator implements FileGenerator {
     var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
-      if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-        try {
-          fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
-          extension = "pdf";
-        } catch (IOException e) {
-          log.error("failed to convert document " + uploadedDocument.getFilename()
-                    + " to pdf. Maintaining original type");
-        }
-      } else if (!extension.equals("pdf")) {
-        log.warn("Unsupported file-type: " + extension);
-      }
+		if (DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+			System.out.println("========== generateForUploadedDocument ==========");
+			//byte[] cloned = fileBytes.clone();
+			//InputStream inputStream = new ByteArrayInputStream(fileBytes);
+			File tempFile;
+			try {
+				tempFile = File.createTempFile("temp", "pdf", null);
+			FileOutputStream fos = new FileOutputStream(tempFile);
+			fos.write(fileBytes);
+			fileBytes = pdfWordConverter.convertWordDocToPDFwithFiles(tempFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		} else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+			try {
+				fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
+				extension = "pdf";
+			} catch (IOException e) {
+				log.error("failed to convert document " + uploadedDocument.getFilename()
+						+ " to pdf. Maintaining original type");
+			}
+		} else if (!extension.equals("pdf")) {
+			log.warn("Unsupported file-type: " + extension);
+		}
 
       if (extension.equals("pdf")) {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);

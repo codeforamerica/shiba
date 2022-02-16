@@ -113,6 +113,7 @@ implementation("com.itextpdf.licensing:licensing-base:4.0.1")
 // https://mvnrepository.com/artifact/com.itextpdf.licensing/licensing-remote
 //implementation("com.itextpdf.licensing:licensing-remote:4.0.1")
 
+ implementation("com.itextpdf:pdfoffice:2.0.1")
 
     implementation("com.itextpdf:itext7-core:7.2.1")
     implementation("com.azure:azure-storage-blob:12.14.4")
