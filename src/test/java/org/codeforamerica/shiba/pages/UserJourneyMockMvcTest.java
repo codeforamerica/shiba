@@ -5,6 +5,8 @@ import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEqu
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +16,8 @@ import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.MvcResult;
 
 public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
@@ -86,16 +90,10 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
   void partialFlow() throws Exception {
     getToDocumentUploadScreen();
     completeDocumentUploadFlow();
-
     FormPage page = new FormPage(getPage("success"));
-    assertThat(page.getLinksContainingText("Emergency Application")).hasSizeGreaterThan(0);
-    assertThat(page.getLinksContainingText("Emergency Application").get(0).attr("href"))
+    assertThat(page.getLinksContainingText("Download your application")).hasSizeGreaterThan(0);
+    assertThat(page.getLinksContainingText("Download your application").get(0).attr("href"))
         .isEqualTo("/download");
-
-    PDAcroForm caf = this.downloadCaf();
-    assertPdfFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
-    assertPdfFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH", caf);
-    assertPdfFieldEquals("NEED_INTERPRETER", "Off", caf);
   }
 
   @Test

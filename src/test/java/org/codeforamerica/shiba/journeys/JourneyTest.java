@@ -99,9 +99,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     TestUtils.assertPdfFieldEquals(fieldName, expectedVal, ccap);
   }
 
-  protected String signApplicationAndDownloadPdfs(String signature,
-      boolean shouldHaveCafDownloadLink,
-      boolean shouldHaveCcapDownloadLink) {
+  protected String signApplicationAndDownloadApplicationZipFiles(String signature) {
     testPage.enter("applicantSignature", signature);
     testPage.clickButton("Submit");
     testPage.clickContinue();
@@ -113,26 +111,27 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
     // Next steps screen
     testPage.clickContinue();
-    return downloadPdfs(shouldHaveCafDownloadLink, shouldHaveCcapDownloadLink);
+    return downloadPdfs();
   }
 
-  protected String downloadPdfs(boolean shouldHaveCafDownloadLink,
-      boolean shouldHaveCcapDownloadLink) {
+  protected String downloadPdfs() {
     // Download CAF
     SuccessPage successPage = new SuccessPage(driver);
-    assertThat(successPage.CAFdownloadPresent()).isEqualTo(shouldHaveCafDownloadLink);
-    assertThat(successPage.CCAPdownloadPresent()).isEqualTo(shouldHaveCcapDownloadLink);
-    successPage.downloadPdfs();
-    await().until(pdfDownloadCompletes(successPage));
-    var pdfs = getAllFiles();
-    caf = pdfs.getOrDefault(CAF, null);
-    ccap = pdfs.getOrDefault(CCAP, null);
+    successPage.downloadPdfZipFile();
+    await().until(zipDownloadCompletes(successPage));
+    unzipFiles();
+     var pdfs = getAllFiles(); 
+     caf = pdfs.getOrDefault(CAF, null); 
+     ccap = pdfs.getOrDefault(CCAP,null);
+     
     return getApplicationId();
   }
 
   private String getApplicationId() {
     // Retrieves the application id from the filename of a downloaded PDF
     return Arrays.stream(Objects.requireNonNull(path.toFile().listFiles()))
+        .filter(file -> file.getName().endsWith(".pdf"))
+        .sorted((f1,f2)-> Long.compare(f2.lastModified(), f1.lastModified()))
         .map(File::getName)
         .findFirst()
         .orElseThrow()
@@ -140,8 +139,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
   }
 
   @NotNull
-  protected Callable<Boolean> pdfDownloadCompletes(SuccessPage successPage) {
-    return () -> getAllFiles().size() == successPage.pdfDownloadLinks();
+  protected Callable<Boolean> zipDownloadCompletes(SuccessPage successPage) {
+       return () -> getZipFile().size() == successPage.countDownloadLinks();
   }
 
   protected void getToHomeAddress(String county, List<String> programSelections) {

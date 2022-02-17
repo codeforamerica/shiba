@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static final List<String> ADMIN_EMAILS = List.of(
       "ashukla@codeforamerica.org",
+      "agonzalez@codeforamerica.org",
       "axie@codeforamerica.org",
       "bcalegari@codeforamerica.org",
       "bgarcia@codeforamerica.org",
@@ -50,10 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests(r ->
             r.antMatchers(
-                    "/download-caf/??????????",
-                    "/download-ccap/??????????",
-                    "/download-certain-pops/??????????",
-                    "/download-docs/??????????",
+                    "/download/??????????",
                     "/resend-confirmation-email/??????????")
                 .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
         .oauth2Login();

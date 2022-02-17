@@ -1,16 +1,19 @@
 package org.codeforamerica.shiba.output;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.Program.CASH;
+import static org.codeforamerica.shiba.Program.EA;
+import static org.codeforamerica.shiba.Program.GRH;
+import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +33,7 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -52,8 +56,12 @@ class FileDownloadControllerTest {
   void setUp() {
     applicationData = new ApplicationData();
     applicationData.setId("some-app-id");
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH, GRH, EA))
+        .build());
     application = Application.builder()
         .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
         .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED)))
         .build();
     mockMvc = MockMvcBuilders.standaloneSetup(
@@ -64,13 +72,14 @@ class FileDownloadControllerTest {
                 applicationRepository))
         .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
         .build();
+    when(applicationRepository.find(any())).thenReturn(application);
 
   }
 
   @Test
-  void shouldPassScreensToServiceToGeneratePdfFile() throws Exception {
+  void shouldGenerateExpectedPdfsOnDownload() throws Exception {
     when(pdfGenerator.generate(anyString(), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
+        .thenReturn(new ApplicationFile("Test".getBytes(), "Test"));
 
     mockMvc.perform(
             get("/download"))
@@ -80,72 +89,18 @@ class FileDownloadControllerTest {
   }
 
   @Test
-  void shouldAcceptApplicationIdToGeneratePdfFile() throws Exception {
-    application.setDocumentStatuses(List.of(new DocumentStatus("9870000123", CAF, "", DELIVERED)));
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-    when(pdfGenerator.generate(eq(application), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful());
-
-    verify(pdfGenerator).generate(application, CAF, CASEWORKER);
-  }
-
-  @Test
-  void shouldAcceptApplicationIdToGenerateCCAPPdfFile() throws Exception {
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-    when(pdfGenerator.generate(eq(application), any(), any()))
-        .thenReturn(new ApplicationFile("".getBytes(), ""));
-
-    mockMvc.perform(get("/download-ccap/9870000123"))
-        .andExpect(status().is2xxSuccessful());
-
-    verify(pdfGenerator).generate(application, CCAP, CASEWORKER);
-  }
-
-  @Test
-  void shouldNotifyForNonCAFApplication() throws Exception {
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-
-    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn()
-        .getResponse().getContentAsString();
-
-    assertThat(responseContent).isEqualTo(
-        "Could not find a CAF application with this ID for download");
-  }
-
-  @Test
-  void shouldNotifyForIncompleteApplication() throws Exception {
-    application.setCompletedAt(null);
-    when(applicationRepository.find("9870000123")).thenReturn(application);
-
-    String responseContent = mockMvc.perform(get("/download-caf/9870000123"))
-        .andExpect(status().is2xxSuccessful())
-        .andReturn()
-        .getResponse().getContentAsString();
-
-    assertThat(responseContent).isEqualTo(
-        "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.");
-  }
-
-  @Test
-  void shouldReturnTheGeneratedPdf() throws Exception {
+  void shouldReturnTheGeneratedZip() throws Exception {
     byte[] pdfBytes = "here is the pdf".getBytes();
     String fileName = "filename.pdf";
     ApplicationFile applicationFile = new ApplicationFile(pdfBytes, fileName);
     when(pdfGenerator.generate(anyString(), any(), any())).thenReturn(applicationFile);
 
-    MvcResult result = mockMvc.perform(get("/download"))
+    mockMvc.perform(get("/download"))
         .andExpect(status().is2xxSuccessful())
         .andExpect(content().contentType(APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header()
-            .string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"%s\"", fileName)))
+            .string(HttpHeaders.CONTENT_DISPOSITION, String.format("filename=\"MNB_application_%s.zip\"", applicationData.getId())))
         .andReturn();
-
-    assertThat(result.getResponse().getContentAsByteArray()).isEqualTo(pdfBytes);
   }
 
   @Test
@@ -181,6 +136,14 @@ class FileDownloadControllerTest {
         .applicationData(applicationData)
         .flow(FlowType.LATER_DOCS)
         .build();
+    mockMvc = MockMvcBuilders.standaloneSetup(
+            new FileDownloadController(
+                xmlGenerator,
+                pdfGenerator,
+                applicationData,
+                applicationRepository))
+        .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
+        .build();
 
     when(applicationRepository.find(applicationId)).thenReturn(
         application
@@ -191,9 +154,8 @@ class FileDownloadControllerTest {
         .generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class),
             any())).thenReturn(imageFile);
     MvcResult result = mockMvc.perform(
-            get("/download-docs/9870000123"))
-        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION,
-            String.format("filename=\"%s\"", applicationId + ".zip")))
+            get("/download"))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "filename=\"MNB_application_9870000123.zip\""))
         .andExpect(status().is2xxSuccessful())
         .andReturn();
 
@@ -204,33 +166,5 @@ class FileDownloadControllerTest {
     byte[] actualBytes = result.getResponse().getContentAsByteArray();
 
     assertThat(actualBytes).hasSizeGreaterThan(22);
-  }
-
-  @Test
-  void shouldReturn404StatusForApplicationIdWithoutDocuments() throws Exception {
-    var applicationId = "9870000123";
-    ApplicationData applicationData = new ApplicationData();
-    applicationData.setId(applicationId);
-    applicationData.setFlow(FlowType.LATER_DOCS);
-    Application application = Application.builder()
-        .applicationData(applicationData)
-        .flow(FlowType.LATER_DOCS)
-        .build();
-
-    when(applicationRepository.find(applicationId)).thenReturn(
-        application
-    );
-
-    when(pdfGenerator.generate(any(Application.class), eq(UPLOADED_DOC), eq(CASEWORKER)))
-        .thenReturn(new ApplicationFile(null, null));
-
-    MvcResult result = mockMvc.perform(
-            get("/download-docs/9870000123"))
-        .andExpect(status().is4xxClientError())
-        .andReturn();
-
-    byte[] actualBytes = result.getResponse().getContentAsByteArray();
-
-    assertThat(actualBytes).hasSizeLessThanOrEqualTo(22);
   }
 }

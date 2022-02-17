@@ -89,8 +89,9 @@ public class ApplicationRepository {
 
   public Application find(String id) {
     // TODO use a single sql query with a join instead of doing two separate sql queries
-    Application application = jdbcTemplate.queryForObject("SELECT * FROM applications WHERE id = ?",
-        applicationRowMapper(), id);
+    Application application = jdbcTemplate.queryForObject(
+          "SELECT * FROM applications WHERE id = ?",
+          applicationRowMapper(), id);
     Objects.requireNonNull(application).setDocumentStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
