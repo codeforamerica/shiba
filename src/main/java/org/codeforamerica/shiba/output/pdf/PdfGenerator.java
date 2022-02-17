@@ -105,19 +105,28 @@ public class PdfGenerator implements FileGenerator {
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
 		if (DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-			System.out.println("========== generateForUploadedDocument ==========");
-			//byte[] cloned = fileBytes.clone();
-			//InputStream inputStream = new ByteArrayInputStream(fileBytes);
-			File tempFile;
+			System.out.println("========== generateForUploadedDocument ==========");//TODO emj delete
+			File tempFile = null;
 			try {
+				//createTempFile("temp", "pdf", null);  null path 
 				tempFile = File.createTempFile("temp", "pdf", null);
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			fos.write(fileBytes);
-			fileBytes = pdfWordConverter.convertWordDocToPDFwithFiles(tempFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				FileOutputStream fos = new FileOutputStream(tempFile);
+				fos.write(fileBytes);
+				fileBytes = pdfWordConverter.convertWordDocToPDFwithFiles(tempFile);
+				//fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(null);
+			} catch (IOException e) {
+				// TODO emj remove print stack trace
+				e.printStackTrace();
+				log.error("failed to convert document " + uploadedDocument.getFilename()
+				+ " to pdf. Maintaining original type");
+			}finally {
+				try {
+					tempFile.delete();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 		} else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
 			try {

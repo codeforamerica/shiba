@@ -40,6 +40,7 @@ class PdfGeneratorTest {
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
+    PDFWordConverter pdfWordConverter = mock(PDFWordConverter.class);
 
     pdfFieldFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
@@ -59,7 +60,8 @@ class PdfGeneratorTest {
         applicationRepository,
         null,
         preparers,
-        fileNameGenerator);
+        fileNameGenerator,
+        pdfWordConverter);
     when(applicationRepository.find(applicationId)).thenReturn(application);
   }
 

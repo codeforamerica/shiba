@@ -58,15 +58,12 @@ public class PDFWordConverter {
 	}
 	
 	public byte[] convertWordDocToPDFwithFiles(File inputFile) {
-	 	 
-	  	File outputFile = null; 
+		 String pathFile  = System.getProperty("java.io.tmpdir") + "temp.pdf";
+	  	File outputFile = new File(pathFile); 
 	  	byte[] outputByteArray = null;
 	      try {
 	    	  OfficeConverter.convertOfficeDocumentToPdf(inputFile, outputFile);
-	    	  //ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-	    	  String pathFile  = System.getProperty("java.io.tmpdir") + "temp.pdf";
 	    	  outputByteArray = Files.readAllBytes(Paths.get(pathFile ));
-	    	  //tputByteArray = baos.toByteArray();
 		} catch (PdfOfficeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
