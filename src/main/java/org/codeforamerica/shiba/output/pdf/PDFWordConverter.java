@@ -32,38 +32,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PDFWordConverter {
 	private final String licensePath;
-	
+
 	public PDFWordConverter(@Value("${itext.license}") String licensePath) {
 		this.licensePath = licensePath;
 		LicenseKey.loadLicenseFile(new File(licensePath));
 	}
-	
+
 	public byte[] convertWordDocToPDFwithStreams(InputStream inputStream) {
- 	 
-  	OutputStream outputStream = null; 
-  	byte[] outputByteArray = null;
-      try {
-    	  OfficeConverter.convertOfficeDocumentToPdf(inputStream, outputStream);
-    	  ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-    	  baos.writeTo(outputStream); 
-    	  outputByteArray = baos.toByteArray();
-	} catch (PdfOfficeException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-      return outputByteArray;
-	}
-	
-	public byte[] convertWordDocToPDFwithFiles(File inputFile) {
-		 String pathFile  = System.getProperty("java.io.tmpdir") + "temp.pdf";
-	  	File outputFile = new File(pathFile); 
-	  	byte[] outputByteArray = null;
-	      try {
-	    	  OfficeConverter.convertOfficeDocumentToPdf(inputFile, outputFile);
-	    	  outputByteArray = Files.readAllBytes(Paths.get(pathFile ));
+		OutputStream outputStream = null;
+		byte[] outputByteArray = null;
+		try {
+//			 OfficeDocumentConverterProperties props = new OfficeDocumentConverterProperties();
+//			 props.setPageRange(null);
+//			OfficeConverter.convertOfficeDocumentToPdf(inputStream, outputStream, null);
+			OfficeConverter.convertOfficeDocumentToPdf(inputStream, outputStream);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos.writeTo(outputStream);
+			outputByteArray = baos.toByteArray();
 		} catch (PdfOfficeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,9 +56,25 @@ public class PDFWordConverter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	      return outputByteArray;
-		}
-	
-}
-	
+		return outputByteArray;
+	}
 
+
+	public byte[] convertWordDocToPDFwithFiles(File inputFile) {
+		String pathFile = System.getProperty("java.io.tmpdir") + "temp.pdf";
+		File outputFile = new File(pathFile);
+		byte[] outputByteArray = null;
+		try {
+			OfficeConverter.convertOfficeDocumentToPdf(inputFile, outputFile);
+			outputByteArray = Files.readAllBytes(Paths.get(pathFile));
+		} catch (PdfOfficeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return outputByteArray;
+	}
+
+}
