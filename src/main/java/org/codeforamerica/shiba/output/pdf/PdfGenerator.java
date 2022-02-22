@@ -33,6 +33,8 @@ import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
+import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
+
 @Component
 @Slf4j
 public class PdfGenerator implements FileGenerator {
@@ -109,9 +111,9 @@ public class PdfGenerator implements FileGenerator {
 				InputStream inputStream = new ByteArrayInputStream(fileBytes);
 				fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);
 				extension = "pdf";
-			} catch (IOException e) {
+			} catch (PdfOfficeException |IOException e) {
                 log.error("failed to convert document " + uploadedDocument.getFilename()
-                + " to pdf. Maintaining original type");
+                + " to pdf. Maintaining original type. " + e.getMessage());
 			}
 
 		} else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
