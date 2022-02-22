@@ -25,7 +25,7 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final String WHITE_EARTH = "White Earth";
   public static final String LOWER_SIOUX = "Lower Sioux";
   public static final String PRAIRIE_ISLAND = "Prairie Island";
-  public static final String RED_LAKE = "Red Lake";
+  public static final String RED_LAKE_NATION = "Red Lake Nation";
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
 

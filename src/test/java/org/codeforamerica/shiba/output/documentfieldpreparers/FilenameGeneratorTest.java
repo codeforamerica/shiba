@@ -4,7 +4,7 @@ import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE_NATION;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -64,7 +64,7 @@ class FilenameGeneratorTest {
         Document.CAF, defaultCountyRoutingDestination);
     assertThat(countyFilename).contains(defaultCountyRoutingDestination.getDhsProviderId());
 
-    TribalNationRoutingDestination redLakeRoutingDestination = tribalNations.get(RED_LAKE);
+    TribalNationRoutingDestination redLakeRoutingDestination = tribalNations.get(RED_LAKE_NATION);
     String fileName = filenameGenerator.generatePdfFilename(application,
         Document.CAF,
         redLakeRoutingDestination);
