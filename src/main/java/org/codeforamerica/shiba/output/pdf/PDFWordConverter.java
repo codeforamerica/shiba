@@ -23,19 +23,11 @@ public class PDFWordConverter {
 	}
 
 	public byte[] convertWordDocToPDFwithStreams(InputStream inputStream) throws IOException  {
-		ByteArrayOutputStream outputStream = null;
-		try {
-			outputStream = new ByteArrayOutputStream();
+		try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			OfficeConverter.convertOfficeDocumentToPdf(inputStream, outputStream);
+			return outputStream.toByteArray();
 		} catch (PdfOfficeException | IOException e) {
 			throw e;
-		}finally {
-			try {
-				outputStream.close();
-			} catch (IOException e) {
-				//ignore
-			}
 		}
-		return outputStream.toByteArray();
 	}
 }
