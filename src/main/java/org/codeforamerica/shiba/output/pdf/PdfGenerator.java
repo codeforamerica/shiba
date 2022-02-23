@@ -30,6 +30,7 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +51,7 @@ public class PdfGenerator implements FileGenerator {
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
   private final PDFWordConverter pdfWordConverter;
+  private final FeatureFlagConfiguration featureFlags;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
@@ -57,7 +59,8 @@ public class PdfGenerator implements FileGenerator {
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator,
-      PDFWordConverter pdfWordConverter
+      PDFWordConverter pdfWordConverter,
+      FeatureFlagConfiguration featureFlagConfiguration
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
@@ -66,6 +69,7 @@ public class PdfGenerator implements FileGenerator {
     this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
     this.pdfWordConverter = pdfWordConverter;
+    this.featureFlags = featureFlagConfiguration;
   }
 
   @Override
@@ -106,7 +110,8 @@ public class PdfGenerator implements FileGenerator {
     var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
-		if (DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+      boolean flagIsNotNull = featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
+		if (flagIsNotNull && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
 		  try {
 				InputStream inputStream = new ByteArrayInputStream(fileBytes);
 				fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);

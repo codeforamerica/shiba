@@ -77,6 +77,7 @@ feature-flag:
   certain-pops: on
   submit-via-api: on
   white-earth-and-red-lake-routing: on
+  word-to-pdf: off
 
 document-upload:
   max-files-uploaded: 20

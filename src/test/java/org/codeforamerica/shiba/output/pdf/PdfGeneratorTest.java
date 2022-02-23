@@ -14,11 +14,13 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
 
 class PdfGeneratorTest {
 
@@ -30,6 +32,7 @@ class PdfGeneratorTest {
   private DocumentFieldPreparers preparers;
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
+  private FeatureFlagConfiguration featureFlags;
 
   @BeforeEach
   void setUp() {
@@ -41,6 +44,8 @@ class PdfGeneratorTest {
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
     PDFWordConverter pdfWordConverter = mock(PDFWordConverter.class);
+    featureFlags = mock(FeatureFlagConfiguration.class);
+    
 
     pdfFieldFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
@@ -61,7 +66,8 @@ class PdfGeneratorTest {
         null,
         preparers,
         fileNameGenerator,
-        pdfWordConverter);
+        pdfWordConverter,
+        featureFlags);
     when(applicationRepository.find(applicationId)).thenReturn(application);
   }
 

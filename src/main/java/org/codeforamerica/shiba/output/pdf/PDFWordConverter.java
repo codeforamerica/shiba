@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,14 +13,27 @@ import com.itextpdf.licensing.base.LicenseKey;
 import com.itextpdf.pdfoffice.OfficeConverter;
 import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class PDFWordConverter {
 	@SuppressWarnings("unused")
 	private final String licensePath;
+	private final FeatureFlagConfiguration featureFlags;
 
-	public PDFWordConverter(@Value("${itext.license}") String licensePath) {
+	public PDFWordConverter(@Value("${itext.license}") String licensePath,
+			FeatureFlagConfiguration featureFlagConfiguration) {
+		
 		this.licensePath = licensePath;
-		LicenseKey.loadLicenseFile(new File(licensePath));
+		this.featureFlags = featureFlagConfiguration;
+		boolean flagIsNotNull = featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
+		if(flagIsNotNull && featureFlags.get("word-to-pdf").isOn()) {
+			LicenseKey.loadLicenseFile(new File(licensePath));
+		}else {
+			log.info("iText license not loaded, word-to-pdf featureFlag is off.");
+		}
+		
 	}
 
 	public byte[] convertWordDocToPDFwithStreams(InputStream inputStream) throws IOException  {
