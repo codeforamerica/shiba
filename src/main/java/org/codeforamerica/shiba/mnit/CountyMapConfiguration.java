@@ -345,7 +345,7 @@ public class CountyMapConfiguration {
         "samantha.coyle@co.clearwater.mn.us",
         "A000015900");
     updateCounty(Cook,
-        "IM@co.cook.mn.us",
+        "economic.assistance@co.cook.mn.us",
         "A000016700");
     updateCounty(Cottonwood,
         "financial@dvhhs.org",
