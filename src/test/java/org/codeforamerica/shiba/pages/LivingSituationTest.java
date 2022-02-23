@@ -24,17 +24,16 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
   void shouldAskLivingSituationIfCCAPApplicant() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
-    fillOutHousemateInfo("EA");
-    finishAddingHouseholdMembers("childrenInNeedOfCare");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
   }
 
   @Test
   void shouldAskLivingSituationIfGRHApplicant() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("GRH");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+    postExpectingRedirect("startHousehold", "livingSituation");
     fillOutHousemateInfo("EA");
-    finishAddingHouseholdMembers("livingSituation");
+    finishAddingHouseholdMembers("goingToSchool");
   }
 
   @Test
@@ -49,9 +48,7 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
   void shouldAskLivingSituationIfCCAPHouseholdMember() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("EA");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
-    fillOutHousemateInfo("CCAP");
-    finishAddingHouseholdMembers("childrenInNeedOfCare");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
   }
 
   @Test

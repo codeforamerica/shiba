@@ -57,6 +57,11 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
 
+    //This should be where living situation is tested in the CCAP Household flow
+    // What is your current living situation?
+    testPage.enter("livingSituation", "Staying in a hotel or motel");
+    testPage.clickContinue();
+
     String householdMemberFirstName = "householdMemberFirstName";
     String householdMemberLastName = "householdMemberLastName";
     String householdMemberFullName = householdMemberFirstName + " " + householdMemberLastName;
@@ -130,10 +135,6 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Does everyone in your household buy and prepare food with you?
     testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
-
-    // What is your current living situation?
-    testPage.enter("livingSituation", "Staying in a hotel or motel");
-    testPage.clickContinue();
 
     // Is anyone in your household going to school right now, either full or part-time?
     testPage.enter("goingToSchool", YES.getDisplayValue());

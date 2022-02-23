@@ -3183,7 +3183,7 @@ workflow:
   startHousehold:
     pageConfiguration: *startHousehold
     nextPages:
-      - pageName: householdMemberInfo
+      - pageName: livingSituation
   householdMemberInfo:
     pageConfiguration: *householdMemberInfo
     groupName: household
@@ -3269,25 +3269,35 @@ workflow:
     pageConfiguration: *introPersonalDetails
     nextPages:
       - pageName: livingSituation
-  preparingMealsTogether:
-    pageConfiguration: *preparingMealsTogether
-    skipCondition: *noOneChoseSNAP?
-    nextPages:
-      - pageName: livingSituation
-    datasources:
-      - pageName: choosePrograms
-      - groupName: household
-        pageName: householdMemberInfo
   livingSituation:
     pageConfiguration: *livingSituation
     nextPages:
+      - pageName: householdMemberInfo
+        condition:
+          pageName: addHouseholdMembers
+          input: addHouseholdMembers
+          value: "true"
       - pageName: goingToSchool
+        condition:
+          pageName: addHouseholdMembers
+          input: addHouseholdMembers
+          value: "false"
     skipCondition:
       logicalOperator: AND
       conditions:
         - *applicantDidNotChooseGRH?
         - *noOneChoseCCAP?
         - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - groupName: household
+        pageName: householdMemberInfo
+  preparingMealsTogether:
+    pageConfiguration: *preparingMealsTogether
+    skipCondition: *noOneChoseSNAP?
+    nextPages:
+      - pageName: goingToSchool
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
