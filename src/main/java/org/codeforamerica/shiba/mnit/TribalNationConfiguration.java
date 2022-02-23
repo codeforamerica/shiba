@@ -34,7 +34,7 @@ public class TribalNationConfiguration {
         "help+staging@mnbenefits.org",
         "218-935-2359"
     );
-    addTribalNation(result, RED_LAKE,
+    addTribalNation(result, RED_LAKE_NATION,
         "A590043300",
         "help+staging@mnbenefits.org",
         "218-679-3350"
@@ -58,7 +58,7 @@ public class TribalNationConfiguration {
         "help+demo@mnbenefits.org",
         "218-935-2359"
     );
-    addTribalNation(result, RED_LAKE,
+    addTribalNation(result, RED_LAKE_NATION,
         "A590043300",
         "help+demo@mnbenefits.org",
         "218-679-3350"
@@ -81,7 +81,7 @@ public class TribalNationConfiguration {
         "amy.littlewolf@whiteearth-nsn.gov",
         "218-935-2359"
     );
-    addTribalNation(result, RED_LAKE,
+    addTribalNation(result, RED_LAKE_NATION,
         "A590043300",
         "sarah.smythe@redlakenation.org",
         "218-679-3350"
@@ -106,7 +106,7 @@ public class TribalNationConfiguration {
         "218-935-2359"
     );
     addTribalNation(result, BOIS_FORTE);
-    addTribalNation(result, RED_LAKE,
+    addTribalNation(result, RED_LAKE_NATION,
         "A590043300",
         "help+dev@mnbenefits.org",
         "218-679-3350"

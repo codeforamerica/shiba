@@ -5,7 +5,7 @@ import static org.codeforamerica.shiba.County.Beltrami;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.OTHER_FEDERALLY_RECOGNIZED_TRIBE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE;
+import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE_NATION;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.WHITE_EARTH;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
@@ -245,9 +245,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     goThroughShortTribalTanfFlow(OTHER_FEDERALLY_RECOGNIZED_TRIBE, Beltrami.displayName(), "true",
         EA);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE_NATION);
   }
 
   @Test
@@ -257,9 +257,9 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     goThroughShortTribalTanfFlow(OTHER_FEDERALLY_RECOGNIZED_TRIBE, Beltrami.displayName(), "false",
         EA);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE_NATION);
   }
 
   @Test
@@ -331,21 +331,21 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void redLakeApplicationsWithoutGrhGetSentToRedLake() throws Exception {
     addHouseholdMembersWithEA();
-    goThroughLongTribalTanfFlow(RED_LAKE, "Hennepin", "true", CCAP, SNAP, CASH, EA);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, "Hennepin", "true", CCAP, SNAP, CASH, EA);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE_NATION);
   }
 
   @Test
   void redLakeApplicationsWithOnlySnapGetSentToRedLake() throws Exception {
     addHouseholdMembersWithProgram(SNAP);
-    goThroughLongTribalTanfFlow(RED_LAKE, "Hennepin", "false", SNAP);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, "Hennepin", "false", SNAP);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RED_LAKE_NATION);
   }
 
   @Test
@@ -353,11 +353,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram("GRH");
 
     String county = "Olmsted";
-    goThroughLongTribalTanfFlow(RED_LAKE, county, "true", GRH);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, county, "true", GRH);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE_NATION);
   }
 
   @Test
@@ -365,11 +365,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram(SNAP);
 
     String county = "Olmsted";
-    goThroughLongTribalTanfFlow(RED_LAKE, county, "true", GRH);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, county, "true", GRH);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE_NATION);
   }
 
   @Test
@@ -377,11 +377,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram(CCAP);
 
     String county = "Olmsted";
-    goThroughLongTribalTanfFlow(RED_LAKE, county, "false", GRH);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, county, "false", GRH);
 
-    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE);
+    assertRoutingDestinationIsCorrectForDocument(Document.CAF, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county, RED_LAKE_NATION);
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county, RED_LAKE_NATION);
   }
 
   @Test
@@ -394,7 +394,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "isTribalNationMember",
         "true",
         "selectTheTribe");
-    postExpectingRedirect("selectTheTribe", "selectedTribe", RED_LAKE, "nationsBoundary");
+    postExpectingRedirect("selectTheTribe", "selectedTribe", RED_LAKE_NATION, "nationsBoundary");
     postExpectingRedirect("nationsBoundary",
         "livingInNationBoundary",
         "false",
@@ -413,7 +413,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram(CCAP);
 
     String county = "Olmsted";
-    goThroughLongTribalTanfFlow(RED_LAKE, county, "false", GRH);
+    goThroughLongTribalTanfFlow(RED_LAKE_NATION, county, "false", GRH);
 
     assertRoutingDestinationIsCorrectForDocument(Document.CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.UPLOADED_DOC, county);

@@ -1836,7 +1836,7 @@ pageDefinitions:
               messageKey: select-the-tribe.mille-lacs
             - value: Prairie Island
               messageKey: select-the-tribe.prairie-island
-            - value: Red Lake
+            - value: Red Lake Nation
               messageKey: select-the-tribe.red-lake
             - value: Shakopee Mdewakanton
               messageKey: select-the-tribe.shakopee-mdewakanton
@@ -3438,7 +3438,7 @@ workflow:
         condition:
           pageName: selectTheTribe
           input: selectedTribe
-          value: Red Lake
+          value: Red Lake Nation
       - pageName: applyForTribalTANF
         condition:
           logicalOperator: AND
