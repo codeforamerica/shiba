@@ -206,9 +206,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
-    testPage.enter("livingSituation", "None of these");
-    testPage.clickContinue();
-
+    
     testPage.enter("relationship", "Other");
     testPage.enter("programs", PROGRAM_CCAP);
     testPage.enter("firstName", "householdMemberFirstName");
@@ -222,15 +220,17 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("moveToMnDate", "02/18/1950");
     testPage.enter("moveToMnPreviousState", "Illinois");
     testPage.clickContinue();
-
+    
     testPage.clickButton("Yes, that's everyone");
     testPage.enter("whoNeedsChildCare", "householdMemberFirstName householdMemberLastName");
     testPage.clickContinue();
-
+    
     testPage.enter("whoHasAParentNotLivingAtHome",
         "None of the children have parents living outside the home");
     testPage.clickContinue();
     testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
+    testPage.enter("livingSituation", "None of these");
+    testPage.clickContinue();
     testPage.enter("goingToSchool", NO.getDisplayValue());
     testPage.enter("isPregnant", YES.getDisplayValue());
     testPage.enter("whoIsPregnant", "Me");

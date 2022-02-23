@@ -835,7 +835,6 @@ public class AbstractShibaMockMvcTest {
     var me = "defaultFirstName defaultLastName applicant";
     if (hasHousehold) {
       postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
-      postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "householdMemberInfo");
 
       fillOutHousemateInfo("CCAP");
 
@@ -847,7 +846,9 @@ public class AbstractShibaMockMvcTest {
       postExpectingRedirect("whoHasParentNotAtHome",
           "whoHasAParentNotLivingAtHome",
           "NONE_OF_THE_ABOVE",
-          "goingToSchool");
+          "livingSituation");
+
+      postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
       postExpectingRedirect("pregnant", "isPregnant", "true", "whoIsPregnant");
       postExpectingRedirect("whoIsPregnant", "whoIsPregnant", me, "migrantFarmWorker");
