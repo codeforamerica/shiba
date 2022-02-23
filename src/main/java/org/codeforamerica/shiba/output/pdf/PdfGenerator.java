@@ -111,7 +111,7 @@ public class PdfGenerator implements FileGenerator {
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
       boolean flagIsNotNull = featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
-		if (flagIsNotNull && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+		if (flagIsNotNull && featureFlags.get("word-to-pdf").isOn() && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
 		  try {
 				InputStream inputStream = new ByteArrayInputStream(fileBytes);
 				fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);

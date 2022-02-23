@@ -136,7 +136,6 @@ class FileDownloadControllerTest {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setId(applicationId);
     applicationData.setUploadedDocs(List.of(uploadedDoc, uploadedWordDoc));
-    //applicationData.setUploadedDocs(List.of(uploadedDoc));
     applicationData.setFlow(FlowType.LATER_DOCS);
     Application application = Application.builder()
         .applicationData(applicationData)
