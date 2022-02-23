@@ -269,6 +269,8 @@ public abstract class AbstractBasePageTest {
     if (hasHousehold) {
       testPage.enter("addHouseholdMembers", YES.getDisplayValue());
       testPage.clickContinue();
+      testPage.enter("livingSituation", "None of these");
+      testPage.clickContinue();
       fillOutHousemateInfo(PROGRAM_CCAP);
       testPage.clickContinue();
       testPage.clickButton("Yes, that's everyone");
@@ -277,8 +279,6 @@ public abstract class AbstractBasePageTest {
       testPage.enter("whoHasAParentNotLivingAtHome",
           "None of the children have parents living outside the home");
       testPage.clickContinue();
-      testPage.enter("livingSituation", "None of these");
-      testPage.clickContinue();
       testPage.enter("goingToSchool", NO.getDisplayValue());
       testPage.enter("isPregnant", YES.getDisplayValue());
       testPage.enter("whoIsPregnant", "Me");
@@ -286,8 +286,8 @@ public abstract class AbstractBasePageTest {
     } else {
       testPage.enter("addHouseholdMembers", NO.getDisplayValue());
       testPage.clickContinue();
-      testPage.enter("livingSituation", "None of these");
-      testPage.clickContinue();
+//      testPage.enter("livingSituation", "None of these");
+//      testPage.clickContinue();
       testPage.enter("goingToSchool", NO.getDisplayValue());
       testPage.enter("isPregnant", NO.getDisplayValue());
     }

@@ -24,7 +24,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void clientShouldSeeNoProgramsErrorPageWhenNoProgramsSelectedForAnyone() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("NONE");
-    assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
     fillOutHousemateInfoWithNoProgramsSelected();
     finishAddingHouseholdMembers("noProgramsSelected");
   }
@@ -32,7 +32,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldSkipNoProgramsSelectedPageIfOnlyClientChoseProgram() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
-    assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
     fillOutHousemateInfoWithNoProgramsSelected();
     finishAddingHouseholdMembers("childrenInNeedOfCare");
   }
@@ -40,7 +40,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldSkipNoProgramsSelectedPageIfOnlyHouseholdMemberChoseProgram() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("NONE");
-    assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
     fillOutHousemateInfo("SNAP");
     finishAddingHouseholdMembers("preparingMealsTogether");
   }
@@ -48,7 +48,7 @@ public class NoProgramSelectionsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldSkipNoProgramsSelectedPageIfSecondHouseholdMemberChoseProgram() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("NONE");
-    assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+    assertNavigationRedirectsToCorrectNextPage("startHousehold", "livingSituation");
     fillOutHousemateInfoWithNoProgramsSelected();
     fillOutHousemateInfo("SNAP");
     finishAddingHouseholdMembers("preparingMealsTogether");
