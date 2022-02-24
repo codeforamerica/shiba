@@ -20,6 +20,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.exception.controller.ControllerAdvisor;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
@@ -55,6 +56,8 @@ class ResendFailedEmailControllerTest {
   private MonitoringService monitoringService;
   @MockBean
   private PdfGenerator pdfGenerator;
+  @MockBean
+  private ControllerAdvisor controllerAdvisor;
 
   @Test
   void shouldResendConfirmationEmail() throws Exception {
