@@ -148,9 +148,10 @@ public class FilenetWebServiceClient {
 
       // Now route a copy of the document from Filenet to SFTP
       String idd = response.getObjectId();
-      log.info("response from FileNet createDocument: " + idd);
       String routerRequest = String.format("%s/%s", routerUrl, idd);
       String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+
+      log.info(String.format("Response from Filenet: %s", routerResponse));
       JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
 
       // Throw exception if this isnt a successful response
