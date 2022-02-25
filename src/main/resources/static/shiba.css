@@ -1540,6 +1540,10 @@ legend.form-question {
   font-size: 1.6rem;
 }
 
+.spacing-above-minus-25 {
+  margin-top: -25px;
+}
+
 #skip-to-content {
   background-color: #FFF;
   margin: 0.2em 0.5em;

@@ -29,7 +29,7 @@
               <div
                   th:replace="'fragments/inputs/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
             </div>
-            <p th:if="${page.hasCardFooterTextKey()}" id="card-footer" class="spacing-below-60"
+            <p th:if="${page.hasCardFooterTextKey()}" id="card-footer" class="spacing-below-60 spacing-above-minus-25"
                th:text="#{${page.cardFooterTextKey}}"></p>
             <button id="form-submit-button" th:if="${page.hasPrimaryButton}"
                     class="button button--primary"
