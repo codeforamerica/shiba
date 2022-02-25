@@ -38,7 +38,6 @@ public class FileDownloadController {
 
   private static final String NOT_FOUND_MESSAGE = "Could not find any application with this ID for download";
   private static final String UNSUBMITTED_APPLICATION_MESSAGE = "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.";
-  private static final String NON_APPLICABLE_DOCUMENT_TYPE = "Could not find a %s application with this ID for download";
   private static final String DOWNLOAD_DOCUMENT_ZIP = "Download zip file for application ID %s";
   private static final String NO_DOWNLOAD_DOCUMENT_ZIP = "No documents to download in zip file for application ID %s";
   private final XmlGenerator xmlGenerator;
