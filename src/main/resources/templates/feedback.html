@@ -41,19 +41,16 @@
               <i class="icon-check_circle"></i>
               <span th:text="${feedbackSuccess}"></span>
             </p>
-            <button id="form-submit-button" type="submit"
-                    class="button button--primary spacing-above-35"
+            <button id="form-submit-button" type="submit" class="button button--primary spacing-above-35"
                     th:text="#{success.submit-feedback}"></button>
           </form>
         </div>
-        <p class="text--green"
-           th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">
+        <p class="text--green" th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">
           <i class="icon-check_circle"></i>
           <span th:text="${feedbackSuccess}"></span>
         </p>
 
-      </main>
-    </div>
+      </div>
   </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
