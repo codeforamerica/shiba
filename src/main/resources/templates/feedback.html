@@ -12,17 +12,17 @@
           <h1 class="h2 spacing-below-60 spacing-above-10" id="page-header"
               th:text="#{feedback.how-was-your-experience}">
           </h1>
-          <form id="page-form" method="post" th:action="'/submit-feedback'">
+          <form id="success-feedback-page-form" method="post" th:action="'/submit-feedback'">
             <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
-              <button type="button" class="feedback-buttons" value="HAPPY" id="happy" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackIcons(event)">
+              <button type="button" class="feedback-buttons" value="HAPPY" id="happy" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
                 <span class="icon-sentiment_satisfied"></span>
                 <span class="sentiment-text" th:text="#{success.great}"></span>
               </button>
-              <button type="button" class="feedback-buttons" value="MEH" id="meh" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackIcons(event)">
+              <button type="button" class="feedback-buttons" value="MEH" id="meh" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
                 <span class="icon-sentiment_satisfied"></span>
                 <span class="sentiment-text" th:text="#{success.ok}"></span>
               </button>
-              <button type="button" class="feedback-buttons" value="SAD" id="sad" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackIcons(event)">
+              <button type="button" class="feedback-buttons" value="SAD" id="sad" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
                 <span class="icon-sentiment_satisfied"></span>
                 <span class="sentiment-text" th:text="#{success.not-good}"></span>
               </button>

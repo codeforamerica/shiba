@@ -525,16 +525,16 @@ input:checked + .feedback-buttons {
   border: 2px solid #000000;
 }
 
-button[id='happy']:checked + .feedback-buttons {
+.button-happy-checked {
   background-color: rgba(143, 228, 37, 0.5);
 }
 
-input[id='meh']:checked + .feedback-buttons {
+.button-meh-checked {
   background-color: rgba(255, 200, 69, 0.5);
 }
 
-input[id='sad']:checked + .feedback-buttons {
-  background-color: #F8C7B5;
+.button-sad-checked {
+  background-color: rgb(248, 199, 181);
 }
 
 .text--green {
