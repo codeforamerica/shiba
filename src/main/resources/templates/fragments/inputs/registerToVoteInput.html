@@ -6,7 +6,7 @@
     <p class="text--help"
        th:if="${input.helpMessageKey != null}"
        th:text="#{${input.helpMessageKey}}"></p>
-    <button th:each="option: ${input.options.selectableOptions}"
+    <button th:name="${formInputName}" th:each="option: ${input.options.selectableOptions}"
             th:inline="text" th:append type="submit" th:value="${option.value}" class="button">
             <span class="button__icon--left emoji emoji--inline" aria-hidden="true"
                   th:classappend="${option.value == 'YES' ? 'emoji--checkmark' : 'emoji--crossmark'}"></span>
