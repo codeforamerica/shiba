@@ -361,7 +361,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Submitting your Application
     testPage.clickContinue();
-    testPage.enter("registerToVote", "Yes, send me more info");
+    testPage.clickButton("Yes, send me more info");
 
     // Do you currently have healthcare coverage?
     testPage.enter("healthcareCoverage", YES.getDisplayValue());
