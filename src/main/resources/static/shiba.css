@@ -510,6 +510,7 @@ form .drag-and-drop-box-compact {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+  background-color: #FFF;
 }
 
 .feedback-buttons i {
@@ -524,7 +525,7 @@ input:checked + .feedback-buttons {
   border: 2px solid #000000;
 }
 
-input[id='happy']:checked + .feedback-buttons {
+button[id='happy']:checked + .feedback-buttons {
   background-color: rgba(143, 228, 37, 0.5);
 }
 
@@ -1564,4 +1565,13 @@ legend.form-question {
 }
 .accordion--is-closed .accordion__button:after{
     background-image: url(/images/icon_accordion_open.svg);
+}
+
+.icon-sentiment_satisfied, .icon-sentiment_neutral, .icon-sentiment_dissatisfied {
+  font-size: 5rem;
+  margin: 0 auto;
+}
+
+.sentiment-text {
+  margin: 0 auto;
 }

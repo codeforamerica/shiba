@@ -141,6 +141,12 @@ var noneOfTheAbove = (function() {
 	}
 })();
 
+
+function handleSuccessFeedbackIcons(event) {
+	console.log("test");
+	console.log(event.target);
+}
+
 var preCheckContactInfo = (function() {
 	var preCheck = {
 		init: function() {
