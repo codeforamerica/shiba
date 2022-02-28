@@ -7,13 +7,15 @@
   <div th:replace="fragments/demoBanner :: demoBanner"></div>
   <section class="slab slab--shiba">
     <div class="grid-ignore-mobile">
-      <div class="card spacing-above-0">
+      <main class="card spacing-above-0" id="content">
         <div class="form-group " th:if="${sentiment == null || feedbackText == null}">
-          <h1 class="h2 spacing-below-60 spacing-above-10" th:text="#{feedback.how-was-your-experience}">
+          <h1 class="h2 spacing-below-60 spacing-above-10" id="page-header"
+              th:text="#{feedback.how-was-your-experience}">
           </h1>
           <form id="page-form" method="post" th:action="'/submit-feedback'">
             <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
-              <input type="radio" class="hide-radio-circle" id="happy" name="sentiment" value="HAPPY">
+              <input type="radio" class="hide-radio-circle" id="happy" name="sentiment"
+                     value="HAPPY">
               <label class="feedback-buttons" for="happy">
                 <i class="icon-sentiment_satisfied"></i>
                 <div th:text="#{success.great}"></div>
@@ -30,6 +32,7 @@
               </label>
             </div>
             <textarea th:if="${feedbackText == null}"
+                      aria-labelledby="page-header"
                       autocomplete="off" autocapitalize="off" spellcheck="false"
                       class="textarea" rows="6"
                       name="feedback" id="feedback-textarea"
@@ -42,16 +45,19 @@
               <i class="icon-check_circle"></i>
               <span th:text="${feedbackSuccess}"></span>
             </p>
-            <button id="form-submit-button" type="submit" class="button button--primary spacing-above-35"
+            <button id="form-submit-button" type="submit"
+                    class="button button--primary spacing-above-35"
                     th:text="#{success.submit-feedback}"></button>
           </form>
         </div>
-        <p class="text--green" th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">
+        <p class="text--green"
+           th:if="${sentiment != null && feedbackText != null && feedbackSuccess != null}">
           <i class="icon-check_circle"></i>
           <span th:text="${feedbackSuccess}"></span>
         </p>
 
-      </div>
+      </main>
+    </div>
   </section>
 </div>
 <div th:replace="fragments/footer :: footer"></div>
