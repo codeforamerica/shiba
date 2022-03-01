@@ -29,7 +29,7 @@ public class TribalNationRoutingDestination extends RoutingDestination {
   public static final String SHAKOPEE_MDEWAKANTON = "Shakopee Mdewakanton";
   public static final String UPPER_SIOUX = "Upper Sioux";
 
-  public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, County.Ramsey);
+  public static final List<County> URBAN_COUNTIES = List.of(Hennepin, Anoka, Ramsey, Chisago, Kanabec);
   public static final List<County> COUNTIES_SERVICED_BY_WHITE_EARTH = List.of(Becker, Mahnomen,
       Clearwater);
   public static final List<County> MILLE_LACS_RURAL_COUNTIES = List.of(
