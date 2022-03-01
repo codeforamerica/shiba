@@ -141,28 +141,6 @@ var noneOfTheAbove = (function() {
 	}
 })();
 
-function handleSuccessFeedbackButtonClick(event) {
-	var clickedButton = event.currentTarget;
-	var allButtons = document.querySelectorAll('.feedback-buttons');
-	var valueClicked = clickedButton.getAttribute('value');
-	var successFeedbackPageForm = document.getElementById('success-feedback-page-form');
-	switch(valueClicked) {
-		case 'HAPPY':
-			clickedButton.classList.toggle('button-happy-checked');
-			allButtons.forEach(button => button.classList.remove('button-meh-checked', 'button-sad-checked'))
-			break;
-		case 'MEH':
-			clickedButton.classList.toggle('button-meh-checked')
-			allButtons.forEach(button => button.classList.remove('button-happy-checked', 'button-sad-checked'))
-			break;
-		case 'SAD':
-			clickedButton.classList.toggle('button-sad-checked')
-			allButtons.forEach(button => button.classList.remove('button-happy-checked', 'button-meh-checked'))
-			break;
-	}
-}
-
-
 var preCheckContactInfo = (function() {
 	var preCheck = {
 		init: function() {

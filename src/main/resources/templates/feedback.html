@@ -9,24 +9,33 @@
     <div class="grid-ignore-mobile">
       <main class="card spacing-above-0" id="content">
         <div class="form-group " th:if="${sentiment == null || feedbackText == null}">
-          <h1 class="h2 spacing-below-60 spacing-above-10" id="page-header"
-              th:text="#{feedback.how-was-your-experience}">
-          </h1>
           <form id="success-feedback-page-form" method="post" th:action="'/submit-feedback'">
-            <div th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25">
-              <button type="button" class="feedback-buttons" value="HAPPY" id="happy" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
-                <span class="icon-sentiment_satisfied"></span>
-                <span class="sentiment-text" th:text="#{success.great}"></span>
-              </button>
-              <button type="button" class="feedback-buttons" value="MEH" id="meh" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
-                <span class="icon-sentiment_satisfied"></span>
-                <span class="sentiment-text" th:text="#{success.ok}"></span>
-              </button>
-              <button type="button" class="feedback-buttons" value="SAD" id="sad" name="sentiment" th:inline="text" onclick="handleSuccessFeedbackButtonClick(event)">
-                <span class="icon-sentiment_satisfied"></span>
-                <span class="sentiment-text" th:text="#{success.not-good}"></span>
-              </button>
-            </div>
+            <fieldset  th:if="${sentiment == null}" class="feedback-buttons-group spacing-below-25" aria-labelledby="page-header">
+              <legend><h1 class="h2 spacing-below-60 spacing-above-10" id="page-header"
+                          th:text="#{feedback.how-was-your-experience}">
+              </h1></legend>
+              <div class="feedback-sentiment-group">
+                <input type="radio" class="radio-as-feedback-button" id="happy" name="sentiment" value="HAPPY">
+                <label class="feedback-buttons" for="happy">
+                  <i class="icon-sentiment_satisfied"></i>
+                  <div th:text="#{success.great}"></div>
+                </label>
+              </div>
+              <div class="feedback-sentiment-group">
+                <input type="radio" class="radio-as-feedback-button" id="meh" name="sentiment" value="MEH">
+                <label class="feedback-buttons" for="meh">
+                  <i class="icon-sentiment_neutral"></i>
+                  <div th:text="#{success.ok}"></div>
+                </label>
+              </div>
+              <div class="feedback-sentiment-group">
+                <input type="radio" class="radio-as-feedback-button" id="sad" name="sentiment" value="SAD">
+                <label class="feedback-buttons" for="sad">
+                  <i class="icon-sentiment_dissatisfied"></i>
+                  <div th:text="#{success.not-good}"></div>
+                </label>
+              </div>
+            </fieldset>
             <textarea th:if="${feedbackText == null}"
                       aria-labelledby="page-header"
                       autocomplete="off" autocapitalize="off" spellcheck="false"
