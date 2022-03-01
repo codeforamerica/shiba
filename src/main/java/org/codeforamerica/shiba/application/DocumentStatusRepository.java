@@ -129,12 +129,8 @@ public class DocumentStatusRepository {
       return;
     }
 
-    final String msg = String.format("%s to %s #%s has been updated to %s", document,
-        routingDestination, id, status);
-    switch (status) {
-      case DELIVERY_FAILED, RESUBMISSION_FAILED -> log.error(msg);
-      default -> log.info(msg);
-    }
+    log.info(String.format("%s to %s #%s has been updated to %s", document,
+        routingDestination, id, status));
   }
 
   private static class DocumentStatusRowMapper implements RowMapper<DocumentStatus> {
