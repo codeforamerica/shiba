@@ -499,7 +499,6 @@ form .drag-and-drop-box-compact {
 }
 
 .feedback-buttons {
-  margin-right: 20px;
   cursor: pointer;
   width: 10rem;
   text-align: center;
@@ -510,6 +509,7 @@ form .drag-and-drop-box-compact {
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
+  background-color: #FFF;
 }
 
 .feedback-buttons i {
@@ -1564,4 +1564,22 @@ legend.form-question {
 }
 .accordion--is-closed .accordion__button:after{
     background-image: url(/images/icon_accordion_open.svg);
+}
+
+.feedback-sentiment-group {
+  position: relative;
+  margin-right: 20px;
+  box-sizing: content-box;
+}
+
+.feedback-sentiment-group:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 5px #ffae00;
+}
+
+.radio-as-feedback-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
 }
