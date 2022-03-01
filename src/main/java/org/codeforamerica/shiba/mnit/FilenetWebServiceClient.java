@@ -102,6 +102,7 @@ public class FilenetWebServiceClient {
       Document applicationDocument, FlowType flowType) {
     try {
       MDC.put("applicationFile", applicationFile.getFileName());
+      MDC.put("applicationId", applicationNumber);
       CreateDocument createDocument = new CreateDocument();
       createDocument.setRepositoryId("Programs");
       setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
