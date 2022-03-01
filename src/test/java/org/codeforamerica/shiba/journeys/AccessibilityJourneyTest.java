@@ -155,7 +155,14 @@ public class AccessibilityJourneyTest extends JourneyTest {
     programSelections.forEach(program -> testPage.enter("programs", program));
     testPage.clickContinue();
     testPage.clickContinue();
-    testPage.clickContinue();//for Expedited Notice page
+    testPage.clickContinue(); //for Expedited Notice page
+
+    // Assertions about help message ARIA features
+    assertThat(testPage.getInputAriaDescribedBy("firstName")).isEqualTo("firstName-help-message");
+    assertThat(testPage.findElementById("firstName-help-message")).isNotNull();
+    assertThat(testPage.getInputAriaDescribedBy("sex")).isEqualTo("sex-help-message");
+    assertThat(testPage.findElementById("sex-help-message")).isNotNull();
+
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("otherName", "defaultOtherName");
@@ -188,7 +195,11 @@ public class AccessibilityJourneyTest extends JourneyTest {
     
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
     testPage.clickContinue();
-    
+
+    // Assertions about ARIA help message features
+    assertThat(testPage.getInputAriaDescribedBy("programs")).isEqualTo("programs-help-message");
+    assertThat(testPage.findElementById("programs-help-message")).isNotNull();
+
     testPage.enter("relationship", "Other");
     testPage.enter("programs", PROGRAM_CCAP);
     testPage.enter("firstName", "householdMemberFirstName");

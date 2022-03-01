@@ -28,7 +28,6 @@
                th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}"
                th:placeholder="mm"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
         &nbsp;/&nbsp;
         <input type="text" inputmode="numeric" maxlength="2" class="text-input form-width--2-character dob-input"
@@ -36,7 +35,6 @@
                th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}"
                th:placeholder="dd"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
         &nbsp;/&nbsp;
         <input type="text" inputmode="numeric" maxlength="4" class="text-input form-width--4-character dob-input"
@@ -44,7 +42,6 @@
                th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}"
                th:placeholder="yyyy"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                        aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
     </fieldset>
     <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
