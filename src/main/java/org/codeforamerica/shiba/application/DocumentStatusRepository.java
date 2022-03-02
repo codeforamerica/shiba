@@ -13,6 +13,7 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.slf4j.MDC;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -123,6 +124,7 @@ public class DocumentStatusRepository {
 
   private void logStatusUpdate(String id, Document document, String routingDestination,
       Status status) {
+    MDC.put("applicationId", id);
     if (status == null) {
       log.info(String.format("%s to %s #%s application status has been updated to null", document,
           routingDestination, id));

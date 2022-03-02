@@ -103,13 +103,27 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Leech Lake,Ramsey",
       "Mille Lacs Band of Ojibwe,Ramsey",
       "White Earth,Ramsey",
+      "Bois Forte,Chisago",
+      "Fond Du Lac,Chisago",
+      "Grand Portage,Chisago",
+      "Leech Lake,Chisago",
+      "Mille Lacs Band of Ojibwe,Chisago",
+      "White Earth,Chisago",
+      "Bois Forte,Kanabec",
+      "Fond Du Lac,Kanabec",
+      "Grand Portage,Kanabec",
+      "Leech Lake,Kanabec",
+      "Mille Lacs Band of Ojibwe,Kanabec",
+      "White Earth,Kanabec",
       "Mille Lacs Band of Ojibwe,Ramsey",
       "Mille Lacs Band of Ojibwe,Aitkin",
       "Mille Lacs Band of Ojibwe,Benton",
       "Mille Lacs Band of Ojibwe,Crow Wing",
       "Mille Lacs Band of Ojibwe,Morrison",
       "Mille Lacs Band of Ojibwe,Mille Lacs",
-      "Mille Lacs Band of Ojibwe,Pine"
+      "Mille Lacs Band of Ojibwe,Pine",
+      "Mille Lacs Band of Ojibwe,Chisago",
+      "Mille Lacs Band of Ojibwe,Kanabec"
   })
   void shouldSkipNationBoundariesPageAddTribalTanfAndRouteToBothMilleLacsAndCounty(
       String nationName, String county)

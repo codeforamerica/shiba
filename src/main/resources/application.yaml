@@ -36,11 +36,6 @@ server:
 sentry:
   traces-sample-rate: 0.3
 
-cloud:
-  aws:
-    region:
-      static: us-east-2
-
 client:
   keystore: src/main/resources/shiba-keystore.jks
   truststore: src/main/resources/shiba-truststore.jks
