@@ -156,6 +156,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickContinue();//for Expedited Notice page
+
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("otherName", "defaultOtherName");
