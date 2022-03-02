@@ -43,7 +43,7 @@ class PdfGeneratorTest {
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
-    PDFWordConverter pdfWordConverter = mock(PDFWordConverter.class);
+    FileToPDFConverter pdfWordConverter = mock(FileToPDFConverter.class);
     featureFlags = mock(FeatureFlagConfiguration.class);
     
 

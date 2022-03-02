@@ -17,12 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class PDFWordConverter {
+public class FileToPDFConverter {
 	@SuppressWarnings("unused")
 	private final String licensePath;
 	private final FeatureFlagConfiguration featureFlags;
 
-	public PDFWordConverter(@Value("${itext.license}") String licensePath,
+	public FileToPDFConverter(@Value("${itext.license}") String licensePath,
 			FeatureFlagConfiguration featureFlagConfiguration) {
 		
 		this.licensePath = licensePath;

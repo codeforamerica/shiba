@@ -5,13 +5,11 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -24,17 +22,19 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
-import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
 import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -50,7 +50,7 @@ public class PdfGenerator implements FileGenerator {
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
-  private final PDFWordConverter pdfWordConverter;
+  private final FileToPDFConverter pdfWordConverter;
   private final FeatureFlagConfiguration featureFlags;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
@@ -59,7 +59,7 @@ public class PdfGenerator implements FileGenerator {
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator,
-      PDFWordConverter pdfWordConverter,
+      FileToPDFConverter pdfWordConverter,
       FeatureFlagConfiguration featureFlagConfiguration
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
