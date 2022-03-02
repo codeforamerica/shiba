@@ -26,7 +26,8 @@ class CcapExpeditedEligibilityDeciderTest {
             new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
                 "firstName", "Jane",
                 "lastName", "Testerson",
-                "dateOfBirth", List.of("01", "09", "2020"))).build());
+                "dateOfBirth", List.of("01", "09", "2020"))).build())
+        ;
   }
 
   @ParameterizedTest
@@ -47,8 +48,10 @@ class CcapExpeditedEligibilityDeciderTest {
       String livingSituation,
       CcapExpeditedEligibility expectedDecision
   ) {
-    ApplicationData applicationData = applicationDataBuilder.withPageData("livingSituation",
-        "livingSituation", livingSituation).build();
+    ApplicationData applicationData = applicationDataBuilder
+        .withPageData("livingSituation","livingSituation", livingSituation)
+        .withPageData("millionDollar", "haveMillionDollars", List.of("false"))
+        .build();
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(expectedDecision);
   }
 
@@ -72,6 +75,7 @@ class CcapExpeditedEligibilityDeciderTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of("false"))
         .withSubworkflow("household",
             new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
                 "firstName", "Jane",
@@ -91,6 +95,7 @@ class CcapExpeditedEligibilityDeciderTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of("false"))
         .withSubworkflow("household",
             new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
                 "firstName", "Jane",
@@ -103,6 +108,33 @@ class CcapExpeditedEligibilityDeciderTest {
 
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
         .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+  }
+  
+  @Test
+  void hasMillionDollarAssetAnsweredYes() {
+    ApplicationData applicationData = applicationDataBuilder
+        .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of("true")).build();
+    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
+    .isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
+  }
+  
+  @Test
+  void hasMillionDollarAssetAnsweredNo() {
+    ApplicationData applicationData = applicationDataBuilder
+        .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of("false")).build();
+    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
+    .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+  }
+  
+  @Test
+  void hasMillionDollarAssetNotAnswered() {
+    ApplicationData applicationData = applicationDataBuilder
+        .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of()).build();
+    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
+    .isEqualTo(CcapExpeditedEligibility.UNDETERMINED);
   }
 
   private ApplicationData createApplicationData(List<String> livingSituation, String program) {

@@ -32,17 +32,21 @@ public class CcapExpeditedEligibilityDecider {
       "EMERGENCY_SHELTER", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING",
       "HOSPITAL_OR_OTHER_TREATMENT_FACILITY",
       "JAIL_OR_JUVENILE_DETENTION_FACILITY", "UNKNOWN", "PREFER_NOT_TO_SAY");
+  
 
   public CcapExpeditedEligibility decide(ApplicationData applicationData) {
+    String hasMillionDollarAsset = getMillionDollarAsset(applicationData);
     String livingSituation = getLivingSituation(applicationData);
     if (null == livingSituation || !applicationData.isCCAPApplication()
         || !applicationData.getSubworkflows().containsKey("household")
-        || hasNotEnteredHouseholdMemberBirthDates(applicationData)) {
+        || hasNotEnteredHouseholdMemberBirthDates(applicationData)
+        || null == hasMillionDollarAsset) {
       return UNDETERMINED;
     }
 
-    if (EXPEDITED_LIVING_SITUATIONS.contains(livingSituation) && hasHouseholdMemberUnder12(
-        applicationData)) {
+    if (EXPEDITED_LIVING_SITUATIONS.contains(livingSituation) 
+        && hasHouseholdMemberUnder12(applicationData) 
+        && hasMillionDollarAsset.equals("false")) {
       return ELIGIBLE;
     } else {
       return NOT_ELIGIBLE;
@@ -71,6 +75,11 @@ public class CcapExpeditedEligibilityDecider {
   private String getLivingSituation(ApplicationData applicationData) {
     return applicationData.getPagesData()
         .getPageInputFirstValue("livingSituation", "livingSituation");
+  }
+  
+  private String getMillionDollarAsset(ApplicationData applicationData) {
+    return applicationData.getPagesData()
+        .getPageInputFirstValue("millionDollar", "haveMillionDollars");
   }
 
   private List<LocalDate> getHouseHoldMemberBirthdatesAsDates(List<String> birthDatesAsStrings) {
