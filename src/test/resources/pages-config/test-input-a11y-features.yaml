@@ -1,0 +1,13 @@
+pageDefinitions:
+  - &textAreaPage
+    name: textAreaPage
+    pageTitle: text-area-page.title
+    headerKey: text-area-page.headerKey
+    inputs:
+      - name: textAreaInput
+        type: TEXTAREA
+workflow:
+  textAreaPage:
+      pageConfiguration: *textAreaPage
+landmarkPages:
+  terminalPage:
