@@ -63,7 +63,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("firstName", householdMemberFirstName);
     testPage.enter("lastName", householdMemberLastName);
     testPage.enter("otherName", "houseHoldyMcMemberson");
-    testPage.enter("dateOfBirth", "09/14/1950");
+    testPage.enter("dateOfBirth", "09/14/2018");
     testPage.enter("maritalStatus", "Never married");
     testPage.enter("sex", "Male");
     testPage.enter("livedInMnWholeLife", "Yes"); // actually means they MOVED HERE
@@ -435,7 +435,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
     assertCcapFieldEquals("EMPLOYERS_NAME_0", "some employer");
     assertCcapFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
-    assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
+    assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("COUNTY_INSTRUCTIONS", """
         This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
@@ -533,7 +533,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("SELF_EMPLOYMENT_HOURS_A_WEEK_0", "30");
     assertCcapFieldEquals("LAST_NAME_0", "householdMemberLastName");
     assertCcapFieldEquals("SEX_0", "MALE");
-    assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
+    assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("FIRST_NAME_0", "householdMemberFirstName");
     assertCcapFieldEquals("RELATIONSHIP_0", "child");
@@ -559,7 +559,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
     assertCafFieldEquals("EMPLOYERS_NAME_0", "some employer");
     assertCafFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
-    assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
+    assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
         "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\n"
@@ -669,7 +669,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("HOURLY_WAGE_0", "1.00");
     assertCafFieldEquals("LAST_NAME_0", "householdMemberLastName");
     assertCafFieldEquals("SEX_0", "MALE");
-    assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/1950");
+    assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCafFieldEquals("DATE_OF_MOVING_TO_MN_0", "02");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("FIRST_NAME_0", "householdMemberFirstName");
