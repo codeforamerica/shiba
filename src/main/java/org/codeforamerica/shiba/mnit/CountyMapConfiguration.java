@@ -485,7 +485,7 @@ public class CountyMapConfiguration {
         "crystal.zaviska@westernprairiemn.us",
         "A000061200");
     updateCounty(Ramsey,
-        "fas.forms@co.ramsey.mn.us",
+        "CHSFASScreeners@co.ramsey.mn.us",
         "1811055957");
     updateCounty(RedLake,
         "sswintake@mail.co.red-lake.mn.us",
