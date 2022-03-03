@@ -98,11 +98,15 @@ failed-resubmission:
     milliseconds: 10800000 # Run the ResubmissionService every 3 hours
   initialDelay:
     milliseconds: 0 # Run the process as soon the app first starts up
+  lockAtLeastFor: 15m
+  lockAtMostFor: 30m
 
 in-progress-resubmission:
   interval:
     milliseconds: 3600000 # Run the ResubmissionService every hour (6 * 10m * 60s * 1000ms)
   initialDelay:
     milliseconds: 0 # Run the process as soon the app first starts up
+  lockAtLeastFor: 15m
+  lockAtMostFor: 30m
 
 demo-banner: false

@@ -44,10 +44,8 @@ class AppsStuckInProgressResubmissionTest {
 
   @Test
   void itTriggersAnEventFor50AppsStuckInProgress() {
-    
-    int appCount = 50;
     // Only the first 50 of these should be resubmitted.
-    for (int i = 0; i < appCount+1; i++) {
+    for (int i = 0; i < 51; i++) {
       makeApplicationThatShouldBeResubmitted(i, Status.IN_PROGRESS);
     }
 
@@ -55,7 +53,7 @@ class AppsStuckInProgressResubmissionTest {
     resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     // make sure that the first 50 applications had an applicationSubmittedEvent triggered
-    for (int i = 0; i < appCount; i++) {
+    for (int i = 0; i < 50; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -66,18 +64,17 @@ class AppsStuckInProgressResubmissionTest {
 
     // Other applications should not have the event triggered
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", String.valueOf(appCount), FlowType.FULL,
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(50), FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(appCount),
+        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(50),
             LocaleContextHolder.getLocale()));
   }
 
   @Test
   void itTriggersAnEventFor50AppsStuckSending() {
-    int appCount = 50;
     // Only the first 50 of these should be resubmitted.
-    for (int i = 0; i < appCount+1; i++) {
+    for (int i = 60; i < 111; i++) {
       makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
     }
 
@@ -85,7 +82,7 @@ class AppsStuckInProgressResubmissionTest {
     resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
     // make sure that the first 50 applications had an applicationSubmittedEvent triggered
-    for (int i = 0; i < appCount; i++) {
+    for (int i = 60; i < 110; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
