@@ -43,17 +43,19 @@ class AppsStuckInProgressResubmissionTest {
   private PageEventPublisher pageEventPublisher;
 
   @Test
-  void itTriggersAnEventFor5AppsStuckInProgress() {
-    // Only the first 5 of these should be resubmitted.
-    for (int i = 0; i < 6; i++) {
+  void itTriggersAnEventFor50AppsStuckInProgress() {
+    
+    int appCount = 50;
+    // Only the first 50 of these should be resubmitted.
+    for (int i = 0; i < appCount+1; i++) {
       makeApplicationThatShouldBeResubmitted(i, Status.IN_PROGRESS);
     }
 
     // actually try to resubmit it
     resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
-    // make sure that the first 5 applications had an applicationSubmittedEvent triggered
-    for (int i = 0; i < 5; i++) {
+    // make sure that the first 50 applications had an applicationSubmittedEvent triggered
+    for (int i = 0; i < appCount; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -64,25 +66,26 @@ class AppsStuckInProgressResubmissionTest {
 
     // Other applications should not have the event triggered
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", String.valueOf(5), FlowType.FULL,
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(appCount), FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(5),
+        new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(appCount),
             LocaleContextHolder.getLocale()));
   }
 
   @Test
-  void itTriggersAnEventFor5AppsStuckSending() {
-    // Only the first 5 of these should be resubmitted.
-    for (int i = 10; i < 16; i++) {
+  void itTriggersAnEventFor50AppsStuckSending() {
+    int appCount = 50;
+    // Only the first 50 of these should be resubmitted.
+    for (int i = 0; i < appCount+1; i++) {
       makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
     }
 
     // actually try to resubmit it
     resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
 
-    // make sure that the first 5 applications had an applicationSubmittedEvent triggered
-    for (int i = 10; i < 15; i++) {
+    // make sure that the first 50 applications had an applicationSubmittedEvent triggered
+    for (int i = 0; i < appCount; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -91,6 +94,7 @@ class AppsStuckInProgressResubmissionTest {
               LocaleContextHolder.getLocale()));
     }
   }
+  
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
     String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1, Status.IN_PROGRESS);

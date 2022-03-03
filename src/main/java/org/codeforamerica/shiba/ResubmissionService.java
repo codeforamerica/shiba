@@ -59,10 +59,10 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${failed-resubmission.interval.milliseconds}", // how often to run (every 3 hours)
+      fixedDelayString = "${failed-resubmission.interval.milliseconds}",
       initialDelayString = "${failed-resubmission.initialDelay.milliseconds:0}"
   )
-  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
+  @SchedulerLock(name = "emailResubmissionTask", lockAtMostFor = "30m", lockAtLeastFor = "15m")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
     List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
@@ -103,10 +103,10 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (currently every 10 minutes)
+      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", 
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
-  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
+  @SchedulerLock(name = "esbResubmissionTask", lockAtMostFor = "30m", lockAtLeastFor = "15m")
   public void resubmitInProgressAndSendingApplicationsViaEsb() {
     log.info("Checking for applications that are stuck in progress");
 
