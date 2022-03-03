@@ -142,7 +142,7 @@ class AppsStuckInProgressResubmissionTest {
         .build());
 
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
-        .completedAt(ZonedDateTime.now().minusHours(20)) // important that this is completed!!!
+        .completedAt(ZonedDateTime.now().minusHours(10)) // important that this is completed!!!
         .county(County.Anoka)
         .id(applicationId)
         .applicationData(applicationData)
@@ -208,7 +208,7 @@ class AppsStuckInProgressResubmissionTest {
         .build());
     String applicationId = "7";
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
-        .completedAt(ZonedDateTime.now().minusHours(24)) // important that this is completed!!!
+        .completedAt(ZonedDateTime.now().minusHours(12)) // important that this is completed!!!
         .county(County.Anoka)
         .id(applicationId)
         .applicationData(applicationData)
