@@ -59,10 +59,10 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${failed-resubmission.interval.milliseconds}", // how often to run (every 3 hours)
+      fixedDelayString = "${failed-resubmission.interval.milliseconds}",
       initialDelayString = "${failed-resubmission.initialDelay.milliseconds:0}"
   )
-  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
+  @SchedulerLock(name = "emailResubmissionTask", lockAtMostFor = "${failed-resubmission.lockAtMostFor}", lockAtLeastFor = "${failed-resubmission.lockAtLeastFor}")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
     List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
@@ -78,7 +78,7 @@ public class ResubmissionService {
       Document document = applicationStatus.getDocumentType();
       String routingDestinationName = applicationStatus.getRoutingDestinationName();
       log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
-               + " for application id " + id);
+          + " for application id " + id);
       try {
         Application application = applicationRepository.find(id);
         RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
@@ -103,10 +103,10 @@ public class ResubmissionService {
   }
 
   @Scheduled(
-      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}", // how often to run (currently every 10 minutes)
+      fixedDelayString = "${in-progress-resubmission.interval.milliseconds}",
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
-  @SchedulerLock(name = "resubmissionTask", lockAtMostFor = "30m")
+  @SchedulerLock(name = "esbResubmissionTask", lockAtMostFor = "${in-progress-resubmission.lockAtMostFor}", lockAtLeastFor = "${in-progress-resubmission.lockAtLeastFor}")
   public void resubmitInProgressAndSendingApplicationsViaEsb() {
     log.info("Checking for applications that are stuck in progress");
 
@@ -121,23 +121,27 @@ public class ResubmissionService {
       log.info("Retriggering submission for application with id " + id);
 
       List<Document> inProgressDocs = application.getDocumentStatuses().stream()
-          .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS) || documentStatus.getStatus().equals(SENDING) &&
-              List.of(CAF, CCAP, CERTAIN_POPS, UPLOADED_DOC).contains(documentStatus.getDocumentType())).map(
-                  DocumentStatus::getDocumentType
+          .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS)
+              || documentStatus.getStatus().equals(SENDING) &&
+              List.of(CAF, CCAP, CERTAIN_POPS, UPLOADED_DOC)
+                  .contains(documentStatus.getDocumentType())).map(
+              DocumentStatus::getDocumentType
           ).collect(Collectors.toList());
 
       documentStatusRepository.delete(id, inProgressDocs);
 
-      boolean shouldRefireAppSubmittedEvent = inProgressDocs.stream().anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
-      if (shouldRefireAppSubmittedEvent){
+      boolean shouldRefireAppSubmittedEvent = inProgressDocs.stream()
+          .anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
+      if (shouldRefireAppSubmittedEvent) {
         log.info("Retriggering ApplicationSubmittedEvent for application with id " + id);
         pageEventPublisher.publish(new ApplicationSubmittedEvent("resubmission", id,
             application.getFlow(),
             application.getApplicationData().getLocale()));
       }
 
-      boolean shouldRefireUploadedDocSubmittedEvent = inProgressDocs.stream().anyMatch(document -> Objects.equals(
-          UPLOADED_DOC, document));
+      boolean shouldRefireUploadedDocSubmittedEvent = inProgressDocs.stream()
+          .anyMatch(document -> Objects.equals(
+              UPLOADED_DOC, document));
       if (shouldRefireUploadedDocSubmittedEvent) {
         log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
         pageEventPublisher.publish(
