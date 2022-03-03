@@ -2,6 +2,8 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -101,6 +103,34 @@ class CcapExpeditedEligibilityDeciderTest {
                 "firstName", "Jane",
                 "lastName", "Testerson",
                 "dateOfBirth", List.of("01", "09", "2020"))),
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "firstName", "John",
+                "lastName", "Testerson",
+                "dateOfBirth", List.of("01", "09", "1999")))).build();
+
+    assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
+        .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+  }
+
+  @Test
+  void shouldQualifyIfHouseholdMemberIsOver12YearsButUnder13Years() {
+    LocalDateTime twelveYearsAndElevenMonthsAgo = LocalDateTime.now().minusYears(12).minusMonths(11);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    String date = formatter.format(twelveYearsAndElevenMonthsAgo);
+    String[] monthDayYear = date.split("/");
+    String month = monthDayYear[0];
+    String day = monthDayYear[1];
+    String year = monthDayYear[2];
+
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("millionDollar", "haveMillionDollars", List.of("false"))
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "firstName", "Jane",
+                "lastName", "Testerson",
+                "dateOfBirth", List.of(month, day, year))),
             new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
                 "firstName", "John",
                 "lastName", "Testerson",
