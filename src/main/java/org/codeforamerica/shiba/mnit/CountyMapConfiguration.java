@@ -469,7 +469,7 @@ public class CountyMapConfiguration {
         "imques@co.ottertail.mn.us",
         "A000056600");
     updateCounty(Pennington,
-        "jasjostrand@co.pennington.mn.us",
+        "Afcasebank@co.pennington.mn.us",
         "A000057400");
     updateCounty(Pine,
         "income.proof@co.pine.mn.us",
