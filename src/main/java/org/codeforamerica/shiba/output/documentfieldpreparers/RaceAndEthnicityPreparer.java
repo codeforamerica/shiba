@@ -13,7 +13,8 @@ public class RaceAndEthnicityPreparer extends OneToManyDocumentFieldPreparer {
       "AMERICAN_INDIAN_OR_ALASKA_NATIVE",
       "BLACK_OR_AFRICAN_AMERICAN",
       "NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER",
-      "WHITE");
+      "WHITE",
+      "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
 
   @Override
   protected OneToManyParams getParams() {
