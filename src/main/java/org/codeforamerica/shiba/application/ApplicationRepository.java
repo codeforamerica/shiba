@@ -90,8 +90,8 @@ public class ApplicationRepository {
   public Application find(String id) {
     // TODO use a single sql query with a join instead of doing two separate sql queries
     Application application = jdbcTemplate.queryForObject(
-          "SELECT * FROM applications WHERE id = ?",
-          applicationRowMapper(), id);
+        "SELECT * FROM applications WHERE id = ?",
+        applicationRowMapper(), id);
     Objects.requireNonNull(application).setDocumentStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
@@ -102,9 +102,10 @@ public class ApplicationRepository {
     Timestamp eightHoursAgo = Timestamp.from(Instant.now().minus(Duration.ofHours(8)));
     List<Application> applicationsStuckInProgress = jdbcTemplate.query(
         "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at BETWEEN '2021-12-06' AND ? AND id IN ("
-        + "    SELECT application_id FROM application_status WHERE status= 'in_progress' OR status ='sending'"
-        + "          AND (document_type='CAF' OR document_type='CCAP' OR document_type='UPLOADED_DOC' OR document_type='CERTAIN_POPS')"
-        + "    ) ORDER BY completed_at LIMIT 50",
+            + "SELECT application_id FROM application_status WHERE "
+            + "(status= 'in_progress' OR status ='sending') AND (document_type='CAF' OR document_type='CCAP' OR document_type='CERTAIN_POPS') "
+            + "OR (status= 'sending' AND document_type='UPLOADED_DOC')"
+            + ") ORDER BY completed_at LIMIT 50",
         applicationRowMapper(),
         eightHoursAgo);
 
