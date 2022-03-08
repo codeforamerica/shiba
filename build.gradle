@@ -24,11 +24,6 @@ configurations {
 repositories {
     mavenCentral()
     maven { url "https://repo.spring.io/milestone" }
-    maven { url = uri("https://maven.pkg.github.com/mngsk/device-detector") }
-       // credentials {
-        //    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-        //    password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-       // }
 }
 
 task genJaxbFilenet {
