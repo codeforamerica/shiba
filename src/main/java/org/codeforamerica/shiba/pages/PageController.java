@@ -4,6 +4,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -674,6 +675,7 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
+      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING, UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));
