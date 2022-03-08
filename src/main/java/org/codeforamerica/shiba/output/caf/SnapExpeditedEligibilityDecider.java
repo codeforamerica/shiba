@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
@@ -12,14 +13,13 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UTILITY_EXPENSES_SELECTIONS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
-
+import java.math.BigDecimal;
 import java.util.List;
 import org.codeforamerica.shiba.Money;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
@@ -33,24 +33,30 @@ public class SnapExpeditedEligibilityDecider {
   private final UtilityDeductionCalculator utilityDeductionCalculator;
   private final TotalIncomeCalculator totalIncomeCalculator;
   private final GrossMonthlyIncomeParser grossMonthlyIncomeParser;
+  private final UnearnedIncomeCafCalculator unearnedIncomeCafCalculator;
+  private final UnearnedIncomeCcapCalculator unearnedIncomeCcapCalculator;
 
 
   public SnapExpeditedEligibilityDecider(UtilityDeductionCalculator utilityDeductionCalculator,
       TotalIncomeCalculator totalIncomeCalculator,
-      GrossMonthlyIncomeParser snapExpeditedEligibilityParser) {
+      GrossMonthlyIncomeParser snapExpeditedEligibilityParser,
+      UnearnedIncomeCafCalculator unearnedIncomeCafCalculator,
+      UnearnedIncomeCcapCalculator unearnedIncomeCcapCalculator) {
     this.utilityDeductionCalculator = utilityDeductionCalculator;
     this.totalIncomeCalculator = totalIncomeCalculator;
     this.grossMonthlyIncomeParser = snapExpeditedEligibilityParser;
+    this.unearnedIncomeCafCalculator =  unearnedIncomeCafCalculator;
+    this.unearnedIncomeCcapCalculator =  unearnedIncomeCcapCalculator;
   }
 
   /**
    * Users qualify for expedited service if they meet one of the following criteria:
    * <ul>
-   *   <li>Households with less than $150 in monthly gross income and $100 or less in liquid assets.</li>
+   *   <li>Households with less than $150 in monthly gross income plus unearned income and $100 or less in liquid assets.</li>
    *   <li>Destitute migrant or seasonal farm worker units who have $100 or less in liquid assets.</li>
    *   <li>Households whose combined monthly gross income and liquid assets are less than their monthly housing cost(s) and the applicable standard utility deduction if the unit is entitled to it.</li>
    * </ul>
-   * If it is unclear if someone is expedited (they have not given the needed info) return “Undetermined”
+   * If it is unclear if someone is expedited (they have not given the needed info) return Undetermined
    *
    * @param applicationData Applicant data to check
    * @return SNAP eligibility given the applicant data
@@ -67,13 +73,16 @@ public class SnapExpeditedEligibilityDecider {
       return NOT_ELIGIBLE;
     }
 
-    // Assets and income below thresholds are eligible.
+    // Assets and earned+unearned income below thresholds are eligible.
     Money assets = parseMoney(pagesData, ASSETS);
     Money last30DaysIncome = parseMoney(pagesData, INCOME);
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
         .parse(applicationData);
-    Money income = totalIncomeCalculator
+    BigDecimal unEarnedIncomeCaf = unearnedIncomeCafCalculator.unearnedAmount(applicationData);
+    Money earnedIncome = totalIncomeCalculator
         .calculate(new TotalIncome(last30DaysIncome, jobIncomeInformation));
+    BigDecimal unEarnedIncomeCcap = unearnedIncomeCcapCalculator.unearnedAmount(applicationData);
+    Money income = earnedIncome.add(unEarnedIncomeCaf).add(unEarnedIncomeCcap);
     if (assets.lessOrEqualTo(ASSET_THRESHOLD) && income.lessThan(INCOME_THRESHOLD)) {
       return ELIGIBLE;
     }
@@ -81,7 +90,8 @@ public class SnapExpeditedEligibilityDecider {
     // Migrant workers with assets below threshold are eligible.
     boolean isMigrantWorker = Boolean
         .parseBoolean(getFirstValue(applicationData.getPagesData(), MIGRANT_WORKER));
-    if (isMigrantWorker && assets.lessOrEqualTo(ASSET_THRESHOLD)) {
+    boolean hasJob = Boolean.parseBoolean(applicationData.getPagesData().getPageInputFirstValue("employmentStatus", "areYouWorking"));
+    if (isMigrantWorker && assets.lessOrEqualTo(ASSET_THRESHOLD) && !hasJob) {
       return ELIGIBLE;
     }
 
@@ -116,9 +126,9 @@ public class SnapExpeditedEligibilityDecider {
     if (isMigrantWorker == null || missingUtilities) {
       return false;
     }
-
     List<String> thirtyDayEstimates = getValues(applicationData, JOBS, LAST_THIRTY_DAYS_JOB_INCOME);
     return thirtyDayEstimates == null || !thirtyDayEstimates.stream().allMatch(String::isBlank);
+    
   }
 
 

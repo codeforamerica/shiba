@@ -8,7 +8,7 @@ import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDET
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+import java.math.BigDecimal;
 import java.util.List;
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
@@ -25,8 +25,12 @@ class SnapExpeditedEligibilityDeciderTest {
       UtilityDeductionCalculator.class);
   GrossMonthlyIncomeParser grossMonthlyIncomeParser = mock(GrossMonthlyIncomeParser.class);
   TotalIncomeCalculator totalIncomeCalculator = mock(TotalIncomeCalculator.class);
+  UnearnedIncomeCafCalculator totalUnearnedIncomeCafCalc = mock(UnearnedIncomeCafCalculator.class);
+  UnearnedIncomeCcapCalculator totalUnearnedIncomeCcapCalc = mock(UnearnedIncomeCcapCalculator.class);
+  
   SnapExpeditedEligibilityDecider decider = new SnapExpeditedEligibilityDecider(
-      mockUtilityDeductionCalculator, totalIncomeCalculator, grossMonthlyIncomeParser
+      mockUtilityDeductionCalculator, totalIncomeCalculator, grossMonthlyIncomeParser,totalUnearnedIncomeCafCalc,
+      totalUnearnedIncomeCcapCalc
   );
   private TestApplicationDataBuilder applicationDataBuilder;
 
@@ -39,23 +43,34 @@ class SnapExpeditedEligibilityDeciderTest {
         .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("3"))
         .withPageData("utilityPayments", "payForUtilities", List.of("utility"))
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of())
+        .withPageData("unearnedIncomeCcap", "unearnedIncome", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of())
         .withApplicantPrograms(List.of("SNAP"));
 
     when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(Money.ZERO);
     when(grossMonthlyIncomeParser.parse(applicationDataBuilder.build())).thenReturn(emptyList());
     when(totalIncomeCalculator.calculate(any())).thenReturn(Money.ONE);
+    when(totalUnearnedIncomeCafCalc.unearnedAmount(any())).thenReturn(BigDecimal.ZERO);
+    when(totalUnearnedIncomeCcapCalc.unearnedAmount(any())).thenReturn(BigDecimal.ZERO);
   }
 
   @ParameterizedTest
   @CsvSource(value = {
-      "149,100,ELIGIBLE",
-      "151,100,NOT_ELIGIBLE",
-      "149,101,NOT_ELIGIBLE",
-      "150,101,NOT_ELIGIBLE",
+      "149,100,0,0,ELIGIBLE",
+      "139,100,10,0,ELIGIBLE",
+      "139,100,0,10,ELIGIBLE",
+      "129,100,10,10,ELIGIBLE",
+      "51,100,50,50,NOT_ELIGIBLE",
+      "49,101,50,50,NOT_ELIGIBLE",
+      "50,101,50,50,NOT_ELIGIBLE",
   })
   void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
       String incomeString,
       String assetString,
+      String unearnedCafString,
+      String unearnedCcapString,
       SnapExpeditedEligibility expectedDecision
   ) {
     Money income = Money.parse(incomeString);
@@ -64,21 +79,30 @@ class SnapExpeditedEligibilityDeciderTest {
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of(incomeString))
         .withPageData("liquidAssets", "liquidAssets", List.of(assetString))
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of(unearnedCafString))
+        .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of(unearnedCcapString))
         .build();
-
+    BigDecimal unearnedCaf = new BigDecimal(unearnedCafString);
+    when(totalUnearnedIncomeCafCalc.unearnedAmount(applicationData)).thenReturn(unearnedCaf);
+    BigDecimal unearnedCcap = new BigDecimal(unearnedCcapString);
+    when(totalUnearnedIncomeCcapCalc.unearnedAmount(applicationData)).thenReturn(unearnedCcap);
     assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
   }
 
   @ParameterizedTest
   @CsvSource(value = {
-      "100,true,ELIGIBLE",
-      "101,true,NOT_ELIGIBLE",
-      "100,false,NOT_ELIGIBLE",
-      "101,false,NOT_ELIGIBLE"
+      "100,true,false,ELIGIBLE",
+      "100,true,true,NOT_ELIGIBLE",
+      "101,true,false,NOT_ELIGIBLE",
+      "100,false,false,NOT_ELIGIBLE",
+      "101,false,true,NOT_ELIGIBLE"
   })
-  void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
+  void shouldQualify_whenApplicantIsMigrantWorkerHasNoJobAndMeetAssetThreshold(
       String assets,
       String isMigrantWorker,
+      String hasJob,
       SnapExpeditedEligibility expectedDecision
   ) {
     when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("9999"));
@@ -86,18 +110,29 @@ class SnapExpeditedEligibilityDeciderTest {
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("liquidAssets", "liquidAssets", List.of(assets))
         .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of(isMigrantWorker))
+        .withPageData("employmentStatus", "areYouWorking", hasJob)
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of("999"))
+        .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of("999"))
         .build();
-
+    when(totalUnearnedIncomeCafCalc.unearnedAmount(applicationData)).thenReturn(new BigDecimal("999"));
+    when(totalUnearnedIncomeCcapCalc.unearnedAmount(applicationData)).thenReturn(new BigDecimal("999"));
     assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
   }
 
   @ParameterizedTest
   @CsvSource(value = {
-      "500,1000,ELIGIBLE",
-      "500,499,NOT_ELIGIBLE",
+      "499,500,0,0,ELIGIBLE",
+      "249,500,250,0,ELIGIBLE",
+      "249,500,0,250,ELIGIBLE",
+      "500,1000,250,249,ELIGIBLE",
+      "249,500,251,0,NOT_ELIGIBLE",
+      "249,500,0,251,NOT_ELIGIBLE",
+      "500,999,500,500,NOT_ELIGIBLE",
   })
   void shouldQualifyWhenIncomeAndAssetsAreLessThanExpenses(
-      String assets, String housingCosts, SnapExpeditedEligibility expectedDecision
+      String assets, String housingCosts, String unearnedIncomeCaf, String unearnedIncomeCcap, SnapExpeditedEligibility expectedDecision
   ) {
     List<String> utilitySelections = List.of("utility");
     when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(Money.ONE);
@@ -106,8 +141,15 @@ class SnapExpeditedEligibilityDeciderTest {
         .withPageData("liquidAssets", "liquidAssets", List.of(assets))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of(housingCosts))
         .withPageData("utilityPayments", "payForUtilities", utilitySelections)
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of(unearnedIncomeCaf))
+        .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of(unearnedIncomeCcap))
         .build();
-
+    BigDecimal unearnedCaf = new BigDecimal(unearnedIncomeCaf);
+    when(totalUnearnedIncomeCafCalc.unearnedAmount(applicationData)).thenReturn(unearnedCaf);
+    BigDecimal unearnedCcap = new BigDecimal(unearnedIncomeCcap);
+    when(totalUnearnedIncomeCcapCalc.unearnedAmount(applicationData)).thenReturn(unearnedCcap);
     assertThat(decider.decide(applicationData)).isEqualTo(expectedDecision);
   }
 
@@ -127,23 +169,31 @@ class SnapExpeditedEligibilityDeciderTest {
   }
 
   @Test
-  void shouldDefaultToZeroIncomeWhenMissingIncomeAndAssets() {
+  void shouldDefaultToZeroIncomeWhenMissingIncome_UnearnedIncomeAndAssets() {
     ApplicationData applicationData = applicationDataBuilder.build();
     applicationData.getPagesData().remove("thirtyDayIncome");
     applicationData.getPagesData().remove("liquidAssets");
+    applicationData.getPagesData().remove("unearnedIncome");
+    applicationData.getPagesData().remove("unearnedIncomeCcap");
 
     assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
   }
 
   @Test
-  void shouldNotQualify_whenIncomeAndAssetsAreGreaterThanOrEqualToExpenses_andNotMeetingOtherCriteria() {
+  void shouldNotQualify_whenIncome_UnearnedIncomeAndAssetsAreGreaterThanOrEqualToExpenses_andNotMeetingOtherCriteria() {
     when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(Money.parse("1000"));
     when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("1000"));
-
+    when(totalUnearnedIncomeCafCalc.unearnedAmount(any())).thenReturn(new BigDecimal("500"));
+    when(totalUnearnedIncomeCcapCalc.unearnedAmount(any())).thenReturn(new BigDecimal("500"));
+    
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("liquidAssets", "liquidAssets", List.of("1000"))
         .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of("500"))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("1"))
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of("500"))
+        .withPageData("unearnedIncomeCcap", "unearnedIncomeCcap", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of("500"))
         .build();
 
     assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);

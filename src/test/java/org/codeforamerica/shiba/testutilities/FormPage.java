@@ -134,4 +134,8 @@ public class FormPage {
   public Element getElementByCssSelector(String selector) {
     return html.select(selector).first();
   }
+
+  public String getTextAreaAriaLabelledBy(String inputName) {
+    return html.select("textarea[name='%s[]']".formatted(inputName)).attr("aria-labelledby");
+  }
 }

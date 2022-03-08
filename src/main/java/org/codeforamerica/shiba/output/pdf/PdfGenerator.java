@@ -125,7 +125,7 @@ public class PdfGenerator implements FileGenerator {
 			try {
 				fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
 				extension = "pdf";
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.error("failed to convert document " + uploadedDocument.getFilename()
 						+ " to pdf. Maintaining original type");
 			}
@@ -159,7 +159,7 @@ public class PdfGenerator implements FileGenerator {
     return fileBytes;
   }
 
-  private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws IOException {
+  private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception{
     try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, filename);
       // Figure out page size
@@ -186,6 +186,9 @@ public class PdfGenerator implements FileGenerator {
       // put the doc in a byte array
       doc.save(outputStream);
       return outputStream.toByteArray();
-    }
+    } catch (Exception e) {
+		log.error("convertImageToPdf Error for file " + filename + ". Error message: " + e.getMessage());
+		throw e;
+	}
   }
 }
