@@ -282,6 +282,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
   }
 
   protected void deleteAFile() {
+    await().until(
+		  () -> driver.findElementsByClassName("dz-remove").get(0).getAttribute("innerHTML")
+		  .contains("delete"));
     testPage.clickLink("delete");
 
     assertThat(testPage.getTitle()).isEqualTo("Delete a file");
