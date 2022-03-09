@@ -8,11 +8,16 @@ import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.*;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +43,7 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.*;
+import org.imgscalr.Scalr;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -624,9 +630,21 @@ public class PageController {
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
         }
-
+        
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
+        
+        if(file.getContentType()!=null && file.getContentType().contains("image")) {
+          Path paths= Paths.get(file.getOriginalFilename());
+          Files.write(paths, file.getBytes());
+          BufferedImage bufferedImage = ImageIO.read(paths.toFile());
+          BufferedImage outputImage = Scalr.resize(bufferedImage, 300);
+    
+          ByteArrayOutputStream os = new ByteArrayOutputStream();
+          ImageIO.write(outputImage, "png", os);
+          dataURL = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+          outputImage.flush();
+        }
         documentRepository.upload(filePath, file);
         documentRepository.upload(thumbnailFilePath, dataURL);
         applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
