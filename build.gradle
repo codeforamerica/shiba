@@ -136,7 +136,8 @@ dependencies {
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.33.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
-
+    implementation("net.coobird:thumbnailator:0.4.17")
+    
     implementation("org.springframework.ws:spring-ws-core")
     jaxb(
             "org.glassfish.jaxb:jaxb-runtime",

@@ -26,7 +26,12 @@ public class HispanicLatinoOrSpanishPreparer implements DocumentFieldPreparer {
     List<DocumentField> hispanicLatinoOrSpanishDocumentField = new ArrayList<>();
 
     if (pagesData.containsKey("raceAndEthnicity")) {
-      if (raceAndEthnicityValues.contains("HISPANIC_LATINO_OR_SPANISH")) {
+     if (raceAndEthnicityValues.contains("HISPANIC_LATINO_OR_SPANISH")) {
+        if(raceAndEthnicityValues.size() == 1) {
+          hispanicLatinoOrSpanishDocumentField.add(
+              new DocumentField("raceAndEthnicity", "UNABLE_TO_DETERMINE", "true",
+                  ENUMERATED_SINGLE_VALUE));
+        }
         hispanicLatinoOrSpanishDocumentField.add(
             new DocumentField("raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH", "true",
                 ENUMERATED_SINGLE_VALUE));
@@ -34,7 +39,7 @@ public class HispanicLatinoOrSpanishPreparer implements DocumentFieldPreparer {
         hispanicLatinoOrSpanishDocumentField.add(
             new DocumentField("raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH_NO", "true",
                 ENUMERATED_SINGLE_VALUE));
-      }
+      }  
     }
     return hispanicLatinoOrSpanishDocumentField;
   }
