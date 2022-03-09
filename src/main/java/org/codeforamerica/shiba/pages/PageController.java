@@ -647,6 +647,7 @@ public class PageController {
           dataURL = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
           outputImage.flush();
           thumbFile.delete();
+          Files.delete(paths);
         }
         documentRepository.upload(filePath, file);
         documentRepository.upload(thumbnailFilePath, dataURL);
