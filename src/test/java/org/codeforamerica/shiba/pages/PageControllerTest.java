@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.time.*;
 import java.util.List;
 import java.util.Locale;
@@ -43,12 +44,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DevicePlatform;
+import org.springframework.mobile.device.DeviceType;
+import org.springframework.mobile.device.LiteDevice;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -86,6 +93,17 @@ class PageControllerTest {
   private RoutingDecisionService routingDecisionService;
   @SpyBean
   private DocumentRepository documentRepository;
+ // @MockBean
+ // private DeviceType deviceType = DeviceType.MOBILE;
+ // @MockBean
+//  private DevicePlatform devicePlatform = DevicePlatform.ANDROID;
+  //@MockBean
+  //@Autowired
+  //private LiteDevice device;// = LiteDevice.MOBILE_INSTANCE;
+  //private Device device = Mockito.mock(LiteDevice.class);
+  @Spy
+  private LiteDevice device = (LiteDevice) LiteDevice.from(DeviceType.MOBILE, DevicePlatform.ANDROID);
+  
 
   @Autowired
   private PageController pageController;
@@ -108,6 +126,8 @@ class PageControllerTest {
         .thenReturn("default success message");
     when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH)))
         .thenReturn("default failure message");
+    ///when(device.getDevicePlatform()).thenReturn(DevicePlatform.ANDROID);
+
   }
 
   @AfterEach
@@ -150,7 +170,10 @@ class PageControllerTest {
     mockMvc.perform(post("/submit")
         .session(session)
         .param("foo[]", "some value")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        .requestAttr("test", device)
+       
+        );
 
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
     inOrder.verify(applicationRepository).save(application);
