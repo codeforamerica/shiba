@@ -593,7 +593,7 @@ public class PageController {
       String platform = "unknown";
       if(device != null) {
 	      if (device.isNormal()) {
-	          deviceType = "browser";
+	          deviceType = "desktop";
 	      } else if (device.isMobile()) {
 	          deviceType = "mobile";
 	      } else if (device.isTablet()) {
