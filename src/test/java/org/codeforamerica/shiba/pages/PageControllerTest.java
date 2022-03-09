@@ -9,18 +9,25 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.security.Principal;
 import java.time.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
@@ -38,14 +45,13 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.codeforamerica.shiba.testutilities.ClientDevice;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -55,7 +61,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DevicePlatform;
 import org.springframework.mobile.device.DeviceType;
-import org.springframework.mobile.device.LiteDevice;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -70,7 +75,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
     webEnvironment = MOCK,
     properties = {"pagesConfig=pages-config/test-pages-controller.yaml"})
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class,
-    DocumentRepositoryTestConfig.class})
+    DocumentRepositoryTestConfig.class, ClientDevice.class})
 class PageControllerTest {
 
   private MockMvc mockMvc;
@@ -93,18 +98,9 @@ class PageControllerTest {
   private RoutingDecisionService routingDecisionService;
   @SpyBean
   private DocumentRepository documentRepository;
- // @MockBean
- // private DeviceType deviceType = DeviceType.MOBILE;
- // @MockBean
-//  private DevicePlatform devicePlatform = DevicePlatform.ANDROID;
-  //@MockBean
-  //@Autowired
-  //private LiteDevice device;// = LiteDevice.MOBILE_INSTANCE;
-  //private Device device = Mockito.mock(LiteDevice.class);
-  @Spy
-  private LiteDevice device = (LiteDevice) LiteDevice.from(DeviceType.MOBILE, DevicePlatform.ANDROID);
+  @SpyBean
+  private Device device;
   
-
   @Autowired
   private PageController pageController;
   @Autowired
@@ -126,8 +122,6 @@ class PageControllerTest {
         .thenReturn("default success message");
     when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH)))
         .thenReturn("default failure message");
-    ///when(device.getDevicePlatform()).thenReturn(DevicePlatform.ANDROID);
-
   }
 
   @AfterEach
@@ -140,14 +134,20 @@ class PageControllerTest {
     applicationData.setStartTimeOnce(Instant.now());
     when(clock.instant())
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
-
+    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    deviceAttribute.put("device", device);
     MockHttpServletRequestBuilder request = post("/submit")
+    	.flashAttrs(deviceAttribute)
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         .param("foo[]", "some value");
     mockMvc.perform(request).andExpect(redirectedUrl("/pages/secondPage/navigation"));
 
     PageData secondPage = applicationData.getPagesData().getPage("secondPage");
     assertThat(secondPage.get("foo").getValue()).contains("some value");
+    String devicePlatform = applicationData.getDevicePlatform();
+    String deviceType = applicationData.getDeviceType();
+    assertThat(devicePlatform.equalsIgnoreCase(DevicePlatform.ANDROID.toString()));
+    assertThat(deviceType.equalsIgnoreCase(DeviceType.MOBILE.toString()));
   }
 
   @Test
@@ -164,16 +164,15 @@ class PageControllerTest {
         .flow(FlowType.FULL)
         .build();
     when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
-
     String sessionId = "someSessionId";
     MockHttpSession session = new MockHttpSession(null, sessionId);
+    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
+    	.flashAttrs(deviceAttribute)
         .session(session)
         .param("foo[]", "some value")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        .requestAttr("test", device)
-       
-        );
+        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
     InOrder inOrder = inOrder(applicationRepository, pageEventPublisher);
     inOrder.verify(applicationRepository).save(application);
@@ -321,8 +320,10 @@ class PageControllerTest {
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
     assertThat(application.getTimeToComplete()).isEqualTo(null);
-
+    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
+    	.flashAttrs(deviceAttribute)
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
