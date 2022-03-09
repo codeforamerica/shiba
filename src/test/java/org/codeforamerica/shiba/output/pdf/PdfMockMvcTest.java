@@ -678,8 +678,99 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         });
 
         assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", originalApt, caf);
-      }
+      }      
     }
+    
+   @Nested
+   @Tag("pdf")
+   class RaceAndEthinicityCAF{
+     @Test
+     void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
+       selectPrograms("SNAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("WHITE", "Yes", caf);
+       assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", caf);
+     }
+     
+     @Test
+     void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
+       selectPrograms("SNAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", caf);
+     }
+     
+     @Test
+     void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
+       selectPrograms("SNAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","HISPANIC_LATINO_OR_SPANISH","WHITE")
+           ));
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("ASIAN", "Yes", caf);
+       assertPdfFieldEquals("WHITE", "Yes", caf);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
+     }
+     
+     @Test
+     void shouldMarkWhiteWhenWhiteSelected() throws Exception {
+       selectPrograms("SNAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","WHITE","MIDDLE_EASTERN_OR_NORTH_AFRICAN")
+           ));
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("WHITE", "Yes", caf);
+       assertPdfFieldEquals("ASIAN", "Yes", caf);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", caf);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
+       assertPdfFieldEquals("CLIENT_REPORTED", "", caf);
+     }
+     
+     @Test
+     void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
+       selectPrograms("SNAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","ASIAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+     }
+     
+     @Test
+     void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected() throws Exception {
+       selectPrograms("SNAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("WHITE", "Off", caf);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+     }
+  
+ 
+     @Test
+     void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
+         throws Exception {
+       selectPrograms("SNAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+               "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+       var caf = submitAndDownloadCaf();
+       assertPdfFieldEquals("WHITE", "Yes", caf);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+     }
+   }
   }
 
   @Nested
