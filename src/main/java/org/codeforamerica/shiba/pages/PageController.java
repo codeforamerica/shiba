@@ -10,10 +10,11 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.*;
@@ -21,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.Program;
@@ -43,7 +45,6 @@ import org.codeforamerica.shiba.pages.config.*;
 import org.codeforamerica.shiba.pages.data.*;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.*;
-import org.imgscalr.Scalr;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -635,15 +636,17 @@ public class PageController {
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
         
         if(file.getContentType()!=null && file.getContentType().contains("image")) {
-          Path paths= Paths.get(file.getOriginalFilename());
-          Files.write(paths, file.getBytes());
-          BufferedImage bufferedImage = ImageIO.read(paths.toFile());
-          BufferedImage outputImage = Scalr.resize(bufferedImage, 300);
-    
+          Path paths = Files.createTempDirectory("");
+          File thumbFile = new File(paths.toFile(),file.getOriginalFilename());
+          FileOutputStream fos = new FileOutputStream(thumbFile);
+          fos.write(file.getBytes());
+          fos.close();
           ByteArrayOutputStream os = new ByteArrayOutputStream();
+          BufferedImage outputImage = Thumbnails.of(thumbFile).size(300, 300).asBufferedImage();
           ImageIO.write(outputImage, "png", os);
           dataURL = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
           outputImage.flush();
+          thumbFile.delete();
         }
         documentRepository.upload(filePath, file);
         documentRepository.upload(thumbnailFilePath, dataURL);
@@ -651,12 +654,14 @@ public class PageController {
       }
 
       return new ResponseEntity<>(HttpStatus.OK);
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
+      log.error("Error Occurred while uploading File "+e.getLocalizedMessage());
       // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(
           lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),
           HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    } 
   }
 
   @PostMapping("/submit-documents")
