@@ -8,14 +8,21 @@ import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.*;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.codeforamerica.shiba.Program;
@@ -624,16 +631,33 @@ public class PageController {
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
         }
-
+        
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
+        
+        if(file.getContentType()!=null && file.getContentType().contains("image")) {
+          Path paths = Files.createTempDirectory("");
+          File thumbFile = new File(paths.toFile(),file.getOriginalFilename());
+          FileOutputStream fos = new FileOutputStream(thumbFile);
+          fos.write(file.getBytes());
+          fos.close();
+          ByteArrayOutputStream os = new ByteArrayOutputStream();
+          BufferedImage outputImage = Thumbnails.of(thumbFile).size(300, 300).asBufferedImage();
+          ImageIO.write(outputImage, "png", os);
+          dataURL = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+          outputImage.flush();
+          thumbFile.delete();
+          Files.delete(paths);
+        }
         documentRepository.upload(filePath, file);
         documentRepository.upload(thumbnailFilePath, dataURL);
         applicationData.addUploadedDoc(file, filePath, thumbnailFilePath, type);
       }
 
       return new ResponseEntity<>(HttpStatus.OK);
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
+      log.error("Error Occurred while uploading File " + e.getLocalizedMessage());
       // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(
           lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),
