@@ -48,6 +48,8 @@ public class ApplicationData implements Serializable {
   private Instant startTime;
   private String utmSource;
   private String lastPageViewed;
+  private String deviceType;
+  private String devicePlatform;
   private FlowType flow = FlowType.UNDETERMINED;
   private boolean isSubmitted = false;
   private PagesData pagesData = new PagesData();

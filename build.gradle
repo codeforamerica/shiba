@@ -23,6 +23,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url "https://repo.spring.io/milestone" }
 }
 
 task genJaxbFilenet {
@@ -92,6 +93,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+	implementation("org.springframework.mobile:spring-mobile-starter:2.0.0.M2")
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("io.sentry:sentry-spring-boot-starter:5.6.2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")

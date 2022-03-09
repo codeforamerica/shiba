@@ -50,6 +50,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -83,6 +84,7 @@ public class PageController {
   private final DocumentRepository documentRepository;
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final DocumentStatusRepository documentStatusRepository;
+  //private final Device device;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -103,7 +105,8 @@ public class PageController {
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
-      DocumentStatusRepository documentStatusRepository) {
+      DocumentStatusRepository documentStatusRepository//,
+      /*Device device*/) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -123,6 +126,7 @@ public class PageController {
     this.applicationRepository = applicationRepository;
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.documentStatusRepository = documentStatusRepository;
+    //this.device = device;
   }
 
   @GetMapping("/")
@@ -186,6 +190,7 @@ public class PageController {
       HttpSession httpSession,
       Locale locale
   ) {
+
     var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
     if (landmarkPagesConfiguration.isLandingPage(pageName)) {
@@ -549,7 +554,8 @@ public class PageController {
   @PostMapping("/submit")
   ModelAndView submitApplication(
       @RequestBody(required = false) MultiValueMap<String, String> model,
-      HttpSession httpSession
+      HttpSession httpSession,
+      Device device
   ) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
@@ -568,6 +574,7 @@ public class PageController {
       }
       Application application = applicationFactory.newApplication(applicationData);
       application.setCompletedAtTime(clock); // how we mark that the application is complete
+      recordDeviceType(device,application);
       applicationRepository.save(application);
       log.info("Invoking pageEventPublisher for application submission: " + application.getId());
       pageEventPublisher.publish(
@@ -580,8 +587,25 @@ public class PageController {
       return new ModelAndView("redirect:/pages/" + submitPage);
     }
   }
+  
+  private void recordDeviceType(Device device, Application application) {
+      String deviceType = "unknown";
+      String platform = "unknown";
+      if(device != null) {
+	      if (device.isNormal()) {
+	          deviceType = "desktop";
+	      } else if (device.isMobile()) {
+	          deviceType = "mobile";
+	      } else if (device.isTablet()) {
+	          deviceType = "tablet";
+	      }
+	      platform = device.getDevicePlatform().name();
+      }
+      application.getApplicationData().setDevicePlatform(platform);
+      application.getApplicationData().setDeviceType(deviceType);
+  }
 
-  @PostMapping("/submit-feedback")
+@PostMapping("/submit-feedback")
   RedirectView submitFeedback(Feedback feedback,
       RedirectAttributes redirectAttributes,
       Locale locale) {
