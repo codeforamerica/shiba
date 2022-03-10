@@ -64,13 +64,17 @@ mail-gun:
   api-key: ${MAILGUN_API_KEY}
   shouldCC: false
   max-attachment-size: 20000000 #20MB
+  
+itext: 
+  license: src/main/resources/itextLicense.json
 
 feature-flag:
   certain-pops: on
   submit-via-api: on
   white-earth-and-red-lake-routing: on
+  word-to-pdf: off
   only-submit-blank-status-apps-from-sherburne: on
-
+  
 document-upload:
   max-files-uploaded: 20
 

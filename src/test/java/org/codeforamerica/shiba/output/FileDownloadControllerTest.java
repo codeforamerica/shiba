@@ -125,12 +125,17 @@ class FileDownloadControllerTest {
   @Test
   void shouldReturnDocumentsForApplicationId() throws Exception {
     var image = getFileContentsAsByteArray("shiba+file.jpg");
+    var wordDoc = getFileContentsAsByteArray("testWord.docx");
+    var coverPage = getFileContentsAsByteArray("test-cover-pages.pdf");
     var applicationId = "9870000123";
     ApplicationFile imageFile = new ApplicationFile(image, "");
+    ApplicationFile wordDocFile = new ApplicationFile(wordDoc, "");
+    ApplicationFile coverPageFile = new ApplicationFile(coverPage, "");
     UploadedDocument uploadedDoc = new UploadedDocument("shiba+file.jpg", "", "", "", image.length);
+    UploadedDocument uploadedWordDoc = new UploadedDocument("testWord.docx", "", "", "", wordDoc.length);
     ApplicationData applicationData = new ApplicationData();
     applicationData.setId(applicationId);
-    applicationData.setUploadedDocs(List.of(uploadedDoc));
+    applicationData.setUploadedDocs(List.of(uploadedDoc, uploadedWordDoc));
     applicationData.setFlow(FlowType.LATER_DOCS);
     Application application = Application.builder()
         .applicationData(applicationData)
@@ -145,14 +150,15 @@ class FileDownloadControllerTest {
         .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
         .build();
 
-    when(applicationRepository.find(applicationId)).thenReturn(
-        application
-    );
+    when(applicationRepository.find(applicationId)).thenReturn(application);
     when(pdfGenerator.generateCoverPageForUploadedDocs(any(Application.class)))
-        .thenReturn(imageFile.getFileBytes());
+        .thenReturn(coverPageFile.getFileBytes());
     when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), eq(0), any(Application.class),
-            any())).thenReturn(imageFile);
+        .generateForUploadedDocument(eq(uploadedDoc), eq(0), any(Application.class), any()))
+    	.thenReturn(imageFile);
+    when(pdfGenerator
+        .generateForUploadedDocument(eq(uploadedWordDoc), eq(0), any(Application.class), any()))
+    	.thenReturn(wordDocFile);
     MvcResult result = mockMvc.perform(
             get("/download"))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "filename=\"MNB_application_9870000123.zip\""))
@@ -161,10 +167,10 @@ class FileDownloadControllerTest {
 
     verify(pdfGenerator).generateCoverPageForUploadedDocs(application);
     verify(pdfGenerator)
-        .generateForUploadedDocument(uploadedDoc, 0, application, imageFile.getFileBytes());
-
+        .generateForUploadedDocument(uploadedDoc, 0, application, coverPageFile.getFileBytes());
+    verify(pdfGenerator)
+    	.generateForUploadedDocument(uploadedWordDoc, 1, application, coverPageFile.getFileBytes());
     byte[] actualBytes = result.getResponse().getContentAsByteArray();
-
     assertThat(actualBytes).hasSizeGreaterThan(22);
   }
 }
