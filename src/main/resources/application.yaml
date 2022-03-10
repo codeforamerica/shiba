@@ -112,7 +112,7 @@ in-progress-resubmission:
 
 no-status-applications-resubmission:
   interval:
-    milliseconds: 6000000 # Run the ResubmissionService every hour (10m * 60s * 1000ms)
+    milliseconds: 6000000 # Run the ResubmissionService every 10 min (10m * 60s * 1000ms)
   initialDelay:
     milliseconds: 0 # Run the process as soon the app first starts up
   lockAtLeastFor: 10m
