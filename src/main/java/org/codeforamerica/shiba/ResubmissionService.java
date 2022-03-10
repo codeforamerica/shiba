@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.County.Sherburne;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -10,9 +11,11 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -24,6 +27,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -43,19 +47,23 @@ public class ResubmissionService {
   private final RoutingDecisionService routingDecisionService;
   private final DocumentStatusRepository documentStatusRepository;
   private final PageEventPublisher pageEventPublisher;
+  private FeatureFlagConfiguration featureFlagConfiguration;
+
 
   public ResubmissionService(ApplicationRepository applicationRepository,
       EmailClient emailClient,
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService,
       DocumentStatusRepository documentStatusRepository,
-      PageEventPublisher pageEventPublisher) {
+      PageEventPublisher pageEventPublisher,
+      FeatureFlagConfiguration featureFlagConfiguration) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
     this.documentStatusRepository = documentStatusRepository;
     this.pageEventPublisher = pageEventPublisher;
+    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   @Scheduled(
@@ -135,8 +143,14 @@ public class ResubmissionService {
   public void resubmitBlankStatusApplicationsViaEsb() {
     log.info("Checking for applications that have no statuses");
 
-    //get list back from db of blank status applications
-    List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
+    //get list back from db of blank status applications from Sherburne
+    List<Application> applicationsWithBlankStatuses = new ArrayList<Application>();
+
+    if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne").isOn()) {
+      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(Sherburne);
+    } else {
+      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
+    }
     log.info(
         "Resubmitting " + applicationsWithBlankStatuses.size() + " applications with no statuses");
 

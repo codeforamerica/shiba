@@ -1,9 +1,13 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.Sherburne;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -14,12 +18,13 @@ import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,11 +51,15 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private PageEventPublisher pageEventPublisher;
 
+  @MockBean
+  private FeatureFlagConfiguration featureFlagConfiguration;
+
   @Test
   void itTriggersAnEventFor50AppsWithMissingStatuses() {
-
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+        FeatureFlag.OFF);
     for (int i = 0; i < 51; i++) {
-      makeApplicationThatShouldBeResubmitted(i);
+      makeBlankStatusApplication(i, Hennepin);
     }
 
     // actually try to resubmit it
@@ -73,8 +82,10 @@ class AppsWithBlankStatusResubmissionTest {
   
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
-    String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+        FeatureFlag.OFF);
+    String applicationIdToResubmit = makeBlankStatusApplication(1, Hennepin).getId();
+    String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
 
     // actually try to resubmit it
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
@@ -92,8 +103,30 @@ class AppsWithBlankStatusResubmissionTest {
             LocaleContextHolder.getLocale()));
   }
 
-  @NotNull
-  private String makeApplicationThatShouldBeResubmitted(int id) {
+  @Test
+  void ensureOnlySherburneAppsAreRetriggeredWhenFeatureFlagIsOn() {
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+        FeatureFlag.ON);
+    Application sherburneApp = makeBlankStatusApplication(1, Sherburne);
+    Application notSherburneApp = makeBlankStatusApplication(2, Anoka);
+
+    resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+
+    verify(pageEventPublisher).publish(
+        new ApplicationSubmittedEvent("resubmission", sherburneApp.getId(), FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher, never()).publish(
+        new ApplicationSubmittedEvent("resubmission", notSherburneApp.getId(),
+            FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", notSherburneApp.getId(),
+            LocaleContextHolder.getLocale()));
+  }
+
+  private Application makeBlankStatusApplication(int id,
+      County county) {
     String applicationId = String.valueOf(id);
 
     ApplicationData applicationData = new ApplicationData();
@@ -108,7 +141,7 @@ class AppsWithBlankStatusResubmissionTest {
 
     Application applicationWithNoStatuses = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(10)) // important that this is completed!!!
-        .county(County.Anoka)
+        .county(county)
         .id(applicationId)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
@@ -116,11 +149,10 @@ class AppsWithBlankStatusResubmissionTest {
         .build();
     applicationRepository.save(applicationWithNoStatuses);
 
-    return applicationId;
+    return applicationWithNoStatuses;
   }
 
-  @NotNull
-  private String makeInProgressApplicationThatShouldNotBeResubmitted () {
+  private Application makeInProgressApplicationThatShouldNotBeResubmitted () {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(new PagesDataBuilder()
         .withPageData("contactInfo", Map.of(
@@ -146,6 +178,6 @@ class AppsWithBlankStatusResubmissionTest {
         "Anoka",
         Status.IN_PROGRESS);
 
-    return applicationId;
+    return inProgressApplicationThatShouldBeCompleted;
   }
 }
