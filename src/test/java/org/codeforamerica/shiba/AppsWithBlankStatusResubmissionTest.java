@@ -71,38 +71,26 @@ class AppsWithBlankStatusResubmissionTest {
   }
 
   
-//  @Test
-//  void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-//    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
-//    String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
-//    String applicationIdThatIsNotInProgress = makeApplicationThatWasDelivered();
-//
-//    // actually try to resubmit it
-//    resubmissionService.resubmitInProgressAndSendingApplicationsViaEsb();
-//
-//    verify(pageEventPublisher).publish(
-//        new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
-//            LocaleContextHolder.getLocale()));
-//    verify(pageEventPublisher).publish(
-//        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdToResubmit,
-//            LocaleContextHolder.getLocale()));
-//
-//    verify(pageEventPublisher, never()).publish(
-//        new ApplicationSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
-//            FlowType.FULL,
-//            LocaleContextHolder.getLocale()));
-//    verify(pageEventPublisher, never()).publish(
-//        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
-//            LocaleContextHolder.getLocale()));
-//
-//    verify(pageEventPublisher, never()).publish(
-//        new ApplicationSubmittedEvent("resubmission", applicationIdThatIsNotInProgress,
-//            FlowType.FULL,
-//            LocaleContextHolder.getLocale()));
-//    verify(pageEventPublisher, never()).publish(
-//        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatIsNotInProgress,
-//            LocaleContextHolder.getLocale()));
-//  }
+  @Test
+  void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
+    String applicationIdToResubmit = makeApplicationThatShouldBeResubmitted(1);
+    String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted();
+
+    // actually try to resubmit it
+    resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+
+    verify(pageEventPublisher).publish(
+        new ApplicationSubmittedEvent("resubmission", applicationIdToResubmit, FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher, never()).publish(
+        new ApplicationSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
+            FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
+            LocaleContextHolder.getLocale()));
+  }
 
   @NotNull
   private String makeApplicationThatShouldBeResubmitted(int id) {
@@ -127,6 +115,36 @@ class AppsWithBlankStatusResubmissionTest {
         .flow(FlowType.FULL)
         .build();
     applicationRepository.save(applicationWithNoStatuses);
+
+    return applicationId;
+  }
+
+  @NotNull
+  private String makeInProgressApplicationThatShouldNotBeResubmitted () {
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of("test@example.com"),
+            "phoneOrEmail", List.of("EMAIL")))
+        .withPageData("employmentStatus", "areYouWorking", "true")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
+    String applicationId = "1000";
+    Application inProgressApplicationThatShouldBeCompleted = Application.builder()
+        .completedAt(ZonedDateTime.now().minusHours(1)) // important that this is completed!!!
+        .county(County.Anoka)
+        .id(applicationId)
+        .applicationData(applicationData)
+        .docUploadEmailStatus(null)
+        .flow(FlowType.FULL)
+        .build();
+    applicationRepository.save(inProgressApplicationThatShouldBeCompleted);
+
+    documentStatusRepository.createOrUpdate(
+        applicationId,
+        Document.CAF,
+        "Anoka",
+        Status.IN_PROGRESS);
 
     return applicationId;
   }

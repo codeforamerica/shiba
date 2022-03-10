@@ -128,7 +128,8 @@ public class ApplicationRepository {
             + "group by id "
             + "having count(status) = 0 "
             + ") "
-            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id",
+            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id"
+            + " LIMIT 50",
         applicationRowMapper()
     );
 
