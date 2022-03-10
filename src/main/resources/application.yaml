@@ -73,7 +73,8 @@ feature-flag:
   submit-via-api: on
   white-earth-and-red-lake-routing: on
   word-to-pdf: off
-
+  only-submit-blank-status-apps-from-sherburne: on
+  
 document-upload:
   max-files-uploaded: 20
 
@@ -112,5 +113,14 @@ in-progress-resubmission:
     milliseconds: 0 # Run the process as soon the app first starts up
   lockAtLeastFor: 15m
   lockAtMostFor: 30m
+
+no-status-applications-resubmission:
+  interval:
+    milliseconds: 6000000 # Run the ResubmissionService every 10 min (10m * 60s * 1000ms)
+  initialDelay:
+    milliseconds: 0 # Run the process as soon the app first starts up
+  lockAtLeastFor: 10m
+  lockAtMostFor: 20m
+  one-county: on
 
 demo-banner: false

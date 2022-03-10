@@ -8,7 +8,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.output.Document;
@@ -117,6 +121,42 @@ public class ApplicationRepository {
     }
 
     return applicationsStuckInProgress;
+  }
+
+  public List<Application> findApplicationsWithBlankStatuses() {
+    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+        "WITH no_status_apps as ( "
+            + "select id, count(status) "
+            + "from applications left join application_status on applications.id = application_status.application_id "
+            + "where completed_at is not null "
+            + "group by id "
+            + "having count(status) = 0 "
+            + ") "
+            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id"
+            + " LIMIT 10",
+        applicationRowMapper()
+    );
+
+    return applicationsWithBlankStatus;
+  }
+
+  public List<Application> findApplicationsWithBlankStatuses(County county) {
+    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+        "WITH no_status_apps as ( "
+            + "select id, count(status) "
+            + "from applications left join application_status on applications.id = application_status.application_id "
+            + "where completed_at is not null and "
+            + "county = ?"
+            + "group by id "
+            + "having count(status) = 0 "
+            + ") "
+            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id"
+            + " LIMIT 10",
+        applicationRowMapper(),
+        county.toString()
+    );
+
+    return applicationsWithBlankStatus;
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
