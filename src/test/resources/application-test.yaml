@@ -55,3 +55,10 @@ in-progress-resubmission:
     milliseconds: 2629800000 # Wait a month after the app starts to run the method, i.e don't run it at all
   lockAtMostFor: "0m"
   lockAtLeastFor: "0m"
+
+
+no-status-applications-resubmission:
+  initialDelay:
+    milliseconds: 2629800000 # Run the process as soon the app first starts up
+  lockAtLeastFor: 0m
+  lockAtMostFor: 0m
