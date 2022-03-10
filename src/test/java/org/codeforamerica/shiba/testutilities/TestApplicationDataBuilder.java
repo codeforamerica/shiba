@@ -11,6 +11,7 @@ import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 
 /**
  * Helper class for building test application data
@@ -170,5 +171,13 @@ public class TestApplicationDataBuilder {
   private PageData getPageData(String pageName) {
     applicationData.getPagesData().putIfAbsent(pageName, new PageData());
     return applicationData.getPagesData().get(pageName);
+  }
+
+  public ApplicationData withUploadedDocs() {
+    applicationData.setUploadedDocs(List.of(
+        new UploadedDocument("doc1", "", "", "", 1000),
+        new UploadedDocument("doc2", "", "", "", 2000)
+    ));
+    return applicationData;
   }
 }
