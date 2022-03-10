@@ -5,7 +5,8 @@ public enum Status {
   SENDING("sending"),
   DELIVERED("delivered"),
   DELIVERY_FAILED("delivery_failed"),
-  RESUBMISSION_FAILED("resubmission_failed");
+  RESUBMISSION_FAILED("resubmission_failed"),
+  UNDELIVERABLE("undeliverable");
 
   private final String displayName;
 
@@ -20,6 +21,7 @@ public enum Status {
       case "delivered" -> DELIVERED;
       case "delivery_failed" -> DELIVERY_FAILED;
       case "resubmission_failed" -> RESUBMISSION_FAILED;
+      case "undeliverable" -> UNDELIVERABLE;
       default -> null;
     };
   }
