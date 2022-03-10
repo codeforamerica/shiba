@@ -58,7 +58,7 @@ class AppsWithBlankStatusResubmissionTest {
   void itTriggersAnEventFor50AppsWithMissingStatuses() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.OFF);
-    for (int i = 0; i < 51; i++) {
+    for (int i = 0; i < 11; i++) {
       makeBlankStatusApplication(i, Hennepin);
     }
 
@@ -67,7 +67,7 @@ class AppsWithBlankStatusResubmissionTest {
 
 
     // make sure that the first 50 applications had an applicationSubmittedEvent triggered
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 10; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -75,7 +75,7 @@ class AppsWithBlankStatusResubmissionTest {
 
     // Other applications should not have the event triggered
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", String.valueOf(50), FlowType.FULL,
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(11), FlowType.FULL,
             LocaleContextHolder.getLocale()));
   }
 

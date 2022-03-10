@@ -69,6 +69,7 @@ feature-flag:
   certain-pops: on
   submit-via-api: on
   white-earth-and-red-lake-routing: on
+  only-submit-blank-status-apps-from-sherburne: on
 
 document-upload:
   max-files-uploaded: 20
