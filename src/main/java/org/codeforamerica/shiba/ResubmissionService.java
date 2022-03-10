@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.County.Sherburne;
-import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -12,11 +11,12 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -164,7 +164,10 @@ public class ResubmissionService {
       log.info("Retriggering submission for application with id " + id);
 
       documentStatusRepository.createOrUpdateAll(application, SENDING);
-      if (!application.getApplicationData().getUploadedDocs().isEmpty()) {
+      ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
+
+      if (!application.getApplicationData().getUploadedDocs().isEmpty() &&
+       application.getCompletedAt().isAfter(sixtyDaysAgo)) {
         documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
             SENDING, UPLOADED_DOC);
       }

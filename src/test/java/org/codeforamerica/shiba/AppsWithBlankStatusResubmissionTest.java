@@ -61,7 +61,8 @@ class AppsWithBlankStatusResubmissionTest {
         FeatureFlag.OFF);
     for (int i = 0; i < 11; i++) {
       if (i == 0) {
-        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin);
+        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin,
+            ZonedDateTime.now().minusHours(10));
       } else {
         makeBlankStatusApplication(Integer.toString(i), Hennepin);
       }
@@ -87,13 +88,16 @@ class AppsWithBlankStatusResubmissionTest {
             LocaleContextHolder.getLocale()));
   }
 
-
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.OFF);
     String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin).getId();
-    String applicationIdThatShouldNotBeResubmitted = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
+    String appWithExistingStatus = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
+    String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("4",
+        Anoka).getId();
+    String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("5",
+        Anoka, ZonedDateTime.now().minusDays(60).minusNanos(1)).getId();
 
     // actually try to resubmit it
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
@@ -103,11 +107,23 @@ class AppsWithBlankStatusResubmissionTest {
             LocaleContextHolder.getLocale()));
 
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
+        new ApplicationSubmittedEvent("resubmission", appWithExistingStatus,
             FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatShouldNotBeResubmitted,
+        new UploadedDocumentsSubmittedEvent("resubmission", appWithExistingStatus,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher).publish(
+        new ApplicationSubmittedEvent("resubmission", appWithUploadedDocsOlderThan60Days,
+            FlowType.FULL,
+            LocaleContextHolder.getLocale()));
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", appWithUploadedDocsOlderThan60Days,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", laterDocsSubmissionOlderThan60Days,
             LocaleContextHolder.getLocale()));
   }
 
@@ -116,7 +132,8 @@ class AppsWithBlankStatusResubmissionTest {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.ON);
     Application sherburneApp = makeBlankStatusApplication("1", Sherburne);
-    Application sherburneDoc = makeBlankStatusLaterDocApplication("12", Sherburne);
+    Application sherburneDoc = makeBlankStatusLaterDocApplication("12", Sherburne,
+        ZonedDateTime.now().minusHours(10));
     Application notSherburneApp = makeBlankStatusApplication("2", Anoka);
 
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
@@ -137,12 +154,13 @@ class AppsWithBlankStatusResubmissionTest {
             LocaleContextHolder.getLocale()));
   }
 
-  private Application makeBlankStatusLaterDocApplication(String id, County county) {
+  private Application makeBlankStatusLaterDocApplication(String id, County county,
+      ZonedDateTime completedAt) {
     ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
     applicationData.setId(id);
     applicationData.setFlow(FlowType.LATER_DOCS);
     Application laterDocsApplication = Application.builder()
-        .completedAt(ZonedDateTime.now().minusHours(10)) // important that this is completed!!!
+        .completedAt(completedAt) // important that this is completed!!!
         .county(county)
         .id(id)
         .applicationData(applicationData)
