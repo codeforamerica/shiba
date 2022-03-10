@@ -94,7 +94,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-	implementation("org.springframework.mobile:spring-mobile-starter:2.0.0.M2")
+	implementation("org.springframework.mobile:spring-mobile-starter:2.0.0.M3")
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("io.sentry:sentry-spring-boot-starter:5.6.2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -105,7 +105,7 @@ dependencies {
         exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
     }
 
-    implementation("com.itextpdf.licensing:licensing-base:4.0.1")
+    implementation("com.azure:azure-storage-blob:12.15.0")
     implementation("com.itextpdf:pdfoffice:2.0.1")
     implementation("com.itextpdf:itext7-core:7.2.1")
     implementation("com.azure:azure-storage-blob:12.14.4")
