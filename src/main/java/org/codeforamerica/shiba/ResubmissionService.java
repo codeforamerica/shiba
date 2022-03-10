@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.County.Sherburne;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -147,7 +148,8 @@ public class ResubmissionService {
     List<Application> applicationsWithBlankStatuses = new ArrayList<Application>();
 
     if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne").isOn()) {
-      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(Sherburne);
+      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(
+          Sherburne);
     } else {
       applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
     }
@@ -155,16 +157,21 @@ public class ResubmissionService {
         "Resubmitting " + applicationsWithBlankStatuses.size() + " applications with no statuses");
 
     //from applicationData, decide on what docs need to be created
-    for(Application application: applicationsWithBlankStatuses) {
+    for (Application application : applicationsWithBlankStatuses) {
       String id = application.getId();
       // Add applicationId to the logs to make it easier to query for in datadog
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
       documentStatusRepository.createOrUpdateAll(application, SENDING);
+      if (!application.getApplicationData().getUploadedDocs().isEmpty()) {
+        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+            SENDING, UPLOADED_DOC);
+      }
+
       Application retrievedApp = applicationRepository.find(id);
 
-      sendDocumentsViaESB(retrievedApp,id);
+      sendDocumentsViaESB(retrievedApp, id);
     }
     //resend application docs
     MDC.clear();
