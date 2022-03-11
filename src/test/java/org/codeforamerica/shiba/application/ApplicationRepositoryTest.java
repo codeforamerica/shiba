@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.application;
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.mockito.ArgumentMatchers.any;
@@ -267,5 +268,40 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
       Application retrievedApplication = applicationRepositoryWithMockEncryptor.find(applicationId);
       assertThat(retrievedApplication.getApplicationData()).isEqualTo(decryptedApplicationData);
     }
+  }
+
+  @Test
+  void shouldReturnAppsWithNoStatusesToResubmitInChronologicalOrderByOldestFirst() {
+    Application newestApplication = Application.builder()
+        .id("1")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Anoka)
+        .build();
+    Application middleApplication = Application.builder()
+        .id("2")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS).minusDays(14))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Anoka)
+        .build();
+    Application oldestApplication = Application.builder()
+        .id("3")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS).minusMonths(1))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Olmsted)
+        .build();
+    applicationRepository.save(newestApplication);
+    applicationRepository.save(middleApplication);
+    applicationRepository.save(oldestApplication);
+    assertThat(applicationRepository.findApplicationsWithBlankStatuses()
+        .stream().map(Application::getId))
+        .containsExactly(
+        "3",
+        "2",
+        "1"
+    );
+    assertThat(applicationRepository.findApplicationsWithBlankStatuses(Anoka)
+        .stream().map(Application::getId))
+        .containsExactly("2", "1");
   }
 }
