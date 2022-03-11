@@ -27,6 +27,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
+import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.NextPage;
@@ -50,6 +51,7 @@ public class ApplicationData implements Serializable {
   private String lastPageViewed;
   private String deviceType;
   private String devicePlatform;
+  private List<ExpeditedEligibility> expeditedEligibility;
   private FlowType flow = FlowType.UNDETERMINED;
   private boolean isSubmitted = false;
   private PagesData pagesData = new PagesData();
