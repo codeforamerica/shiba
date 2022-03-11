@@ -68,9 +68,9 @@ class AppsWithBlankStatusResubmissionTest {
         FeatureFlag.OFF);
     for (int i = 0; i < 11; i++) {
       if (i == 0) {
-        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin, tenHoursAgo);
+        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin, tenHoursAgo.plusMinutes(i));
       } else {
-        makeBlankStatusApplication(Integer.toString(i), Hennepin, tenHoursAgo);
+        makeBlankStatusApplication(Integer.toString(i), Hennepin, tenHoursAgo.plusMinutes(i));
       }
     }
 

@@ -148,7 +148,5 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             IN_PROGRESS)
     );
-
-
   }
 }
