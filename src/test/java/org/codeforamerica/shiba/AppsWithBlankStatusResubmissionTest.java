@@ -1,10 +1,14 @@
 package org.codeforamerica.shiba;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Sherburne;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.output.Document.CAF;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -55,16 +59,18 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private FeatureFlagConfiguration featureFlagConfiguration;
 
+  private final ZonedDateTime moreThan60DaysAgo = ZonedDateTime.now().minusDays(60).minusNanos(1);
+  private final ZonedDateTime tenHoursAgo = ZonedDateTime.now().minusHours(10);
+
   @Test
   void itTriggersAnEventFor10AppsWithMissingStatuses() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.OFF);
     for (int i = 0; i < 11; i++) {
       if (i == 0) {
-        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin,
-            ZonedDateTime.now().minusHours(10));
+        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin, tenHoursAgo);
       } else {
-        makeBlankStatusApplication(Integer.toString(i), Hennepin);
+        makeBlankStatusApplication(Integer.toString(i), Hennepin, tenHoursAgo);
       }
     }
 
@@ -92,12 +98,12 @@ class AppsWithBlankStatusResubmissionTest {
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.OFF);
-    String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin).getId();
+    String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin, tenHoursAgo).getId();
     String appWithExistingStatus = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
-    String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("4",
-        Anoka).getId();
-    String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("5",
-        Anoka, ZonedDateTime.now().minusDays(60).minusNanos(1)).getId();
+    String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("4", Anoka,
+        moreThan60DaysAgo).getId();
+    String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("5", Anoka,
+        moreThan60DaysAgo).getId();
 
     // actually try to resubmit it
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
@@ -128,13 +134,36 @@ class AppsWithBlankStatusResubmissionTest {
   }
 
   @Test
+  void setsApplicationsWithDocsOlderThan60DaysAsUndeliverable() {
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+        FeatureFlag.OFF);
+    String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("48",
+        Hennepin, moreThan60DaysAgo).getId();
+    String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("51",
+        Hennepin, moreThan60DaysAgo).getId();
+
+    resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+
+    assertThat(documentStatusRepository.findAll(
+        appWithUploadedDocsOlderThan60Days)).containsExactlyInAnyOrder(
+        new DocumentStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", Status.SENDING),
+        new DocumentStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
+            Status.UNDELIVERABLE)
+    );
+    assertThat(documentStatusRepository.findAll(
+        laterDocsSubmissionOlderThan60Days)).containsExactlyInAnyOrder(
+        new DocumentStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
+            Status.UNDELIVERABLE)
+    );
+  }
+
+  @Test
   void ensureOnlySherburneAppsAreRetriggeredWhenFeatureFlagIsOn() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.ON);
-    Application sherburneApp = makeBlankStatusApplication("1", Sherburne);
-    Application sherburneDoc = makeBlankStatusLaterDocApplication("12", Sherburne,
-        ZonedDateTime.now().minusHours(10));
-    Application notSherburneApp = makeBlankStatusApplication("2", Anoka);
+    Application sherburneApp = makeBlankStatusApplication("1", Sherburne, tenHoursAgo);
+    Application sherburneDoc = makeBlankStatusLaterDocApplication("12", Sherburne, tenHoursAgo);
+    Application notSherburneApp = makeBlankStatusApplication("2", Anoka, tenHoursAgo);
 
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
 
@@ -158,23 +187,22 @@ class AppsWithBlankStatusResubmissionTest {
       ZonedDateTime completedAt) {
     ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
     applicationData.setId(id);
-    applicationData.setFlow(FlowType.LATER_DOCS);
+    applicationData.setFlow(LATER_DOCS);
     Application laterDocsApplication = Application.builder()
         .completedAt(completedAt) // important that this is completed!!!
         .county(county)
         .id(id)
         .applicationData(applicationData)
-        .flow(FlowType.LATER_DOCS)
+        .flow(LATER_DOCS)
         .build();
     applicationRepository.save(laterDocsApplication);
     return laterDocsApplication;
   }
 
-  private Application makeBlankStatusApplication(String id,
-      County county) {
-    String applicationId = String.valueOf(id);
+  private Application makeBlankStatusApplication(String id, County county,
+      ZonedDateTime createdAt) {
 
-    ApplicationData applicationData = new ApplicationData();
+    ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
     applicationData.setPagesData(new PagesDataBuilder()
         .withPageData("contactInfo", Map.of(
             "email", List.of("test@example.com"),
@@ -182,12 +210,12 @@ class AppsWithBlankStatusResubmissionTest {
         .withPageData("employmentStatus", "areYouWorking", "true")
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
-    applicationData.setId(applicationId);
+    applicationData.setId(id);
 
     Application applicationWithNoStatuses = Application.builder()
-        .completedAt(ZonedDateTime.now().minusHours(10)) // important that this is completed!!!
+        .completedAt(createdAt) // important that this is completed!!!
         .county(county)
-        .id(applicationId)
+        .id(id)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
         .flow(FlowType.FULL)
@@ -219,7 +247,7 @@ class AppsWithBlankStatusResubmissionTest {
 
     documentStatusRepository.createOrUpdate(
         applicationId,
-        Document.CAF,
+        CAF,
         "Anoka",
         Status.IN_PROGRESS);
 

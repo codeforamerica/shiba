@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
+import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
@@ -23,6 +24,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -129,7 +131,7 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
-      sendDocumentsViaESB(application, id);
+      sendDocumentsViaESB(application, id, true);
     }
 
     // remove last applicationId from the mdc so it doesn't pollute future logs
@@ -166,22 +168,22 @@ public class ResubmissionService {
       documentStatusRepository.createOrUpdateAll(application, SENDING);
       ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
 
-      if (!application.getApplicationData().getUploadedDocs().isEmpty() &&
-       application.getCompletedAt().isAfter(sixtyDaysAgo)) {
+      if (!application.getApplicationData().getUploadedDocs().isEmpty()) {
+        Status status = application.getCompletedAt().isAfter(sixtyDaysAgo) ? SENDING : UNDELIVERABLE;
         documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
-            SENDING, UPLOADED_DOC);
+            status, UPLOADED_DOC);
       }
-
       Application retrievedApp = applicationRepository.find(id);
 
-      sendDocumentsViaESB(retrievedApp, id);
+      sendDocumentsViaESB(retrievedApp, id, false);
     }
     //resend application docs
     MDC.clear();
 
   }
 
-  private void sendDocumentsViaESB(Application application, String id) {
+  private void sendDocumentsViaESB(Application application, String id,
+      boolean shouldDeleteDocumentStatuses) {
     List<Document> inProgressDocs = application.getDocumentStatuses().stream()
         .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS)
             || documentStatus.getStatus().equals(SENDING) &&
@@ -190,7 +192,9 @@ public class ResubmissionService {
             DocumentStatus::getDocumentType
         ).collect(Collectors.toList());
 
-    documentStatusRepository.delete(id, inProgressDocs);
+    if (shouldDeleteDocumentStatuses) {
+      documentStatusRepository.delete(id, inProgressDocs);
+    }
 
     boolean shouldRefireAppSubmittedEvent = inProgressDocs.stream()
         .anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
