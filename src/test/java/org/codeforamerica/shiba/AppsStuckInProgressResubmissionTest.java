@@ -1,20 +1,29 @@
 package org.codeforamerica.shiba;
 
+import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.application.*;
+import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +84,7 @@ class AppsStuckInProgressResubmissionTest {
   void itTriggersAnEventFor50AppsStuckSending() {
     // Only the first 50 of these should be resubmitted.
     for (int i = 60; i < 111; i++) {
-      makeApplicationThatShouldBeResubmitted(i, Status.SENDING);
+      makeApplicationThatShouldBeResubmitted(i, SENDING);
     }
 
     // actually try to resubmit it
@@ -129,7 +138,7 @@ class AppsStuckInProgressResubmissionTest {
   private String makeApplicationThatShouldBeResubmitted(int id, Status status) {
     String applicationId = String.valueOf(id);
 
-    ApplicationData applicationData = new ApplicationData();
+    ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
     applicationData.setPagesData(new PagesDataBuilder()
         .withPageData("contactInfo", Map.of(
             "email", List.of("test@example.com"),
@@ -140,7 +149,7 @@ class AppsStuckInProgressResubmissionTest {
 
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(10)) // important that this is completed!!!
-        .county(County.Anoka)
+        .county(Anoka)
         .id(applicationId)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
@@ -157,9 +166,9 @@ class AppsStuckInProgressResubmissionTest {
 
     documentStatusRepository.createOrUpdate(
         applicationId,
-        Document.UPLOADED_DOC,
+        UPLOADED_DOC,
         "Anoka",
-        status);
+        SENDING);
 
     return applicationId;
   }
@@ -177,7 +186,7 @@ class AppsStuckInProgressResubmissionTest {
     String applicationId = "6";
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(1)) // important that this is completed!!!
-        .county(County.Anoka)
+        .county(Anoka)
         .id(applicationId)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
@@ -206,7 +215,7 @@ class AppsStuckInProgressResubmissionTest {
     String applicationId = "7";
     Application inProgressApplicationThatShouldBeCompleted = Application.builder()
         .completedAt(ZonedDateTime.now().minusHours(12)) // important that this is completed!!!
-        .county(County.Anoka)
+        .county(Anoka)
         .id(applicationId)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
@@ -218,7 +227,7 @@ class AppsStuckInProgressResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        Status.DELIVERED);
+        DELIVERED);
     return applicationId;
   }
 }

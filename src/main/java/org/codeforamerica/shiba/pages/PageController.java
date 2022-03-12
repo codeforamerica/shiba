@@ -666,7 +666,8 @@ public class PageController {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
       Application application = applicationRepository.find(applicationData.getId());
-      if (application.getDocumentStatuses().stream()
+      if (application.getDocumentStatuses() == null ||
+          application.getDocumentStatuses().stream()
           .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC)
           .noneMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus.getStatus()))) {
         // Don't overwrite a "completed" status

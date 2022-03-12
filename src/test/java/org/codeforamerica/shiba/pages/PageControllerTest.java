@@ -492,7 +492,7 @@ class PageControllerTest {
         .id(applicationId)
         .applicationData(applicationData)
         .build();
-    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationRepository.find("someId")).thenReturn(application);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
     List<RoutingDestination> routingDestinations =
         List.of(new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe"));
