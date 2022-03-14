@@ -95,6 +95,10 @@ logging:
 
 pagesConfig: pages-config.yaml
 
+asyncConfiguration:
+  corePoolSize: ${ASYNC_THREAD_POOL:10}
+  queueCapacity: ${ASYNC_QUEUE_CAPACITY:2}
+
 documentUploadEmails:
   cronExpression: "0 0 15 * * *" # send document upload emails at 15:00 UTC (10:00 CT) each day
 
