@@ -51,7 +51,7 @@ public class ApplicationData implements Serializable {
   private String lastPageViewed;
   private String deviceType;
   private String devicePlatform;
-  private List<ExpeditedEligibility> expeditedEligibility;
+  private List<ExpeditedEligibility> expeditedEligibility = new ArrayList<>();
   private FlowType flow = FlowType.UNDETERMINED;
   private boolean isSubmitted = false;
   private PagesData pagesData = new PagesData();

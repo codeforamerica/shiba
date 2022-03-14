@@ -29,6 +29,7 @@ public class ApplicationFactory {
     copy.setStartTimeOnce(applicationData.getStartTime());
     copy.setUtmSource(applicationData.getUtmSource());
     copy.setLastPageViewed(applicationData.getLastPageViewed());
+    copy.setExpeditedEligibility(applicationData.getExpeditedEligibility());
     monitoringService.setApplicationId(applicationData.getId());
 
     return Application.builder()
