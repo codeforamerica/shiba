@@ -154,6 +154,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     // Informational pages
     testPage.clickContinue();
     testPage.clickContinue();
+    testPage.clickContinue();
 
     // Language Preferences
     testPage.enter("writtenLanguage", "English");
