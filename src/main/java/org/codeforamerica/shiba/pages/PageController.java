@@ -3,11 +3,13 @@ package org.codeforamerica.shiba.pages;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,7 +19,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,10 +54,24 @@ import org.codeforamerica.shiba.output.caf.Eligibility;
 import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.config.*;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
+import org.codeforamerica.shiba.pages.config.NextPage;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PageTemplate;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.DatasourcePages;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
-import org.codeforamerica.shiba.pages.events.*;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
+import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -56,7 +80,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -595,7 +624,7 @@ public class PageController {
       return new ModelAndView("redirect:/pages/" + submitPage);
     }
   }
-  
+
   private void recordDeviceType(Device device, Application application) {
       String deviceType = "unknown";
       String platform = "unknown";
@@ -644,7 +673,15 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
+      Application application = applicationRepository.find(applicationData.getId());
+      if (application.getDocumentStatuses() == null ||
+          application.getDocumentStatuses().stream()
+          .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC)
+          .noneMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus.getStatus()))) {
+        // Don't overwrite a "completed" status
+        documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
+            UPLOADED_DOC);
+      }
 
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
@@ -663,10 +700,10 @@ public class PageController {
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
         }
-        
+
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
-        
+
         if(file.getContentType()!=null && file.getContentType().contains("image")) {
           Path paths = Files.createTempDirectory("");
           File thumbFile = new File(paths.toFile(),file.getOriginalFilename());
@@ -676,7 +713,7 @@ public class PageController {
           ByteArrayOutputStream os = new ByteArrayOutputStream();
           BufferedImage outputImage = Thumbnails.of(thumbFile).size(300, 300).asBufferedImage();
           ImageIO.write(outputImage, "png", os);
-          dataURL = "data:image/png;base64,"+Base64.getEncoder().encodeToString(os.toByteArray());
+          dataURL = "data:image/png;base64," + Base64.getEncoder().encodeToString(os.toByteArray());
           outputImage.flush();
           thumbFile.delete();
           Files.delete(paths);
@@ -687,7 +724,7 @@ public class PageController {
       }
 
       return new ResponseEntity<>(HttpStatus.OK);
-    } 
+    }
     catch (Exception e) {
       log.error("Error Occurred while uploading File " + e.getLocalizedMessage());
       // If there's any uncaught exception, return a default error message

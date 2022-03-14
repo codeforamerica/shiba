@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Feedback;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -51,5 +52,18 @@ public class Application {
   public void setCompletedAtTime(Clock clock) {
     completedAt = ZonedDateTime.now(clock);
     setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
+  }
+
+  public Status getApplicationStatus(Document document, String routingDestination) {
+    if (documentStatuses != null) {
+      return documentStatuses.stream()
+          .filter(appStatus -> appStatus.getDocumentType() == document
+              && (appStatus.getRoutingDestinationName() == null
+              || appStatus.getRoutingDestinationName()
+              .equals(routingDestination)))
+          .findFirst()
+          .map(DocumentStatus::getStatus).orElse(null);
+    }
+    return null;
   }
 }
