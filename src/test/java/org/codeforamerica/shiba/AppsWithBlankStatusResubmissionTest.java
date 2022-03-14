@@ -61,8 +61,8 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private FeatureFlagConfiguration featureFlagConfiguration;
 
-  private final ZonedDateTime moreThan60DaysAgo = ZonedDateTime.now().minusDays(60).minusNanos(1);
-  private final ZonedDateTime tenHoursAgo = ZonedDateTime.now().minusHours(10);
+  private final ZonedDateTime moreThan60DaysAgo = ZonedDateTime.now().withFixedOffsetZone().minusDays(60).minusNanos(1);
+  private final ZonedDateTime tenHoursAgo = ZonedDateTime.now().withFixedOffsetZone().minusHours(10);
 
   @Test
   void itTriggersAnEventFor10AppsWithMissingStatuses() {
