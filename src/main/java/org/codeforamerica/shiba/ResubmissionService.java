@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.County.Sherburne;
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -14,9 +15,8 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -24,7 +24,6 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
-import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -147,7 +146,7 @@ public class ResubmissionService {
     log.info("Checking for applications that have no statuses");
 
     //get list back from db of blank status applications from Sherburne
-    List<Application> applicationsWithBlankStatuses = new ArrayList<Application>();
+    List<Application> applicationsWithBlankStatuses;
 
     if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne").isOn()) {
       applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(
@@ -166,33 +165,32 @@ public class ResubmissionService {
       log.info("Retriggering submission for application with id " + id);
 
       documentStatusRepository.createOrUpdateAll(application, SENDING);
-      ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
 
-      if (!application.getApplicationData().getUploadedDocs().isEmpty()) {
-        Status status = application.getCompletedAt().isAfter(sixtyDaysAgo) ? SENDING : UNDELIVERABLE;
+      if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData().getUploadedDocs().isEmpty()) {
         documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
-            status, UPLOADED_DOC);
+            SENDING, UPLOADED_DOC);
       }
-      Application retrievedApp = applicationRepository.find(id);
 
+      Application retrievedApp = applicationRepository.find(id);
       sendDocumentsViaESB(retrievedApp, id, false);
     }
     //resend application docs
     MDC.clear();
-
   }
 
   private void sendDocumentsViaESB(Application application, String id,
       boolean shouldDeleteDocumentStatuses) {
+    // Resend in progress / sending applications (without verification docs)
     List<Document> inProgressDocs = application.getDocumentStatuses().stream()
         .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS)
             || documentStatus.getStatus().equals(SENDING) &&
-            List.of(CAF, CCAP, CERTAIN_POPS, UPLOADED_DOC)
+            List.of(CAF, CCAP, CERTAIN_POPS)
                 .contains(documentStatus.getDocumentType())).map(
             DocumentStatus::getDocumentType
         ).collect(Collectors.toList());
 
     if (shouldDeleteDocumentStatuses) {
+      // Will be recreated on submit event
       documentStatusRepository.delete(id, inProgressDocs);
     }
 
@@ -205,14 +203,46 @@ public class ResubmissionService {
           application.getApplicationData().getLocale()));
     }
 
-    boolean shouldRefireUploadedDocSubmittedEvent = inProgressDocs.stream()
-        .anyMatch(document -> Objects.equals(
-            UPLOADED_DOC, document));
-    if (shouldRefireUploadedDocSubmittedEvent) {
-      log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
-      pageEventPublisher.publish(
-          new UploadedDocumentsSubmittedEvent("resubmission", id,
-              application.getApplicationData().getLocale()));
+
+    // Resend sending verification docs on an application
+    Optional<DocumentStatus> uploadedDocStatus = application.getDocumentStatuses().stream()
+        .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC && documentStatus.getStatus() == SENDING && application.getFlow() != LATER_DOCS)
+        .findFirst();
+    if (uploadedDocStatus.isPresent()) {
+      resendUploadDocAndUpdateStatus(application, id, shouldDeleteDocumentStatuses);
+    }
+
+    // Resend inprogress / sending verification docs for later docs
+    uploadedDocStatus = application.getDocumentStatuses().stream()
+        .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC && List.of(SENDING, IN_PROGRESS).contains(documentStatus.getStatus()) && application.getFlow() == LATER_DOCS)
+        .findFirst();
+    if (uploadedDocStatus.isPresent()) {
+      resendUploadDocAndUpdateStatus(application, id, shouldDeleteDocumentStatuses);
+    }
+  }
+
+  private void resendUploadDocAndUpdateStatus(Application application, String id, boolean shouldDeleteDocumentStatuses) {
+    if (shouldDeleteDocumentStatuses) {
+      // Will be recreated on submit event
+      documentStatusRepository.delete(id, List.of(UPLOADED_DOC));
+    }
+
+    if (application.getApplicationData().getUploadedDocs().isEmpty()) {
+      // No docs to deliver
+      documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+          UNDELIVERABLE, UPLOADED_DOC);
+    } else {
+      // Docs older than 60 days cannot be delivered due to retention policy
+      ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
+      if (application.getCompletedAt().isBefore(sixtyDaysAgo)) {
+        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+            UNDELIVERABLE, UPLOADED_DOC);
+      } else {
+        log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
+        pageEventPublisher.publish(
+            new UploadedDocumentsSubmittedEvent("resubmission", id,
+                application.getApplicationData().getLocale()));
+      }
     }
   }
 

@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
@@ -12,7 +13,14 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +42,24 @@ import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.pages.config.*;
-import org.codeforamerica.shiba.pages.data.*;
+import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
+import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.LandmarkPagesConfiguration;
+import org.codeforamerica.shiba.pages.config.NextPage;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
+import org.codeforamerica.shiba.pages.config.PageTemplate;
+import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.DatasourcePages;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
-import org.codeforamerica.shiba.pages.events.*;
+import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
+import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
+import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -45,7 +67,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -282,7 +309,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -411,7 +438,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-                        && applicationData.getStartTime() == null;
+        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
@@ -423,9 +450,9 @@ public class PageController {
         .getLandmarkPages();
     // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-           !landmarkPagesConfiguration.isLandingPage(pageName) &&
-           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
-           applicationData.isSubmitted();
+        !landmarkPagesConfiguration.isLandingPage(pageName) &&
+        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
+        applicationData.isSubmitted();
   }
 
   @PostMapping("/groups/{groupName}/delete")
@@ -518,9 +545,9 @@ public class PageController {
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());
       }
-      
+
       if (pageName != null || !pageName.isEmpty()) {
-          applicationData.setLastPageViewed(pageName);
+        applicationData.setLastPageViewed(pageName);
       }
 
       ofNullable(pageWorkflow.getEnrichment())
@@ -605,7 +632,16 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
+      Application application = applicationRepository.find(applicationData.getId());
+      if (application.getDocumentStatuses() == null ||
+          application.getDocumentStatuses().stream()
+              .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC)
+              .noneMatch(documentStatus -> List.of(SENDING, DELIVERED)
+                  .contains(documentStatus.getStatus()))) {
+        // Don't overwrite a "completed" status
+        documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
+            UPLOADED_DOC);
+      }
 
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
@@ -651,7 +687,8 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING, UPLOADED_DOC);
+      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING,
+          UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));
