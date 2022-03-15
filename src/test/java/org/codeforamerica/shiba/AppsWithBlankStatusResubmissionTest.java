@@ -3,7 +3,7 @@ package org.codeforamerica.shiba;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Sherburne;
+import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
@@ -66,7 +66,7 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void itTriggersAnEventForAppsWithMissingStatuses() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
     for (int i = 0; i < 31; i++) {
       if (i == 0) {
@@ -98,7 +98,7 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
     String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin, tenHoursAgo).getId();
     String appWithExistingStatus = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
@@ -137,7 +137,7 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void setsApplicationsWithDocsOlderThan60DaysAsUndeliverable() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
     String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("48",
         Hennepin, moreThan60DaysAgo).getId();
@@ -161,7 +161,7 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void shouldSetLaterDocsAppsWithNoDocumentsToUndeliverableAndNotPublishSubmissionEvents() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
     Application laterDocsWithoutDocuments = makeBlankStatusLaterDocApplication("60", Hennepin, ZonedDateTime.now(), false);
     Application laterDocsWithDocuments = makeBlankStatusLaterDocApplication("61", Hennepin, ZonedDateTime.now().minusMinutes(5), true);
@@ -181,28 +181,28 @@ class AppsWithBlankStatusResubmissionTest {
   }
 
   @Test
-  void ensureOnlySherburneAppsAreRetriggeredWhenFeatureFlagIsOn() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
+  void ensureOnlyOlmstedAppsAreRetriggeredWhenFeatureFlagIsOn() {
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.ON);
-    Application sherburneApp = makeBlankStatusApplication("1", Sherburne, tenHoursAgo);
-    Application sherburneDoc = makeBlankStatusLaterDocApplication("12", Sherburne, tenHoursAgo, true);
-    Application notSherburneApp = makeBlankStatusApplication("2", Anoka, tenHoursAgo);
+    Application olmstedApp = makeBlankStatusApplication("1", Olmsted, tenHoursAgo);
+    Application olmstedDoc = makeBlankStatusLaterDocApplication("12", Olmsted, tenHoursAgo, true);
+    Application notOlmstedApp = makeBlankStatusApplication("2", Anoka, tenHoursAgo);
 
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
 
     verify(pageEventPublisher).publish(
-        new ApplicationSubmittedEvent("resubmission", sherburneApp.getId(), FlowType.FULL,
+        new ApplicationSubmittedEvent("resubmission", olmstedApp.getId(), FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", sherburneDoc.getId(),
+        new UploadedDocumentsSubmittedEvent("resubmission", olmstedDoc.getId(),
             LocaleContextHolder.getLocale()));
 
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", notSherburneApp.getId(),
+        new ApplicationSubmittedEvent("resubmission", notOlmstedApp.getId(),
             FlowType.FULL,
             LocaleContextHolder.getLocale()));
     verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", notSherburneApp.getId(),
+        new UploadedDocumentsSubmittedEvent("resubmission", notOlmstedApp.getId(),
             LocaleContextHolder.getLocale()));
   }
 

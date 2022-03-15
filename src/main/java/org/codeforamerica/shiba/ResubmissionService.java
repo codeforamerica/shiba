@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.Sherburne;
+import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
@@ -145,12 +145,11 @@ public class ResubmissionService {
   public void resubmitBlankStatusApplicationsViaEsb() {
     log.info("Checking for applications that have no statuses");
 
-    //get list back from db of blank status applications from Sherburne
     List<Application> applicationsWithBlankStatuses;
 
-    if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne").isOn()) {
+    if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted").isOn()) {
       applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(
-          Sherburne);
+          Olmsted);
     } else {
       applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
     }
