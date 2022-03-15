@@ -1,19 +1,16 @@
 package org.codeforamerica.shiba.pages.events;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.codeforamerica.shiba.CountyMap;
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -29,8 +26,6 @@ import org.slf4j.MDC;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -67,9 +62,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
         + event.getApplicationId());
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
-      log.info(
-          event.getApplicationId() + " completed " + (SECONDS.between(application.getCompletedAt(),
-              ZonedDateTime.now())) + "s ago");
+      logTimeSinceCompleted(application);
       mnitDocumentConsumer.processCafAndCcap(application);
     }
     MDC.clear();
