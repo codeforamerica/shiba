@@ -711,7 +711,6 @@ if(type.contains("image")) {
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
 
-        log.info("Does file contain image: " + file.getContentType().contains(("image")));
         if(file.getContentType()!=null && file.getContentType().contains("image")) {
           Path paths = Files.createTempDirectory("");
           File thumbFile = new File(paths.toFile(),file.getOriginalFilename());
