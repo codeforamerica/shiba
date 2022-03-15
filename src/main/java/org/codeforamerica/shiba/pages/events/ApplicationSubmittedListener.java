@@ -4,14 +4,13 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.codeforamerica.shiba.CountyMap;
+import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -28,8 +27,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Component
 public class ApplicationSubmittedListener extends ApplicationEventListener {
@@ -39,17 +36,14 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
-  private final CountyMap<CountyRoutingDestination> countyMap;
   private final FeatureFlagConfiguration featureFlags;
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
       EmailClient emailClient,
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
-      CountyMap<CountyRoutingDestination> countyMap,
       FeatureFlagConfiguration featureFlagConfiguration,
       MonitoringService monitoringService) {
     super(applicationRepository, monitoringService);
@@ -58,16 +52,17 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.pdfGenerator = pdfGenerator;
-    this.countyMap = countyMap;
     this.featureFlags = featureFlagConfiguration;
   }
 
   @Async
   @EventListener
   public void sendViaApi(ApplicationSubmittedEvent event) {
-	log.info("sendViaApi received ApplicationSubmittetdEvent with application ID: " + event.getApplicationId());
+    log.info("sendViaApi received ApplicationSubmittedEvent with application ID: "
+        + event.getApplicationId());
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
+      logTimeSinceCompleted(application);
       mnitDocumentConsumer.processCafAndCcap(application);
     }
     MDC.clear();

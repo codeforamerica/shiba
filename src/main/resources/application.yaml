@@ -22,6 +22,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
 server:
+  shutdown: graceful
   tomcat:
     max-http-form-post-size: 20MB
     use-relative-redirects: true
@@ -73,7 +74,7 @@ feature-flag:
   submit-via-api: on
   white-earth-and-red-lake-routing: on
   word-to-pdf: off
-  only-submit-blank-status-apps-from-sherburne: on
+  only-submit-blank-status-apps-from-olmsted: on
   
 document-upload:
   max-files-uploaded: 20
@@ -94,6 +95,10 @@ logging:
     org.springframework.context.event.EventListener: TRACE
 
 pagesConfig: pages-config.yaml
+
+asyncConfiguration:
+  corePoolSize: ${ASYNC_THREAD_POOL:10}
+  queueCapacity: ${ASYNC_QUEUE_CAPACITY:2}
 
 documentUploadEmails:
   cronExpression: "0 0 15 * * *" # send document upload emails at 15:00 UTC (10:00 CT) each day
@@ -119,8 +124,7 @@ no-status-applications-resubmission:
     milliseconds: 600000 # Run the ResubmissionService every 10 min (10m * 60s * 1000ms)
   initialDelay:
     milliseconds: 0 # Run the process as soon the app first starts up
-  lockAtLeastFor: 10m
+  lockAtLeastFor: 9m
   lockAtMostFor: 20m
-  one-county: on
 
 demo-banner: false

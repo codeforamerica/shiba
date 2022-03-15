@@ -34,7 +34,6 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
 
     testPage.clickButton("Continuar");
     testPage.clickButton("Continuar");
-    testPage.clickButton("Continuar");
 
     WebElement selectedOption = testPage.getSelectedOption("writtenLanguage");
     assertThat(selectedOption.getText()).isEqualTo("Español");
@@ -44,7 +43,6 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
   void userCanSeeSpanishWhenReadOrWriteSpanishIsSelectedOnLanguagePreferences() {
     testPage.clickButton("Apply now");
     testPage.enter("county", "Hennepin");
-    testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickContinue();

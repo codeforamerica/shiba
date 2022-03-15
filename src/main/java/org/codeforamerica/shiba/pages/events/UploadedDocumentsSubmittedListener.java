@@ -8,7 +8,6 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
@@ -21,25 +20,23 @@ import org.springframework.stereotype.Component;
 public class UploadedDocumentsSubmittedListener extends ApplicationEventListener {
 
   private final MnitDocumentConsumer mnitDocumentConsumer;
-  private final FeatureFlagConfiguration featureFlags;
   private final EmailClient emailClient;
 
   public UploadedDocumentsSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
       MonitoringService monitoringService,
-      FeatureFlagConfiguration featureFlags,
       EmailClient emailClient) {
     super(applicationRepository, monitoringService);
     this.mnitDocumentConsumer = mnitDocumentConsumer;
-    this.featureFlags = featureFlags;
     this.emailClient = emailClient;
   }
 
   @Async
   @EventListener
   public void send(UploadedDocumentsSubmittedEvent event) {
-	log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
+    log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
     Application application = getApplicationFromEvent(event);
+    logTimeSinceCompleted(application);
     mnitDocumentConsumer.processUploadedDocuments(application);
     MDC.clear();
   }
