@@ -133,8 +133,8 @@ public class ApplicationRepository {
             + "having count(status) = 0 "
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by completed_at asc "
-            + " LIMIT 10",
+            + "order by county, completed_at asc"
+            + " LIMIT 30",
         applicationRowMapper()
     );
 
@@ -153,7 +153,7 @@ public class ApplicationRepository {
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
             + "order by completed_at asc "
-            + "LIMIT 10",
+            + "LIMIT 30",
         applicationRowMapper(),
         county.toString()
     );

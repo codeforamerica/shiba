@@ -65,10 +65,10 @@ class AppsWithBlankStatusResubmissionTest {
   private final ZonedDateTime tenHoursAgo = ZonedDateTime.now().withFixedOffsetZone().minusHours(10);
 
   @Test
-  void itTriggersAnEventFor10AppsWithMissingStatuses() {
+  void itTriggersAnEventForAppsWithMissingStatuses() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-sherburne")).thenReturn(
         FeatureFlag.OFF);
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 31; i++) {
       if (i == 0) {
         makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin, tenHoursAgo.plusMinutes(i), true);
       } else {
@@ -79,8 +79,8 @@ class AppsWithBlankStatusResubmissionTest {
     // actually try to resubmit it
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
 
-    // make sure that the first 10 applications had an applicationSubmittedEvent triggered
-    for (int i = 1; i < 10; i++) {
+    // make sure that the first 30 applications had an applicationSubmittedEvent triggered
+    for (int i = 1; i < 30; i++) {
       verify(pageEventPublisher).publish(
           new ApplicationSubmittedEvent("resubmission", String.valueOf(i), FlowType.FULL,
               LocaleContextHolder.getLocale()));
@@ -92,7 +92,7 @@ class AppsWithBlankStatusResubmissionTest {
 
     // Other applications should not have the event triggered
     verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", String.valueOf(11), FlowType.FULL,
+        new ApplicationSubmittedEvent("resubmission", String.valueOf(0), FlowType.FULL,
             LocaleContextHolder.getLocale()));
   }
 

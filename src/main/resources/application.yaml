@@ -115,8 +115,7 @@ no-status-applications-resubmission:
     milliseconds: 600000 # Run the ResubmissionService every 10 min (10m * 60s * 1000ms)
   initialDelay:
     milliseconds: 0 # Run the process as soon the app first starts up
-  lockAtLeastFor: 10m
+  lockAtLeastFor: 9m
   lockAtMostFor: 20m
-  one-county: on
 
 demo-banner: false
