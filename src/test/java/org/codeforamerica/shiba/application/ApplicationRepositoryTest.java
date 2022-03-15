@@ -4,8 +4,10 @@ import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.Beltrami;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.County.Wright;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -14,6 +16,7 @@ import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -271,7 +274,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
   }
 
   @Test
-  void shouldReturnAppsWithNoStatusesToResubmitInChronologicalOrderByOldestFirst() {
+  void shouldReturnAppsWithNoStatusesInCountyToResubmitInChronologicalOrderByOldestFirst() {
     Application newestApplication = Application.builder()
         .id("1")
         .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
@@ -296,12 +299,47 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(applicationRepository.findApplicationsWithBlankStatuses()
         .stream().map(Application::getId))
         .containsExactly(
-        "3",
-        "2",
-        "1"
-    );
+            "3",
+            "2",
+            "1"
+        );
     assertThat(applicationRepository.findApplicationsWithBlankStatuses(Anoka)
         .stream().map(Application::getId))
         .containsExactly("2", "1");
+  }
+
+  @Test
+  void shouldReturnAppsWithNoStatusesToResubmitInChronologicalOrderByOldestFirstAndCounty() {
+    Application wrightApp = Application.builder()
+        .id("1")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Wright)
+        .build();
+    Application newerAnokaApp = Application.builder()
+        .id("3")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS).minusDays(1))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Anoka)
+        .build();
+    Application beltramiApp = Application.builder()
+        .id("5")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS).minusDays(14))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Beltrami)
+        .build();
+    Application oldAnokaApp = Application.builder()
+        .id("7")
+        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS).minusMonths(1))
+        .applicationData(new TestApplicationDataBuilder().base().build())
+        .county(Anoka)
+        .build();
+
+    List.of(wrightApp, newerAnokaApp, beltramiApp, oldAnokaApp)
+        .forEach(application -> applicationRepository.save(application));
+
+    assertThat(applicationRepository.findApplicationsWithBlankStatuses().stream().map(Application::getId)).containsExactly(
+      oldAnokaApp.getId(), newerAnokaApp.getId(), beltramiApp.getId(), wrightApp.getId()
+    );
   }
 }
