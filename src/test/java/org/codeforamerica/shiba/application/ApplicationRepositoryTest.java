@@ -296,13 +296,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.save(newestApplication);
     applicationRepository.save(middleApplication);
     applicationRepository.save(oldestApplication);
-    assertThat(applicationRepository.findApplicationsWithBlankStatuses()
-        .stream().map(Application::getId))
-        .containsExactly(
-            "3",
-            "2",
-            "1"
-        );
+
     assertThat(applicationRepository.findApplicationsWithBlankStatuses(Anoka)
         .stream().map(Application::getId))
         .containsExactly("2", "1");
