@@ -77,6 +77,8 @@ public class ResubmissionService {
     log.info("Checking for applications that failed to send");
     List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
 
+    MDC.put("failedApps", String.valueOf(applicationsToResubmit.size()));
+    log.info("Resubmitting " + applicationsToResubmit.size() + " apps over email");
     if (applicationsToResubmit.isEmpty()) {
       log.info("There are no applications to resubmit from failure status");
       return;
@@ -118,11 +120,12 @@ public class ResubmissionService {
   )
   @SchedulerLock(name = "esbResubmissionTask", lockAtMostFor = "${in-progress-resubmission.lockAtMostFor}", lockAtLeastFor = "${in-progress-resubmission.lockAtLeastFor}")
   public void resubmitInProgressAndSendingApplicationsViaEsb() {
-    log.info("Checking for applications that are stuck in progress");
+    log.info("Checking for applications that are stuck in progress/sending");
 
     List<Application> applicationsStuckInProgress = applicationRepository.findApplicationsStuckInProgressAndSending();
+    MDC.put("stuckInProgressApps", String.valueOf(applicationsStuckInProgress.size()));
     log.info(
-        "Resubmitting " + applicationsStuckInProgress.size() + " applications stuck in_progress");
+        "Resubmitting " + applicationsStuckInProgress.size() + " applications stuck in progress/sending");
 
     for (Application application : applicationsStuckInProgress) {
       String id = application.getId();
@@ -153,6 +156,8 @@ public class ResubmissionService {
     } else {
       applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
     }
+
+    MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
     log.info(
         "Resubmitting " + applicationsWithBlankStatuses.size() + " applications with no statuses");
 
