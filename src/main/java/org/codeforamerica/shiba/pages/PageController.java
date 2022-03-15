@@ -35,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
@@ -692,10 +694,24 @@ public class PageController {
                 HttpStatus.UNPROCESSABLE_ENTITY);
           }
         }
+if(type.contains("image")) {
+          PDDocument doc = new PDDocument();
+          String imageFileName = file.getName();
+          var imageFileBytes = file.getBytes();
+          try{
+            var image = PDImageXObject.createFromByteArray(doc,imageFileBytes, imageFileName);
+          }catch (Exception e) {
+            log.error("Image File: " + file.getName() + "\tError: " + e.getMessage());
+            return new ResponseEntity<>(
+                lms.getMessage("upload-documents.there-is-a-problem-with-the-image"),
+                HttpStatus.UNPROCESSABLE_ENTITY);
+          }
+        }
 
         var filePath = applicationData.getId() + "/" + UUID.randomUUID();
         var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
 
+        log.info("Does file contain image: " + file.getContentType().contains(("image")));
         if(file.getContentType()!=null && file.getContentType().contains("image")) {
           Path paths = Files.createTempDirectory("");
           File thumbFile = new File(paths.toFile(),file.getOriginalFilename());

@@ -328,6 +328,7 @@
       });
     },
     error: function (file, errorMessage, xhr) {
+      debugger;
       if (xhr && xhr.response) {
         file.previewElement.getElementsByClassName("text--error")[0].innerText = xhr.response;
       } else {

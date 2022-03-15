@@ -61,7 +61,7 @@ public abstract class AbstractBasePageTest {
   private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
   private static final String XFA_PDF_NAME = "xfa-invoice-example.pdf";
   private static final String PASSWORD_PROTECTED_PDF = "password-protected.pdf";
-
+  private static final String UPLOAD_RIFF_WITH_RENAMED_JPG_EXTENSION = "RiffSavedAsJPGTestDoc.jpg";
   @Autowired
   protected RemoteWebDriver driver;
 
@@ -454,7 +454,13 @@ public abstract class AbstractBasePageTest {
     assertThat(driver.findElement(By.id("document-upload")).getText())
         .contains(UPLOADED_JPG_FILE_NAME);
   }
-  
+
+  protected void uploadInvalidJpg(){
+    uploadFile(TestUtils.getAbsoluteFilepathString(UPLOAD_RIFF_WITH_RENAMED_JPG_EXTENSION));
+    assertThat(driver.findElement(By.id("document-upload")).getText())
+        .contains(UPLOAD_RIFF_WITH_RENAMED_JPG_EXTENSION);
+  }
+
   protected void uploadButtonDisabledCheck() {
     testPage.clickElementById("drag-and-drop-box"); // is this needed?
     WebElement upload = driver.findElement(By.className("dz-hidden-input"));
