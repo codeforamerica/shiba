@@ -1,8 +1,5 @@
 package org.codeforamerica.shiba.pages.events;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
-import java.time.ZonedDateTime;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
@@ -11,7 +8,6 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.slf4j.MDC;
@@ -40,9 +36,7 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
   public void send(UploadedDocumentsSubmittedEvent event) {
     log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
     Application application = getApplicationFromEvent(event);
-    log.info(
-        event.getApplicationId() + " completed " + (SECONDS.between(application.getCompletedAt(),
-            ZonedDateTime.now())) + "s ago");
+    logTimeSinceCompleted(application);
     mnitDocumentConsumer.processUploadedDocuments(application);
     MDC.clear();
   }
