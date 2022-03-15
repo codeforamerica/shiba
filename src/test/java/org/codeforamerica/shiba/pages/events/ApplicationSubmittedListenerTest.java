@@ -64,7 +64,6 @@ class ApplicationSubmittedListenerTest {
         snapExpeditedEligibilityDecider,
         ccapExpeditedEligibilityDecider,
         pdfGenerator,
-        countyMap,
         featureFlagConfiguration,
         monitoringService);
   }
@@ -101,7 +100,7 @@ class ApplicationSubmittedListenerTest {
   }
 
   @Nested
-  class sendClientConfirmationEmail {
+  class SendClientConfirmationEmail {
 
     @Test
     void shouldSendConfirmationMailForSubmittedApplicationWithCAF() {

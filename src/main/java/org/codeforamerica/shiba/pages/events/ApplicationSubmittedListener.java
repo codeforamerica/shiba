@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.pages.events;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.codeforamerica.shiba.CountyMap;
@@ -39,17 +41,14 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
-  private final CountyMap<CountyRoutingDestination> countyMap;
   private final FeatureFlagConfiguration featureFlags;
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
       EmailClient emailClient,
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
-      CountyMap<CountyRoutingDestination> countyMap,
       FeatureFlagConfiguration featureFlagConfiguration,
       MonitoringService monitoringService) {
     super(applicationRepository, monitoringService);
@@ -58,16 +57,19 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.pdfGenerator = pdfGenerator;
-    this.countyMap = countyMap;
     this.featureFlags = featureFlagConfiguration;
   }
 
   @Async
   @EventListener
   public void sendViaApi(ApplicationSubmittedEvent event) {
-	log.info("sendViaApi received ApplicationSubmittetdEvent with application ID: " + event.getApplicationId());
+    log.info("sendViaApi received ApplicationSubmittedEvent with application ID: "
+        + event.getApplicationId());
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
+      log.info(
+          event.getApplicationId() + " completed " + (SECONDS.between(application.getCompletedAt(),
+              ZonedDateTime.now())) + "s ago");
       mnitDocumentConsumer.processCafAndCcap(application);
     }
     MDC.clear();

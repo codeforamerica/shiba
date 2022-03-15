@@ -1,5 +1,8 @@
 package org.codeforamerica.shiba.pages.events;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.MonitoringService;
@@ -21,25 +24,25 @@ import org.springframework.stereotype.Component;
 public class UploadedDocumentsSubmittedListener extends ApplicationEventListener {
 
   private final MnitDocumentConsumer mnitDocumentConsumer;
-  private final FeatureFlagConfiguration featureFlags;
   private final EmailClient emailClient;
 
   public UploadedDocumentsSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
       MonitoringService monitoringService,
-      FeatureFlagConfiguration featureFlags,
       EmailClient emailClient) {
     super(applicationRepository, monitoringService);
     this.mnitDocumentConsumer = mnitDocumentConsumer;
-    this.featureFlags = featureFlags;
     this.emailClient = emailClient;
   }
 
   @Async
   @EventListener
   public void send(UploadedDocumentsSubmittedEvent event) {
-	log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
+    log.info("Processing uploaded documents for application ID: " + event.getApplicationId());
     Application application = getApplicationFromEvent(event);
+    log.info(
+        event.getApplicationId() + " completed " + (SECONDS.between(application.getCompletedAt(),
+            ZonedDateTime.now())) + "s ago");
     mnitDocumentConsumer.processUploadedDocuments(application);
     MDC.clear();
   }

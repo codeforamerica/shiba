@@ -51,7 +51,6 @@ class UploadedDocumentsSubmittedListenerTest {
         mnitDocumentConsumer,
         applicationRepository,
         monitoringService,
-        featureFlags,
         emailClient);
   }
 
