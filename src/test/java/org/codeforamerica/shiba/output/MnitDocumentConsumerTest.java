@@ -10,6 +10,7 @@ import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
+import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -503,7 +504,7 @@ class MnitDocumentConsumerTest {
     when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
         "pdf1of1.pdf");
     when(fileNameGenerator.generateUploadedDocumentName(
-        eq(application), eq(0), eq("pdf"), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)))
+        eq(application), eq(0), eq("pdf"), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)), eq(1))
     ).thenReturn("MILLE_LACS_pdf1of1.pdf");
 
     documentConsumer.processUploadedDocuments(application);
@@ -538,9 +539,24 @@ class MnitDocumentConsumerTest {
         UPLOADED_DOC, routingDestination.getName(), SENDING);
   }
 
+  @Test
+  void setsUploadedDocumentStatusToUndeliverableWhenUploadedDocumentsAreEmpty() {
+    mockDocUpload(new byte[]{}, "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
+
+    documentConsumer.processUploadedDocuments(application);
+
+    verify(documentStatusRepository).createOrUpdateAllForDocumentType(
+        application.getApplicationData(), UNDELIVERABLE, UPLOADED_DOC);
+  }
+
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,
       String extension) throws IOException {
     var fileBytes = Files.readAllBytes(getAbsoluteFilepath(uploadedDocFilename));
+    mockDocUpload(fileBytes, s3filepath, contentType, extension);
+  }
+
+  private void mockDocUpload(byte[] fileBytes, String s3filepath, String contentType,
+      String extension) {
     when(documentRepository.get(s3filepath)).thenReturn(fileBytes);
     applicationData.addUploadedDoc(
         new MockMultipartFile("someName", "originalName." + extension, contentType, fileBytes),

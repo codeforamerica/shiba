@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
+import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Document.XML;
@@ -122,6 +123,14 @@ public class MnitDocumentConsumer {
 
   public void processUploadedDocuments(Application application) {
     List<ApplicationFile> uploadedDocs = prepareUploadedDocsForSending(application);
+    if (uploadedDocs.isEmpty()) {
+      log.error(
+          "There was an issue processing and delivering uploaded documents. Reach out to client to upload again.");
+      documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+          UNDELIVERABLE, UPLOADED_DOC);
+      return;
+    }
+
     List<RoutingDestination> routingDestinations = routingDecisionService
         .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
     for (RoutingDestination routingDestination : routingDestinations) {
@@ -137,7 +146,7 @@ public class MnitDocumentConsumer {
         // rename file with filename that is specific to this destination
         String extension = Utils.getFileType(uploadedDoc.getFileName());
         String newFilename = filenameGenerator.generateUploadedDocumentName(application, i,
-            extension, routingDestination);
+            extension, routingDestination, uploadedDocs.size());
         ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
             newFilename);
         sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);

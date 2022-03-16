@@ -57,6 +57,11 @@ public class FilenameGenerator {
   public String generateUploadedDocumentName(Application application, int index, String extension,
       RoutingDestination routingDestination) {
     int size = application.getApplicationData().getUploadedDocs().size();
+    return generateUploadedDocumentName(application, index, extension, routingDestination, size);
+  }
+
+  public String generateUploadedDocumentName(Application application, int index, String extension,
+      RoutingDestination routingDestination, int size) {
     index = index + 1;
     String dhsProviderId = routingDestination.getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,

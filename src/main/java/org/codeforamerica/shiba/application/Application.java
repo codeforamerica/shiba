@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.application;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
@@ -52,6 +53,16 @@ public class Application {
   public void setCompletedAtTime(Clock clock) {
     completedAt = ZonedDateTime.now(clock);
     setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
+  }
+
+  public List<Status> getDocumentStatuses(Document document) {
+    if (documentStatuses != null) {
+      return documentStatuses.stream()
+          .filter(appStatus -> appStatus.getDocumentType() == document)
+          .map(DocumentStatus::getStatus)
+          .toList();
+    }
+    return Collections.emptyList();
   }
 
   public Status getApplicationStatus(Document document, String routingDestination) {

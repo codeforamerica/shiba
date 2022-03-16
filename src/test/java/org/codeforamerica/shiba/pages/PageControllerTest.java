@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -33,6 +34,7 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
@@ -508,8 +510,60 @@ class PageControllerTest {
                 .param("dataURL", "someDataUrl")
                 .param("type", "jpg"))
         .andExpect(status().is(200));
-    
-    verify(documentStatusRepository).createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS, UPLOADED_DOC);
+
+    verify(documentStatusRepository).createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
+        UPLOADED_DOC);
+  }
+
+  @Test
+  void shouldReturnErrorForEmptyFileUpload() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.find("someId")).thenReturn(application);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.multipart("/document-upload")
+                .file("file", new byte[]{})
+                .param("dataURL", "someDataUrl")
+                .param("type", "jpeg"))
+        .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  void shouldNotUpdateUploadDocumentsStatusWhenDocumentsAlreadySubmitted() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    application.setDocumentStatuses(List.of(
+        new DocumentStatus(applicationId, UPLOADED_DOC, "Mille Lacs Band of Ojibwe", SENDING)));
+    when(applicationRepository.find("someId")).thenReturn(application);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    List<RoutingDestination> routingDestinations =
+        List.of(new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe"));
+    when(routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC)).thenReturn(
+        routingDestinations);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.multipart("/document-upload")
+                .file("file", "something".getBytes())
+                .param("dataURL", "someDataUrl")
+                .param("type", "jpg"))
+        .andExpect(status().is(200));
+
+    verify(documentStatusRepository, never()).createOrUpdateAllForDocumentType(applicationData,
+        IN_PROGRESS, UPLOADED_DOC);
   }
 
   @Test

@@ -117,7 +117,7 @@ public class PdfGenerator implements FileGenerator {
 				fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);
 				extension = "pdf";
 			} catch (PdfOfficeException |IOException e) {
-                log.error("failed to convert document " + uploadedDocument.getFilename()
+                log.warn("failed to convert document " + uploadedDocument.getFilename()
                 + " to pdf. Maintaining original type. " + e.getMessage());
 			}
 
@@ -126,7 +126,7 @@ public class PdfGenerator implements FileGenerator {
 				fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
 				extension = "pdf";
 			} catch (Exception e) {
-				log.error("failed to convert document " + uploadedDocument.getFilename()
+				log.warn("failed to convert document " + uploadedDocument.getFilename()
 						+ " to pdf. Maintaining original type");
 			}
 		} else if (!extension.equals("pdf")) {

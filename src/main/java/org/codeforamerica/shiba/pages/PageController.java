@@ -75,6 +75,7 @@ import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -676,10 +677,9 @@ public class PageController {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
       Application application = applicationRepository.find(applicationData.getId());
-      if (application.getDocumentStatuses() == null ||
-          application.getDocumentStatuses().stream()
-          .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC)
-          .noneMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus.getStatus()))) {
+      // TODO if a document is "sending" or "delivered" should we redirect to the terminal page?
+      if (application.getDocumentStatuses(UPLOADED_DOC).stream()
+          .noneMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus))) {
         // Don't overwrite a "completed" status
         documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
             UPLOADED_DOC);
@@ -687,41 +687,18 @@ public class PageController {
 
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
-        if (type.contains("pdf")) {
-          // Return an error response if this is an pdf we can't work with
-          try (var pdfFile = PDDocument.load(file.getBytes())) {
-            var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
-            if (acroForm != null && acroForm.xfaIsDynamic()) {
-              return new ResponseEntity<>(
-                  lms.getMessage("upload-documents.this-pdf-is-in-an-old-format"),
-                  HttpStatus.UNPROCESSABLE_ENTITY);
-            }
-          } catch (InvalidPasswordException e) {
-            return new ResponseEntity<>(
-                lms.getMessage("upload-documents.this-pdf-is-password-protected"),
-                HttpStatus.UNPROCESSABLE_ENTITY);
-          }
-        }
-if(type.contains("image")) {
-          PDDocument doc = new PDDocument();
-          String imageFileName = file.getName();
-          var imageFileBytes = file.getBytes();
-          try{
-            var image = PDImageXObject.createFromByteArray(doc,imageFileBytes, imageFileName);
-          }catch (Exception e) {
-            log.error("Image File: " + file.getName() + "\tError: " + e.getMessage());
-            return new ResponseEntity<>(
-                lms.getMessage("upload-documents.there-is-a-problem-with-the-image"),
-                HttpStatus.UNPROCESSABLE_ENTITY);
-          }
+        ResponseEntity<String> errorResponse = getErrorResponseForInvalidFile(file, type, lms);
+        if (errorResponse != null) {
+          return errorResponse;
         }
 
-        var filePath = applicationData.getId() + "/" + UUID.randomUUID();
-        var thumbnailFilePath = applicationData.getId() + "/" + UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
+        var filePath = applicationData.getId() + "/" + uuid;
+        var thumbnailFilePath = applicationData.getId() + "/thumbnail-" + uuid;
 
-        if(file.getContentType()!=null && file.getContentType().contains("image")) {
+        if (file.getContentType() != null && file.getContentType().contains("image")) {
           Path paths = Files.createTempDirectory("");
-          File thumbFile = new File(paths.toFile(),file.getOriginalFilename());
+          File thumbFile = new File(paths.toFile(), file.getOriginalFilename());
           FileOutputStream fos = new FileOutputStream(thumbFile);
           fos.write(file.getBytes());
           fos.close();
@@ -747,6 +724,45 @@ if(type.contains("image")) {
           lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @Nullable
+  private ResponseEntity<String> getErrorResponseForInvalidFile(MultipartFile file, String type,
+      LocaleSpecificMessageSource lms) throws IOException {
+    if (file.getSize() == 0) {
+      return new ResponseEntity<>(
+          lms.getMessage("upload-documents.this-file-appears-to-be-empty"),
+          HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    if (type.contains("pdf")) {
+      // Return an error response if this is an pdf we can't work with
+      try (var pdfFile = PDDocument.load(file.getBytes())) {
+        var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
+        if (acroForm != null && acroForm.xfaIsDynamic()) {
+          return new ResponseEntity<>(
+              lms.getMessage("upload-documents.this-pdf-is-in-an-old-format"),
+              HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+      } catch (InvalidPasswordException e) {
+        return new ResponseEntity<>(
+            lms.getMessage("upload-documents.this-pdf-is-password-protected"),
+            HttpStatus.UNPROCESSABLE_ENTITY);
+      }
+    }
+    if (type.contains("image")) {
+      PDDocument doc = new PDDocument();
+      String imageFileName = file.getName();
+      var imageFileBytes = file.getBytes();
+      try {
+        var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, imageFileName);
+      } catch (Exception e) {
+        log.warn("Error uploading image: " + e.getMessage());
+        return new ResponseEntity<>(
+            lms.getMessage("upload-documents.there-is-a-problem-with-the-image"),
+            HttpStatus.UNPROCESSABLE_ENTITY);
+      }
+    }
+    return null;
   }
 
   @PostMapping("/submit-documents")
