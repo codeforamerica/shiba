@@ -52,6 +52,9 @@ import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.Eligibility;
+import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
+import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.config.ApplicationConfiguration;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -115,7 +118,7 @@ public class PageController {
   private final DocumentRepository documentRepository;
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final DocumentStatusRepository documentStatusRepository;
-  //private final Device device;
+  private final EligibilityListBuilder listBuilder;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -136,8 +139,8 @@ public class PageController {
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
-      DocumentStatusRepository documentStatusRepository//,
-      /*Device device*/) {
+      DocumentStatusRepository documentStatusRepository,
+      EligibilityListBuilder listBuilder) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -157,7 +160,7 @@ public class PageController {
     this.applicationRepository = applicationRepository;
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.documentStatusRepository = documentStatusRepository;
-    //this.device = device;
+    this.listBuilder = listBuilder;
   }
 
   @GetMapping("/")
@@ -352,7 +355,12 @@ public class PageController {
     model.put("expeditedSnap", snapExpeditedEligibility);
     var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
     model.put("expeditedCcap", ccapExpeditedEligibility);
-
+    List<Eligibility> expeditedEligibilityList = new ArrayList<Eligibility>();
+    expeditedEligibilityList.add(snapExpeditedEligibility);
+    expeditedEligibilityList.add(ccapExpeditedEligibility);
+	List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
+	applicationData.setExpeditedEligibility(list);
+    
     if (pageWorkflow.getPageConfiguration().isStaticPage()) {
       model.put("pageNameContext", pageName);
     }

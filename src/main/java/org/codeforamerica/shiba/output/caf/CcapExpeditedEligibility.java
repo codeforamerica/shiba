@@ -1,6 +1,6 @@
 package org.codeforamerica.shiba.output.caf;
 
-public enum CcapExpeditedEligibility {
+public enum CcapExpeditedEligibility implements Eligibility {
   ELIGIBLE("CCAP"),
   NOT_ELIGIBLE(""), // leave blank on cover page
   UNDETERMINED(""); // leave blank on cover page

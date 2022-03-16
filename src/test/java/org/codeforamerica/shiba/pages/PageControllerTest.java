@@ -38,6 +38,7 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -100,6 +101,8 @@ class PageControllerTest {
   private DocumentRepository documentRepository;
   @SpyBean
   private Device device;
+  @MockBean
+  private EligibilityListBuilder listBuilder;
   
   @Autowired
   private PageController pageController;

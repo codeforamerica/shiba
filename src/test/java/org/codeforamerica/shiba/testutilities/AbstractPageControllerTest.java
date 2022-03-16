@@ -12,6 +12,7 @@ import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.configurations.ClockConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
@@ -70,6 +71,8 @@ public class AbstractPageControllerTest {
   protected RoutingDestinationMessageService routingDestinationMessageService;
   @MockBean
   protected DocumentStatusRepository documentStatusRepository;
+  @MockBean
+  protected EligibilityListBuilder listBuilder;
 
   @Autowired
   protected MockMvc mockMvc;
