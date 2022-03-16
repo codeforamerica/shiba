@@ -40,7 +40,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     uploadInvalidJpg();
     waitForErrorMessage();
     assertThat(driver.findElementsByClassName("text--error").get(0).getText()).
-        contains("This image cannot but uploaded to your application.");
+        contains("This image cannot but uploaded to your application. Please try another file or upload a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files"))
         .getText()).contains("0 files added");
     assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
