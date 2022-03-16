@@ -181,6 +181,22 @@ class AppsWithBlankStatusResubmissionTest {
   }
 
   @Test
+  void shouldSetLaterDocsAppsWithAllFilesOfSize0BytesToUndeliverableAndNotPublishSubmissionEvents() {
+    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
+        FeatureFlag.OFF);
+    Application laterDocsWithDocsOfSize0Bytes = makeBlankStatusLaterDocApplication("71", Hennepin, ZonedDateTime.now().minusMinutes(5), true);
+    laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs().forEach(doc -> doc.setSize(0));
+    applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
+    resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+    assertThat(documentStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
+        new DocumentStatus(laterDocsWithDocsOfSize0Bytes.getId(),UPLOADED_DOC, "Hennepin", UNDELIVERABLE)
+    );
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocsOfSize0Bytes.getId(),
+            LocaleContextHolder.getLocale()));
+  }
+
+  @Test
   void ensureOnlyOlmstedAppsAreRetriggeredWhenFeatureFlagIsOn() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.ON);

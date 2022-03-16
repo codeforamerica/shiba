@@ -230,9 +230,9 @@ public class ResubmissionService {
       // Will be recreated on submit event
       documentStatusRepository.delete(id, List.of(UPLOADED_DOC));
     }
-
-    if (application.getApplicationData().getUploadedDocs().isEmpty()) {
-      // No docs to deliver
+      // No docs to deliver or all files the client uploaded contained 0 bytes of data
+    if (application.getApplicationData().getUploadedDocs().isEmpty() ||
+        application.getApplicationData().getUploadedDocs().stream().allMatch(uploadedDocument -> (uploadedDocument.getSize() == 0))) {
       documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
           UNDELIVERABLE, UPLOADED_DOC);
     } else {
