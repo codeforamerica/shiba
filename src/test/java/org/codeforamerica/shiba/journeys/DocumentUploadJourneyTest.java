@@ -37,6 +37,16 @@ public class DocumentUploadJourneyTest extends JourneyTest {
         "hidden");
     testPage.clickLink("remove");
 
+    uploadInvalidJpg();
+    waitForErrorMessage();
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText()).
+        contains("This image cannot be uploaded to your application. Please try another file or upload a screenshot instead.");
+    assertThat(driver.findElement(By.id("number-of-uploaded-files"))
+        .getText()).contains("0 files added");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+        .contains("hidden");
+    testPage.clickLink("remove");
+
     doThrow(new InterruptedException())
         .when(documentRepository).upload(any(String.class), any(MultipartFile.class));
 
@@ -74,6 +84,8 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     testPage.clickLink("remove");
     assertThat(driver.findElementById("number-of-uploaded-files").getText())
         .isEqualTo("1 file added");
+
+
 
     // should alert the user when they have uploaded the maximum number of files
     IntStream.range(0, 19).forEach(c -> uploadJpgFile());
