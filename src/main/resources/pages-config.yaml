@@ -4300,9 +4300,6 @@ landmarkPages:
   startTimerPages: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
     - identifyCounty
-  inProgressStatusPages: # Set application status to "in_progress"
-    - choosePrograms
-    - identifyCounty
   landingPages: # the home page of the app
     - landing
   postSubmitPages: # pages which are accessible after submitting an application, also all pages of the laterdocs flow

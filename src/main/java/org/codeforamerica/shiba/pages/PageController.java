@@ -4,7 +4,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -35,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
@@ -614,9 +612,6 @@ public class PageController {
 
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);
-      if (applicationConfiguration.getLandmarkPages().isInProgressStatusPage(pageName)) {
-        documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
-      }
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);
@@ -708,12 +703,6 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      if (!hasSubmittedDocuments()) {
-        // Shouldn't run into this case, but we don't want to overwrite a "completed" status
-        documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
-            UPLOADED_DOC);
-      }
-
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
         ResponseEntity<String> errorResponse = getErrorResponseForInvalidFile(file, type, lms);
@@ -745,8 +734,7 @@ public class PageController {
       }
 
       return new ResponseEntity<>(HttpStatus.OK);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       log.error("Error Occurred while uploading File " + e.getLocalizedMessage());
       // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(

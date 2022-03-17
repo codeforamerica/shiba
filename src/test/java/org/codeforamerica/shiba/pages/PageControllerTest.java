@@ -3,11 +3,8 @@ package org.codeforamerica.shiba.pages;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
-import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
-import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.testutilities.TestUtils.resetApplicationData;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +21,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.time.*;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,12 +37,10 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -105,7 +106,7 @@ class PageControllerTest {
   private Device device;
   @MockBean
   private EligibilityListBuilder listBuilder;
-  
+
   @Autowired
   private PageController pageController;
   @Autowired
@@ -142,7 +143,7 @@ class PageControllerTest {
     Map<String, Object> deviceAttribute = new HashMap<String, Object>();
     deviceAttribute.put("device", device);
     MockHttpServletRequestBuilder request = post("/submit")
-    	.flashAttrs(deviceAttribute)
+        .flashAttrs(deviceAttribute)
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         .param("foo[]", "some value");
     mockMvc.perform(request).andExpect(redirectedUrl("/pages/secondPage/navigation"));
@@ -174,7 +175,7 @@ class PageControllerTest {
     Map<String, Object> deviceAttribute = new HashMap<String, Object>();
     deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
-    	.flashAttrs(deviceAttribute)
+        .flashAttrs(deviceAttribute)
         .session(session)
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
@@ -284,32 +285,6 @@ class PageControllerTest {
   }
 
   @Test
-  void shouldSaveApplicationStatusOnInProgressPages() throws Exception {
-    applicationData.setStartTimeOnce(Instant.now());
-
-    String applicationId = "someId";
-    applicationData.setId(applicationId);
-    Application application = Application.builder()
-        .id(applicationId)
-        .applicationData(applicationData)
-        .build();
-    when(applicationRepository.getNextId()).thenReturn(applicationId);
-    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-
-    mockMvc.perform(post("/pages/firstPage")
-        .param("foo[]", "some value")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-    mockMvc.perform(post("/pages/secondPage")
-        .param("foo[]", "some other value")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-
-    verify(documentStatusRepository, times(1))
-        .createOrUpdateAll(application, IN_PROGRESS);
-    assertThat(applicationData.getId()).isEqualTo(applicationId);
-  }
-
-  @Test
   void shouldSaveApplicationOnSignaturePage() throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
 
@@ -328,7 +303,7 @@ class PageControllerTest {
     Map<String, Object> deviceAttribute = new HashMap<String, Object>();
     deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
-    	.flashAttrs(deviceAttribute)
+        .flashAttrs(deviceAttribute)
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
@@ -488,34 +463,6 @@ class PageControllerTest {
   }
 
   @Test
-  void shouldUpdateUploadDocumentsStatusWhenUploadDocumentsPageIsReached() throws Exception {
-    applicationData.setStartTimeOnce(Instant.now());
-
-    String applicationId = "someId";
-    applicationData.setId(applicationId);
-    Application application = Application.builder()
-        .id(applicationId)
-        .applicationData(applicationData)
-        .build();
-    when(applicationRepository.find("someId")).thenReturn(application);
-    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-    List<RoutingDestination> routingDestinations =
-        List.of(new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe"));
-    when(routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC)).thenReturn(
-        routingDestinations);
-
-    mockMvc.perform(
-            MockMvcRequestBuilders.multipart("/document-upload")
-                .file("file", "something".getBytes())
-                .param("dataURL", "someDataUrl")
-                .param("type", "jpg"))
-        .andExpect(status().is(200));
-
-    verify(documentStatusRepository).createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
-        UPLOADED_DOC);
-  }
-
-  @Test
   void shouldReturnErrorForEmptyFileUpload() throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
 
@@ -534,36 +481,6 @@ class PageControllerTest {
                 .param("dataURL", "someDataUrl")
                 .param("type", "jpeg"))
         .andExpect(status().isUnprocessableEntity());
-  }
-
-  @Test
-  void shouldNotUpdateUploadDocumentsStatusWhenDocumentsAlreadySubmitted() throws Exception {
-    applicationData.setStartTimeOnce(Instant.now());
-
-    String applicationId = "someId";
-    applicationData.setId(applicationId);
-    Application application = Application.builder()
-        .id(applicationId)
-        .applicationData(applicationData)
-        .build();
-    application.setDocumentStatuses(List.of(
-        new DocumentStatus(applicationId, UPLOADED_DOC, "Mille Lacs Band of Ojibwe", SENDING)));
-    when(applicationRepository.find("someId")).thenReturn(application);
-    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
-    List<RoutingDestination> routingDestinations =
-        List.of(new TribalNationRoutingDestination("Mille Lacs Band of Ojibwe"));
-    when(routingDecisionService.getRoutingDestinations(applicationData, UPLOADED_DOC)).thenReturn(
-        routingDestinations);
-
-    mockMvc.perform(
-            MockMvcRequestBuilders.multipart("/document-upload")
-                .file("file", "something".getBytes())
-                .param("dataURL", "someDataUrl")
-                .param("type", "jpg"))
-        .andExpect(status().is(200));
-
-    verify(documentStatusRepository, never()).createOrUpdateAllForDocumentType(applicationData,
-        IN_PROGRESS, UPLOADED_DOC);
   }
 
   @Test

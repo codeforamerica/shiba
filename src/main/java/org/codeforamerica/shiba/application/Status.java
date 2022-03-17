@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application;
 
 public enum Status {
-  IN_PROGRESS("in_progress"),
   SENDING("sending"),
   DELIVERED("delivered"),
   DELIVERY_FAILED("delivery_failed"),
@@ -16,7 +15,6 @@ public enum Status {
 
   public static Status valueFor(String displayName) {
     return switch (displayName) {
-      case "in_progress" -> IN_PROGRESS;
       case "sending" -> SENDING;
       case "delivered" -> DELIVERED;
       case "delivery_failed" -> DELIVERY_FAILED;

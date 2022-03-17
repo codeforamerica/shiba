@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,23 +69,23 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
 
-    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    documentStatusRepository.createOrUpdateAll(application, SENDING);
     List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            IN_PROGRESS),
+            SENDING),
         new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            IN_PROGRESS)
+            SENDING)
     );
 
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("CCAP"));
-    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    documentStatusRepository.createOrUpdateAll(application, SENDING);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            IN_PROGRESS)
+            SENDING)
     );
   }
 
@@ -98,8 +97,8 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
     documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING);
 
-    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", IN_PROGRESS);
-    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", IN_PROGRESS);
+    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING);
 
     documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
@@ -123,14 +122,14 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .applicationData(applicationData)
         .county(Olmsted)
         .build();
-    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    documentStatusRepository.createOrUpdateAll(application, SENDING);
     List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            IN_PROGRESS),
+            SENDING),
         new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            IN_PROGRESS)
+            SENDING)
     );
 
     ApplicationData applicationData2 = new TestApplicationDataBuilder()
@@ -139,14 +138,14 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     application.setApplicationData(applicationData2);
-    documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
+    documentStatusRepository.createOrUpdateAll(application, SENDING);
     List<DocumentStatus> resultingStatuses2 = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses2).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            IN_PROGRESS),
+            SENDING),
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            IN_PROGRESS)
+            SENDING)
     );
   }
 }
