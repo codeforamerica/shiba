@@ -49,8 +49,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
     fillOutContactAndReview(true);
     testPage.clickLink("This looks correct");
-    
-    
 
     // Add 1 Household Member
     assertThat(testPage.getElementText("page-form")).contains(
@@ -692,7 +690,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
     assertCafFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
 
-    assertApplicationSubmittedEventWasPublished(applicationId, FULL, 7);
+    assertApplicationSubmittedEventWasPublished(applicationId, FULL, 8);
   }
 
   private void testDocumentUploads() {
