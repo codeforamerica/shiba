@@ -1,8 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ARE_YOU_WORKING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSING_COSTS;
@@ -13,6 +12,9 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UTILITY_EXPENSES_SELECTIONS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
@@ -85,10 +87,8 @@ public class SnapExpeditedEligibilityDecider {
     }
 
     // Migrant workers with assets below threshold are eligible.
-    boolean isMigrantWorker = Boolean
-        .parseBoolean(getFirstValue(applicationData.getPagesData(), MIGRANT_WORKER));
-    boolean hasJob = Boolean.parseBoolean(
-        applicationData.getPagesData().getPageInputFirstValue("employmentStatus", "areYouWorking"));
+    boolean isMigrantWorker = getBooleanValue(applicationData.getPagesData(), MIGRANT_WORKER);
+    boolean hasJob = getBooleanValue(applicationData.getPagesData(), ARE_YOU_WORKING);
     if (isMigrantWorker && assets.lessOrEqualTo(ASSET_THRESHOLD) && !hasJob) {
       return ELIGIBLE;
     }
