@@ -69,7 +69,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
 
-    documentStatusRepository.createOrUpdateAll(application, SENDING);
+    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
     List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
@@ -81,7 +81,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("CCAP"));
-    documentStatusRepository.createOrUpdateAll(application, SENDING);
+    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
@@ -122,7 +122,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .applicationData(applicationData)
         .county(Olmsted)
         .build();
-    documentStatusRepository.createOrUpdateAll(application, SENDING);
+    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
     List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
@@ -138,7 +138,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     application.setApplicationData(applicationData2);
-    documentStatusRepository.createOrUpdateAll(application, SENDING);
+    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
     List<DocumentStatus> resultingStatuses2 = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses2).containsExactlyInAnyOrder(

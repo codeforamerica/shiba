@@ -37,7 +37,7 @@ public class DocumentStatusRepository {
         new DocumentStatusRowMapper(), applicationId);
   }
 
-  public void createOrUpdateAll(Application application, Status status) {
+  public void createOrUpdateApplicationType(Application application, Status status) {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());
     handleDocumentDifference(application, documents);
 

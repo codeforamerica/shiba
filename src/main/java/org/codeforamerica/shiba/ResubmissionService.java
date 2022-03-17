@@ -167,7 +167,7 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
-      documentStatusRepository.createOrUpdateAll(application, SENDING);
+      documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
 
       if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
           .getUploadedDocs().isEmpty()) {
