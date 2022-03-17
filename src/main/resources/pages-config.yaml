@@ -4322,4 +4322,5 @@ landmarkPages:
   terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   submitPage: signThisApplication
-  uploadDocumentsPage: uploadDocuments
+  uploadDocumentsPage: uploadDocuments # the page where applicants upload documents
+  submitUploadedDocumentsPage: documentSubmitConfirmation # the page where applicants confirm that the documents should be submitted
