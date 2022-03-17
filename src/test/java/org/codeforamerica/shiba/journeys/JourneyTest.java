@@ -30,6 +30,7 @@ import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.smartystreets.SmartyStreetClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
+import org.codeforamerica.shiba.pages.events.PageEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
@@ -265,17 +266,14 @@ abstract class JourneyTest extends AbstractBasePageTest {
     }
     
   }
-  
- 
 
   protected void assertApplicationSubmittedEventWasPublished(String applicationId,
-      FlowType flowType,
-      int expectedNumberOfEvents) {
-    ArgumentCaptor<ApplicationSubmittedEvent> captor = ArgumentCaptor
-        .forClass(ApplicationSubmittedEvent.class);
+      FlowType flowType, int expectedNumberOfEvents) {
+    ArgumentCaptor<PageEvent> captor = ArgumentCaptor.forClass(PageEvent.class);
     verify(pageEventPublisher, times(expectedNumberOfEvents)).publish(captor.capture());
-    List<ApplicationSubmittedEvent> allValues = captor.getAllValues();
-    ApplicationSubmittedEvent applicationSubmittedEvent = allValues.get(allValues.size() - 1);
+    List<PageEvent> allValues = captor.getAllValues();
+    ApplicationSubmittedEvent applicationSubmittedEvent = (ApplicationSubmittedEvent) allValues.stream()
+        .filter(event -> event instanceof ApplicationSubmittedEvent).findFirst().get();
     assertThat(applicationSubmittedEvent.getFlow()).isEqualTo(flowType);
     assertThat(applicationSubmittedEvent.getApplicationId()).isEqualTo(applicationId);
     assertThat(applicationSubmittedEvent.getLocale()).isEqualTo(ENGLISH);
