@@ -15,6 +15,7 @@ public class LandmarkPagesConfiguration {
   private String terminalPage;
   private String submitPage;
   private String uploadDocumentsPage;
+  private String submitUploadedDocumentsPage;
   private String laterDocsTerminalPage;
 
   public boolean isLandingPage(String pageName) {
@@ -43,6 +44,14 @@ public class LandmarkPagesConfiguration {
 
   public boolean isUploadDocumentsPage(String pageName) {
     return pageName.equals(uploadDocumentsPage);
+  }
+
+  public boolean isSubmitUploadedDocumentsPage(String pageName) {
+    return pageName.equals(submitUploadedDocumentsPage);
+  }
+
+  public boolean isNextStepsPage(String pageName) {
+    return pageName.equals(nextStepsPage);
   }
 
   public boolean isInProgressStatusPage(String pageName) {

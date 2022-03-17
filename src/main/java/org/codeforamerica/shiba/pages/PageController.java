@@ -245,6 +245,17 @@ public class PageController {
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
     }
 
+    if (shouldRedirectToNextStepsPage(pageName)) {
+      return new ModelAndView(
+          String.format("redirect:/pages/%s", landmarkPagesConfiguration.getNextStepsPage()));
+    }
+
+    if (shouldRedirectToLaterDocsTerminalPage(pageName)) {
+      return new ModelAndView(
+          String.format("redirect:/pages/%s",
+              landmarkPagesConfiguration.getLaterDocsTerminalPage()));
+    }
+
     if (shouldRedirectToLandingPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s",
@@ -480,6 +491,27 @@ public class PageController {
            applicationData.isSubmitted();
   }
 
+  private boolean shouldRedirectToNextStepsPage(String pageName) {
+    LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+        .getLandmarkPages();
+    // Documents have been submitted in non-later docs flow and applicant is attempting to navigate back to upload/submit docs pages
+    return !landmarkPagesConfiguration.isNextStepsPage(pageName) &&
+        (landmarkPagesConfiguration.isUploadDocumentsPage(pageName) ||
+            landmarkPagesConfiguration.isSubmitUploadedDocumentsPage(pageName))
+        && applicationData.getFlow() != LATER_DOCS
+        && hasSubmittedDocuments();
+  }
+
+  private boolean shouldRedirectToLaterDocsTerminalPage(String pageName) {
+    LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+        .getLandmarkPages();
+    // Documents have been submitted in later docs flow and applicant is attempting to navigate back to a previous page in this flow
+    return !landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)
+        && landmarkPagesConfiguration.isPostSubmitPage(pageName)
+        && applicationData.getFlow() == LATER_DOCS
+        && hasSubmittedDocuments();
+  }
+
   @PostMapping("/groups/{groupName}/delete")
   RedirectView deleteGroup(@PathVariable String groupName, HttpSession httpSession) {
     applicationData.getSubworkflows().remove(groupName);
@@ -676,11 +708,8 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      Application application = applicationRepository.find(applicationData.getId());
-      // TODO if a document is "sending" or "delivered" should we redirect to the terminal page?
-      if (application.getDocumentStatuses(UPLOADED_DOC).stream()
-          .noneMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus))) {
-        // Don't overwrite a "completed" status
+      if (!hasSubmittedDocuments()) {
+        // Shouldn't run into this case, but we don't want to overwrite a "completed" status
         documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
             UPLOADED_DOC);
       }
@@ -724,6 +753,12 @@ public class PageController {
           lms.getMessage("upload-documents.there-was-an-issue-on-our-end"),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private boolean hasSubmittedDocuments() {
+    Application application = applicationRepository.find(applicationData.getId());
+    return application.getDocumentStatuses(UPLOADED_DOC).stream()
+        .anyMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus));
   }
 
   @Nullable
@@ -783,10 +818,6 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     String nextPage = landmarkPagesConfiguration.getNextStepsPage();
-    if (applicationData.getFlow() == LATER_DOCS) {
-      nextPage = landmarkPagesConfiguration.getLaterDocsTerminalPage();
-    }
-
     return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
   }
 
