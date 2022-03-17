@@ -818,10 +818,6 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     String nextPage = landmarkPagesConfiguration.getNextStepsPage();
-    if (applicationData.getFlow() == LATER_DOCS) {
-      nextPage = landmarkPagesConfiguration.getLaterDocsTerminalPage();
-    }
-
     return new ModelAndView(String.format("redirect:/pages/%s", nextPage));
   }
 
