@@ -580,6 +580,7 @@ class PageControllerTest {
         .build();
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    when(applicationRepository.find(applicationId)).thenReturn(application);
 
     when(documentRepository.get(any())).thenThrow(RuntimeException.class);
 

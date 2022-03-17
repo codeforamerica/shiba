@@ -66,5 +66,12 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickButton("Yes, submit and finish");
     assertThat(driver.getTitle()).isEqualTo("Documents Sent");
     verify(pageEventPublisher).publish(any());
+
+    // Assert that applicant can't resubmit docs at this point
+    navigateTo("uploadDocuments");
+    assertThat(driver.getTitle()).isEqualTo("Documents Sent");
+
+    navigateTo("documentSubmitConfirmation");
+    assertThat(driver.getTitle()).isEqualTo("Documents Sent");
   }
 }

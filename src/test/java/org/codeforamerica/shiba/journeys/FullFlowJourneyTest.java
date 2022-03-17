@@ -35,6 +35,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
     );
     when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     // Assert intercom button is present on landing page
     await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
@@ -416,7 +417,14 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Finish uploading docs, view next steps, and download PDFs
     testPage.clickButton("Submit my documents");
     testPage.clickButton("Yes, submit and finish");
+
+    // Assert that applicant can't resubmit docs at this point
+    navigateTo("uploadDocuments");
+    assertThat(driver.getTitle()).isEqualTo("Your next steps");
+    navigateTo("documentSubmitConfirmation");
+    assertThat(driver.getTitle()).isEqualTo("Your next steps");
     testPage.clickContinue();
+
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
         "Your application was submitted to Hennepin County (612-596-1300) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) on January 1, 2020.");
