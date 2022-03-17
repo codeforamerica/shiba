@@ -10,7 +10,9 @@ import java.util.Map;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UnearnedIncomeCalculator {
 
   public static final Map<String, String> UNEARNED_INCOME_FIELD_NAMES = new HashMap<>();
