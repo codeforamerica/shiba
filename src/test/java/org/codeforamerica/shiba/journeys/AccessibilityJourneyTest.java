@@ -131,7 +131,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("caseNumber", "1234567");
     testPage.enter("phoneNumber", "7041234567");
     testPage.clickContinue();
-
+    // 	howToAddDocuments page is here
+    testPage.clickContinue();
     // should allow me to upload documents and those documents should be sent to the ESB
     uploadPdfFile();
     await().until(uploadCompletes());

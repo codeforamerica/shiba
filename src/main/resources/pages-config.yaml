@@ -4136,7 +4136,7 @@ workflow:
   addingDocuments:
     pageConfiguration: *addingDocuments
     nextPages:
-      - pageName: howToAddDocuments
+      - pageName: documentRecommendation
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -4151,7 +4151,7 @@ workflow:
   howToAddDocuments:
     pageConfiguration: *howToAddDocuments
     nextPages:
-      - pageName: documentRecommendation
+      - pageName: uploadDocuments
     datasources:
       - pageName: choosePrograms
       - pageName: employmentStatus
@@ -4166,7 +4166,7 @@ workflow:
   documentRecommendation:
     pageConfiguration: *documentRecommendation
     nextPages:
-      - pageName: uploadDocuments
+      - pageName: howToAddDocuments
       - pageName: documentOffboarding
     datasources:
       - pageName: choosePrograms
@@ -4254,7 +4254,7 @@ workflow:
     pageConfiguration: *matchInfo
     enrichment: matchInfoDateOfBirthEnrichment
     nextPages:
-      - pageName: uploadDocuments
+      - pageName: howToAddDocuments
         flow: LATER_DOCS
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty

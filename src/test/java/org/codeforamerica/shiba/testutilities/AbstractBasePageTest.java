@@ -490,7 +490,7 @@ public abstract class AbstractBasePageTest {
     assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_PDF_NAME);
   }
 
-  private void getToDocumentRecommendationScreen() {
+  protected void getToDocumentUploadScreen() {
     testPage.clickButton("Apply now");
     testPage.enter("county", "Hennepin");
     testPage.clickContinue();
@@ -509,13 +509,10 @@ public abstract class AbstractBasePageTest {
     testPage.enter("applicantSignature", "some name");
     testPage.clickButton("Submit");
     testPage.clickContinue();
+    testPage.clickButton("Add documents now");
     testPage.clickContinue();
   }
 
-  protected void getToDocumentUploadScreen() {
-    getToDocumentRecommendationScreen();
-    testPage.clickButton("Add documents now");
-  }
 
   protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index,
       String attributeName) {
