@@ -599,7 +599,7 @@ public class CountyMapConfiguration {
         "A000016700");
     addCounty(Cottonwood, "507-831-1891");
     addCounty(CrowWing, "888-772-8212");
-    addCounty(Dakota, "888-850-9419");
+    addCounty(Dakota, "651-554-5611");
     addCounty(Dodge,
         "507-923-2900",
         "help+dev@mnbenefits.org",
