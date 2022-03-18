@@ -4,7 +4,6 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -35,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
@@ -340,7 +338,7 @@ public class PageController {
 
   private boolean missingRequiredSubworkflows(PageWorkflowConfiguration pageWorkflow) {
     return pageWorkflow.getPageConfiguration().getInputs().isEmpty() &&
-           !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
+        !applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources());
   }
 
   private boolean isStartPageForGroup(@PathVariable String pageName, String groupName) {
@@ -370,9 +368,9 @@ public class PageController {
     List<Eligibility> expeditedEligibilityList = new ArrayList<Eligibility>();
     expeditedEligibilityList.add(snapExpeditedEligibility);
     expeditedEligibilityList.add(ccapExpeditedEligibility);
-	List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
-	applicationData.setExpeditedEligibility(list);
-    
+    List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
+    applicationData.setExpeditedEligibility(list);
+
     if (pageWorkflow.getPageConfiguration().isStaticPage()) {
       model.put("pageNameContext", pageName);
     }
@@ -474,7 +472,7 @@ public class PageController {
         .getLandmarkPages();
     // If they requested landing page or application is unstarted
     boolean unstarted = !landmarkPagesConfiguration.isLandingPage(pageName)
-                        && applicationData.getStartTime() == null;
+        && applicationData.getStartTime() == null;
     // If they are restarting the application process after submitting
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
@@ -486,9 +484,9 @@ public class PageController {
         .getLandmarkPages();
     // Application is already submitted and not at the beginning of the application process
     return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-           !landmarkPagesConfiguration.isLandingPage(pageName) &&
-           !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
-           applicationData.isSubmitted();
+        !landmarkPagesConfiguration.isLandingPage(pageName) &&
+        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
+        applicationData.isSubmitted();
   }
 
   private boolean shouldRedirectToNextStepsPage(String pageName) {
@@ -602,9 +600,9 @@ public class PageController {
       if (applicationData.getId() == null) {
         applicationData.setId(applicationRepository.getNextId());
       }
-      
+
       if (pageName != null || !pageName.isEmpty()) {
-          applicationData.setLastPageViewed(pageName);
+        applicationData.setLastPageViewed(pageName);
       }
 
       ofNullable(pageWorkflow.getEnrichment())
@@ -614,9 +612,6 @@ public class PageController {
 
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);
-      if (applicationConfiguration.getLandmarkPages().isInProgressStatusPage(pageName)) {
-        documentStatusRepository.createOrUpdateAll(application, IN_PROGRESS);
-      }
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", pageName));
     } else {
       return new ModelAndView("redirect:/pages/" + pageName);
@@ -646,8 +641,9 @@ public class PageController {
       }
       Application application = applicationFactory.newApplication(applicationData);
       application.setCompletedAtTime(clock); // how we mark that the application is complete
-      recordDeviceType(device,application);
+      recordDeviceType(device, application);
       applicationRepository.save(application);
+      documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
       log.info("Invoking pageEventPublisher for application submission: " + application.getId());
       pageEventPublisher.publish(
           new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
@@ -661,23 +657,23 @@ public class PageController {
   }
 
   private void recordDeviceType(Device device, Application application) {
-      String deviceType = "unknown";
-      String platform = "unknown";
-      if(device != null) {
-	      if (device.isNormal()) {
-	          deviceType = "desktop";
-	      } else if (device.isMobile()) {
-	          deviceType = "mobile";
-	      } else if (device.isTablet()) {
-	          deviceType = "tablet";
-	      }
-	      platform = device.getDevicePlatform().name();
+    String deviceType = "unknown";
+    String platform = "unknown";
+    if (device != null) {
+      if (device.isNormal()) {
+        deviceType = "desktop";
+      } else if (device.isMobile()) {
+        deviceType = "mobile";
+      } else if (device.isTablet()) {
+        deviceType = "tablet";
       }
-      application.getApplicationData().setDevicePlatform(platform);
-      application.getApplicationData().setDeviceType(deviceType);
+      platform = device.getDevicePlatform().name();
+    }
+    application.getApplicationData().setDevicePlatform(platform);
+    application.getApplicationData().setDeviceType(deviceType);
   }
 
-@PostMapping("/submit-feedback")
+  @PostMapping("/submit-feedback")
   RedirectView submitFeedback(Feedback feedback,
       RedirectAttributes redirectAttributes,
       Locale locale) {
@@ -708,12 +704,6 @@ public class PageController {
       Locale locale) throws IOException, InterruptedException {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     try {
-      if (!hasSubmittedDocuments()) {
-        // Shouldn't run into this case, but we don't want to overwrite a "completed" status
-        documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, IN_PROGRESS,
-            UPLOADED_DOC);
-      }
-
       if (applicationData.getUploadedDocs().size() <= MAX_FILES_UPLOADED &&
           file.getSize() <= uploadDocumentConfiguration.getMaxFilesizeInBytes()) {
         ResponseEntity<String> errorResponse = getErrorResponseForInvalidFile(file, type, lms);
@@ -745,8 +735,7 @@ public class PageController {
       }
 
       return new ResponseEntity<>(HttpStatus.OK);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       log.error("Error Occurred while uploading File " + e.getLocalizedMessage());
       // If there's any uncaught exception, return a default error message
       return new ResponseEntity<>(

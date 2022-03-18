@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba;
 
+import static java.time.ZonedDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Hennepin;
@@ -61,8 +62,9 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private FeatureFlagConfiguration featureFlagConfiguration;
 
-  private final ZonedDateTime moreThan60DaysAgo = ZonedDateTime.now().withFixedOffsetZone().minusDays(60).minusNanos(1);
-  private final ZonedDateTime tenHoursAgo = ZonedDateTime.now().withFixedOffsetZone().minusHours(10);
+  private final ZonedDateTime moreThan60DaysAgo = now().withFixedOffsetZone().minusDays(60)
+      .minusNanos(1);
+  private final ZonedDateTime tenHoursAgo = now().withFixedOffsetZone().minusHours(10);
 
   @Test
   void itTriggersAnEventForAppsWithMissingStatuses() {
@@ -70,7 +72,8 @@ class AppsWithBlankStatusResubmissionTest {
         FeatureFlag.OFF);
     for (int i = 0; i < 31; i++) {
       if (i == 0) {
-        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin, tenHoursAgo.plusMinutes(i), true);
+        makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin,
+            tenHoursAgo.plusMinutes(i), true);
       } else {
         makeBlankStatusApplication(Integer.toString(i), Hennepin, tenHoursAgo.plusMinutes(i));
       }
@@ -101,7 +104,7 @@ class AppsWithBlankStatusResubmissionTest {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
     String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin, tenHoursAgo).getId();
-    String appWithExistingStatus = makeInProgressApplicationThatShouldNotBeResubmitted().getId();
+    String appWithExistingStatus = makeSendingApplicationThatShouldNotBeResubmitted().getId();
     String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("4", Anoka,
         moreThan60DaysAgo).getId();
     String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("5", Anoka,
@@ -163,17 +166,20 @@ class AppsWithBlankStatusResubmissionTest {
   void shouldSetLaterDocsAppsWithNoDocumentsToUndeliverableAndNotPublishSubmissionEvents() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
-    Application laterDocsWithoutDocuments = makeBlankStatusLaterDocApplication("60", Hennepin, ZonedDateTime.now(), false);
-    Application laterDocsWithDocuments = makeBlankStatusLaterDocApplication("61", Hennepin, ZonedDateTime.now().minusMinutes(5), true);
+    Application laterDocsWithoutDocuments = makeBlankStatusLaterDocApplication("60", Hennepin,
+        now(), false);
+    Application laterDocsWithDocuments = makeBlankStatusLaterDocApplication("61", Hennepin,
+        now().minusMinutes(5), true);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
     assertThat(documentStatusRepository.findAll(laterDocsWithDocuments.getId())).contains(
-        new DocumentStatus(laterDocsWithDocuments.getId(),UPLOADED_DOC, "Hennepin", SENDING)
+        new DocumentStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING)
     );
     verify(pageEventPublisher).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocuments.getId(),
             LocaleContextHolder.getLocale()));
     assertThat(documentStatusRepository.findAll(laterDocsWithoutDocuments.getId())).contains(
-        new DocumentStatus(laterDocsWithoutDocuments.getId(),UPLOADED_DOC, "Hennepin", UNDELIVERABLE)
+        new DocumentStatus(laterDocsWithoutDocuments.getId(), UPLOADED_DOC, "Hennepin",
+            UNDELIVERABLE)
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithoutDocuments.getId(),
@@ -184,12 +190,15 @@ class AppsWithBlankStatusResubmissionTest {
   void shouldSetLaterDocsAppsWithAllFilesOfSize0BytesToUndeliverableAndNotPublishSubmissionEvents() {
     when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
         FeatureFlag.OFF);
-    Application laterDocsWithDocsOfSize0Bytes = makeBlankStatusLaterDocApplication("71", Hennepin, ZonedDateTime.now().minusMinutes(5), true);
-    laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs().forEach(doc -> doc.setSize(0));
+    Application laterDocsWithDocsOfSize0Bytes = makeBlankStatusLaterDocApplication("71", Hennepin,
+        now().minusMinutes(5), true);
+    laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs()
+        .forEach(doc -> doc.setSize(0));
     applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
     assertThat(documentStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
-        new DocumentStatus(laterDocsWithDocsOfSize0Bytes.getId(),UPLOADED_DOC, "Hennepin", UNDELIVERABLE)
+        new DocumentStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
+            UNDELIVERABLE)
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocsOfSize0Bytes.getId(),
@@ -266,7 +275,7 @@ class AppsWithBlankStatusResubmissionTest {
     return applicationWithNoStatuses;
   }
 
-  private Application makeInProgressApplicationThatShouldNotBeResubmitted() {
+  private Application makeSendingApplicationThatShouldNotBeResubmitted() {
     ApplicationData applicationData = new ApplicationData();
     applicationData.setPagesData(new PagesDataBuilder()
         .withPageData("contactInfo", Map.of(
@@ -276,22 +285,22 @@ class AppsWithBlankStatusResubmissionTest {
         .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
         .build());
     String applicationId = "1000";
-    Application inProgressApplicationThatShouldBeCompleted = Application.builder()
-        .completedAt(ZonedDateTime.now().minusHours(1)) // important that this is completed!!!
+    Application applicationThatShouldNotBeResubmitted = Application.builder()
+        .completedAt(now().minusHours(1)) // important that this is completed!!!
         .county(County.Anoka)
         .id(applicationId)
         .applicationData(applicationData)
         .docUploadEmailStatus(null)
         .flow(FlowType.FULL)
         .build();
-    applicationRepository.save(inProgressApplicationThatShouldBeCompleted);
+    applicationRepository.save(applicationThatShouldNotBeResubmitted);
 
     documentStatusRepository.createOrUpdate(
         applicationId,
         CAF,
         "Anoka",
-        Status.IN_PROGRESS);
+        SENDING);
 
-    return inProgressApplicationThatShouldBeCompleted;
+    return applicationThatShouldNotBeResubmitted;
   }
 }

@@ -3,7 +3,6 @@ package org.codeforamerica.shiba;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
-import static org.codeforamerica.shiba.application.Status.IN_PROGRESS;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
@@ -119,15 +118,15 @@ public class ResubmissionService {
       initialDelayString = "${in-progress-resubmission.initialDelay.milliseconds:0}"
   )
   @SchedulerLock(name = "esbResubmissionTask", lockAtMostFor = "${in-progress-resubmission.lockAtMostFor}", lockAtLeastFor = "${in-progress-resubmission.lockAtLeastFor}")
-  public void resubmitInProgressAndSendingApplicationsViaEsb() {
+  public void republishApplicationsInSendingStatus() {
     log.info("Checking for applications that are stuck in progress/sending");
 
-    List<Application> applicationsStuckInProgress = applicationRepository.findApplicationsStuckInProgressAndSending();
-    MDC.put("stuckInProgressApps", String.valueOf(applicationsStuckInProgress.size()));
+    List<Application> applicationsStuckSending = applicationRepository.findApplicationsStuckSending();
+    MDC.put("appsStuckSending", String.valueOf(applicationsStuckSending.size()));
     log.info(
-        "Resubmitting " + applicationsStuckInProgress.size() + " applications stuck in progress/sending");
+        "Resubmitting " + applicationsStuckSending.size() + " applications stuck sending");
 
-    for (Application application : applicationsStuckInProgress) {
+    for (Application application : applicationsStuckSending) {
       String id = application.getId();
       // Add applicationId to the logs to make it easier to query for in datadog
       MDC.put("applicationId", id);
@@ -168,9 +167,10 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
-      documentStatusRepository.createOrUpdateAll(application, SENDING);
+      documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
 
-      if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData().getUploadedDocs().isEmpty()) {
+      if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
+          .getUploadedDocs().isEmpty()) {
         documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
             SENDING, UPLOADED_DOC);
       }
@@ -184,10 +184,9 @@ public class ResubmissionService {
 
   private void sendDocumentsViaESB(Application application, String id,
       boolean shouldDeleteDocumentStatuses) {
-    // Resend in progress / sending applications (without verification docs)
-    List<Document> inProgressDocs = application.getDocumentStatuses().stream()
-        .filter(documentStatus -> documentStatus.getStatus().equals(IN_PROGRESS)
-            || documentStatus.getStatus().equals(SENDING) &&
+    // Resend sending applications (without verification docs)
+    List<Document> documentTypesInSending = application.getDocumentStatuses().stream()
+        .filter(documentStatus -> documentStatus.getStatus() == SENDING &&
             List.of(CAF, CCAP, CERTAIN_POPS)
                 .contains(documentStatus.getDocumentType())).map(
             DocumentStatus::getDocumentType
@@ -195,10 +194,10 @@ public class ResubmissionService {
 
     if (shouldDeleteDocumentStatuses) {
       // Will be recreated on submit event
-      documentStatusRepository.delete(id, inProgressDocs);
+      documentStatusRepository.delete(id, documentTypesInSending);
     }
 
-    boolean shouldRefireAppSubmittedEvent = inProgressDocs.stream()
+    boolean shouldRefireAppSubmittedEvent = documentTypesInSending.stream()
         .anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
     if (shouldRefireAppSubmittedEvent) {
       log.info("Retriggering ApplicationSubmittedEvent for application with id " + id);
@@ -207,32 +206,26 @@ public class ResubmissionService {
           application.getApplicationData().getLocale()));
     }
 
-
     // Resend sending verification docs on an application
     Optional<DocumentStatus> uploadedDocStatus = application.getDocumentStatuses().stream()
-        .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC && documentStatus.getStatus() == SENDING && application.getFlow() != LATER_DOCS)
-        .findFirst();
-    if (uploadedDocStatus.isPresent()) {
-      resendUploadDocAndUpdateStatus(application, id, shouldDeleteDocumentStatuses);
-    }
-
-    // Resend inprogress / sending verification docs for later docs
-    uploadedDocStatus = application.getDocumentStatuses().stream()
-        .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC && List.of(SENDING, IN_PROGRESS).contains(documentStatus.getStatus()) && application.getFlow() == LATER_DOCS)
+        .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC
+            && documentStatus.getStatus() == SENDING)
         .findFirst();
     if (uploadedDocStatus.isPresent()) {
       resendUploadDocAndUpdateStatus(application, id, shouldDeleteDocumentStatuses);
     }
   }
 
-  private void resendUploadDocAndUpdateStatus(Application application, String id, boolean shouldDeleteDocumentStatuses) {
+  private void resendUploadDocAndUpdateStatus(Application application, String id,
+      boolean shouldDeleteDocumentStatuses) {
     if (shouldDeleteDocumentStatuses) {
       // Will be recreated on submit event
       documentStatusRepository.delete(id, List.of(UPLOADED_DOC));
     }
-      // No docs to deliver or all files the client uploaded contained 0 bytes of data
+    // No docs to deliver or all files the client uploaded contained 0 bytes of data
     if (application.getApplicationData().getUploadedDocs().isEmpty() ||
-        application.getApplicationData().getUploadedDocs().stream().allMatch(uploadedDocument -> (uploadedDocument.getSize() == 0))) {
+        application.getApplicationData().getUploadedDocs().stream()
+            .allMatch(uploadedDocument -> uploadedDocument.getSize() == 0)) {
       documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
           UNDELIVERABLE, UPLOADED_DOC);
     } else {

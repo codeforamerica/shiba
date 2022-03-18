@@ -37,8 +37,7 @@ public class DocumentStatusRepository {
         new DocumentStatusRowMapper(), applicationId);
   }
 
-  public void createOrUpdateAll(Application application,
-      Status status) {
+  public void createOrUpdateApplicationType(Application application, Status status) {
     List<Document> documents = DocumentListParser.parse(application.getApplicationData());
     handleDocumentDifference(application, documents);
 
@@ -58,14 +57,16 @@ public class DocumentStatusRepository {
     delete(application.getId(), docsToDelete);
   }
 
-  public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status, Document document) {
-		List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-				applicationData, document);
-	      routingDestinations.forEach(
-	          routingDestination -> createOrUpdate(applicationData.getId(), document, routingDestination.getName(),
-	              status));
+  public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status,
+      Document document) {
+    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
+        applicationData, document);
+    routingDestinations.forEach(
+        routingDestination -> createOrUpdate(applicationData.getId(), document,
+            routingDestination.getName(),
+            status));
   }
-  
+
   public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
       Status status) {
     if (document == null || routingDestinationName == null) {
@@ -101,12 +102,12 @@ public class DocumentStatusRepository {
 
   }
 
-  public void delete(String applicationId, List <Document> documents){
+  public void delete(String applicationId, List<Document> documents) {
     if (!documents.isEmpty()) {
       String deleteStatement = """
-        DELETE FROM application_status WHERE application_id = :application_id
-        AND document_type in (:document_types)
-        """;
+          DELETE FROM application_status WHERE application_id = :application_id
+          AND document_type in (:document_types)
+          """;
       Map<String, Object> parameters = new HashMap<>();
       parameters.put("application_id", applicationId);
       parameters.put("document_types", documents.stream().map(Enum::toString).toList());
@@ -136,6 +137,7 @@ public class DocumentStatusRepository {
   }
 
   private static class DocumentStatusRowMapper implements RowMapper<DocumentStatus> {
+
     @Override
     public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
       return new DocumentStatus(
