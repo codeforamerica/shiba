@@ -38,7 +38,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "mloew@codeforamerica.org",
       "nmartinez@codeforamerica.org",
       "sgole@codeforamerica.org",
-      "tpatterson@codeforamerica.org"
+      "tpatterson@codeforamerica.org",
+      "john.bisek@state.mn.us",
+      "eric.m.johnson@state.mn.us",
+      "taylor.johnson@state.mn.us",
+      "touhid.khan@state.mn.us",
+      "william.prew@state.mn.us",
+      "ramesh.shakya@state.mn.us",
+      "jeffrey.hendrix@state.mn.us"
   );
 
   @Override

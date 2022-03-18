@@ -21,6 +21,20 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+          azure-active-directory:
+            client-name: Azure Active Directory
+            client-id: ${AZURE_AD_CLIENT_ID}
+            client-secret: ${AZURE_AD_CLIENT_SECRET}
+            provider: azure-active-directory
+            authorization-grant-type: authorization_code
+            redirect-uri: ${MNBENEFITS_ENV_URL}/login/oauth2/code/   
+            scope: User.Read
+        provider:
+          azure-active-directory:
+            authorization-uri: https://login.microsoftonline.com/${AZURE_AD_TENANT_ID}/oauth2/v2.0/authorize
+            token-uri: https://login.microsoftonline.com/${AZURE_AD_TENANT_ID}/oauth2/v2.0/token            
+            user-info-uri: https://graph.microsoft.com/oidc/userinfo
+            user-name-attribute: name
 server:
   shutdown: graceful
   tomcat:
