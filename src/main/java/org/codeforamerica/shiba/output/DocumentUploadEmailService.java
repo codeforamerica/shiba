@@ -51,7 +51,7 @@ public class DocumentUploadEmailService {
   }
 
   /**
-   * Sends document upload emails to any applications that
+   * Sends document upload reminder emails to any applications that
    * - Are not laterdocs apps
    * - were submitted between 48 and 12 hours ago
    * - do not have any uploaded docs
@@ -62,16 +62,16 @@ public class DocumentUploadEmailService {
    */
   @Scheduled(cron = "${documentUploadEmails.cronExpression}")
   @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m", lockAtLeastFor = "15m")
-  public void sendDocumentUploadEmails() {
-    log.info("Checking for applications that need document upload emails");
+  public void sendDocumentUploadEmailReminders() {
+    log.info("Checking for applications that need document upload email reminders");
     List<Application> applications = getApplicationsThatNeedDocumentUploadEmails();
 
     if (applications.isEmpty()) {
-      log.info("There are no applications that need document upload emails");
+      log.info("There are no applications that need document upload email reminders");
       return;
     }
 
-    applications.forEach(this::sendDocumentUploadEmail);
+    applications.forEach(this::sendDocumentUploadEmailReminder);
     MDC.clear();
   }
 
@@ -91,14 +91,14 @@ public class DocumentUploadEmailService {
         .toList();
   }
 
-  private void sendDocumentUploadEmail(Application app) {
+  private void sendDocumentUploadEmailReminder(Application app) {
     String id = app.getId();
     MDC.put("applicationId", id);
     ApplicationData applicationData = app.getApplicationData();
 
     EmailParser.parse(applicationData).ifPresent(clientEmail -> {
           try {
-            log.info("Attempting to send document upload email for application %s".formatted(id));
+            log.info("Attempting to send document upload email reminder for application %s".formatted(id));
             Locale locale = applicationData.getLocale();
             String emailContent = emailContentCreator.createDocRecommendationEmail(applicationData);
             LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);

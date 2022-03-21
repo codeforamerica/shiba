@@ -52,7 +52,7 @@ class DocumentUploadEmailServiceTest {
     Application appThatOptedOutOfEmails = saveApplicationThatOptedOutOfEmails();
     Application appWithoutDocRecommendations = saveApplicationWithoutDocRecommendations();
 
-    documentUploadEmailService.sendDocumentUploadEmails();
+    documentUploadEmailService.sendDocumentUploadEmailReminders();
 
     assertEmailSent(appThatShouldTriggerEmail);
     assertEmailDidNotSend(appThatIsTooOld);
