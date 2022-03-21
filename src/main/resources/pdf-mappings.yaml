@@ -27,6 +27,7 @@ mappings:
     CASH: CASH
     GRH: GRH
     EA: EMERGENCY
+    NONE: PROGRAM_NONE
   householdMemberInfo:
     firstName: FIRST_NAME
     lastName: LAST_NAME
@@ -43,6 +44,7 @@ mappings:
       CASH: CASH
       EA: EMERGENCY
       CCAP: CCAP
+      NONE: PROGRAM_NONE
     programList: PROGRAMS
   basicCriteria:
     BLIND: BLIND
