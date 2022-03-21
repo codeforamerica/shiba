@@ -13,6 +13,7 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.slf4j.MDC;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -62,9 +63,20 @@ public class DocumentStatusRepository {
     List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
         applicationData, document);
     routingDestinations.forEach(
-        routingDestination -> createOrUpdate(applicationData.getId(), document,
-            routingDestination.getName(),
-            status));
+        routingDestination -> {
+        if(document.equals(Document.UPLOADED_DOC)) {
+          applicationData.getUploadedDocs().forEach(uploadDoc -> createOrUpdateUploadedDoc(applicationData.getId(), document,
+             routingDestination.getName(),
+             status,uploadDoc.getFilename()));
+        } else {
+          createOrUpdateUploadedDoc(applicationData.getId(), document,
+             routingDestination.getName(),
+             status,null);
+       }
+        }
+        
+        );
+    
   }
 
   public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
@@ -83,7 +95,7 @@ public class DocumentStatusRepository {
     parameters.put("status", status.toString());
     parameters.put("document_type", document.name());
     parameters.put("routing_destination", routingDestinationName);
-
+    
     var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
 
     int rowCount = namedParameterJdbcTemplate.update(updateStatement, parameters);
@@ -101,6 +113,44 @@ public class DocumentStatusRepository {
     }
 
   }
+  
+  public void createOrUpdateUploadedDoc(String applicationId, Document document, String routingDestinationName,
+      Status status, String documentName) {
+    if (document == null || routingDestinationName == null) {
+      return;
+    }
+
+    String updateStatement = """
+        UPDATE application_status SET status = :status WHERE application_id = :application_id
+        AND document_type = :document_type AND routing_destination = :routing_destination
+        """;
+
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("application_id", applicationId);
+    parameters.put("status", status.toString());
+    parameters.put("document_type", document.name());
+    parameters.put("routing_destination", routingDestinationName);
+    parameters.put("document_name", documentName);
+
+    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+    int rowCount = namedParameterJdbcTemplate.update(updateStatement, parameters);
+    if (rowCount == 0) {
+      // Not found, add a new entry
+      String insertStatement = """
+          INSERT INTO application_status (application_id, status, document_type, routing_destination, document_name)
+          VALUES (:application_id, :status, :document_type, :routing_destination, :document_name)
+          """;
+      rowCount = namedParameterJdbcTemplate.update(insertStatement, parameters);
+    }
+
+    if (rowCount != 0) {
+      logStatusUpdate(applicationId, document, routingDestinationName, status);
+    }
+
+  }
+  
+  
 
   public void delete(String applicationId, List<Document> documents) {
     if (!documents.isEmpty()) {
