@@ -201,7 +201,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("firstName", "Ahmed");
     testPage.enter("lastName", "St. George");
     testPage.enter("otherName", "defaultOtherName");
-    testPage.enter("dateOfBirth", "01/12/1928");
+    //DOB is optional
     testPage.enter("ssn", "123456789");
     if (programSelections.contains(PROGRAM_CERTAIN_POPS)) {
       testPage.enter("noSSNCheck", "I don't have a social security number.");
@@ -217,6 +217,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("livedInMnWholeLife", "Yes");
     testPage.enter("moveToMnDate", "10/20/1993");
     testPage.enter("moveToMnPreviousCity", "Chicago");
+    testPage.clickContinue();
+    assertThat(testPage.getTitle()).isEqualTo("Home Address");
+    testPage.goBack();
+    testPage.enter("dateOfBirth", "01/12/1928");
     testPage.clickContinue();
   }
 

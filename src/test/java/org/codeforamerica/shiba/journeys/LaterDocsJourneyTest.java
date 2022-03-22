@@ -45,7 +45,6 @@ public class LaterDocsJourneyTest extends JourneyTest {
     assertThat(driver.getTitle()).isEqualTo("Match Info");
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
-    testPage.enter("dateOfBirth", "01/12/1928");
     testPage.enter("ssn", "123456789");
     testPage.enter("caseNumber", "1234567");
     testPage.enter("phoneNumber", "7041234567");
