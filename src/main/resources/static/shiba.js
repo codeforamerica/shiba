@@ -179,6 +179,18 @@ var preCheckContactInfo = (function() {
 	}
 })();
 
+// This is a temp fix for an issue with Honeycrisp.js which automatically
+// sets accordions to closed on page load
+function handleAccordions() {
+	var accordions = $('.accordion');
+	accordions.each(function () {
+		var accordion = $(this);
+		accordion.hasClass('accordion--is-closed') ?
+				accordion.find('button').attr('aria-expanded', 'false') :
+				accordion.find('button').attr('aria-expanded', 'true');
+	});
+}
+
 $(document).ready(function() {
 	// hasError needs to come first in this for accessibility journey tests to pass
 	hasError.init();
@@ -192,5 +204,6 @@ $(document).ready(function() {
 		return true;
 	});
 	$("#prepare-to-apply-accordion").removeClass('accordion--is-closed');
+	handleAccordions();
 });
 
