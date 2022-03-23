@@ -45,7 +45,6 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
     testPage.enter("county", "Hennepin");
     testPage.clickContinue();
     testPage.clickContinue();
-    testPage.clickContinue();
     testPage.enter("writtenLanguage", "Español");
     assertThat(driver.getTitle()).isEqualTo("Preferencias de idioma");
     WebElement selectedOption = testPage.getSelectedOption("locales");
