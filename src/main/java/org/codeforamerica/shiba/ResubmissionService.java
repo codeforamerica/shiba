@@ -2,7 +2,7 @@ package org.codeforamerica.shiba;
 
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
-import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.DELIVERED_BY_EMAIL;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
@@ -102,7 +102,7 @@ public class ResubmissionService {
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED);
+        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
