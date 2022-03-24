@@ -52,7 +52,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // should allow me to upload documents and those documents should be sent to the ESB
-    assertThat(driver.getTitle()).isEqualTo("Upload Documents");
+    assertThat(driver.getTitle()).isEqualTo("Submit any recommended documents you have available");
     assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
     uploadPdfFile();
@@ -60,7 +60,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickButton("Submit my documents");
     assertThat(driver.getTitle()).isEqualTo("Doc submit confirmation");
     testPage.clickButton("No, add more documents"); // Go back
-    assertThat(driver.getTitle()).isEqualTo("Upload Documents");
+    assertThat(driver.getTitle()).isEqualTo("Submit any recommended documents you have available");
 
     testPage.clickButton("Submit my documents");
     testPage.clickButton("Yes, submit and finish");
