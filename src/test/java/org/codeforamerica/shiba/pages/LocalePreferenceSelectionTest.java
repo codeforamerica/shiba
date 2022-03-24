@@ -33,7 +33,6 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
     assertThat(driver.findElements(By.tagName("h1")).get(0).getText()).isEqualTo("Como funciona");
 
     testPage.clickButton("Continuar");
-    testPage.clickButton("Continuar");
 
     WebElement selectedOption = testPage.getSelectedOption("writtenLanguage");
     assertThat(selectedOption.getText()).isEqualTo("Español");
@@ -43,7 +42,6 @@ public class LocalePreferenceSelectionTest extends AbstractBasePageTest {
   void userCanSeeSpanishWhenReadOrWriteSpanishIsSelectedOnLanguagePreferences() {
     testPage.clickButton("Apply now");
     testPage.enter("county", "Hennepin");
-    testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.enter("writtenLanguage", "Español");
