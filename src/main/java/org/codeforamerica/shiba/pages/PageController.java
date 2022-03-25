@@ -745,9 +745,17 @@ public class PageController {
   }
 
   private boolean hasSubmittedDocuments() {
-    Application application = applicationRepository.find(applicationData.getId());
-    return application.getDocumentStatuses(UPLOADED_DOC).stream()
-        .anyMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus));
+	Application application = null;
+	String id = applicationData.getId();
+	try {
+		application = applicationRepository.find(id);
+	} catch (Exception e) {
+		log.warn("A find of application with id [" + id
+				+ "] failed. If id is null, cause may be session timeout. Message: " + e.getMessage());
+		return false;
+	}
+	return application.getDocumentStatuses(UPLOADED_DOC).stream()
+			.anyMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus));
   }
 
   @Nullable
