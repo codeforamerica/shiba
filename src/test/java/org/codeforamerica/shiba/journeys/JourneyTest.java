@@ -104,6 +104,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("applicantSignature", signature);
     testPage.clickButton("Submit");
     testPage.clickContinue();
+    testPage.clickContinue();
 
     // No document upload
     testPage.clickButton("I'll do this later");

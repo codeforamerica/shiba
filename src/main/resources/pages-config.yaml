@@ -1409,6 +1409,12 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &submissionConfirmation
+    name: submissionConfirmation 
+    pageTitle: submission-confirmation.title
+    headerKey: submission-confirmation.header
+    contextFragment: icon-documents-sent
+    hasPrimaryButton: true
   - &addingDocuments
     name: addingDocuments
     pageTitle: adding-documents.title
@@ -4119,6 +4125,10 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
+      - pageName: submissionConfirmation
+  submissionConfirmation:
+    pageConfiguration: *submissionConfirmation
+    nextPages:
       - pageName: addingDocuments
   addingDocuments:
     pageConfiguration: *addingDocuments
@@ -4298,6 +4308,7 @@ landmarkPages:
     - documentOffboarding
     - documentSubmitConfirmation
     - nextSteps
+    - submissionConfirmation
     - success
     - feedback
     - matchInfo
