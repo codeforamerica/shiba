@@ -1449,8 +1449,9 @@ pageDefinitions:
     hasPrimaryButton: false
   - &identifyCounty
     name: identifyCounty
-    headerKey: identify-county.select-your-county
     pageTitle: identify-county.title
+    headerKey: identify-county.select-your-county
+    headerHelpMessageKey: identify-county.this-is-the-county
     contextFragment: countyContextFragment
     inputs:
       - name: county
