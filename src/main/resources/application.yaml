@@ -44,7 +44,7 @@ server:
     session:
       cookie:
         secure: true
-      timeout: 1m
+      timeout: 60m
   error:
     whitelabel:
       enabled: true
