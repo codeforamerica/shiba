@@ -89,6 +89,7 @@ feature-flag:
   white-earth-and-red-lake-routing: on
   word-to-pdf: off
   only-submit-blank-status-apps-from-olmsted: off
+  show-delayed-processing-time-notice: on
   
 document-upload:
   max-files-uploaded: 20

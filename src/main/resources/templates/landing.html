@@ -9,6 +9,9 @@
     <section class="slab slab--white padding-top-1rem padding-bottom-3rem">
       <div class="grid">
         <div class="grid__item width-one-half">
+          <div class="spacing-above-15" th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
+            <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
+          </div>
           <div class="spacing-above-35">
             <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
           </div>

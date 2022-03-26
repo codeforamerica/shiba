@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="delayedProcessingTimeNotice">
+  <div id="delayed-processing-time-notice" class="delayed-processing-time-notice-box">
+    <span class="text-25 text-bold" th:text="${#messages.msg('general.delayed-processing-time-notice')}"></span>
+    <span class="text-25" th:text="${#messages.msg('general.delayed-processing-time-message')}"></span>
+  </div>
+</div>
+</html>
