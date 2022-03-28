@@ -508,6 +508,7 @@ public abstract class AbstractBasePageTest {
     testPage.enter("applicantSignature", "some name");
     testPage.clickButton("Submit");
     testPage.clickContinue();
+    testPage.clickContinue();
     testPage.clickButton("Add documents now");
     testPage.clickContinue();
   }

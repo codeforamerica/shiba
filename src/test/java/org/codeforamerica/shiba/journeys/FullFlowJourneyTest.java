@@ -40,6 +40,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Assert intercom button is present on landing page
     await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
     assertThat(driver.findElementById("intercom-frame")).isNotNull();
+    // Assert that the Delayed Processing Time Notice is displayed on the landing page.
+    assertThat(driver.findElementById("delayed-processing-time-notice")).isNotNull();
 
     List<String> programSelections = List
         .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
@@ -407,6 +409,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("applicantSignature", "this is my signature");
     testPage.clickButton("Submit");
     testPage.clickContinue();
+    testPage.clickContinue();
     testPage.clickButton("Add documents now");
     testPage.clickContinue();
 
@@ -421,6 +424,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(driver.getTitle()).isEqualTo("Your next steps");
     navigateTo("documentSubmitConfirmation");
     assertThat(driver.getTitle()).isEqualTo("Your next steps");
+    // Assert that the Delayed Processing Time Notice is displayed on the nextSteps page.
+    assertThat(driver.findElementById("delayed-processing-time-notice")).isNotNull();
     testPage.clickContinue();
 
     SuccessPage successPage = new SuccessPage(driver);

@@ -2,7 +2,16 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="cardHeader" id="cardHeader" class="toolbar">
+  <div class="stack-vertical">
+    <!-- some pages may not have a pageTitle property -->
+    <div th:if="${page.pageTitle} != '' and #{${page.pageTitle}} == ${#messages.msg('next-steps.title')}">
+      <div class="reduce-spacing-above-35 spacing-below-15"
+        th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
+        <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
+      </div>
+    </div>
     <div th:replace="fragments/goBack :: goBackLink"></div>
+  </div>
 </div>
 </body>
 </html>
