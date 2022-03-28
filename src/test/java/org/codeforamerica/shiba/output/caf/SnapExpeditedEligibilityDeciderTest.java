@@ -155,13 +155,13 @@ class SnapExpeditedEligibilityDeciderTest {
   }
 
   @Test
-  void shouldQualifyWhenHouseholdMemberAppliesForSnapAndPreparesMealsTogether() {
+  void shouldQualifyWhenHouseholdMemberAppliesForSnapRegardlessOfPreparesMealsTogether() {
     ApplicationData applicationData = applicationDataBuilder
         .withApplicantPrograms(List.of("CASH"))
         .withHouseholdMemberPrograms(List.of("SNAP"))
         .withPageData("preparingMealsTogether", "isPreparingMealsTogether", List.of("false"))
         .build();
-    assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
+    assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
 
     applicationData = applicationDataBuilder
         .withPageData("preparingMealsTogether", "isPreparingMealsTogether", List.of("true"))
