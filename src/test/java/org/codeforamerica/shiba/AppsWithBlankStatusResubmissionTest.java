@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 @SpringBootTest
@@ -62,8 +63,8 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private FeatureFlagConfiguration featureFlagConfiguration;
 
-  @Autowired
-  private  PdfGenerator pdfGenerator;
+  @MockBean
+  private ClientRegistrationRepository repository;
   
   private final ZonedDateTime moreThan60DaysAgo = now().withFixedOffsetZone().minusDays(60)
       .minusNanos(1);
