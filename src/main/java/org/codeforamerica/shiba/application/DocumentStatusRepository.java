@@ -1,7 +1,6 @@
 package org.codeforamerica.shiba.application;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
-import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.slf4j.MDC;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
