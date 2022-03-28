@@ -140,13 +140,13 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        SENDING);
+        SENDING,"");
 
     documentStatusRepository.createOrUpdate(
         applicationId,
         UPLOADED_DOC,
         "Anoka",
-        SENDING);
+        SENDING,"fileName");
 
     return applicationId;
   }
@@ -176,7 +176,7 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        SENDING);
+        SENDING,"");
     return applicationId;
   }
 
@@ -205,7 +205,7 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        DELIVERED);
+        DELIVERED,"");
     return applicationId;
   }
 }

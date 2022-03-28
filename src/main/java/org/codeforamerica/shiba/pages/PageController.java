@@ -807,7 +807,7 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING, UPLOADED_DOC);
+      documentStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

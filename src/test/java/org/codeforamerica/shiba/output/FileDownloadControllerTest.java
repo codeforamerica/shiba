@@ -62,7 +62,7 @@ class FileDownloadControllerTest {
     application = Application.builder()
         .completedAt(ZonedDateTime.now())
         .applicationData(applicationData)
-        .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED)))
+        .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED,"")))
         .build();
     mockMvc = MockMvcBuilders.standaloneSetup(
             new FileDownloadController(

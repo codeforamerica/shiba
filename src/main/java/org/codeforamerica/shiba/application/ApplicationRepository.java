@@ -224,7 +224,8 @@ public class ApplicationRepository {
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),
-          Status.valueFor(rs.getString("status"))
+          Status.valueFor(rs.getString("status")),
+          rs.getString("document_name")
       );
     }
   }

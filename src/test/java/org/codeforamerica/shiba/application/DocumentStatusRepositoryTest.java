@@ -17,6 +17,8 @@ import java.util.List;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
@@ -35,11 +37,13 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
   private RoutingDestination routingDestination;
+  private final FilenameGenerator filenameGenerator = mock(FilenameGenerator.class);
+  private final PdfGenerator pdfGenerator = mock(PdfGenerator.class);
 
   @BeforeEach
   void setUp() {
     documentStatusRepository = new DocumentStatusRepository(jdbcTemplate,
-        routingDecisionService);
+        routingDecisionService, filenameGenerator, pdfGenerator );
     routingDestination = CountyRoutingDestination.builder().county(Olmsted)
         .build();
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
@@ -49,10 +53,10 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void createOrUpdateShouldCreateOrUpdateStatusesFromAnIdDocTypeDestinationAndStatus() {
-    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
-    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED,"");
+    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED,"");
     assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
-        new DocumentStatus("someId", CAF, "Hennepin", DELIVERED)
+        new DocumentStatus("someId", CAF, "Hennepin", DELIVERED,"")
     );
   }
 
@@ -74,9 +78,9 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
+            SENDING,""),
         new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING)
+            SENDING,"")
     );
 
     new TestApplicationDataBuilder(applicationData)
@@ -85,28 +89,28 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING)
+            SENDING,"")
     );
   }
 
   @Test
   void getApplicationStatusToResubmitShouldOnlyReturnFailedSubmissions() {
-    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED);
-    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED,"");
+    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED,"");
 
-    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
-    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED,"fileName");
+    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING,"");
 
-    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING);
-    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING,"");
+    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING,"fileName");
 
-    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
+    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED,"");
 
     List<DocumentStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
-        new DocumentStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
-        new DocumentStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
-        new DocumentStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
+        new DocumentStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED,""),
+        new DocumentStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED,"fileName"),
+        new DocumentStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED,"")
     );
   }
 
@@ -127,9 +131,9 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
+            SENDING,""),
         new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING)
+            SENDING,"")
     );
 
     ApplicationData applicationData2 = new TestApplicationDataBuilder()
@@ -143,9 +147,9 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         applicationData.getId());
     assertThat(resultingStatuses2).containsExactlyInAnyOrder(
         new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
+            SENDING,""),
         new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING)
+            SENDING,"")
     );
   }
 }

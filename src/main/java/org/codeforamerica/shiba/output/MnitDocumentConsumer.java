@@ -126,7 +126,7 @@ public class MnitDocumentConsumer {
     if (uploadedDocs.isEmpty()) {
       log.error(
           "There was an issue processing and delivering uploaded documents. Reach out to client to upload again.");
-      documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+      documentStatusRepository.createOrUpdateAllForDocumentType(application,
           UNDELIVERABLE, UPLOADED_DOC);
       return;
     }
@@ -186,11 +186,11 @@ public class MnitDocumentConsumer {
     String id = application.getId();
     try {
       documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
-          SENDING);
+          SENDING,applicationFile.getFileName());
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
       documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
-          DELIVERY_FAILED);
+          DELIVERY_FAILED,applicationFile.getFileName());
       log.error("Failed to send document %s to recipient %s for application %s with error, "
           .formatted(documentType, routingDestination.getName(), id), e);
     }

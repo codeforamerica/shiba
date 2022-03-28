@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS  application_status
     routing_destination VARCHAR,
     status              VARCHAR,
     created_at          TIMESTAMP,
-    updated_at          TIMESTAMP
+    updated_at          TIMESTAMP,
+    document_name       VARCHAR
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id

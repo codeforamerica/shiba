@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.application;
 
+import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
+import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -19,18 +23,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 @Repository
 @Slf4j
 public class DocumentStatusRepository {
 
   private final JdbcTemplate jdbcTemplate;
   private final RoutingDecisionService routingDecisionService;
-
+  private final FilenameGenerator filenameGenerator;
+  private final PdfGenerator pdfGenerator;
+  
   public DocumentStatusRepository(JdbcTemplate jdbcTemplate,
-      RoutingDecisionService routingDecisionService) {
+      RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator, PdfGenerator pdfGenerator) {
     this.jdbcTemplate = jdbcTemplate;
     this.routingDecisionService = routingDecisionService;
+    this.filenameGenerator = filenameGenerator;
+    this.pdfGenerator = pdfGenerator;
   }
 
   public List<DocumentStatus> findAll(String applicationId) {
@@ -43,7 +52,7 @@ public class DocumentStatusRepository {
     handleDocumentDifference(application, documents);
 
     for (Document document : documents) {
-      createOrUpdateAllForDocumentType(application.getApplicationData(), status, document);
+      createOrUpdateAllForDocumentType(application, status, document);
     }
   }
 
@@ -58,63 +67,43 @@ public class DocumentStatusRepository {
     delete(application.getId(), docsToDelete);
   }
 
-  public void createOrUpdateAllForDocumentType(ApplicationData applicationData, Status status,
+  public void createOrUpdateAllForDocumentType(Application application, Status status,
       Document document) {
-    List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(
-        applicationData, document);
-    routingDestinations.forEach(
-        routingDestination -> {
-        if(document.equals(Document.UPLOADED_DOC)) {
-          applicationData.getUploadedDocs().forEach(uploadDoc -> createOrUpdateUploadedDoc(applicationData.getId(), document,
-             routingDestination.getName(),
-             status,uploadDoc.getFilename()));
-        } else {
-          createOrUpdateUploadedDoc(applicationData.getId(), document,
-             routingDestination.getName(),
-             status,null);
-       }
-        }
-        
-        );
-    
+    ApplicationData applicationData = application.getApplicationData(); 
+    List<RoutingDestination> routingDestinations =
+        routingDecisionService.getRoutingDestinations(applicationData, document);
+    routingDestinations.forEach(routingDestination -> {
+      var fileNames = getFileNames(application, document);
+      fileNames.stream().forEach(fileName -> createOrUpdate(applicationData.getId(), document,
+          routingDestination.getName(), status, fileName));
+    });
   }
 
-  public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
-      Status status) {
-    if (document == null || routingDestinationName == null) {
-      return;
+  public List<String> getFileNames(Application application, Document document){
+    List<String> fileNames = new ArrayList<String>();
+    if(document.equals(UPLOADED_DOC)) {
+      var uploadedDocs = application.getApplicationData().getUploadedDocs();
+      if (uploadedDocs.size() == 0) {
+        fileNames.add("");
+      }
+      for (int i = 0; i < uploadedDocs.size(); i++) {
+        String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
+        String fileName = filenameGenerator.generateUploadedDocumentName(application, i, extension); 
+        ApplicationFile preparedDocument =
+            pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null);
+        if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
+          fileName = preparedDocument.getFileName();
+        }
+        fileNames.add(fileName);
+      }
+    }else {
+      String fileName = filenameGenerator.generatePdfFilename(application, document);
+      fileNames.add(null!=fileName?fileName:"");
     }
-
-    String updateStatement = """
-        UPDATE application_status SET status = :status WHERE application_id = :application_id
-        AND document_type = :document_type AND routing_destination = :routing_destination
-        """;
-
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put("application_id", applicationId);
-    parameters.put("status", status.toString());
-    parameters.put("document_type", document.name());
-    parameters.put("routing_destination", routingDestinationName);
-    
-    var namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-
-    int rowCount = namedParameterJdbcTemplate.update(updateStatement, parameters);
-    if (rowCount == 0) {
-      // Not found, add a new entry
-      String insertStatement = """
-          INSERT INTO application_status (application_id, status, document_type, routing_destination)
-          VALUES (:application_id, :status, :document_type, :routing_destination)
-          """;
-      rowCount = namedParameterJdbcTemplate.update(insertStatement, parameters);
-    }
-
-    if (rowCount != 0) {
-      logStatusUpdate(applicationId, document, routingDestinationName, status);
-    }
-
+    return fileNames;
   }
   
-  public void createOrUpdateUploadedDoc(String applicationId, Document document, String routingDestinationName,
+  public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
       Status status, String documentName) {
     if (document == null || routingDestinationName == null) {
       return;
@@ -122,7 +111,7 @@ public class DocumentStatusRepository {
 
     String updateStatement = """
         UPDATE application_status SET status = :status WHERE application_id = :application_id
-        AND document_type = :document_type AND routing_destination = :routing_destination
+        AND document_type = :document_type AND routing_destination = :routing_destination AND document_name = :document_name
         """;
 
     Map<String, Object> parameters = new HashMap<>();
@@ -145,7 +134,7 @@ public class DocumentStatusRepository {
     }
 
     if (rowCount != 0) {
-      logStatusUpdate(applicationId, document, routingDestinationName, status);
+      logStatusUpdate(applicationId, document, routingDestinationName, status, documentName);
     }
 
   }
@@ -174,15 +163,15 @@ public class DocumentStatusRepository {
   }
 
   private void logStatusUpdate(String id, Document document, String routingDestination,
-      Status status) {
+      Status status, String documentName) {
     MDC.put("applicationId", id);
     if (status == null) {
-      log.info(String.format("%s to %s #%s application status has been updated to null", document,
+      log.info(String.format("%s = %s to %s #%s application status has been updated to null", document, documentName,
           routingDestination, id));
       return;
     }
 
-    log.info(String.format("%s to %s #%s has been updated to %s", document,
+    log.info(String.format("%s = %s to %s #%s has been updated to %s", document, documentName,
         routingDestination, id, status));
   }
 
@@ -194,7 +183,8 @@ public class DocumentStatusRepository {
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),
-          Status.valueFor(rs.getString("status"))
+          Status.valueFor(rs.getString("status")),
+          rs.getString("document_name")
       );
     }
   }

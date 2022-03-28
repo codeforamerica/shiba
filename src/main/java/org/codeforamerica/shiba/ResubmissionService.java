@@ -88,6 +88,7 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       Document document = applicationStatus.getDocumentType();
       String routingDestinationName = applicationStatus.getRoutingDestinationName();
+      String documentName = applicationStatus.getDocumentName();
       log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
           + " for application id " + id);
       try {
@@ -102,12 +103,12 @@ public class ResubmissionService {
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL);
+        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
         documentStatusRepository.createOrUpdate(id, document, routingDestinationName,
-            RESUBMISSION_FAILED);
+            RESUBMISSION_FAILED, documentName);
       }
     });
     MDC.clear();
@@ -171,7 +172,7 @@ public class ResubmissionService {
 
       if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
           .getUploadedDocs().isEmpty()) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+        documentStatusRepository.createOrUpdateAllForDocumentType(application,
             SENDING, UPLOADED_DOC);
       }
 
@@ -226,13 +227,13 @@ public class ResubmissionService {
     if (application.getApplicationData().getUploadedDocs().isEmpty() ||
         application.getApplicationData().getUploadedDocs().stream()
             .allMatch(uploadedDocument -> uploadedDocument.getSize() == 0)) {
-      documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+      documentStatusRepository.createOrUpdateAllForDocumentType(application,
           UNDELIVERABLE, UPLOADED_DOC);
     } else {
       // Docs older than 60 days cannot be delivered due to retention policy
       ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
       if (application.getCompletedAt().isBefore(sixtyDaysAgo)) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+        documentStatusRepository.createOrUpdateAllForDocumentType(application,
             UNDELIVERABLE, UPLOADED_DOC);
       } else {
         log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
