@@ -24,6 +24,7 @@ import org.codeforamerica.shiba.application.DocumentStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -65,6 +66,12 @@ class AppsWithBlankStatusResubmissionTest {
 
   @MockBean
   private ClientRegistrationRepository repository;
+  
+  @MockBean
+  private DocumentRepository documentRepository;
+  
+  @MockBean
+  private PdfGenerator pdfGenerator;
   
   private final ZonedDateTime moreThan60DaysAgo = now().withFixedOffsetZone().minusDays(60)
       .minusNanos(1);
