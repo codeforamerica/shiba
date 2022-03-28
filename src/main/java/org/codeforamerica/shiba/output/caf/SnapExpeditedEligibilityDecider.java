@@ -113,7 +113,7 @@ public class SnapExpeditedEligibilityDecider {
     boolean isPreparingMealsTogether = Boolean
         .parseBoolean(getFirstValue(applicationData.getPagesData(), PREPARING_MEALS_TOGETHER));
 
-    return applicantApplyingForSnap || (householdMemberApplyingForSnap && isPreparingMealsTogether);
+    return applicantApplyingForSnap || householdMemberApplyingForSnap;
   }
 
   private boolean canDetermineEligibility(ApplicationData applicationData) {
