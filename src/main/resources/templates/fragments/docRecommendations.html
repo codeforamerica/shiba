@@ -7,6 +7,8 @@
     <div class="reveal__link__header-adjacent"
          th:text="#{upload-documents.recommended-documents}"></div>
     <div class="reveal__content reveal__content-adjacent">
+      <div class="h4 spacing-above-15"
+         th:text="#{upload-documents.based-on-your-answers}"></div>
       <th:block th:each="docRec: ${docRecommendations}">
         <div th:replace="fragments/docRecommendations :: docRecommendationFragment(${docRec.icon},
                                                 ${docRec.title},
