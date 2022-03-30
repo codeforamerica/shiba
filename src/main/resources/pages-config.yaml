@@ -1412,7 +1412,6 @@ pageDefinitions:
   - &submissionConfirmation
     name: submissionConfirmation 
     pageTitle: submission-confirmation.title
-    headerKey: submission-confirmation.header
     contextFragment: icon-documents-sent
     hasPrimaryButton: true
   - &addingDocuments
