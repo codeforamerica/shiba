@@ -19,8 +19,7 @@
 				<th:block th:if="${docRecommendations.size() > 0}">
 					 <h1 class="h2" th:text="#{document-recommendation.submit-any-documents-you-have}"></h1>
 					<p class="spacing-below-35">
-	                    <span class ="underline" th:text="#{document-recommendation.you-have-30-days}"></span>
-	                    <span th:text="#{document-recommendation.sooner-you-submit}"></span>
+	                    <span th:text="#{document-recommendation.you-have-30-days}"></span>
                 	</p>
 				</th:block>
                 <div th:replace="fragments/docRecommendations :: docRecommendations"></div>
