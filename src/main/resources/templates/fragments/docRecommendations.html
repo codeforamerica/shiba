@@ -18,6 +18,18 @@
   </a>
 </div>
 
+<div th:fragment="docRecommendations" 
+     th:if="${docRecommendations.size() == 0}">
+
+	<div class="notice--success">
+		<h2 class="h3" th:text="#{document-recommendation.caseworkers-most-commonly-request}"></h2>	<ul class="grid__item spacing-above-25 left-justified-list">
+        <li th:text="#{document-recommendation.id}"></li>
+        <li th:text="#{document-recommendation.pay-stubs}"></li>
+        <li th:text="#{document-recommendation.rent-receipts}"></li>
+    </ul>
+	</div>
+</div>
+
 <!-- Leaving this as a fragment in case we want to use it again somewhere else -->
 <div th:fragment="docRecommendationFragment(icon_path, rec_title, rec_explanation)"
      class="doc-rec grid-ignore-mobile spacing-below-60">
