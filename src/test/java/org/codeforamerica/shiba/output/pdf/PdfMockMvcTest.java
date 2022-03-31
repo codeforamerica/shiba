@@ -816,6 +816,98 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
      }
    }
+   
+   @Nested
+   @Tag("pdf")
+   class RaceAndEthinicityCCAP{
+     @Test
+     void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
+       selectPrograms("CCAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", ccap);
+     }
+     
+     @Test
+     void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
+       selectPrograms("CCAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", ccap);
+     }
+     
+     @Test
+     void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
+       selectPrograms("CCAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","HISPANIC_LATINO_OR_SPANISH","WHITE")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("ASIAN", "Yes", ccap);
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+     }
+     
+     @Test
+     void shouldMarkWhiteWhenWhiteSelected() throws Exception {
+       selectPrograms("CCAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","WHITE","MIDDLE_EASTERN_OR_NORTH_AFRICAN")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("ASIAN", "Yes", ccap);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "", ccap);
+     }
+     
+     @Test
+     void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","ASIAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+     
+     @Test
+     void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected() throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Off", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+  
+ 
+     @Test
+     void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
+         throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+               "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+   }
+   
   }
 
   @Nested
