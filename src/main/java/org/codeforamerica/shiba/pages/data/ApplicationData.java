@@ -7,6 +7,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MEDICAL_EXPENSES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
@@ -175,6 +177,17 @@ public class ApplicationData implements Serializable {
       applicantAndHouseholdMemberPrograms.addAll(householdPrograms);
     }
     return applicantAndHouseholdMemberPrograms;
+  }
+  
+  @NotNull
+  public Set<String> getApplicantAndHouseholdMember() {
+    List<String> applicantFirstName = getValues(pagesData, PERSONAL_INFO_FIRST_NAME);
+    Set<String> applicantAndHouseholdMemberNames = new HashSet<>(applicantFirstName);
+    List<String> householdNames = getValues(this, HOUSEHOLD, HOUSEHOLD_INFO_FIRST_NAME);
+    if (householdNames != null) {
+      applicantAndHouseholdMemberNames.addAll(householdNames);
+    }
+    return applicantAndHouseholdMemberNames;
   }
 
   // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page

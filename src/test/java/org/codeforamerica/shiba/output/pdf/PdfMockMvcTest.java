@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.caf.CoverPagePreparer.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldIsEmpty;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -507,6 +508,33 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("CCAP", "Off", caf);
       assertPdfFieldEquals("GRH", "Off", caf);
       assertPdfFieldEquals("PROGRAM_NONE", "Yes", caf);
+    }
+    
+    @Test
+    void shouldMapHHMemberMoreThan5LessThan10() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(9);
+      var caf = submitAndDownloadCaf();
+      assertPdfFieldEquals("FIRST_NAME_4", "householdMemberFirstName4", caf);
+    }
+    
+    @Test
+    void shouldNotMapHHMemberLessThan5() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(3);
+      var caf = submitAndDownloadCaf();
+      assertNull(caf.getField("FIRST_NAME_4"));
+    }
+    
+    @Test
+    void shouldNotMapHHMemberMoreThan10() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(11);
+      var caf = submitAndDownloadCaf();
+      assertNull(caf.getField("FIRST_NAME_4"));
     }
 
     @Test

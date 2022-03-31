@@ -46,6 +46,7 @@ public class PdfGenerator implements FileGenerator {
 	      .of("doc", "docx");
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
+  private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
@@ -55,6 +56,7 @@ public class PdfGenerator implements FileGenerator {
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
+      Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
@@ -70,6 +72,7 @@ public class PdfGenerator implements FileGenerator {
     this.fileNameGenerator = fileNameGenerator;
     this.pdfWordConverter = pdfWordConverter;
     this.featureFlags = featureFlagConfiguration;
+    this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
   }
 
   @Override
@@ -100,7 +103,12 @@ public class PdfGenerator implements FileGenerator {
       Recipient recipient, String filename) {
     List<DocumentField> documentFields = preparers.prepareDocumentFields(application, document,
         recipient);
+    var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
+    if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+    }
+   
     List<PdfField> fields = pdfFieldMapper.map(documentFields);
     return pdfFiller.fill(fields, application.getId(), filename);
   }
