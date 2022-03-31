@@ -243,6 +243,25 @@ public class AbstractShibaMockMvcTest {
     householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
     postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
   }
+  
+  protected void fillOutHousemateInfoMoreThanFiveLessThanTen(int HHCount) throws Exception {
+    Map<String, List<String>> householdMemberInfo = new HashMap<>();
+    for(int i=0; i<=HHCount; i++) {
+      householdMemberInfo.put("firstName", List.of("householdMemberFirstName"+i));
+      householdMemberInfo.put("lastName", List.of("householdMemberLastName"+i));
+      householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"+i));
+      householdMemberInfo.put("programs", List.of("SNAP"));
+      householdMemberInfo.put("relationship", List.of("housemate"));
+      householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
+      householdMemberInfo.put("ssn", List.of("987654321"));
+      householdMemberInfo.put("maritalStatus", List.of("Never married"));
+      householdMemberInfo.put("sex", List.of("Male"));
+      householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
+      householdMemberInfo.put("moveToMnDate", List.of("02", "18", "1950"));
+      householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
+      postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
+    }
+  }
 
   protected void fillOutHousemateInfoWithNoProgramsSelected() throws Exception {
     Map<String, List<String>> householdMemberInfo = new HashMap<>();

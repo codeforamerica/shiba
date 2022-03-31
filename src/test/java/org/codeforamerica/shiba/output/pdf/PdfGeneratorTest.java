@@ -29,15 +29,19 @@ class PdfGeneratorTest {
   private Application application;
   private PdfFieldMapper pdfFieldMapper;
   private PdfFieldFiller caseworkerFiller;
+  private PdfFieldFiller caseworkerCafWdHouseholdSuppFiller;
   private DocumentFieldPreparers preparers;
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
+  private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers;
   private FeatureFlagConfiguration featureFlags;
 
   @BeforeEach
   void setUp() {
     pdfFieldMapper = mock(PdfFieldMapper.class);
     caseworkerFiller = mock(PdfFieldFiller.class);
+    caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
     preparers = mock(DocumentFieldPreparers.class);
@@ -51,6 +55,11 @@ class PdfGeneratorTest {
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
         CLIENT, Map.of(Document.CAF, clientFiller, Document.CCAP, ccapFiller)
     );
+    
+    pdfFieldWithCAFHHSuppFillers = Map.of(
+        CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
+        CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
+    );
 
     application = Application.builder()
         .id(applicationId)
@@ -62,6 +71,7 @@ class PdfGeneratorTest {
     pdfGenerator = new PdfGenerator(
         pdfFieldMapper,
         pdfFieldFillers,
+        pdfFieldWithCAFHHSuppFillers,
         applicationRepository,
         null,
         preparers,
