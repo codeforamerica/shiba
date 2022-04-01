@@ -652,7 +652,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           throws Exception {
         postExpectingSuccess("identifyCounty", "county", "Morrison");
         testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345",
-            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
+            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
       }
 
       @Test
@@ -660,7 +660,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           throws Exception {
         postExpectingSuccess("identifyCounty", "county", "Dodge");
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
-            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
+            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
 
       @Test

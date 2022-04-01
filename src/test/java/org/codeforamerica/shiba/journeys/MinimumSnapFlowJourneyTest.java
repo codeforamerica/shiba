@@ -94,7 +94,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     // PDF assertions
     assertCafContainsAllFieldsForMinimumSnapFlow(applicationId,
-        "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County (612-596-1300).");
+        "This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Hennepin County (612-596-1300).");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
     assertCafFieldEquals("DRUG_FELONY", "No");
@@ -182,7 +182,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     // PDF assertions
     assertCafContainsAllFieldsForMinimumSnapFlow(applicationId,
         """
-            This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
+            This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
 
             For more support, you can call Hennepin County (612-596-1300).""");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");

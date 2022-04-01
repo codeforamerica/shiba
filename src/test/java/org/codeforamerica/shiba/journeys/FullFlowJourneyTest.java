@@ -449,7 +449,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("COUNTY_INSTRUCTIONS", """
-        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.
+        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
                     
         For more support, you can call Hennepin County (612-596-1300).""");
     assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
@@ -573,7 +573,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\n"
+        "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\n"
             + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
