@@ -58,16 +58,16 @@ client:
 mnit-filenet:
   username: ${MNIT-FILENET_USERNAME}
   password: ${MNIT-FILENET_PASSWORD}
-  url: https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
+  url: https://testx-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
   # future endpoint for atompub/chemistry implementation:
   # url: https://test-svcs.dhs.mn.gov/fncmis/resources/Service
   #  router-url: http://10.217.19.80:9083/router/api/fileNetToSftp
   router-url: https://mn-its-stst.dhs.state.mn.us/router/api/fileNetToSftp
   jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
-  max-attempts: 4
-  delay: 5400000 # 1.5 hours
+  max-attempts: 3
+  delay: 15000 # 15 seconds
   multiplier: 2
-  max-delay: 10800000 # 3 hours
+  max-delay: 30000 # 30 seconds
   timeout-seconds: 300
 
 sender-email: help@mnbenefits.org

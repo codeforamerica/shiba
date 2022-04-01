@@ -173,8 +173,6 @@ public class FilenetWebServiceClient {
           DELIVERED);
     } catch (Exception e) {
       // Retry depends on uncaught exceptions - we want more logging for retries so the exception is rethrown here
-      logErrorToSentry(e, applicationFile, routingDestination, applicationNumber,
-          applicationDocument, flowType);
       throw e;
     }
   }
