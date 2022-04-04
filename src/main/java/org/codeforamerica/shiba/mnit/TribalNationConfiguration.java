@@ -20,7 +20,7 @@ public class TribalNationConfiguration {
   }
 
   @Bean
-  @Profile({"staging"})
+  @Profile({"dev"})
   public Map<String, TribalNationRoutingDestination> stagingTribalNations() {
     Map<String, TribalNationRoutingDestination> result = getDefaultTribalNations();
     addTribalNation(result, MILLE_LACS_BAND_OF_OJIBWE,
@@ -43,7 +43,7 @@ public class TribalNationConfiguration {
   }
 
   @Bean
-  @Profile("demo")
+  @Profile("atst")
   public Map<String, TribalNationRoutingDestination> demoTribalNations() {
     Map<String, TribalNationRoutingDestination> result = getDefaultTribalNations();
     addTribalNation(result,
