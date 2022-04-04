@@ -12,4 +12,4 @@ feature-flag:
   certain-pops: off
   submit-docs-via-email-for-hennepin: off
 
-demo-banner: true
+demo: true
