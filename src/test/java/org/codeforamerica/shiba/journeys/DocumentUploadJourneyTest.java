@@ -90,6 +90,6 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     // should alert the user when they have uploaded the maximum number of files
     IntStream.range(0, 19).forEach(c -> uploadJpgFile());
     assertThat(driver.findElementById("max-files").getText()).contains(
-        "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
+        "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a caseworker later.");
   }
 }
