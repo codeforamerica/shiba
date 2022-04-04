@@ -6,4 +6,4 @@ spring:
 feature-flag:
   submit-via-api: on
 
-demo-banner: true
+demo: true
