@@ -64,10 +64,10 @@ mnit-filenet:
   #  router-url: http://10.217.19.80:9083/router/api/fileNetToSftp
   router-url: https://mn-its-stst.dhs.state.mn.us/router/api/fileNetToSftp
   jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
-  max-attempts: 4
-  delay: 5400000 # 1.5 hours
+  max-attempts: 3
+  delay: 15000 # 15 seconds
   multiplier: 2
-  max-delay: 10800000 # 3 hours
+  max-delay: 30000 # 30 seconds
   timeout-seconds: 300
 
 sender-email: help@mnbenefits.org
