@@ -1,4 +1,4 @@
-name: Deploy to demo
+name: Deploy to atst
 
 on:
   workflow_dispatch:
@@ -55,7 +55,7 @@ jobs:
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
           sudo dpkg -i aptible-package
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app demo --git-commitish demo-deploy SPRING_PROFILES_ACTIVE=demo \
+          aptible deploy --app demo --git-commitish demo-deploy SPRING_PROFILES_ACTIVE=atst \
           'MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}' \
           'SMARTY_STREET_AUTH_ID=${{ secrets.SMARTY_STREET_AUTH_ID }}' \
           'SMARTY_STREET_AUTH_TOKEN=${{ secrets.SMARTY_STREET_AUTH_TOKEN }}' \
@@ -93,7 +93,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-  # Deploy to mnit demo steps:
+  # Deploy to mnit atst steps:
   # 1. find latest git release
   # 2. Login to openshift non-prod
   # 3. update build config, set git ref to the release tag
@@ -102,7 +102,7 @@ jobs:
   # 6. update deployment config to the release tag
   # 7. rollout updated image
   mnitdeploy:
-    name: deploy to mnit demo
+    name: deploy to mnit atst
     needs: draft-release
     runs-on: ubuntu-latest
     steps:
@@ -124,8 +124,8 @@ jobs:
       uses: innocarpe/actions-slack@v1
       with:
         status: ${{ job.status }}
-        success_text: 'Deploy to MNIT demo succeeded :smile:'
-        failure_text: 'Deploy to MNIT demo failed :frowning:'
+        success_text: 'Deploy to MNIT atst succeeded :smile:'
+        failure_text: 'Deploy to MNIT atst failed :frowning:'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

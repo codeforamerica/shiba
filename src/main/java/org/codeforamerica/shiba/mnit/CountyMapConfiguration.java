@@ -25,7 +25,7 @@ public class CountyMapConfiguration {
   }
 
   @Bean
-  @Profile({"staging", "demo"})
+  @Profile({"dev", "atst"})
   CountyMap<CountyRoutingDestination> demoMapping() {
     initializeDefaultCountyMap();
 
