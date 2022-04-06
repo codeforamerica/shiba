@@ -2,7 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="selfEmploymentPrompt" class="reveal reveal-adjacent spacing-below-60">
-    <a href="#" class="reveal__link reveal__link-adjacent">
+    <div class="reveal__link reveal__link-adjacent" tabindex="0">
         <div class="reveal__link__header-adjacent" th:text="#{self-employment.reveal-title}"></div>
         <div class="reveal__content reveal__content-adjacent">
             <ul class="left-justified-list">
@@ -17,7 +17,7 @@
                 </li>
             </ul>
         </div>
-    </a>
+    </div>
 </div>
 </body>
 </html>

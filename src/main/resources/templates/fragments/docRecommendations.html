@@ -3,7 +3,7 @@
 
 <div th:fragment="docRecommendations" class="reveal reveal-adjacent"
      th:if="${docRecommendations.size() > 0}">
-  <a href="#" class="reveal__link reveal__link-adjacent">
+  <div class="reveal__link reveal__link-adjacent" tabindex="0">
     <div class="reveal__link__header-adjacent"
          th:text="#{upload-documents.recommended-documents}"></div>
     <div class="reveal__content reveal__content-adjacent">
@@ -15,7 +15,7 @@
                                                 ${docRec.explanation})"></div>
       </th:block>
     </div>
-  </a>
+  </div>
 </div>
 
 <div th:fragment="docRecommendations" 
