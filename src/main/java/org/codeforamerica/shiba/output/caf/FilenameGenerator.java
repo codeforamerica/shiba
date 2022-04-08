@@ -19,7 +19,10 @@ import org.codeforamerica.shiba.output.Document;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class FilenameGenerator {
 
   public static final Map<String, Set<String>> LETTER_TO_PROGRAMS = Map.of(
@@ -84,8 +87,15 @@ public class FilenameGenerator {
         document == UPLOADED_DOC && application.getCounty() == County.Hennepin;
     String fileSource = isHennepinUploadedDoc ? "DOC" : "MNB";
 
-    ZonedDateTime completedAtCentralTime =
-        application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago"));
+    ZonedDateTime completedAt = application.getCompletedAt();
+    ZonedDateTime completedAtCentralTime = null;
+    if(completedAt != null) {
+        completedAtCentralTime = completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"));
+    }else {
+    	log.info("completedAt was null for applicationId " + application.getId() + ". Creating new completedAt time.");
+    	completedAtCentralTime = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("America/Chicago"));
+    }
+
     String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(completedAtCentralTime);
     String time = DateTimeFormatter.ofPattern("HHmmss").format(completedAtCentralTime);
     String id = application.getId();

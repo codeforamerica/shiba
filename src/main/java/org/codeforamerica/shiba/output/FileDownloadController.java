@@ -83,7 +83,7 @@ public class FileDownloadController {
       if (application.getCompletedAt() == null) {
         // The submitted time was not set - The application is still in progress or the time was
         // cleared somehow
-        log.info(UNSUBMITTED_APPLICATION_MESSAGE);
+        log.info(UNSUBMITTED_APPLICATION_MESSAGE + " for application id " + applicationId);
         return ResponseEntity.ok().body(UNSUBMITTED_APPLICATION_MESSAGE.getBytes());
       }
       MDC.put("applicationId", application.getApplicationData().getId());
