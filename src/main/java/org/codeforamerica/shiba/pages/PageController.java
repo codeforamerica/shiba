@@ -238,6 +238,12 @@ public class PageController {
     }
 
     // Validations and special case redirects
+    if (shouldRedirectToUploadDocumentsPage(pageName)) {
+    	log.info("documentSubmitConfirmation redirect back to uploadDocuments, no documents in uploadDocs list");
+        return new ModelAndView(
+            String.format("redirect:/pages/%s", landmarkPagesConfiguration.getUploadDocumentsPage()));
+      }
+
     if (shouldRedirectToTerminalPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
@@ -477,6 +483,13 @@ public class PageController {
     boolean restarted =
         applicationData.isSubmitted() && landmarkPagesConfiguration.isStartTimerPage(pageName);
     return unstarted || restarted;
+  }
+
+  private boolean shouldRedirectToUploadDocumentsPage(@PathVariable String pageName) {
+    LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+        .getLandmarkPages();
+    return landmarkPagesConfiguration.isSubmitUploadedDocumentsPage(pageName) &&
+        applicationData.getUploadedDocs().size() < 1;
   }
 
   private boolean shouldRedirectToTerminalPage(@PathVariable String pageName) {

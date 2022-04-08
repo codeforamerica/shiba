@@ -545,4 +545,22 @@ class PageControllerTest {
 
     mockMvc.perform(get("/pages/doesNotExist/navigation")).andExpect(redirectedUrl("/error"));
   }
+ 
+  @Test
+  void shouldRedirectToUploadDocumentPageWhenGoingToSubmitConfirmationWithoutDocuments() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    applicationData.setUploadedDocs(List.of());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/documentSubmitConfirmation")).andExpect(redirectedUrl("/pages/uploadDocuments"));
+  }
+
 }
