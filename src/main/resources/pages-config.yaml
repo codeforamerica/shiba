@@ -218,7 +218,25 @@ conditionDefinitions:
   - &isNoSSN?
     pageName: personalInfo
     input: ssn
-    matcher: NOT_EMPTY  
+    matcher: NOT_EMPTY
+  - &applicantDidNotChoseOnlyCCAP?
+    pageName: choosePrograms
+    input: programs
+    value: CCAP
+    matcher: DOES_NOT_CONTAIN_ONLY
+  - &householdMemberDidNotChoseOnlyCCAP?
+    pageName: householdMemberInfo
+    input: programs
+    value: CCAP
+    matcher: DOES_NOT_CONTAIN_ONLY
+  - &hideDrugFelonyQuestion?
+    logicalOperator: OR
+    conditions:
+      - *applicantDidNotChoseOnlyCCAP?
+      - logicalOperator: AND
+        conditions:
+        - *applicantDidNotChoseOnlyCCAP?
+        - *householdMemberDidNotChoseOnlyCCAP?
 pageDefinitions:
   - &landing
     name: landing
@@ -1397,6 +1415,7 @@ pageDefinitions:
               messageKey: general.inputs.yes
             - value: "false"
               messageKey: general.inputs.no
+        condition: *hideDrugFelonyQuestion?
   - &signThisApplication
     name: signThisApplication
     pageTitle: sign-this-application.title

@@ -66,6 +66,22 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
   }
+  
+  @Test
+  void verifyDrugFelonyQuestionNotDisplayedWhenApplicantHasSelectedOnlyCCAP() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
+        "introPersonalDetails");
+    postExpectingRedirect("livingSituation", "goingToSchool");
+    postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
+    completeFlowFromIsPregnantThroughTribalNations(false);
+    assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
+    postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
+    assertNavigationRedirectsToCorrectNextPage("jobSearch", "incomeUpNext");
+    fillAdditionalIncomeInfoToHaveVehicle();
+    fillUnearnedIncomeToLegalStuffCCAP();
+    assertPageDoesNotHaveElementWithId("legalStuff", "drugFelony1");
+  }
 
   @Test
   void verifyFlowWhenLiveAloneApplicantSelectedCCAP() throws Exception {
@@ -110,7 +126,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() throws Exception {
     selectPrograms("NONE");
     assertPageHasWarningMessage("choosePrograms",
-        "You will be asked to share some information about yourself even though you’re only applying for others.");
+        "You will be asked to share some information about yourself even though you're only applying for others.");
 
     completeFlowFromLandingPageThroughReviewInfo("NONE");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");

@@ -19,6 +19,10 @@ public class ConditionalInputsTest extends AbstractFrameworkTest {
     staticMessageSource.addMessage("option1", ENGLISH, "option 1");
     staticMessageSource.addMessage("option2", ENGLISH, "option 2");
     staticMessageSource.addMessage("option3", ENGLISH, "option 3");
+
+    staticMessageSource.addMessage("containsDesiredOption",ENGLISH, "Contains Desired Option");
+    staticMessageSource.addMessage("containsExtraOption1", ENGLISH, "Contain Extra Option 1");
+    staticMessageSource.addMessage("containsExtraOption2",ENGLISH, "Contains Extra Option 2");
   }
 
   @Test
@@ -27,5 +31,23 @@ public class ConditionalInputsTest extends AbstractFrameworkTest {
     assertThat(page.getInputByName("option1Text")).isNotNull();
     assertThat(page.getInputByName("option2Text")).isNotNull();
     assertThat(page.getInputByName("option3Text")).isNull();
+  }
+
+  /**
+   * DOES_NOT_CONTAIN_ONLY is the value matcher tested here!   DOES_NOT_CONTAIN_ONLY should take in a value as
+   * an input and if the value is not found or there are more values than the value that you are evaluating then
+   * this function should return false
+   */
+  @Test
+  void shouldNotDisplayInputIfUserSelectedOnlySpecifiedValue__forValueMatcherDoesNotContainOnly() throws Exception {
+    //if user selects only the desired option then the test shouldNotDisplayContentIfMultipleValuesSelected should not be displayed
+    var page = postAndFollowRedirect("thirdPage", "containsOptions", List.of("containsDesiredOption"));
+    assertThat(page.getInputByName("shouldNotDisplayContentIfMultipleValuesSelected")).isNull();
+    assertThat(page.getInputByName("shouldDisplayRegardless")).isNotNull();
+
+    //Properly displays question when more than one option is selected
+    var page2 = postAndFollowRedirect("thirdPage", "containsOptions", List.of("containsDesiredOption", "containsExtraOption1"));
+    assertThat(page2.getInputByName("shouldNotDisplayContentIfMultipleValuesSelected")).isNotNull();
+    assertThat(page2.getInputByName("shouldDisplayRegardless")).isNotNull();
   }
 }

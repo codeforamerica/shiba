@@ -35,6 +35,37 @@ pageDefinitions:
           pageName: firstPage
           input: options
           value: option3
+  - &thirdPage
+    pageTitle: third-page-title
+    name: thirdPage
+    inputs:
+      - name: containsOptions
+        type: CHECKBOX
+        options:
+          selectableOptions:
+            - value: containsDesiredOption
+              messageKey: containsDesiredOption
+            - value: containsExtraOption1
+              messageKey: constainsExtraOption1
+            - value: constainsExtraOption2
+              messageKey: constainsExtraOption2
+  - &fourthPage
+    pageTitle: fourth-page-title
+    name: fourthPage
+    inputs:
+      - name: shouldDisplayRegardless
+        type: TEXT
+        condition:
+          pageName: thirdPage
+          input: containsOptions
+          matcher: NOT_EMPTY
+      - name: shouldNotDisplayContentIfMultipleValuesSelected
+        type: TEXT
+        condition:
+          pageName: thirdPage
+          input: containsOptions
+          value: containsDesiredOption
+          matcher: DOES_NOT_CONTAIN_ONLY
 workflow:
   firstPage:
     pageConfiguration: *firstPage
@@ -42,7 +73,17 @@ workflow:
       - pageName: secondPage
   secondPage:
     pageConfiguration: *secondPage
+    nextPages:
+      - pageName: thirdPage
     datasources:
       - pageName: firstPage
+  thirdPage:
+    pageConfiguration: *thirdPage
+    nextPages:
+      - pageName: fourthPage
+  fourthPage:
+    pageConfiguration: *fourthPage
+    datasources:
+      - pageName: thirdPage
 landmarkPages:
   landingPages: [ ]

@@ -269,6 +269,16 @@ public class Page {
   public WebElement findElementById(String id) {
     return driver.findElementById(id);
   }
+  
+  public boolean elementDoesNotExistById(String id) {
+	try {
+		driver.findElement(By.id(id));
+		return false;//element found, it does exist so return false
+	} catch (org.openqa.selenium.NoSuchElementException e) {
+		return true;//element not found, it does not exist
+	}
+  }
+  
 
   public void clickElementById(String id) {
     WebElement inputToSelect = driver.findElementById(id);

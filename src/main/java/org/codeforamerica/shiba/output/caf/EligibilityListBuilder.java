@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class EligibilityListBuilder {
 	
 	public List<ExpeditedEligibility> buildEligibilityList(List<Eligibility> eligibilityList){
-		//System.out.println("============ eligibilityList: " + eligibilityList.toString()); //TODO emj delete
 		List<ExpeditedEligibility> expeditedEligibilityList = new ArrayList<ExpeditedEligibility>();
 		boolean allEmpty = eligibilityList.stream().allMatch(e -> e.getStatus() == "");
 		if(allEmpty) {
