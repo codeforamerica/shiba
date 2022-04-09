@@ -68,7 +68,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   }
   
   @Test
-  void verifyDrugFelonyQuestionNotDisplayedWhenApplicantHasSelectedOnlyCCAP() throws Exception {
+  void verifyDrugFelonyQuestionNotDisplayedWhenApplicantLivesAloneAndHasSelectedOnlyCCAP() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
         "introPersonalDetails");
@@ -82,6 +82,48 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     fillUnearnedIncomeToLegalStuffCCAP();
     assertPageDoesNotHaveElementWithId("legalStuff", "drugFelony1");
   }
+
+  // Applicant lives alone and did not choose only CCAP - it should show
+  // Applicant has household and chose only CCAP but household member chose other programs - it should show
+  // Applicant has household and chose no programs, household member choose multiple including CCAP - it should show
+  // Applicant has household and both chose only CCAP - it should be hidden
+  // Applicant chose only ccap but household member chose no programs - it should be hidden
+  // Applicant lives alone and chose only CCAP - it should be hidden (we have this test)
+
+  @Test
+  void verifyDrugFelonyQuestionIsDisplayedWhenApplicantChoosesProgramsOtherThanCcap() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP, SNAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
+        "introPersonalDetails");
+    assertPageHasElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
+  void verifyDrugFelonyQuestionIsDisplayedWhenApplicantChoosesOnlyCcapButHouseholdMemberChoosesOtherPrograms() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+    fillOutHousemateInfo("EA, SNAP");
+    assertPageHasElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
+  void verifyDrugFelonyQuestionIsDisplayedWhenApplicantChoosesNoProgramsButHouseholdMemberChoosesMultipleProgramsIncludingCcap() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("NONE");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+    fillOutHousemateInfo("EA, SNAP, CCAP");
+    assertPageHasElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
+  void verifyDrugFelonyQuestionIsHiddenWhenBothApplicantAndHouseholdMembersChooseOnlyCcap() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+    fillOutHousemateInfo("CCAP");
+    assertPageDoesNotHaveElementWithId("legalStuff", "drugFelony1");
+  }
+
+//  @Test
+//  void verifyDrugFelonyQuestionIsHiddenWhenApplicantChoseOnlyCcapAndHouseholdMembersChoseNoPrograms() throws Exception {}
 
   @Test
   void verifyFlowWhenLiveAloneApplicantSelectedCCAP() throws Exception {

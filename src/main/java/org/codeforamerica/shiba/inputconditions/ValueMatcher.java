@@ -17,7 +17,7 @@ public enum ValueMatcher {
 
   CONTAINS(List::contains),
 
-  DOES_NOT_CONTAIN_ONLY((strings, value) -> !strings.contains(value) || strings.size() > 1),
+  DOES_NOT_EQUAL((strings, value) -> strings != List.of(value)),
 
   NOT_EMPTY((testValue, ignore) -> !String.join("", testValue).isBlank()),
 
@@ -25,6 +25,9 @@ public enum ValueMatcher {
       .anyMatch(string -> !string.equals(targetValue))),
 
   DOES_NOT_CONTAIN((testValue, targetValue) -> !testValue.contains(targetValue)),
+
+  CONTAINS_ONLY(
+      (testValue, targetValue) -> testValue.size() == 1 && testValue.contains(targetValue)),
 
   CONTAINS_SUBSTRING((testValue, targetValue) ->
       testValue.stream().anyMatch(string -> string.contains(targetValue))),

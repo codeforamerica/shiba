@@ -99,6 +99,10 @@ conditionDefinitions:
   - &applicantDidNotChooseCERTAINPOPS?
     <<: *applicantDidNotChooseProgram?
     value: CERTAIN_POPS
+  - &applicantChoseNoPrograms?
+    pageName: choosePrograms
+    value: NONE
+    matcher: CONTAINS_ONLY
   - &householdMemberDidNotChooseProgram?
     pageName: householdMemberInfo
     input: programs
@@ -219,24 +223,31 @@ conditionDefinitions:
     pageName: personalInfo
     input: ssn
     matcher: NOT_EMPTY
-  - &applicantDidNotChoseOnlyCCAP?
+  - &applicantDidNotChooseOnlyCCAP?
     pageName: choosePrograms
     input: programs
     value: CCAP
-    matcher: DOES_NOT_CONTAIN_ONLY
-  - &householdMemberDidNotChoseOnlyCCAP?
+    matcher: DOES_NOT_EQUAL
+  - &householdMemberDidNotChooseOnlyCCAP?
     pageName: householdMemberInfo
     input: programs
     value: CCAP
-    matcher: DOES_NOT_CONTAIN_ONLY
-  - &hideDrugFelonyQuestion?
+    matcher: DOES_NOT_EQUAL
+  - &showDrugFelonyQuestion?
     logicalOperator: OR
     conditions:
-      - *applicantDidNotChoseOnlyCCAP?
       - logicalOperator: AND
         conditions:
-        - *applicantDidNotChoseOnlyCCAP?
-        - *householdMemberDidNotChoseOnlyCCAP?
+          - *applicantDidNotChooseOnlyCCAP?
+          - *livesAlone?
+      - logicalOperator: AND
+        conditions:
+          - *applicantChoseNoPrograms?
+          - *householdMemberDidNotChooseOnlyCCAP?
+      - logicalOperator: OR
+        conditions:
+          - *applicantDidNotChooseOnlyCCAP?
+          - *householdMemberDidNotChooseOnlyCCAP?
 pageDefinitions:
   - &landing
     name: landing
@@ -359,7 +370,7 @@ pageDefinitions:
     pageTitle: expedited-notice.title
     headerKey: expedited-notice.we-will-check-to-see
     contextFragment: expeditedNoticeContextFragment
-    hasPrimaryButton: false 
+    hasPrimaryButton: false
   - &basicCriteria
     name: basicCriteria
     pageTitle: basic-criteria.title
@@ -478,19 +489,19 @@ pageDefinitions:
           - name: appliedForSSN
             type: RADIO
             validators:
-             - validation: SELECT_AT_LEAST_ONE
-               errorMessageKey: general.validation.make-sure-to-choose-Yes-or-No
-               condition:
-                 input: noSSNCheck
-                 matcher: NOT_EMPTY
+              - validation: SELECT_AT_LEAST_ONE
+                errorMessageKey: general.validation.make-sure-to-choose-Yes-or-No
+                condition:
+                  input: noSSNCheck
+                  matcher: NOT_EMPTY
             promptMessage:
-               promptMessageKey: personal-info.have-you-applied-for-ssn
+              promptMessageKey: personal-info.have-you-applied-for-ssn
             options:
               selectableOptions:
-              - value: "true"
-                messageKey: general.inputs.yes
-              - value: "false"
-                messageKey: general.inputs.no
+                - value: "true"
+                  messageKey: general.inputs.yes
+                - value: "false"
+                  messageKey: general.inputs.no
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -1415,7 +1426,7 @@ pageDefinitions:
               messageKey: general.inputs.yes
             - value: "false"
               messageKey: general.inputs.no
-        condition: *hideDrugFelonyQuestion?
+        condition: *showDrugFelonyQuestion?
   - &signThisApplication
     name: signThisApplication
     pageTitle: sign-this-application.title
@@ -1429,7 +1440,7 @@ pageDefinitions:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
   - &submissionConfirmation
-    name: submissionConfirmation 
+    name: submissionConfirmation
     pageTitle: submission-confirmation.title
     contextFragment: icon-documents-sent
     hasPrimaryButton: true
@@ -3025,7 +3036,7 @@ workflow:
           pageName: choosePrograms
           input: programs
           matcher: CONTAINS
-          value: SNAP      
+          value: SNAP
       - pageName: introBasicInfo
   expeditedNotice:
     pageConfiguration: *expeditedNotice
@@ -3051,10 +3062,10 @@ workflow:
     nextPages:
       - pageName: expeditedNotice
         condition:
-            pageName: choosePrograms
-            input: programs
-            matcher: CONTAINS
-            value: SNAP      
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: SNAP
       - pageName: introBasicInfo
     datasources:
       - pageName: choosePrograms
@@ -4141,6 +4152,7 @@ workflow:
       - pageName: choosePrograms
       - groupName: household
         pageName: householdMemberInfo
+      - pageName: addHouseholdMembers
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:

@@ -28,7 +28,7 @@ public class DatasourcePages extends HashMap<String, PageData> {
     if (condition.getConditions() != null) {
       Stream<Condition> conditionStream = condition.getConditions().stream();
       return switch (condition.getLogicalOperator()) {
-        case AND -> conditionStream.allMatch(this::satisfies);
+        case AND -> conditionStream.allMatch(condition1 -> satisfies(condition1));
         case OR -> conditionStream.anyMatch(this::satisfies);
       };
     }
