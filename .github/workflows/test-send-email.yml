@@ -1,0 +1,21 @@
+name: Test send email
+
+on:
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+    steps:
+      - name: Send release mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: edge.ead.state.mn.us
+          server_port: 25
+          subject: MNbenefits release info
+          body: This is a test MNbenefits release info email.
+          to: john.bisek@state.mn.us
+          from: mnbenefits@state.mn.us
+          priority: normal
