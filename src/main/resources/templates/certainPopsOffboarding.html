@@ -9,26 +9,26 @@
         th:text="#{certain-pops-offboarding.sorry}"></h1>
   </div>
   <div class="reveal reveal-adjacent spacing-below-35">
-    <div class="reveal__link reveal__link-adjacent" tabindex="0">
-      <div class="reveal__link__header-adjacent"
-           th:text="#{certain-pops-offboarding.what-is-healthcare}"></div>
-      <div class="reveal__content reveal__content-adjacent">
-        <p th:text="#{certain-pops-offboarding.healthcare-for-seniors-and-people-with-disabilities}"></p>
-        <ul class="left-justified-list">
-          <li>
-            <strong th:text="#{certain-pops-offboarding.people-65-and-older}"></strong>
-          </li>
-          <li class="spacing-above-15">
-            <strong th:text="#{certain-pops-offboarding.people-with-disabilities}"></strong>
-          </li>
-          <li class="spacing-above-15">
-            <strong th:text="#{certain-pops-offboarding.some-people}"></strong>
-          </li>
-        </ul>
-        <div>
-          <p th:utext="#{certain-pops-offboarding.the-state-calls-it}"></p>
-          <p th:utext="#{certain-pops-offboarding.all-other-applicants-should}"></p>
-        </div>
+    <button th:text="#{certain-pops-offboarding.what-is-healthcare}"
+            type="button" class="reveal__link reveal__link-adjacent reveal__link__header-adjacent"
+            aria-expanded="false" aria-controls="reveal-content">
+    </button>
+    <div class="reveal__content reveal__content-adjacent" id="reveal-content">
+      <p th:text="#{certain-pops-offboarding.healthcare-for-seniors-and-people-with-disabilities}"></p>
+      <ul class="left-justified-list">
+        <li>
+          <strong th:text="#{certain-pops-offboarding.people-65-and-older}"></strong>
+        </li>
+        <li class="spacing-above-15">
+          <strong th:text="#{certain-pops-offboarding.people-with-disabilities}"></strong>
+        </li>
+        <li class="spacing-above-15">
+          <strong th:text="#{certain-pops-offboarding.some-people}"></strong>
+        </li>
+      </ul>
+      <div>
+        <p th:utext="#{certain-pops-offboarding.the-state-calls-it}"></p>
+        <p th:utext="#{certain-pops-offboarding.all-other-applicants-should}"></p>
       </div>
     </div>
   </div>

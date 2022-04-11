@@ -1,16 +1,16 @@
 <div th:fragment="applyForTribalTANFPrompt"
      class="reveal reveal-adjacent spacing-above-35 spacing-below-60">
-  <div class="reveal__link reveal__link-adjacent"  tabindex="0">
-    <div class="reveal__link__header-adjacent"
-         th:text="#{apply-for-tribal-TANF.reveal-title}"></div>
-    <div class="reveal__content reveal__content-adjacent ">
-      <ul class="left-justified-list">
-        <li th:text="#{apply-for-tribal-TANF.reveal-item-1}"></li>
-        <li class="spacing-above-15"
-            th:text="#{apply-for-tribal-TANF.reveal-item-2}"></li>
-        <li class="spacing-above-15"
-            th:text="#{apply-for-tribal-TANF.reveal-item-3}"></li>
-      </ul>
-    </div>
+  <button th:text="#{apply-for-tribal-TANF.reveal-title}"
+          type="button" class="reveal__link reveal__link-adjacent reveal__link__header-adjacent"
+          aria-expanded="false" aria-controls="reveal-content">
+  </button>
+  <div class="reveal__content reveal__content-adjacent" id="reveal-content">
+    <ul class="left-justified-list">
+      <li th:text="#{apply-for-tribal-TANF.reveal-item-1}"></li>
+      <li class="spacing-above-15"
+          th:text="#{apply-for-tribal-TANF.reveal-item-2}"></li>
+      <li class="spacing-above-15"
+          th:text="#{apply-for-tribal-TANF.reveal-item-3}"></li>
+    </ul>
   </div>
 </div>
