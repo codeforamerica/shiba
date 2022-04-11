@@ -191,6 +191,18 @@ function handleAccordions() {
 	});
 }
 
+function handleReveals() {
+	var reveals = $('.reveal');
+	reveals.each(function () {
+		var reveal = $(this);
+		reveal.click(function(e) {
+			reveal.hasClass('is-hiding-content') ?
+					reveal.find('button').attr('aria-expanded', 'false') :
+					reveal.find('button').attr('aria-expanded', 'true');
+		})
+	});
+}
+
 $(document).ready(function() {
 	// hasError needs to come first in this for accessibility journey tests to pass
 	hasError.init();
@@ -205,5 +217,6 @@ $(document).ready(function() {
 	});
 	$("#prepare-to-apply-accordion").removeClass('accordion--is-closed');
 	handleAccordions();
+	handleReveals();
 });
 

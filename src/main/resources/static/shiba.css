@@ -414,13 +414,13 @@ form .drag-and-drop-box-compact {
 }
 
 .reveal__link__header-adjacent {
+  text-align: left;
   display: inline-block;
   padding: .3em .5em .3em .7em;
 }
 
 .reveal__link-adjacent {
   width: 100%;
-  padding: unset;
   border: unset;
 }
 
@@ -1602,4 +1602,12 @@ legend.form-question {
 
 .reduce-spacing-above-35 {
   margin-top: -35px;
+}
+
+#content .reveal.is-hiding-content .reveal__link::after {
+  content: "\e315" / "";
+}
+
+#content .reveal .reveal__link::after {
+  content: "\e313" / "";
 }
