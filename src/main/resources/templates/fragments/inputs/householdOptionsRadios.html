@@ -13,7 +13,7 @@
                  th:value="${fullName} + ' applicant'"
                  th:name="${formInputName}"
                  th:checked="${inputData.value.contains(fullName)}">
-          <span th:text="#{general.me}"></span>
+          <span th:text="|${fullName} #{children-in-need-of-care.you}|"></span>
         </label>
         <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}">
           <label th:for="|householdMember${iterationStat.index}|"

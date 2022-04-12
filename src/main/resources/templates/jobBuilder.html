@@ -48,7 +48,7 @@
                                         householdMemberId=${householdMemberNameAndIdTokens[householdMemberNameAndIdTokens.length - 1]}">
                     <h2 class="h3 list-header spacing-below-10"
                         th:if="${programs.contains('NONE') || data.getPageInputFirstValue('addHouseholdMembers','addHouseholdMembers').equals('true')}"
-                        th:text="${householdMemberId == 'applicant' ? 'You' : householdMemberName}"></h2>
+                        th:text="${householdMemberId == 'applicant' ? householdMemberName+' (you)' : householdMemberName}"></h2>
                     <ul class="list--bulleted spacing-above-10 spacing-below-35 builder-list">
                       <th:block th:each="jobIteration, jobIterationStat: ${subworkflow.value}">
                         <th:block

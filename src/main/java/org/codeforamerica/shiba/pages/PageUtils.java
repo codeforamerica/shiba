@@ -65,18 +65,19 @@ public class PageUtils {
 
   /**
    * @param householdMemberNameAndId a string in the form "firstname lastname id".
-   * @param me                       the string "me" in whatever language the client is using
-   * @return the full name without an id, or "Me" if the id is the string "applicant"
+   * @param translatedYou                       the string "you" in whatever language the client is using
+   * @return the full name without an id, or "you" if the id is the string "applicant"
    */
-  public static String householdMemberName(String householdMemberNameAndId, String me) {
+  public static String householdMemberName(String householdMemberNameAndId, String translatedYou) {
     String[] householdMemberInfo = householdMemberNameAndId.split(" ");
     String childId = householdMemberInfo[householdMemberInfo.length - 1];
+    String[] fullNameParts = Arrays
+    		.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
+    
     if ("applicant".equals(childId)) {
-      return me;
+      return StringUtils.join(fullNameParts, " ") + translatedYou;
     }
 
-    String[] fullNameParts = Arrays
-        .copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
     return StringUtils.join(fullNameParts, " ");
   }
 }

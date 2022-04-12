@@ -6,19 +6,20 @@
                     childIdMapData=${data.get('childIdMap')},
                     hasHelpMessage=${input.helpMessageKey != null},
                     needsAriaLabel=${input.needsAriaLabel()}">
-  <div class="spacing-below-60">
+  <div class="spacing-below-60" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
     <th:block
         th:each="fullNameAndId, iterationStat: ${input.options.datasources.get('whoHasParentNotAtHome').get('whoHasAParentNotLivingAtHome').value}"
         th:with="childArray=${#strings.arraySplit(fullNameAndId, ' ')},
                          childId=${childArray[#arrays.length(childArray)-1]},
                          childName=${#strings.substringBefore(fullNameAndId, ' ' + childId)},
-                         me=#{general.me},
+                         me=#{general.you},
                          indexInInputData=${childIdMapData.value.indexOf(childId)},
                          parentName=${indexInInputData < 0 ? '' : inputData.value.get(indexInInputData)},
                          fieldIsBlank=${!inputData.valid(data) && parentName.isBlank()}">
       <div class="form-group" th:classappend="${fieldIsBlank} ? 'form-group--error' : ''">
         <label class="form-question spacing-below-5" th:for="|${childId}-parentname|"
-               th:text="${childId.contains('applicant') ? me : childName}" th:id="${childId + '-label'}">
+               th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, #{general.you})}"
+               th:id="${childId + '-label'}">
         </label>
         <p th:id="${childId + '-help-message'}" th:text="#{${input.promptMessage.promptMessageKey}}"></p>
         <input type="text"
