@@ -875,7 +875,7 @@ public class AbstractShibaMockMvcTest {
 
     } else {
       postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-          "introPersonalDetails");
+          "addChildrenConfirmation");
       assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
       postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");

@@ -63,6 +63,7 @@ import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
+import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
@@ -842,5 +843,22 @@ public class PageController {
     applicationData.removeUploadedDoc(filename);
 
     return new ModelAndView("redirect:/pages/uploadDocuments");
+  }
+  
+  
+  @PostMapping("/pages/{pageName}/{option}")
+  ModelAndView livesAlone(HttpSession httpSession,@PathVariable(required = true) String pageName,
+      @PathVariable(required =true) String option) {
+    String livesAlone = "true";
+    if(option.equals("1")) {      
+      livesAlone = "false";
+     }
+    var pageData = applicationData.getPageData("addHouseholdMembers");
+    applicationData.getPagesData();
+    if(pageData != null) {
+      applicationData.getPageData("addHouseholdMembers").remove("addHouseholdMembers");
+      applicationData.getPageData("addHouseholdMembers").put("addHouseholdMembers", new InputData(List.of(livesAlone)));
+    }
+    return new ModelAndView(String.format("redirect:/pages/%s/navigation?option=%s", pageName,option));
   }
 }

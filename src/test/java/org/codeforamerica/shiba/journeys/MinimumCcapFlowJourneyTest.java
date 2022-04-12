@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import okhttp3.internal.cache.DiskLruCache.Snapshot;
 
 @Tag("minimumFlowJourney")
 public class MinimumCcapFlowJourneyTest extends JourneyTest{
@@ -38,13 +39,17 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest{
 
 		// Add 1 Household Member
 		assertThat(testPage.getElementText("page-form")).doesNotContain("Roommates that you buy and prepare food with");
-		// TODO "add child nudge" page goes here
-		testPage.enter("addHouseholdMembers", YES.getDisplayValue());
-		testPage.clickContinue(); // startHousehold page
-
+		
+		testPage.enter("addHouseholdMembers", NO.getDisplayValue());
+		// "add child nudge" page 
+		assertThat(testPage.getTitle()).contains("Add Children confirmation");
+	    testPage.clickButton("Add my children");
+		 // startHousehold page
+	    testPage.clickContinue();
 		String householdMemberFirstName = "householdMemberFirstName";
 		String householdMemberLastName = "householdMemberLastName";
 		String householdMemberFullName = householdMemberFirstName + " " + householdMemberLastName;
+		
 		testPage.enter("firstName", householdMemberFirstName);
 		testPage.enter("lastName", householdMemberLastName);
 		testPage.enter("otherName", "houseHoldyMcMemberson");
@@ -97,14 +102,14 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest{
 
 		// In the last 2 months, did anyone in your household do any of these things?
 		testPage.enter("hasWorkSituation", NO.getDisplayValue());
-
+		
 		// Is anyone in your household a member of a tribal nation?
 		testPage.enter("isTribalNationMember", NO.getDisplayValue());
-
+		
 		// Income & Employment
 		assertThat(testPage.getElementText("milestone-step")).isEqualTo("Step 3 of 6");
 		testPage.clickContinue();
-
+		
 		// Is anyone in your household making money from a job?
 		testPage.enter("areYouWorking", NO.getDisplayValue());
 

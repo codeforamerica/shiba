@@ -237,6 +237,11 @@ conditionDefinitions:
         conditions:
         - *applicantDidNotChoseOnlyCCAP?
         - *householdMemberDidNotChoseOnlyCCAP?
+  - &applicantChoseCCAPProgram?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
+    matcher: CONTAINS
 pageDefinitions:
   - &landing
     name: landing
@@ -765,6 +770,12 @@ pageDefinitions:
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: addHouseholdMembersPrompt
+  - &addChildrenConfirmation
+    name: addChildrenConfirmation
+    headerKey: no-child.since-you-are-applying-for-child-care
+    pageTitle: no-child.title
+    contextFragment: householdContextFragment
+    hasPrimaryButton: false
   - &startHousehold
     name: startHousehold
     pageTitle: start-household.title
@@ -3181,9 +3192,20 @@ workflow:
         condition: *onlyApplyingForOthers?
       - pageName: introPersonalDetails
         condition:
-          pageName: addHouseholdMembers
-          input: addHouseholdMembers
-          value: "false"
+          logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCCAP?
+            - pageName: addHouseholdMembers
+              input: addHouseholdMembers
+              value: "false"
+      - pageName: addChildrenConfirmation
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCCAPProgram?
+            - pageName: addHouseholdMembers
+              input: addHouseholdMembers
+              value: "false"
       - pageName: startHousehold
         condition:
           pageName: addHouseholdMembers
@@ -3192,6 +3214,11 @@ workflow:
     skipCondition: *onlyApplyingForOthers?
     datasources:
       - pageName: choosePrograms
+  addChildrenConfirmation:
+    pageConfiguration: *addChildrenConfirmation
+    nextPages:
+      - pageName: startHousehold
+      - pageName: introPersonalDetails
   startHousehold:
     pageConfiguration: *startHousehold
     nextPages:
