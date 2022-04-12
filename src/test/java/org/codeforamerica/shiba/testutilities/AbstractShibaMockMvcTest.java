@@ -567,6 +567,12 @@ public class AbstractShibaMockMvcTest {
     String nextPage = followRedirectsForPageName(pageName);
     assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
   }
+  
+  protected void assertNavigationRedirectsToCorrectNextPageWithOption(String pageName,String option,
+      String expectedNextPageName) throws Exception {
+    String nextPage = followRedirectsForPageNameWithOption(pageName, option.equals("false")?"1":"0");
+    assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
+  }
 
   protected ResultActions postExpectingFailure(String pageName, String inputName, String value)
       throws Exception {
@@ -876,6 +882,7 @@ public class AbstractShibaMockMvcTest {
     } else {
       postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
           "addChildrenConfirmation");
+      assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
       assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
       postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
@@ -1031,5 +1038,18 @@ public class AbstractShibaMockMvcTest {
 
   protected FormPage getFormPage(String pageName) throws Exception {
     return new FormPage(getPageExpectingSuccess(pageName));
+  }
+  
+  @NotNull
+  private String followRedirectsForPageNameWithOption(String currentPageName, String option) throws Exception {
+    var nextPage = "/pages/" + currentPageName + "/navigation?option="+option;
+    while (Objects.requireNonNull(nextPage).contains("/navigation")) {
+      // follow redirects
+      nextPage = mockMvc.perform(get(nextPage).session(session))
+          .andExpect(status().is3xxRedirection()).andReturn()
+          .getResponse()
+          .getRedirectedUrl();
+    }
+    return nextPage;
   }
 }
