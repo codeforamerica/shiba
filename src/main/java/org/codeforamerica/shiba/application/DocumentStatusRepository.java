@@ -32,7 +32,7 @@ public class DocumentStatusRepository {
     this.routingDecisionService = routingDecisionService;
   }
 
-  public List<DocumentStatus> findAll(String applicationId) {
+  public List<ApplicationStatus> findAll(String applicationId) {
     return jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
         new DocumentStatusRowMapper(), applicationId);
   }
@@ -48,7 +48,7 @@ public class DocumentStatusRepository {
 
   private void handleDocumentDifference(Application application, List<Document> documents) {
     List<Document> previousDocuments = new ArrayList<>();
-    List<DocumentStatus> listOfStatuses = findAll(application.getId());
+    List<ApplicationStatus> listOfStatuses = findAll(application.getId());
     listOfStatuses.forEach(ds -> previousDocuments.add(ds.getDocumentType()));
     List<Document> docsToDelete = previousDocuments.stream()
         .filter(docType -> !documents.contains(docType))
@@ -117,7 +117,7 @@ public class DocumentStatusRepository {
     }
   }
 
-  public List<DocumentStatus> getDocumentStatusToResubmit() {
+  public List<ApplicationStatus> getDocumentStatusToResubmit() {
     return jdbcTemplate.query(
         "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
         new DocumentStatusRowMapper());
@@ -136,11 +136,11 @@ public class DocumentStatusRepository {
         routingDestination, id, status));
   }
 
-  private static class DocumentStatusRowMapper implements RowMapper<DocumentStatus> {
+  private static class DocumentStatusRowMapper implements RowMapper<ApplicationStatus> {
 
     @Override
-    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new DocumentStatus(
+    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new ApplicationStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

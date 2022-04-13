@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
+public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -52,7 +52,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
     documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
     assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
-        new DocumentStatus("someId", CAF, "Hennepin", DELIVERED)
+        new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED)
     );
   }
 
@@ -70,12 +70,12 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .build();
 
     documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
+    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
             SENDING),
-        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
             SENDING)
     );
 
@@ -84,7 +84,7 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
     documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             SENDING)
     );
   }
@@ -102,11 +102,11 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
     documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
 
-    List<DocumentStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
+    List<ApplicationStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
-        new DocumentStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
-        new DocumentStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
-        new DocumentStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
+        new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
+        new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
+        new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
     );
   }
 
@@ -123,12 +123,12 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
     documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<DocumentStatus> resultingStatuses = documentStatusRepository.findAll(
+    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
             SENDING),
-        new DocumentStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
             SENDING)
     );
 
@@ -139,12 +139,12 @@ public class DocumentStatusRepositoryTest extends AbstractRepositoryTest {
 
     application.setApplicationData(applicationData2);
     documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<DocumentStatus> resultingStatuses2 = documentStatusRepository.findAll(
+    List<ApplicationStatus> resultingStatuses2 = documentStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses2).containsExactlyInAnyOrder(
-        new DocumentStatus(applicationData.getId(), CAF, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
             SENDING),
-        new DocumentStatus(applicationData.getId(), CCAP, routingDestination.getName(),
+        new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
             SENDING)
     );
   }

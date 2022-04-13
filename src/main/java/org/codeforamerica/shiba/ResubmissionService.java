@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -48,7 +48,7 @@ public class ResubmissionService {
   private final RoutingDecisionService routingDecisionService;
   private final DocumentStatusRepository documentStatusRepository;
   private final PageEventPublisher pageEventPublisher;
-  private FeatureFlagConfiguration featureFlagConfiguration;
+  private final FeatureFlagConfiguration featureFlagConfiguration;
 
 
   public ResubmissionService(ApplicationRepository applicationRepository,
@@ -74,7 +74,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "emailResubmissionTask", lockAtMostFor = "${failed-resubmission.lockAtMostFor}", lockAtLeastFor = "${failed-resubmission.lockAtLeastFor}")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    List<DocumentStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
+    List<ApplicationStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
 
     MDC.put("failedApps", String.valueOf(applicationsToResubmit.size()));
     log.info("Resubmitting " + applicationsToResubmit.size() + " apps over email");
@@ -185,11 +185,11 @@ public class ResubmissionService {
   private void sendDocumentsViaESB(Application application, String id,
       boolean shouldDeleteDocumentStatuses) {
     // Resend sending applications (without verification docs)
-    List<Document> documentTypesInSending = application.getDocumentStatuses().stream()
+    List<Document> documentTypesInSending = application.getApplicationStatuses().stream()
         .filter(documentStatus -> documentStatus.getStatus() == SENDING &&
             List.of(CAF, CCAP, CERTAIN_POPS)
                 .contains(documentStatus.getDocumentType())).map(
-            DocumentStatus::getDocumentType
+            ApplicationStatus::getDocumentType
         ).collect(Collectors.toList());
 
     if (shouldDeleteDocumentStatuses) {
@@ -207,7 +207,7 @@ public class ResubmissionService {
     }
 
     // Resend sending verification docs on an application
-    Optional<DocumentStatus> uploadedDocStatus = application.getDocumentStatuses().stream()
+    Optional<ApplicationStatus> uploadedDocStatus = application.getApplicationStatuses().stream()
         .filter(documentStatus -> documentStatus.getDocumentType() == UPLOADED_DOC
             && documentStatus.getStatus() == SENDING)
         .findFirst();

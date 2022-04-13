@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
@@ -151,13 +151,13 @@ class AppsWithBlankStatusResubmissionTest {
 
     assertThat(documentStatusRepository.findAll(
         appWithUploadedDocsOlderThan60Days)).containsExactlyInAnyOrder(
-        new DocumentStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING),
-        new DocumentStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
+        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING),
+        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
             Status.UNDELIVERABLE)
     );
     assertThat(documentStatusRepository.findAll(
         laterDocsSubmissionOlderThan60Days)).containsExactlyInAnyOrder(
-        new DocumentStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
+        new ApplicationStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
             Status.UNDELIVERABLE)
     );
   }
@@ -172,13 +172,13 @@ class AppsWithBlankStatusResubmissionTest {
         now().minusMinutes(5), true);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
     assertThat(documentStatusRepository.findAll(laterDocsWithDocuments.getId())).contains(
-        new DocumentStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING)
+        new ApplicationStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING)
     );
     verify(pageEventPublisher).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocuments.getId(),
             LocaleContextHolder.getLocale()));
     assertThat(documentStatusRepository.findAll(laterDocsWithoutDocuments.getId())).contains(
-        new DocumentStatus(laterDocsWithoutDocuments.getId(), UPLOADED_DOC, "Hennepin",
+        new ApplicationStatus(laterDocsWithoutDocuments.getId(), UPLOADED_DOC, "Hennepin",
             UNDELIVERABLE)
     );
     verify(pageEventPublisher, never()).publish(
@@ -197,7 +197,7 @@ class AppsWithBlankStatusResubmissionTest {
     applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
     assertThat(documentStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
-        new DocumentStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
+        new ApplicationStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
             UNDELIVERABLE)
     );
     verify(pageEventPublisher, never()).publish(

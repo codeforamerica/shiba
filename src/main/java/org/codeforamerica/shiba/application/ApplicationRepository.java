@@ -96,7 +96,7 @@ public class ApplicationRepository {
     Application application = jdbcTemplate.queryForObject(
         "SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    Objects.requireNonNull(application).setDocumentStatuses(
+    Objects.requireNonNull(application).setApplicationStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
@@ -114,7 +114,7 @@ public class ApplicationRepository {
 
     // add document statuses to apps
     for (Application app : applicationsStuckSending) {
-      app.setDocumentStatuses(
+      app.setApplicationStatuses(
           jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
               new ApplicationStatusRowMapper(), app.getId()));
     }
@@ -216,11 +216,11 @@ public class ApplicationRepository {
             .build();
   }
 
-  private static class ApplicationStatusRowMapper implements RowMapper<DocumentStatus> {
+  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
 
     @Override
-    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new DocumentStatus(
+    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new ApplicationStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

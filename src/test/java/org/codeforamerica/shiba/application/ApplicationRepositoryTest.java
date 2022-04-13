@@ -101,7 +101,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getApplicationData()).isEqualTo(application.getApplicationData());
     assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
-    assertThat(savedApplication.getDocumentStatuses()).isEmpty();
+    assertThat(savedApplication.getApplicationStatuses()).isEmpty();
 
     UploadedDocument uploadedDoc = savedApplication.getApplicationData().getUploadedDocs().get(0);
     assertThat(uploadedDoc.getFilename()).isEqualTo(originalFilename);
@@ -165,7 +165,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
         .sentiment(Sentiment.HAPPY)
         .feedback("someUpdatedFeedback")
         .flow(FlowType.EXPEDITED)
-        .documentStatuses(emptyList())
+        .applicationStatuses(emptyList())
         .build();
 
     applicationRepository.save(updatedApplication);

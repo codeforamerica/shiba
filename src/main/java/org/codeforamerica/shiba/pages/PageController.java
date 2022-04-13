@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
@@ -240,10 +241,11 @@ public class PageController {
 
     // Validations and special case redirects
     if (shouldRedirectToUploadDocumentsPage(pageName)) {
-    	log.info("documentSubmitConfirmation redirect back to uploadDocuments, no documents in uploadDocs list");
-        return new ModelAndView(
-            String.format("redirect:/pages/%s", landmarkPagesConfiguration.getUploadDocumentsPage()));
-      }
+      log.info(
+          "documentSubmitConfirmation redirect back to uploadDocuments, no documents in uploadDocs list");
+      return new ModelAndView(
+          String.format("redirect:/pages/%s", landmarkPagesConfiguration.getUploadDocumentsPage()));
+    }
 
     if (shouldRedirectToTerminalPage(pageName)) {
       return new ModelAndView(
@@ -372,7 +374,7 @@ public class PageController {
     model.put("expeditedSnap", snapExpeditedEligibility);
     var ccapExpeditedEligibility = ccapExpeditedEligibilityDecider.decide(applicationData);
     model.put("expeditedCcap", ccapExpeditedEligibility);
-    List<Eligibility> expeditedEligibilityList = new ArrayList<Eligibility>();
+    List<Eligibility> expeditedEligibilityList = new ArrayList<>();
     expeditedEligibilityList.add(snapExpeditedEligibility);
     expeditedEligibilityList.add(ccapExpeditedEligibility);
     List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
@@ -615,7 +617,7 @@ public class PageController {
         applicationData.setId(applicationRepository.getNextId());
       }
 
-      if (pageName != null || !pageName.isEmpty()) {
+      if (pageName != null && !pageName.isEmpty()) {
         applicationData.setLastPageViewed(pageName);
       }
 
@@ -710,6 +712,7 @@ public class PageController {
     return new RedirectView("/pages/" + terminalPage);
   }
 
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   @PostMapping("/document-upload")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file,
@@ -731,7 +734,8 @@ public class PageController {
 
         if (file.getContentType() != null && file.getContentType().contains("image")) {
           Path paths = Files.createTempDirectory("");
-          File thumbFile = new File(paths.toFile(), file.getOriginalFilename());
+          File thumbFile = new File(paths.toFile(),
+              requireNonNull(requireNonNull(file.getOriginalFilename())));
           FileOutputStream fos = new FileOutputStream(thumbFile);
           fos.write(file.getBytes());
           fos.close();
@@ -759,17 +763,17 @@ public class PageController {
   }
 
   private boolean hasSubmittedDocuments() {
-	Application application = null;
-	String id = applicationData.getId();
-	try {
-		application = applicationRepository.find(id);
-	} catch (Exception e) {
-		log.warn("A find of application with id [" + id
-				+ "] failed. If id is null, cause may be session timeout. Message: " + e.getMessage());
-		return false;
-	}
-	return application.getDocumentStatuses(UPLOADED_DOC).stream()
-			.anyMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus));
+    Application application;
+    String id = applicationData.getId();
+    try {
+      application = applicationRepository.find(id);
+    } catch (Exception e) {
+      log.warn("A find of application with id [" + id
+          + "] failed. If id is null, cause may be session timeout. Message: " + e.getMessage());
+      return false;
+    }
+    return application.getApplicationStatuses(UPLOADED_DOC).stream()
+        .anyMatch(documentStatus -> List.of(SENDING, DELIVERED).contains(documentStatus));
   }
 
   @Nullable
@@ -821,7 +825,8 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING, UPLOADED_DOC);
+      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING,
+          UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

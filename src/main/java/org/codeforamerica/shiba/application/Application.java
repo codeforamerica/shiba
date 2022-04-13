@@ -29,7 +29,7 @@ public class Application {
   private Sentiment sentiment;
   private String feedback;
   private Status docUploadEmailStatus;
-  private List<DocumentStatus> documentStatuses;
+  private List<ApplicationStatus> applicationStatuses;
 
   public Application addFeedback(Feedback feedback) {
     var sentiment = Optional.ofNullable(feedback.sentiment()).orElse(this.sentiment);
@@ -46,7 +46,7 @@ public class Application {
         sentiment,
         feedbackText,
         docUploadEmailStatus,
-        documentStatuses
+        applicationStatuses
     );
   }
 
@@ -55,25 +55,25 @@ public class Application {
     setTimeToComplete(Duration.between(applicationData.getStartTime(), completedAt));
   }
 
-  public List<Status> getDocumentStatuses(Document document) {
-    if (documentStatuses != null) {
-      return documentStatuses.stream()
+  public List<Status> getApplicationStatuses(Document document) {
+    if (applicationStatuses != null) {
+      return applicationStatuses.stream()
           .filter(appStatus -> appStatus.getDocumentType() == document)
-          .map(DocumentStatus::getStatus)
+          .map(ApplicationStatus::getStatus)
           .toList();
     }
     return Collections.emptyList();
   }
 
   public Status getApplicationStatus(Document document, String routingDestination) {
-    if (documentStatuses != null) {
-      return documentStatuses.stream()
+    if (applicationStatuses != null) {
+      return applicationStatuses.stream()
           .filter(appStatus -> appStatus.getDocumentType() == document
               && (appStatus.getRoutingDestinationName() == null
               || appStatus.getRoutingDestinationName()
               .equals(routingDestination)))
           .findFirst()
-          .map(DocumentStatus::getStatus).orElse(null);
+          .map(ApplicationStatus::getStatus).orElse(null);
     }
     return null;
   }
