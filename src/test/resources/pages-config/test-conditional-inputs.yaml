@@ -65,7 +65,7 @@ pageDefinitions:
           pageName: thirdPage
           input: containsOptions
           value: containsDesiredOption
-          matcher: DOES_NOT_CONTAIN_ONLY
+          matcher: DOES_NOT_EQUAL
 workflow:
   firstPage:
     pageConfiguration: *firstPage

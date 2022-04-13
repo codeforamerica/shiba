@@ -34,12 +34,12 @@ public class ConditionalInputsTest extends AbstractFrameworkTest {
   }
 
   /**
-   * DOES_NOT_CONTAIN_ONLY is the value matcher tested here!   DOES_NOT_CONTAIN_ONLY should take in a value as
+   * DOES_NOT_EQUAL is the value matcher tested here!   DOES_NOT_EQUAL should take in a value as
    * an input and if the value is not found or there are more values than the value that you are evaluating then
    * this function should return false
    */
   @Test
-  void shouldNotDisplayInputIfUserSelectedOnlySpecifiedValue__forValueMatcherDoesNotContainOnly() throws Exception {
+  void shouldNotDisplayInputIfUserSelectedOnlySpecifiedValue__forValueMatcherDoesNotEqual() throws Exception {
     //if user selects only the desired option then the test shouldNotDisplayContentIfMultipleValuesSelected should not be displayed
     var page = postAndFollowRedirect("thirdPage", "containsOptions", List.of("containsDesiredOption"));
     assertThat(page.getInputByName("shouldNotDisplayContentIfMultipleValuesSelected")).isNull();
