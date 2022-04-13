@@ -254,8 +254,8 @@ public class AbstractShibaMockMvcTest {
       householdMemberInfo.put("relationship", List.of("housemate"));
       householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
       householdMemberInfo.put("ssn", List.of("987654321"));
-      householdMemberInfo.put("maritalStatus", List.of("Never married"));
-      householdMemberInfo.put("sex", List.of("Male"));
+      householdMemberInfo.put("maritalStatus", List.of("NEVER_MARRIED"));
+      householdMemberInfo.put("sex", List.of("MALE"));
       householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
       householdMemberInfo.put("moveToMnDate", List.of("02", "18", "1950"));
       householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
