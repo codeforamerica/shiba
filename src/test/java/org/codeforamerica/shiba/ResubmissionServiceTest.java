@@ -43,7 +43,6 @@ class ResubmissionServiceTest {
   private final String APP_ID = "myappid";
   private final String DEFAULT_EMAIL = "olmsted@example.com";
   private final String ANOKA_EMAIL = "anoka@example.com";
-  private final String OLMSTED_EMAIL = "olmsted@example.com";
   private final String MILLE_LACS_BAND_EMAIL = "help+dev@mnbenefits.org";
 
   private final CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
@@ -54,10 +53,7 @@ class ResubmissionServiceTest {
   @Mock
   private PdfGenerator pdfGenerator;
   @Mock
-  private DocumentRepository documentRepository;
-  @Mock
   private RoutingDecisionService routingDecisionService;
-  private Map<String, TribalNationRoutingDestination> tribalNations;
   private ResubmissionService resubmissionService;
   @Mock
   private DocumentStatusRepository documentStatusRepository;
@@ -70,11 +66,12 @@ class ResubmissionServiceTest {
         .dhsProviderId("defaultDhsProviderId")
         .email(DEFAULT_EMAIL) // TODO test other counties besides DEFAULT
         .build());
+    String OLMSTED_EMAIL = "olmsted@example.com";
     countyMap.setCounties(Map.of(
         Anoka, CountyRoutingDestination.builder().county(Anoka).email(ANOKA_EMAIL).build(),
         Olmsted, CountyRoutingDestination.builder().county(Olmsted).email(OLMSTED_EMAIL).build()
     ));
-    tribalNations = new TribalNationConfiguration().localTribalNations();
+    Map<String, TribalNationRoutingDestination> tribalNations = new TribalNationConfiguration().localTribalNations();
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
         FeatureFlagConfiguration.class));
     FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(Map.of());

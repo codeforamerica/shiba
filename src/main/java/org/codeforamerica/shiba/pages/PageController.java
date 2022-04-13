@@ -849,21 +849,20 @@ public class PageController {
 
     return new ModelAndView("redirect:/pages/uploadDocuments");
   }
-  
-  
+
   @PostMapping("/pages/{pageName}/{option}")
-  ModelAndView livesAlone(HttpSession httpSession,@PathVariable(required = true) String pageName,
-      @PathVariable(required =true) String option) {
+  ModelAndView livesAlone(@PathVariable String pageName, @PathVariable String option) {
     String livesAlone = "true";
-    if(option.equals("1")) {      
+    if (option.equals("1")) {
       livesAlone = "false";
-     }
-    var pageData = applicationData.getPageData("addHouseholdMembers");
-    applicationData.getPagesData();
-    if(pageData != null) {
-      applicationData.getPageData("addHouseholdMembers").remove("addHouseholdMembers");
-      applicationData.getPageData("addHouseholdMembers").put("addHouseholdMembers", new InputData(List.of(livesAlone)));
     }
-    return new ModelAndView(String.format("redirect:/pages/%s/navigation?option=%s", pageName,option));
+    var pageData = applicationData.getPageData("addHouseholdMembers");
+
+    if (pageData != null) {
+      pageData.remove("addHouseholdMembers");
+      pageData.put("addHouseholdMembers", new InputData(List.of(livesAlone)));
+    }
+    return new ModelAndView(
+        String.format("redirect:/pages/%s/navigation?option=%s", pageName, option));
   }
 }

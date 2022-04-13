@@ -123,7 +123,7 @@ public class ApplicationRepository {
   }
 
   public List<Application> findApplicationsWithBlankStatuses() {
-    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+    return jdbcTemplate.query(
         "WITH no_status_apps as ( "
             + "select id, count(status) "
             + "from applications left join application_status on applications.id = application_status.application_id "
@@ -132,16 +132,14 @@ public class ApplicationRepository {
             + "having count(status) = 0 "
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by county, completed_at asc"
-            + " LIMIT 30",
+            + "order by county, completed_at "
+            + "LIMIT 30",
         applicationRowMapper()
     );
-
-    return applicationsWithBlankStatus;
   }
 
   public List<Application> findApplicationsWithBlankStatuses(County county) {
-    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+    return jdbcTemplate.query(
         "WITH no_status_apps as ( "
             + "select id, count(status) "
             + "from applications left join application_status on applications.id = application_status.application_id "
@@ -151,13 +149,11 @@ public class ApplicationRepository {
             + "having count(status) = 0 "
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by completed_at asc "
+            + "order by completed_at "
             + "LIMIT 30",
         applicationRowMapper(),
         county.toString()
     );
-
-    return applicationsWithBlankStatus;
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {

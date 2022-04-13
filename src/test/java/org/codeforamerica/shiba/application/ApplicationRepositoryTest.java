@@ -177,7 +177,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
   }
 
   @Nested
-  class EncryptionAndDecryption extends AbstractRepositoryTest {
+  class EncryptionAndDecryptionTest extends AbstractRepositoryTest {
 
     ApplicationRepository applicationRepositoryWithMockEncryptor;
     @SuppressWarnings("unchecked")
