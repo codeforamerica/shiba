@@ -71,7 +71,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   void verifyDrugFelonyQuestionNotDisplayedWhenApplicantHasSelectedOnlyCCAP() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-        "introPersonalDetails");
+        "addChildrenConfirmation");
+    assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
     completeFlowFromIsPregnantThroughTribalNations(false);
@@ -88,7 +89,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     // Applicant lives alone and choose CCAP
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-        "introPersonalDetails");
+        "addChildrenConfirmation");
+    assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
+    postExpectingRedirect("introPersonalDetails", "livingSituation");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
     postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");

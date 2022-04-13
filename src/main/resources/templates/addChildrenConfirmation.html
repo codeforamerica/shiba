@@ -1,0 +1,18 @@
+<div th:fragment="addChildrenConfirmation">
+	<form id="add-child" autocomplete="off"
+                method="post" th:action="${pageName}">
+		<div class="grid__item address-validation spacing-below-60"
+			id="add-child">
+			<div>
+				<button th:id="addChild[]" class="button button--primary"
+					th:formaction="'/pages/'+${pageName}+'/0'"
+					th:text="#{no-child.add-my-children}"></button>
+			</div>
+			<div>
+				<button th:id="addChild[]" class="button button--primary"
+					th:formaction="'/pages/'+${pageName}+'/1'"
+					th:text="#{no-child.continue-without-it}"></button>
+			</div>
+		</div>
+	</form>
+</div>
