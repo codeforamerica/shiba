@@ -517,6 +517,16 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillOutHousemateInfoMoreThanFiveLessThanTen(9);
       var caf = submitAndDownloadCaf();
       assertPdfFieldEquals("FIRST_NAME_4", "householdMemberFirstName4", caf);
+      assertPdfFieldEquals("LAST_NAME_4", "householdMemberLastName4", caf);
+      assertPdfFieldEquals("OTHER_NAME_4", "houseHoldyMcMemberson4", caf);
+      assertPdfFieldEquals("FOOD_4", "Yes", caf);
+      assertPdfFieldEquals("RELATIONSHIP_4","housemate", caf);
+      assertPdfFieldEquals("DATE_OF_BIRTH_4", "09/14/1950", caf);
+      assertPdfFieldEquals("SSN_4", "XXX-XX-XXXX", caf);
+      assertPdfFieldEquals("MARITAL_STATUS_4", "NEVER_MARRIED", caf);
+      assertPdfFieldEquals("SEX_4", "MALE", caf);
+      assertPdfFieldEquals("PREVIOUS_STATE_4", "Illinois", caf);
+    
     }
     
     @Test
