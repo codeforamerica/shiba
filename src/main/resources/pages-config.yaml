@@ -90,6 +90,11 @@ conditionDefinitions:
     value: NONE
     input: programs
     matcher: DOES_NOT_CONTAIN
+  - &applicantDidNotChooseCCAPOnly?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
+    matcher: DOES_NOT_EQUAL
   - &applicantDidNotChooseCCAP?
     <<: *applicantDidNotChooseProgram?
     value: CCAP
@@ -158,58 +163,6 @@ conditionDefinitions:
           - <<: *householdMemberDidNotChooseProgram?
             value: GRH
           - *livesAlone?
-  - &skipRecommendationForProofOfIncome?
-    logicalOperator: OR
-    conditions:
-      - pageName: employmentStatus
-        input: areYouWorking
-        value: "false"
-      - logicalOperator: AND
-        conditions:
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseEA?
-          - *noOneChoseGRH?
-          - *noOneChoseCCAP?
-  - &skipRecommendationForProofOfHousingCosts?
-    logicalOperator: OR
-    conditions:
-      - pageName: homeExpenses
-        input: homeExpenses
-        value: NONE_OF_THE_ABOVE
-      - logicalOperator: AND
-        conditions:
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseEA?
-  - &skipRecommendationForProofOfJobLoss?
-    logicalOperator: OR
-    conditions:
-      - pageName: workSituation
-        input: hasWorkSituation
-        value: "false"
-      - logicalOperator: AND
-        conditions:
-          - *noOneChoseSNAP?
-          - *noOneChoseCASH?
-          - *noOneChoseGRH?
-  - &skipRecommendationForProofOfMedicalExpenses?
-    logicalOperator: OR
-    conditions:
-      - conditions:
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: MEDICAL_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: DENTAL_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
-          - pageName: medicalExpenses
-            input: medicalExpenses
-            value: VISION_INSURANCE_PREMIUMS
-            matcher: DOES_NOT_CONTAIN
-      - *noOneChoseCCAP?
   - &livesAloneOrIsApplicantsJob?
     logicalOperator: OR
     conditions:
@@ -219,24 +172,6 @@ conditionDefinitions:
     pageName: personalInfo
     input: ssn
     matcher: NOT_EMPTY
-  - &applicantDidNotChoseOnlyCCAP?
-    pageName: choosePrograms
-    input: programs
-    value: CCAP
-    matcher: DOES_NOT_CONTAIN_ONLY
-  - &householdMemberDidNotChoseOnlyCCAP?
-    pageName: householdMemberInfo
-    input: programs
-    value: CCAP
-    matcher: DOES_NOT_CONTAIN_ONLY
-  - &hideDrugFelonyQuestion?
-    logicalOperator: OR
-    conditions:
-      - *applicantDidNotChoseOnlyCCAP?
-      - logicalOperator: AND
-        conditions:
-        - *applicantDidNotChoseOnlyCCAP?
-        - *householdMemberDidNotChoseOnlyCCAP?
   - &applicantChoseCCAPProgram?
     pageName: choosePrograms
     value: CCAP
@@ -364,7 +299,7 @@ pageDefinitions:
     pageTitle: expedited-notice.title
     headerKey: expedited-notice.we-will-check-to-see
     contextFragment: expeditedNoticeContextFragment
-    hasPrimaryButton: false 
+    hasPrimaryButton: false
   - &basicCriteria
     name: basicCriteria
     pageTitle: basic-criteria.title
@@ -483,19 +418,19 @@ pageDefinitions:
           - name: appliedForSSN
             type: RADIO
             validators:
-             - validation: SELECT_AT_LEAST_ONE
-               errorMessageKey: general.validation.make-sure-to-choose-Yes-or-No
-               condition:
-                 input: noSSNCheck
-                 matcher: NOT_EMPTY
+              - validation: SELECT_AT_LEAST_ONE
+                errorMessageKey: general.validation.make-sure-to-choose-Yes-or-No
+                condition:
+                  input: noSSNCheck
+                  matcher: NOT_EMPTY
             promptMessage:
-               promptMessageKey: personal-info.have-you-applied-for-ssn
+              promptMessageKey: personal-info.have-you-applied-for-ssn
             options:
               selectableOptions:
-              - value: "true"
-                messageKey: general.inputs.yes
-              - value: "false"
-                messageKey: general.inputs.no
+                - value: "true"
+                  messageKey: general.inputs.yes
+                - value: "false"
+                  messageKey: general.inputs.no
       - name: maritalStatus
         type: RADIO
         promptMessage:
@@ -1426,7 +1361,7 @@ pageDefinitions:
               messageKey: general.inputs.yes
             - value: "false"
               messageKey: general.inputs.no
-        condition: *hideDrugFelonyQuestion?
+        condition: *applicantDidNotChooseCCAPOnly?
   - &signThisApplication
     name: signThisApplication
     pageTitle: sign-this-application.title
@@ -1440,7 +1375,7 @@ pageDefinitions:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
   - &submissionConfirmation
-    name: submissionConfirmation 
+    name: submissionConfirmation
     pageTitle: submission-confirmation.title
     contextFragment: icon-documents-sent
     hasPrimaryButton: true
@@ -3036,7 +2971,7 @@ workflow:
           pageName: choosePrograms
           input: programs
           matcher: CONTAINS
-          value: SNAP      
+          value: SNAP
       - pageName: introBasicInfo
   expeditedNotice:
     pageConfiguration: *expeditedNotice
@@ -3062,10 +2997,10 @@ workflow:
     nextPages:
       - pageName: expeditedNotice
         condition:
-            pageName: choosePrograms
-            input: programs
-            matcher: CONTAINS
-            value: SNAP      
+          pageName: choosePrograms
+          input: programs
+          matcher: CONTAINS
+          value: SNAP
       - pageName: introBasicInfo
     datasources:
       - pageName: choosePrograms
@@ -4166,8 +4101,8 @@ workflow:
       - pageName: signThisApplication
     datasources:
       - pageName: choosePrograms
-      - groupName: household
-        pageName: householdMemberInfo
+      - pageName: householdMemberInfo
+        groupName: household
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:

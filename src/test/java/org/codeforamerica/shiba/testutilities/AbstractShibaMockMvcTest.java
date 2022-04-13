@@ -227,12 +227,12 @@ public class AbstractShibaMockMvcTest {
   }
 
 
-  protected void fillOutHousemateInfo(String programSelection) throws Exception {
+  protected void fillOutHousemateInfo(String... programSelections) throws Exception {
     Map<String, List<String>> householdMemberInfo = new HashMap<>();
     householdMemberInfo.put("firstName", List.of("householdMemberFirstName"));
     householdMemberInfo.put("lastName", List.of("householdMemberLastName"));
     householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"));
-    householdMemberInfo.put("programs", List.of(programSelection));
+    householdMemberInfo.put("programs", List.of(programSelections));
     householdMemberInfo.put("relationship", List.of("housemate"));
     householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
     householdMemberInfo.put("ssn", List.of("987654321"));

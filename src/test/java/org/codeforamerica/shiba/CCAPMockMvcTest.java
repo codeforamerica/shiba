@@ -66,21 +66,22 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
   }
-  
+
   @Test
-  void verifyDrugFelonyQuestionNotDisplayedWhenApplicantHasSelectedOnlyCCAP() throws Exception {
+  void verifyDrugFelonyQuestionIsDisplayedWhenAnythingOtherThanCCAPOnlyIsSelected() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP", "SNAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true",
+            "startHousehold");
+    fillOutHousemateInfo("EA");
+    assertPageHasElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
+  void verifyDrugFelonyQuestionIsNotDisplayedWhenCCAPOnlyIsSelected() throws Exception {
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
-    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-        "addChildrenConfirmation");
-    assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
-    postExpectingRedirect("livingSituation", "goingToSchool");
-    postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
-    completeFlowFromIsPregnantThroughTribalNations(false);
-    assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
-    postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
-    assertNavigationRedirectsToCorrectNextPage("jobSearch", "incomeUpNext");
-    fillAdditionalIncomeInfoToHaveVehicle();
-    fillUnearnedIncomeToLegalStuffCCAP();
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true",
+            "startHousehold");
+    fillOutHousemateInfo("EA");
     assertPageDoesNotHaveElementWithId("legalStuff", "drugFelony1");
   }
 
