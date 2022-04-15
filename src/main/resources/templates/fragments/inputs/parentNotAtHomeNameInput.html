@@ -12,13 +12,13 @@
         th:with="childArray=${#strings.arraySplit(fullNameAndId, ' ')},
                          childId=${childArray[#arrays.length(childArray)-1]},
                          childName=${#strings.substringBefore(fullNameAndId, ' ' + childId)},
-                         me=#{general.you},
+                         you=#{general.you},
                          indexInInputData=${childIdMapData.value.indexOf(childId)},
                          parentName=${indexInInputData < 0 ? '' : inputData.value.get(indexInInputData)},
                          fieldIsBlank=${!inputData.valid(data) && parentName.isBlank()}">
       <div class="form-group" th:classappend="${fieldIsBlank} ? 'form-group--error' : ''">
         <label class="form-question spacing-below-5" th:for="|${childId}-parentname|"
-               th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, #{general.you})}"
+               th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, you)}"
                th:id="${childId + '-label'}">
         </label>
         <p th:id="${childId + '-help-message'}" th:text="#{${input.promptMessage.promptMessageKey}}"></p>

@@ -75,7 +75,7 @@ public class PageUtils {
     		.copyOfRange(householdMemberInfo, 0, householdMemberInfo.length - 1);
     
     if ("applicant".equals(childId)) {
-      return StringUtils.join(fullNameParts, " ") + translatedYou;
+      return StringUtils.join(fullNameParts, " ") + " " + translatedYou;
     }
 
     return StringUtils.join(fullNameParts, " ");

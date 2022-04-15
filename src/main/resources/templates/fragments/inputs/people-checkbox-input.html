@@ -10,7 +10,8 @@
                th:if="${input.helpMessageKey != null}"
                th:text="#{${input.helpMessageKey}}"></p>
             <th:block
-                    th:each="fullNameAndId: ${pageDatasources.get(input.datasources[0].pageName).get(input.datasources[0].inputName).value}">
+                    th:each="fullNameAndId: ${pageDatasources.get(input.datasources[0].pageName).get(input.datasources[0].inputName).value}"
+                    th:with="you=#{general.you}">
 
                 <label th:for="${fullNameAndId}" class="checkbox display-flex">
                     <input type="checkbox"
@@ -18,7 +19,7 @@
                            th:value="${fullNameAndId}"
                            th:name="${formInputName}"
                            th:checked="${inputData.value.contains(fullNameAndId)}">
-                    <span th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, #{general.you})}"></span>
+                    <span th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, you)}"></span>
                 </label>
             </th:block>
             <label th:for="none__checkbox" class="checkbox">
