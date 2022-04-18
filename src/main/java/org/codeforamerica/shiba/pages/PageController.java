@@ -765,11 +765,18 @@ public class PageController {
   private boolean hasSubmittedDocuments() {
     Application application;
     String id = applicationData.getId();
+    
+    if (id == null) 
+    {
+      // TODO: session timeout perhaps?
+      log.info("Attempt to get application data with null id");
+      return false;
+    }
+    
     try {
       application = applicationRepository.find(id);
     } catch (Exception e) {
-      log.warn("A find of application with id [" + id
-          + "] failed. If id is null, cause may be session timeout. Message: " + e.getMessage());
+      log.warn("An error finding application with id [" + id + "] failed. Message: " + e.getMessage());
       return false;
     }
     return application.getApplicationStatuses(UPLOADED_DOC).stream()
