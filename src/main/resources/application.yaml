@@ -45,6 +45,7 @@ server:
       cookie:
         secure: true
       timeout: 60m
+      timeout-url : /errorTimeout
   error:
     whitelabel:
       enabled: true

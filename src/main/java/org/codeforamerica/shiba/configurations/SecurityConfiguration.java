@@ -1,22 +1,38 @@
 package org.codeforamerica.shiba.configurations;
 
+import java.io.IOException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 @Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+  @Autowired
+  private ShibaInvalidSessionStrategy shibaInvalidSessionStrategy;
+
   public static final List<String> ADMIN_EMAILS = List.of(
       "ashukla@codeforamerica.org",
       "agonzalez@codeforamerica.org",
@@ -67,6 +83,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .httpStrictTransportSecurity()
         .includeSubDomains(true)
         .maxAgeInSeconds(31536000);
+
+    http.sessionManagement(session -> session.invalidSessionStrategy(this.shibaInvalidSessionStrategy));
   }
 
   @Bean
@@ -93,4 +111,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       return isAuthorized;
     }
   }
+
+
+  @Component
+  public static class ShibaInvalidSessionStrategy implements InvalidSessionStrategy {
+    private SimpleRedirectInvalidSessionStrategy errorRedirectInvalidSessionStrategy;
+
+    public ShibaInvalidSessionStrategy(@Value("${server.servlet.session.timeout-url}") String timeoutUrl) {
+      errorRedirectInvalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(timeoutUrl);
+    }
+
+    @Override
+    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+      log.info("User session timed out on page: " + request.getRequestURL());
+      errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
+    }
+  }
+
 }

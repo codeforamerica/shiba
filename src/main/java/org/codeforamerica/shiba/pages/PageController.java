@@ -180,6 +180,11 @@ public class PageController {
     return "faq";
   }
 
+  @GetMapping("/errorTimeout")
+  String getErrorTimeout() {
+    return "errorTimeout";
+  }
+
   @GetMapping("/pages/{pageName}/navigation")
   RedirectView navigation(
       @PathVariable String pageName,
