@@ -12,11 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredEvent;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.stereotype.Component;
 
@@ -85,6 +88,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .maxAgeInSeconds(31536000);
 
     http.sessionManagement(session -> session.invalidSessionStrategy(this.shibaInvalidSessionStrategy));
+    http.sessionManagement().sessionConcurrency(concurrency -> concurrency.expiredSessionStrategy(this.shibaInvalidSessionStrategy));
   }
 
   @Bean
@@ -114,8 +118,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
   @Component
-  public static class ShibaInvalidSessionStrategy implements InvalidSessionStrategy {
-    private SimpleRedirectInvalidSessionStrategy errorRedirectInvalidSessionStrategy;
+  public static class ShibaInvalidSessionStrategy implements InvalidSessionStrategy, SessionInformationExpiredStrategy {
+    final private SimpleRedirectInvalidSessionStrategy errorRedirectInvalidSessionStrategy;
 
     public ShibaInvalidSessionStrategy(@Value("${server.servlet.session.timeout-url}") String timeoutUrl) {
       errorRedirectInvalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(timeoutUrl);
@@ -125,6 +129,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
       log.info("User session timed out on page: " + request.getRequestURL());
       errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
+    }
+
+    @Override
+    public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
+      log.info("User session timed out on page: " + event.getRequest().getRequestURL());
+      errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(event.getRequest(), event.getResponse());
     }
   }
 
