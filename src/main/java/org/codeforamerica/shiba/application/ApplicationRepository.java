@@ -96,7 +96,7 @@ public class ApplicationRepository {
     Application application = jdbcTemplate.queryForObject(
         "SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    Objects.requireNonNull(application).setDocumentStatuses(
+    Objects.requireNonNull(application).setApplicationStatuses(
         jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
             new ApplicationStatusRowMapper(), id));
     return application;
@@ -114,7 +114,7 @@ public class ApplicationRepository {
 
     // add document statuses to apps
     for (Application app : applicationsStuckSending) {
-      app.setDocumentStatuses(
+      app.setApplicationStatuses(
           jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
               new ApplicationStatusRowMapper(), app.getId()));
     }
@@ -123,7 +123,7 @@ public class ApplicationRepository {
   }
 
   public List<Application> findApplicationsWithBlankStatuses() {
-    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+    return jdbcTemplate.query(
         "WITH no_status_apps as ( "
             + "select id, count(status) "
             + "from applications left join application_status on applications.id = application_status.application_id "
@@ -132,16 +132,14 @@ public class ApplicationRepository {
             + "having count(status) = 0 "
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by county, completed_at asc"
-            + " LIMIT 30",
+            + "order by county, completed_at "
+            + "LIMIT 30",
         applicationRowMapper()
     );
-
-    return applicationsWithBlankStatus;
   }
 
   public List<Application> findApplicationsWithBlankStatuses(County county) {
-    List<Application> applicationsWithBlankStatus = jdbcTemplate.query(
+    return jdbcTemplate.query(
         "WITH no_status_apps as ( "
             + "select id, count(status) "
             + "from applications left join application_status on applications.id = application_status.application_id "
@@ -151,13 +149,11 @@ public class ApplicationRepository {
             + "having count(status) = 0 "
             + ") "
             + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by completed_at asc "
+            + "order by completed_at "
             + "LIMIT 30",
         applicationRowMapper(),
         county.toString()
     );
-
-    return applicationsWithBlankStatus;
   }
 
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
@@ -216,11 +212,11 @@ public class ApplicationRepository {
             .build();
   }
 
-  private static class ApplicationStatusRowMapper implements RowMapper<DocumentStatus> {
+  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
 
     @Override
-    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new DocumentStatus(
+    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new ApplicationStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

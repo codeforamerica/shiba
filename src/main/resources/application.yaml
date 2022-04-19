@@ -142,4 +142,4 @@ no-status-applications-resubmission:
   lockAtLeastFor: 9m
   lockAtMostFor: 20m
 
-demo-banner: false
+demo: false

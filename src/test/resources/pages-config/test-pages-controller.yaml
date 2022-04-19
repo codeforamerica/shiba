@@ -30,6 +30,13 @@ workflow:
       inputs:
         - name: foo
           type: TEXT
+  documentSubmitConfirmation:
+    pageConfiguration:
+      name: documentSubmitConfirmation
+      pageTitle: document-submit-confirmation-title
+      inputs:
+        - name: foo
+          type: TEXT
   choosePrograms:
     pageConfiguration:
       name: choosePrograms
@@ -52,3 +59,4 @@ landmarkPages:
   terminalPage: terminalPage
   submitPage: secondPage
   uploadDocumentsPage: uploadDocuments
+  submitUploadedDocumentsPage: documentSubmitConfirmation

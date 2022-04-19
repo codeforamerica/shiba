@@ -40,7 +40,7 @@ public class DocumentStatusRepository {
     this.pdfGenerator = pdfGenerator;
   }
 
-  public List<DocumentStatus> findAll(String applicationId) {
+  public List<ApplicationStatus> findAll(String applicationId) {
     return jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
         new DocumentStatusRowMapper(), applicationId);
   }
@@ -56,7 +56,7 @@ public class DocumentStatusRepository {
 
   private void handleDocumentDifference(Application application, List<Document> documents) {
     List<Document> previousDocuments = new ArrayList<>();
-    List<DocumentStatus> listOfStatuses = findAll(application.getId());
+    List<ApplicationStatus> listOfStatuses = findAll(application.getId());
     listOfStatuses.forEach(ds -> previousDocuments.add(ds.getDocumentType()));
     List<Document> docsToDelete = previousDocuments.stream()
         .filter(docType -> !documents.contains(docType))
@@ -71,13 +71,13 @@ public class DocumentStatusRepository {
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(applicationData, document);
     routingDestinations.forEach(routingDestination -> {
-      var fileNames = getFileNames(application, document);
+      var fileNames = getAndSetFileNames(application, document);
       fileNames.stream().forEach(fileName -> createOrUpdate(applicationData.getId(), document,
           routingDestination.getName(), status, fileName));
     });
   }
 
-  public List<String> getFileNames(Application application, Document document){
+  public List<String> getAndSetFileNames(Application application, Document document){
     List<String> fileNames = new ArrayList<String>();
     if(document.equals(UPLOADED_DOC)) {
       var uploadedDocs = application.getApplicationData().getUploadedDocs();
@@ -85,18 +85,23 @@ public class DocumentStatusRepository {
         fileNames.add("");
       }
       for (int i = 0; i < uploadedDocs.size(); i++) {
-        String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
-        String fileName = filenameGenerator.generateUploadedDocumentName(application, i, extension); 
-        ApplicationFile preparedDocument =
-            pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null);
-        if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
-          fileName = preparedDocument.getFileName();
+        String fileName = uploadedDocs.get(i).getSysFileName();
+        if (fileName == null) {
+          String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
+          fileName =
+              filenameGenerator.generateUploadedDocumentName(application, i, extension);
+          ApplicationFile preparedDocument =
+              pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null);
+          if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
+            fileName = preparedDocument.getFileName();
+          }
+          uploadedDocs.get(i).setSysFileName(fileName);
         }
         fileNames.add(fileName);
       }
     }else {
       String fileName = filenameGenerator.generatePdfFilename(application, document);
-      fileNames.add(null!=fileName?fileName:"");
+      fileNames.add(fileName);
     }
     return fileNames;
   }
@@ -154,7 +159,7 @@ public class DocumentStatusRepository {
     }
   }
 
-  public List<DocumentStatus> getDocumentStatusToResubmit() {
+  public List<ApplicationStatus> getDocumentStatusToResubmit() {
     return jdbcTemplate.query(
         "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
         new DocumentStatusRowMapper());
@@ -173,11 +178,11 @@ public class DocumentStatusRepository {
         routingDestination, id, status));
   }
 
-  private static class DocumentStatusRowMapper implements RowMapper<DocumentStatus> {
+  private static class DocumentStatusRowMapper implements RowMapper<ApplicationStatus> {
 
     @Override
-    public DocumentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return new DocumentStatus(
+    public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return new ApplicationStatus(
           rs.getString("application_id"),
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),

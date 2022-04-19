@@ -227,12 +227,12 @@ public class AbstractShibaMockMvcTest {
   }
 
 
-  protected void fillOutHousemateInfo(String programSelection) throws Exception {
+  protected void fillOutHousemateInfo(String... programSelections) throws Exception {
     Map<String, List<String>> householdMemberInfo = new HashMap<>();
     householdMemberInfo.put("firstName", List.of("householdMemberFirstName"));
     householdMemberInfo.put("lastName", List.of("householdMemberLastName"));
     householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"));
-    householdMemberInfo.put("programs", List.of(programSelection));
+    householdMemberInfo.put("programs", List.of(programSelections));
     householdMemberInfo.put("relationship", List.of("housemate"));
     householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
     householdMemberInfo.put("ssn", List.of("987654321"));
@@ -242,6 +242,25 @@ public class AbstractShibaMockMvcTest {
     householdMemberInfo.put("moveToMnDate", List.of("02", "18", "1950"));
     householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
     postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
+  }
+  
+  protected void fillOutHousemateInfoMoreThanFiveLessThanTen(int HHCount) throws Exception {
+    Map<String, List<String>> householdMemberInfo = new HashMap<>();
+    for(int i=0; i<=HHCount; i++) {
+      householdMemberInfo.put("firstName", List.of("householdMemberFirstName"+i));
+      householdMemberInfo.put("lastName", List.of("householdMemberLastName"+i));
+      householdMemberInfo.put("otherName", List.of("houseHoldyMcMemberson"+i));
+      householdMemberInfo.put("programs", List.of("SNAP"));
+      householdMemberInfo.put("relationship", List.of("housemate"));
+      householdMemberInfo.put("dateOfBirth", List.of("09", "14", "1950"));
+      householdMemberInfo.put("ssn", List.of("987654321"));
+      householdMemberInfo.put("maritalStatus", List.of("NEVER_MARRIED"));
+      householdMemberInfo.put("sex", List.of("MALE"));
+      householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
+      householdMemberInfo.put("moveToMnDate", List.of("02", "18", "1950"));
+      householdMemberInfo.put("moveToMnPreviousState", List.of("Illinois"));
+      postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
+    }
   }
 
   protected void fillOutHousemateInfoWithNoProgramsSelected() throws Exception {
@@ -546,6 +565,12 @@ public class AbstractShibaMockMvcTest {
   protected void assertNavigationRedirectsToCorrectNextPage(String pageName,
       String expectedNextPageName) throws Exception {
     String nextPage = followRedirectsForPageName(pageName);
+    assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
+  }
+  
+  protected void assertNavigationRedirectsToCorrectNextPageWithOption(String pageName,String option,
+      String expectedNextPageName) throws Exception {
+    String nextPage = followRedirectsForPageNameWithOption(pageName, option.equals("false")?"1":"0");
     assertThat(nextPage).isEqualTo("/pages/" + expectedNextPageName);
   }
 
@@ -856,7 +881,8 @@ public class AbstractShibaMockMvcTest {
 
     } else {
       postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-          "introPersonalDetails");
+          "addChildrenConfirmation");
+      assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
       assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
       postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
@@ -1012,5 +1038,18 @@ public class AbstractShibaMockMvcTest {
 
   protected FormPage getFormPage(String pageName) throws Exception {
     return new FormPage(getPageExpectingSuccess(pageName));
+  }
+  
+  @NotNull
+  private String followRedirectsForPageNameWithOption(String currentPageName, String option) throws Exception {
+    var nextPage = "/pages/" + currentPageName + "/navigation?option="+option;
+    while (Objects.requireNonNull(nextPage).contains("/navigation")) {
+      // follow redirects
+      nextPage = mockMvc.perform(get(nextPage).session(session))
+          .andExpect(status().is3xxRedirection()).andReturn()
+          .getResponse()
+          .getRedirectedUrl();
+    }
+    return nextPage;
   }
 }

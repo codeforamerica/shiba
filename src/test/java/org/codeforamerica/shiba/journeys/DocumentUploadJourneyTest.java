@@ -73,6 +73,15 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     assertThat(driver.findElementById("number-of-uploaded-files").getText())
         .isEqualTo("1 file added");
 
+    // special case error message for the .heic (iPhone) file type that is not on the allow list
+    driver.executeScript(
+        "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.heic', size: 1000, type: 'not-an-image'})");
+    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+        .contains("HEIC files, an iPhone file type, are not accepted.");
+    testPage.clickLink("remove");
+    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+        .isEqualTo("1 file added");
+
     // should show max filesize error message for files that are too big
     long largeFilesize = 21000000L;
     driver.executeScript(
@@ -90,6 +99,6 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     // should alert the user when they have uploaded the maximum number of files
     IntStream.range(0, 19).forEach(c -> uploadJpgFile());
     assertThat(driver.findElementById("max-files").getText()).contains(
-        "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a county worker later.");
+        "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a caseworker later.");
   }
 }

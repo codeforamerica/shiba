@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    driverClassName: org.postgresql.Driver
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 10m
+feature-flag:
+  submit-via-api: off
+  certain-pops: off
+  submit-docs-via-email-for-hennepin: off
+
+demo: true

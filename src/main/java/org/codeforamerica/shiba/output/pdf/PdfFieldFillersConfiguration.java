@@ -26,6 +26,16 @@ public class PdfFieldFillersConfiguration {
   ) {
     return new PDFBoxFieldFiller(List.of(coverPages, cafBody));
   }
+  @Bean
+  public PdfFieldFiller caseworkerCafWdHouseholdSuppFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:caf-body.pdf") Resource cafBody,
+      @Value("classpath:caf-household-member-supplement.pdf") Resource cafBodyWdHouseholdSupp
+  ) {
+    return new PDFBoxFieldFiller(List.of(
+        coverPages, cafBody,cafBodyWdHouseholdSupp
+    ));
+  }
 
   @Bean
   public PdfFieldFiller clientCafFiller(
@@ -36,6 +46,19 @@ public class PdfFieldFillersConfiguration {
   ) {
     return new PDFBoxFieldFiller(List.of(
         coverPages, standardHeaders, cafBody, standardFooters
+    ));
+  }
+  
+  @Bean
+  public PdfFieldFiller clientCafWdHouseholdSuppFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:caf-standard-headers.pdf") Resource standardHeaders,
+      @Value("classpath:caf-body.pdf") Resource cafBody,
+      @Value("classpath:caf-household-member-supplement.pdf") Resource cafBodyWdHouseholdSupp,
+      @Value("classpath:caf-standard-footers.pdf") Resource standardFooters
+  ) {
+    return new PDFBoxFieldFiller(List.of(
+        coverPages, standardHeaders, cafBody, standardFooters, cafBodyWdHouseholdSupp
     ));
   }
 
@@ -100,7 +123,9 @@ public class PdfFieldFillersConfiguration {
       PdfFieldFiller clientCcapFiller,
       PdfFieldFiller caseworkerCertainPopsFiller,
       PdfFieldFiller clientCertainPopsFiller,
-      PdfFieldFiller uploadedDocCoverPageFilter) {
+      PdfFieldFiller uploadedDocCoverPageFilter,
+      PdfFieldFiller clientCafWdHouseholdSuppFiller,
+      PdfFieldFiller caseworkerCafWdHouseholdSuppFiller) {
     return Map.of(
         CASEWORKER, Map.of(
             CAF, caseworkerCafFiller,
@@ -111,7 +136,20 @@ public class PdfFieldFillersConfiguration {
         CLIENT, Map.of(
             CAF, clientCafFiller,
             CCAP, clientCcapFiller,
-            CERTAIN_POPS, clientCertainPopsFiller)
+            CERTAIN_POPS, clientCertainPopsFiller )
+    );
+  }
+  
+  @Bean
+  public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers(
+      PdfFieldFiller caseworkerCafWdHouseholdSuppFiller,
+      PdfFieldFiller clientCafWdHouseholdSuppFiller) {
+    return Map.of(
+        CASEWORKER, Map.of(
+            CAF, caseworkerCafWdHouseholdSuppFiller
+        ),
+        CLIENT, Map.of(
+            CAF, clientCafWdHouseholdSuppFiller )
     );
   }
 }

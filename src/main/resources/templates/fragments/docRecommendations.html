@@ -3,17 +3,31 @@
 
 <div th:fragment="docRecommendations" class="reveal reveal-adjacent"
      th:if="${docRecommendations.size() > 0}">
-  <a href="#" class="reveal__link reveal__link-adjacent">
-    <div class="reveal__link__header-adjacent"
-         th:text="#{upload-documents.recommended-documents}"></div>
-    <div class="reveal__content reveal__content-adjacent">
-      <th:block th:each="docRec: ${docRecommendations}">
-        <div th:replace="fragments/docRecommendations :: docRecommendationFragment(${docRec.icon},
+  <button th:text="#{upload-documents.recommended-documents}"
+          type="button" class="reveal__link reveal__link-adjacent reveal__link__header-adjacent"
+          aria-expanded="false" aria-controls="reveal-content">
+  </button>
+  <div class="reveal__content reveal__content-adjacent" id="reveal-content">
+    <div class="h4 spacing-above-15"
+         th:text="#{upload-documents.based-on-your-answers}"></div>
+    <th:block th:each="docRec: ${docRecommendations}">
+      <div th:replace="fragments/docRecommendations :: docRecommendationFragment(${docRec.icon},
                                                 ${docRec.title},
                                                 ${docRec.explanation})"></div>
-      </th:block>
-    </div>
-  </a>
+    </th:block>
+  </div>
+</div>
+
+<div th:fragment="docRecommendations"
+     th:if="${docRecommendations.size() == 0}">
+  <div class="notice--success">
+    <h2 class="h3" th:text="#{document-recommendation.caseworkers-most-commonly-request}"></h2>
+    <ul class="grid__item spacing-above-25 left-justified-list">
+      <li th:text="#{document-recommendation.id}"></li>
+      <li th:text="#{document-recommendation.pay-stubs}"></li>
+      <li th:text="#{document-recommendation.rent-receipts}"></li>
+    </ul>
+  </div>
 </div>
 
 <!-- Leaving this as a fragment in case we want to use it again somewhere else -->

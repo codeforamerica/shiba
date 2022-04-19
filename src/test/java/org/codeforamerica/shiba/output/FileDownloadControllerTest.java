@@ -27,7 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatus;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.output.xml.XmlGenerator;
@@ -62,7 +62,7 @@ class FileDownloadControllerTest {
     application = Application.builder()
         .completedAt(ZonedDateTime.now())
         .applicationData(applicationData)
-        .documentStatuses(List.of(new DocumentStatus("", CCAP, "", DELIVERED,"")))
+        .applicationStatuses(List.of(new ApplicationStatus("", CCAP, "", DELIVERED,"")))
         .build();
     mockMvc = MockMvcBuilders.standaloneSetup(
             new FileDownloadController(

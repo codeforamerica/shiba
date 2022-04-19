@@ -17,6 +17,8 @@ public enum ValueMatcher {
 
   CONTAINS(List::contains),
 
+  DOES_NOT_EQUAL ((testValue, targetValue) -> testValue.size() != 1 || !testValue.get(0).equals(targetValue)),
+
   NOT_EMPTY((testValue, ignore) -> !String.join("", testValue).isBlank()),
 
   CONTAINS_STRING_OTHER_THAN((testValue, targetValue) -> testValue.stream()

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    driverClassName: org.postgresql.Driver
+
+feature-flag:
+  submit-via-api: on
+
+demo: true

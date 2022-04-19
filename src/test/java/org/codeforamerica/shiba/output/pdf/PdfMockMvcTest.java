@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
 import static org.codeforamerica.shiba.output.caf.CoverPagePreparer.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldIsEmpty;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -508,6 +509,43 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("GRH", "Off", caf);
       assertPdfFieldEquals("PROGRAM_NONE", "Yes", caf);
     }
+    
+    @Test
+    void shouldMapHHMemberMoreThan5LessThan10() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(9);
+      var caf = submitAndDownloadCaf();
+      assertPdfFieldEquals("FIRST_NAME_4", "householdMemberFirstName4", caf);
+      assertPdfFieldEquals("LAST_NAME_4", "householdMemberLastName4", caf);
+      assertPdfFieldEquals("OTHER_NAME_4", "houseHoldyMcMemberson4", caf);
+      assertPdfFieldEquals("FOOD_4", "Yes", caf);
+      assertPdfFieldEquals("RELATIONSHIP_4","housemate", caf);
+      assertPdfFieldEquals("DATE_OF_BIRTH_4", "09/14/1950", caf);
+      assertPdfFieldEquals("SSN_4", "XXX-XX-XXXX", caf);
+      assertPdfFieldEquals("MARITAL_STATUS_4", "NEVER_MARRIED", caf);
+      assertPdfFieldEquals("SEX_4", "MALE", caf);
+      assertPdfFieldEquals("PREVIOUS_STATE_4", "Illinois", caf);
+    
+    }
+    
+    @Test
+    void shouldNotMapHHMemberLessThan5() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(3);
+      var caf = submitAndDownloadCaf();
+      assertNull(caf.getField("FIRST_NAME_4"));
+    }
+    
+    @Test
+    void shouldNotMapHHMemberMoreThan10() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("SNAP");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(11);
+      var caf = submitAndDownloadCaf();
+      assertNull(caf.getField("FIRST_NAME_4"));
+    }
 
     @Test
     void shouldMapMfipAsCash() throws Exception {
@@ -624,7 +662,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           throws Exception {
         postExpectingSuccess("identifyCounty", "county", "Morrison");
         testThatCorrectCountyInstructionsAreDisplayed("Little Falls", "56345",
-            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
+            "This application was submitted to Morrison County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Morrison County (800-269-1464).");
       }
 
       @Test
@@ -632,7 +670,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           throws Exception {
         postExpectingSuccess("identifyCounty", "county", "Dodge");
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
-            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A county worker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
+            "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
 
       @Test
@@ -788,6 +826,98 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
      }
    }
+   
+   @Nested
+   @Tag("pdf")
+   class RaceAndEthinicityCCAP{
+     @Test
+     void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
+       selectPrograms("CCAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", ccap);
+     }
+     
+     @Test
+     void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
+       selectPrograms("CCAP");
+
+       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", ccap);
+     }
+     
+     @Test
+     void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
+       selectPrograms("CCAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","HISPANIC_LATINO_OR_SPANISH","WHITE")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("ASIAN", "Yes", ccap);
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+     }
+     
+     @Test
+     void shouldMarkWhiteWhenWhiteSelected() throws Exception {
+       selectPrograms("CCAP");
+      
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("ASIAN","WHITE","MIDDLE_EASTERN_OR_NORTH_AFRICAN")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("ASIAN", "Yes", ccap);
+       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", ccap);
+       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "", ccap);
+     }
+     
+     @Test
+     void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","ASIAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+     
+     @Test
+     void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected() throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
+           ));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Off", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+  
+ 
+     @Test
+     void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
+         throws Exception {
+       selectPrograms("CCAP");
+       postExpectingSuccess("raceAndEthnicity",
+           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+               "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+       var ccap = submitAndDownloadCcap();
+       assertPdfFieldEquals("WHITE", "Yes", ccap);
+       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+     }
+   }
+   
   }
 
   @Nested

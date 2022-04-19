@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="certainPopsConfirm">
-	<div class="grid__item spacing-below-15">
-		<div th:replace="fragments/contextFragments :: icon-checkbox"></div>
-	</div>
-	<div class="grid__item">
-		<h1 class="h2 spacing-below-35 spacing-above-0" th:text="#{certain-pops-confirm.we-added-health-care}"></h1>
-	</div>
-	<div class="reveal reveal-adjacent spacing-below-35">
-		<div class="reveal__link reveal__link-adjacent">
-		<div class="reveal__link__header-adjacent" 
-		th:text="#{certain-pops-confirm.what-is-Healthcare}">
-		</div>
-		</div>
-	<div class="reveal__content reveal__content-adjacent">
-		<p th:text="#{certain-pops-confirm.healthcare-for-seniors}"></p>
-		<ul class="left-justified-list">
-			<li>
-				<strong th:text="#{certain-pops-confirm.people-65-years-old}"></strong>
-			</li>
-			<li class="spacing-above-15">
-				<strong th:text="#{certain-pops-confirm.people-with-disabilities}"></strong>
-			</li>
-			<li class="spacing-above-15">
-				<strong th:text="#{certain-pops-confirm.some-people}"></strong>
-			</li>
-		</ul>
-		<div id="remove">
-			<p th:utext="#{certain-pops-confirm.the-state-calls}"></p>
-			<p th:utext="#{certain-pops-confirm.all-other-applicants}"></p>
-		</div>
-	</div>
-	<!--</div>-->
-</div>
-<div class="grid__item spacing-below-15">
-	<div th:replace="fragments/continue :: continue"></div>
-</div>
+  <div class="grid__item spacing-below-15">
+    <div th:replace="fragments/contextFragments :: icon-checkbox"></div>
+  </div>
+  <div class="grid__item">
+    <h1 class="h2 spacing-below-35 spacing-above-0"
+        th:text="#{certain-pops-confirm.we-added-health-care}"></h1>
+  </div>
+  <div class="reveal reveal-adjacent spacing-below-35">
+    <button th:text="#{certain-pops-confirm.what-is-Healthcare}"
+            type="button" class="reveal__link reveal__link-adjacent reveal__link__header-adjacent"
+            aria-expanded="false" aria-controls="reveal-content">
+    </button>
+    <div class="reveal__content reveal__content-adjacent" id="reveal-content">
+      <p th:text="#{certain-pops-confirm.healthcare-for-seniors}"></p>
+      <ul class="left-justified-list">
+        <li>
+          <strong th:text="#{certain-pops-confirm.people-65-years-old}"></strong>
+        </li>
+        <li class="spacing-above-15">
+          <strong th:text="#{certain-pops-confirm.people-with-disabilities}"></strong>
+        </li>
+        <li class="spacing-above-15">
+          <strong th:text="#{certain-pops-confirm.some-people}"></strong>
+        </li>
+      </ul>
+      <div>
+        <p th:utext="#{certain-pops-confirm.the-state-calls}"></p>
+        <p th:utext="#{certain-pops-confirm.all-other-applicants}"></p>
+      </div>
+    </div>
+  </div>
+  <div class="grid__item spacing-below-15">
+    <div th:replace="fragments/continue :: continue"></div>
+  </div>
 </div>
 </html>

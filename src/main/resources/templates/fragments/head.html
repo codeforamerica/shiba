@@ -5,6 +5,12 @@
     <meta name="description" th:content="#{landing.page-description}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="format-detection" content="telephone=no">
+    <meta property="og:title" content="MNbenefits: Apply for benefits in 20 minutes or less" />
+	<meta property="og:description" content="MNbenefits is a new, mobile-friendly benefits application for Minnesotans." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://mnbenefits.mn.gov/" />
+	<meta property="og:image" content="/images/social-share-link-image.png" />
+    <meta th:if="${@environment.getProperty('demo')}" name="robots" content="noindex, nofollow">
     <title th:text="${text}"></title>
     <link href="/honeycrisp.min.css" rel="preload" as="style" />
     <link href="/honeycrisp.min.css" rel="stylesheet"/>
@@ -43,6 +49,15 @@
         mixpanel.track('PAGE_VIEW');
         mixpanel.people.set({
             language: [[${#locale.toString()}]]
+        });
+    </script>
+    <script>
+        (function(w, u, d){var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};var l = function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://code.upscope.io/i1h3FcKGdw.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(typeof u!=="function"){w.Upscope=i;l();}})(window, window.Upscope, document);
+        Upscope('init');
+    </script>
+    <script type="text/javascript" th:inline="javascript" th:with="sessionId=${#session != null ? #session.getId() : null}">
+        Upscope('updateConnection', {
+            uniqueId: [[${sessionId}]],
         });
     </script>
 </head>

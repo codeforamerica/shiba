@@ -68,11 +68,31 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   @Test
+  void verifyDrugFelonyQuestionIsDisplayedWhenAnythingOtherThanCCAPOnlyIsSelected() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP", "SNAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true",
+            "startHousehold");
+    fillOutHousemateInfo("EA");
+    assertPageHasElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
+  void verifyDrugFelonyQuestionIsNotDisplayedWhenCCAPOnlyIsSelected() throws Exception {
+    completeFlowFromLandingPageThroughReviewInfo("CCAP");
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true",
+            "startHousehold");
+    fillOutHousemateInfo("EA");
+    assertPageDoesNotHaveElementWithId("legalStuff", "drugFelony1");
+  }
+
+  @Test
   void verifyFlowWhenLiveAloneApplicantSelectedCCAP() throws Exception {
     // Applicant lives alone and choose CCAP
     completeFlowFromLandingPageThroughReviewInfo("CCAP");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
-        "introPersonalDetails");
+        "addChildrenConfirmation");
+    assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
+    postExpectingRedirect("introPersonalDetails", "livingSituation");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
     postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");
@@ -110,7 +130,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   void verifyFlowWhenOnlyHouseholdMemberSelectedCCAP() throws Exception {
     selectPrograms("NONE");
     assertPageHasWarningMessage("choosePrograms",
-        "You will be asked to share some information about yourself even though you’re only applying for others.");
+        "You will be asked to share some information about yourself even though you're only applying for others.");
 
     completeFlowFromLandingPageThroughReviewInfo("NONE");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");

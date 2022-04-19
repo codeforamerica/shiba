@@ -46,11 +46,13 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.codeforamerica.shiba.testutilities.ClientDevice;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
+import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -545,4 +547,44 @@ class PageControllerTest {
 
     mockMvc.perform(get("/pages/doesNotExist/navigation")).andExpect(redirectedUrl("/error"));
   }
+ 
+  @Test
+  void shouldRedirectToUploadDocumentPageWhenGoingToSubmitConfirmationWithoutDocuments() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    applicationData.setUploadedDocs(List.of());
+    String applicationId = "someId";
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
+    mockMvc.perform(get("/pages/documentSubmitConfirmation")).andExpect(redirectedUrl("/pages/uploadDocuments"));
+  }
+
+  
+  @Test
+  void shouldUpdateTriageAnsWithCCAPChildNudgeAns() throws Exception {
+    applicationData.setStartTimeOnce(Instant.now());
+    String applicationId = "someId";
+    PagesData pagesData =
+        new PagesDataBuilder()
+            .withPageData("addHouseholdMembers", Map.of("addHouseholdMembers", "true")).build();
+    applicationData.setPagesData(pagesData);
+    applicationData.setId(applicationId);
+    Application application = Application.builder()
+        .id(applicationId)
+        .applicationData(applicationData)
+        .build();
+    when(applicationRepository.getNextId()).thenReturn(applicationId);
+    when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    mockMvc.perform(post("/pages/addChildrenConfirmation/0"));
+    assertThat(applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers").getValue()).contains("true");
+    mockMvc.perform(post("/pages/addChildrenConfirmation/1"));
+    assertThat(applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers").getValue()).contains("false");
+  }
+
 }
