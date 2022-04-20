@@ -5,7 +5,7 @@ var followUpQuestion = (function() {
 				var self = this;
 				var showFollowUpIfChecked = function(element) {
 					if (element.is(':checked') && element.attr('data-follow-up')
-						!= null) {
+						!== null) {
 						$(element.attr('data-follow-up')).show();
 					}
 				};
@@ -142,7 +142,7 @@ var preCheckContactInfo = (function() {
 		init: function() {
 			var phoneInputTextBox = document.getElementById('phoneNumber');
 			var emailInputTextBox = document.getElementById('email');
-			if (phoneInputTextBox != null) {
+			if (phoneInputTextBox !== null) {
 				phoneInputTextBox.addEventListener('input', function() {
 					var textCheckbox = document.getElementById('TEXT');
 					if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
@@ -155,7 +155,7 @@ var preCheckContactInfo = (function() {
 					}
 				});
 			}
-			if (emailInputTextBox != null) {
+			if (emailInputTextBox !== null) {
 				emailInputTextBox.addEventListener('input', function() {
 					var emailCheckbox = document.getElementById('EMAIL');
 					if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {
