@@ -22,14 +22,13 @@ import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatus;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
@@ -46,7 +45,7 @@ public class ResubmissionService {
   private final EmailClient emailClient;
   private final PdfGenerator pdfGenerator;
   private final RoutingDecisionService routingDecisionService;
-  private final DocumentStatusRepository documentStatusRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
   private final PageEventPublisher pageEventPublisher;
   private final FeatureFlagConfiguration featureFlagConfiguration;
 
@@ -55,14 +54,14 @@ public class ResubmissionService {
       EmailClient emailClient,
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService,
-      DocumentStatusRepository documentStatusRepository,
+      ApplicationStatusRepository applicationStatusRepository,
       PageEventPublisher pageEventPublisher,
       FeatureFlagConfiguration featureFlagConfiguration) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
-    this.documentStatusRepository = documentStatusRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
     this.pageEventPublisher = pageEventPublisher;
     this.featureFlagConfiguration = featureFlagConfiguration;
   }
@@ -74,7 +73,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "emailResubmissionTask", lockAtMostFor = "${failed-resubmission.lockAtMostFor}", lockAtLeastFor = "${failed-resubmission.lockAtLeastFor}")
   public void resubmitFailedApplications() {
     log.info("Checking for applications that failed to send");
-    List<ApplicationStatus> applicationsToResubmit = documentStatusRepository.getDocumentStatusToResubmit();
+    List<ApplicationStatus> applicationsToResubmit = applicationStatusRepository.getDocumentStatusToResubmit();
 
     MDC.put("failedApps", String.valueOf(applicationsToResubmit.size()));
     log.info("Resubmitting " + applicationsToResubmit.size() + " apps over email");
@@ -103,11 +102,11 @@ public class ResubmissionService {
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
+        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
-        documentStatusRepository.createOrUpdate(id, document, routingDestinationName,
+        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName,
             RESUBMISSION_FAILED, documentName);
       }
     });
@@ -168,11 +167,11 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       log.info("Retriggering submission for application with id " + id);
 
-      documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
+      applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
 
       if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
           .getUploadedDocs().isEmpty()) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application,
+        applicationStatusRepository.createOrUpdateAllForDocumentType(application,
             SENDING, UPLOADED_DOC);
       }
 
@@ -195,7 +194,7 @@ public class ResubmissionService {
 
     if (shouldDeleteDocumentStatuses) {
       // Will be recreated on submit event
-      documentStatusRepository.delete(id, documentTypesInSending);
+      applicationStatusRepository.delete(id, documentTypesInSending);
     }
 
     boolean shouldRefireAppSubmittedEvent = documentTypesInSending.stream()
@@ -221,19 +220,19 @@ public class ResubmissionService {
       boolean shouldDeleteDocumentStatuses) {
     if (shouldDeleteDocumentStatuses) {
       // Will be recreated on submit event
-      documentStatusRepository.delete(id, List.of(UPLOADED_DOC));
+      applicationStatusRepository.delete(id, List.of(UPLOADED_DOC));
     }
     // No docs to deliver or all files the client uploaded contained 0 bytes of data
     if (application.getApplicationData().getUploadedDocs().isEmpty() ||
         application.getApplicationData().getUploadedDocs().stream()
             .allMatch(uploadedDocument -> uploadedDocument.getSize() == 0)) {
-      documentStatusRepository.createOrUpdateAllForDocumentType(application,
+      applicationStatusRepository.createOrUpdateAllForDocumentType(application,
           UNDELIVERABLE, UPLOADED_DOC);
     } else {
       // Docs older than 60 days cannot be delivered due to retention policy
       ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
       if (application.getCompletedAt().isBefore(sixtyDaysAgo)) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application,
+        applicationStatusRepository.createOrUpdateAllForDocumentType(application,
             UNDELIVERABLE, UPLOADED_DOC);
       } else {
         log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);

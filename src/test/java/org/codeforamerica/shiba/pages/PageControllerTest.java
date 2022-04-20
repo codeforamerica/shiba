@@ -37,7 +37,7 @@ import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -93,7 +93,7 @@ class PageControllerTest {
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
-  private DocumentStatusRepository documentStatusRepository;
+  private ApplicationStatusRepository applicationStatusRepository;
   @MockBean
   private ApplicationFactory applicationFactory;
   @MockBean

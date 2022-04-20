@@ -25,14 +25,14 @@ import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 @Repository
 @Slf4j
-public class DocumentStatusRepository {
+public class ApplicationStatusRepository {
 
   private final JdbcTemplate jdbcTemplate;
   private final RoutingDecisionService routingDecisionService;
   private final FilenameGenerator filenameGenerator;
   private final PdfGenerator pdfGenerator;
   
-  public DocumentStatusRepository(JdbcTemplate jdbcTemplate,
+  public ApplicationStatusRepository(JdbcTemplate jdbcTemplate,
       RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator, PdfGenerator pdfGenerator) {
     this.jdbcTemplate = jdbcTemplate;
     this.routingDecisionService = routingDecisionService;
@@ -42,7 +42,7 @@ public class DocumentStatusRepository {
 
   public List<ApplicationStatus> findAll(String applicationId) {
     return jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
-        new DocumentStatusRowMapper(), applicationId);
+        new ApplicationStatusRowMapper(), applicationId);
   }
 
   public void createOrUpdateApplicationType(Application application, Status status) {
@@ -162,7 +162,7 @@ public class DocumentStatusRepository {
   public List<ApplicationStatus> getDocumentStatusToResubmit() {
     return jdbcTemplate.query(
         "SELECT * FROM application_status WHERE document_type != 'XML' AND status = 'delivery_failed'",
-        new DocumentStatusRowMapper());
+        new ApplicationStatusRowMapper());
   }
 
   private void logStatusUpdate(String id, Document document, String routingDestination,
@@ -178,7 +178,7 @@ public class DocumentStatusRepository {
         routingDestination, id, status));
   }
 
-  private static class DocumentStatusRowMapper implements RowMapper<ApplicationStatus> {
+  private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
 
     @Override
     public ApplicationStatus mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
@@ -78,7 +78,7 @@ class MailGunEmailClientTest {
   @MockBean
   private ClientRegistrationRepository springSecurityFilterChain;
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-  DocumentStatusRepository documentStatusRepository;
+  ApplicationStatusRepository applicationStatusRepository;
   int port;
   BasicCredentials credentials;
   List<String> programs;
@@ -96,7 +96,7 @@ class MailGunEmailClientTest {
     wireMockServer = new WireMockServer(options);
     wireMockServer.start();
     port = wireMockServer.port();
-    documentStatusRepository = mock(DocumentStatusRepository.class);
+    applicationStatusRepository = mock(ApplicationStatusRepository.class);
     WireMock.configureFor(port);
     mailGunEmailClient = new MailGunEmailClient(
         senderEmail,

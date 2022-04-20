@@ -47,7 +47,7 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
@@ -111,7 +111,7 @@ class MnitDocumentConsumerTest {
   @MockBean
   private ApplicationRepository applicationRepository;
   @MockBean
-  private DocumentStatusRepository documentStatusRepository;
+  private ApplicationStatusRepository applicationStatusRepository;
   @MockBean
   private MessageSource messageSource;
   @SpyBean
@@ -349,9 +349,9 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
-    verify(documentStatusRepository).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository).createOrUpdate(application.getId(),
         CAF, routingDestination.getName(), SENDING,null);
-    verify(documentStatusRepository).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository).createOrUpdate(application.getId(),
         CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
   }
 
@@ -371,11 +371,11 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
-    verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
         CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
-    verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
         CAF, routingDestination.getName(), SENDING,null);
-    verify(documentStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
+    verify(applicationStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
         application.getId(),
         CCAP, routingDestination.getName(), DELIVERY_FAILED,"someFile.pdf");
   }
@@ -398,9 +398,9 @@ class MnitDocumentConsumerTest {
     }
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
         UPLOADED_DOC, routingDestination.getName(), SENDING,null);
-    verify(documentStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
+    verify(applicationStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
         application.getId(),
         UPLOADED_DOC, routingDestination.getName(), DELIVERY_FAILED,null);
   }
@@ -535,7 +535,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(documentStatusRepository,times(2)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository,times(2)).createOrUpdate(application.getId(),
         UPLOADED_DOC, routingDestination.getName(), SENDING,null);
   }
 
@@ -545,7 +545,7 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processUploadedDocuments(application);
 
-    verify(documentStatusRepository).createOrUpdateAllForDocumentType(
+    verify(applicationStatusRepository).createOrUpdateAllForDocumentType(
         application, UNDELIVERABLE, UPLOADED_DOC);
   }
 

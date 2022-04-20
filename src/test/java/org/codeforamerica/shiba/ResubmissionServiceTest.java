@@ -6,7 +6,6 @@ import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
 import static org.codeforamerica.shiba.application.Status.DELIVERED_BY_EMAIL;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
-import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.*;
-import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -58,7 +56,7 @@ class ResubmissionServiceTest {
   private RoutingDecisionService routingDecisionService;
   private ResubmissionService resubmissionService;
   @Mock
-  private DocumentStatusRepository documentStatusRepository;
+  private ApplicationStatusRepository applicationStatusRepository;
   @Mock
   private PageEventPublisher pageEventPublisher;
   @Mock
@@ -81,13 +79,13 @@ class ResubmissionServiceTest {
     FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(Map.of());
     filenameGenerator = new FilenameGenerator(countyMap);
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
-        pdfGenerator, routingDecisionService, documentStatusRepository, pageEventPublisher, featureFlagConfiguration);
+        pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher, featureFlagConfiguration);
   }
 
   @Test
   void itResubmitsCafs() {
     Application application = Application.builder().id(APP_ID).county(Olmsted).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(List.of(new ApplicationStatus(APP_ID, CAF, "Olmsted", DELIVERY_FAILED, "")));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
@@ -97,14 +95,14 @@ class ResubmissionServiceTest {
     resubmissionService.resubmitFailedApplications();
 
     verify(emailClient).resubmitFailedEmail(DEFAULT_EMAIL, CAF, applicationFile, application);
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Olmsted",
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Olmsted",
         Status.DELIVERED_BY_EMAIL, "");
   }
 
   @Test
   void itResubmitsCafsToTribalNationsOnly() {
     Application application = Application.builder().id(APP_ID).county(Olmsted).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(List.of(
             new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED, "")));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
@@ -118,14 +116,14 @@ class ResubmissionServiceTest {
         any());
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
         Status.DELIVERED_BY_EMAIL, "");
   }
 
   @Test
   void itResubmitsCafsToTribalNationsAndCounties() {
     Application application = Application.builder().id(APP_ID).county(Anoka).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(List.of(
             new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED, ""),
             new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED, "")));
@@ -139,15 +137,15 @@ class ResubmissionServiceTest {
     verify(emailClient).resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile,
         application);
     verify(emailClient).resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile, application);
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", Status.DELIVERED_BY_EMAIL, "");
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", Status.DELIVERED_BY_EMAIL, "");
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
         Status.DELIVERED_BY_EMAIL, "");
   }
 
   @Test
   void itShouldMarkDeliveryFailedWhenApplicationFailsToSendToEitherCountyOrTribalNation() {
     Application application = Application.builder().id(APP_ID).county(Anoka).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(List.of(
             new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED, ""),
             new ApplicationStatus(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE, DELIVERY_FAILED, "")));
@@ -162,8 +160,8 @@ class ResubmissionServiceTest {
         .resubmitFailedEmail(MILLE_LACS_BAND_EMAIL, CAF, applicationFile, application);
 
     resubmissionService.resubmitFailedApplications();
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED_BY_EMAIL, "");
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED_BY_EMAIL, "");
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, MILLE_LACS_BAND_OF_OJIBWE,
         RESUBMISSION_FAILED, "");
   }
 
@@ -176,7 +174,7 @@ class ResubmissionServiceTest {
 
     Application application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(
             List.of(new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName.txt"),
                 new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName1.txt")));
@@ -203,9 +201,9 @@ class ResubmissionServiceTest {
     List<ApplicationFile> applicationFiles = captor.getAllValues();
     assertThat(applicationFiles)
         .containsExactlyElementsOf(List.of(applicationFile1, applicationFile2));
-    verify(documentStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
         Status.DELIVERED_BY_EMAIL, "fileName.txt");
-    verify(documentStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
         Status.DELIVERED_BY_EMAIL, "fileName1.txt");
   }
 
@@ -217,7 +215,7 @@ class ResubmissionServiceTest {
             "someDataUrl", "image/jpeg", "fileName.txt");
     var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit()).thenReturn(List.of(
+    when(applicationStatusRepository.getDocumentStatusToResubmit()).thenReturn(List.of(
         new ApplicationStatus(APP_ID, CCAP, "Olmsted", DELIVERY_FAILED, ""),
         new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName.txt")));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
@@ -245,9 +243,9 @@ class ResubmissionServiceTest {
 
     // make sure we updated the status
     var applicationRepositoryDocumentCaptor = ArgumentCaptor.forClass(Document.class);
-    verify(documentStatusRepository).createOrUpdate(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(), eq("Olmsted"),
+    verify(applicationStatusRepository).createOrUpdate(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(), eq("Olmsted"),
             eq(Status.DELIVERED_BY_EMAIL), eq(""));
-    verify(documentStatusRepository).createOrUpdate(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(), eq("Olmsted"),
+    verify(applicationStatusRepository).createOrUpdate(eq(APP_ID), applicationRepositoryDocumentCaptor.capture(), eq("Olmsted"),
         eq(Status.DELIVERED_BY_EMAIL), eq("fileName.txt"));
     assertThat(applicationRepositoryDocumentCaptor.getAllValues())
         .containsExactlyInAnyOrder(UPLOADED_DOC, CCAP);
@@ -261,7 +259,7 @@ class ResubmissionServiceTest {
             "someDataUrl", "image/jpeg", "fileName.txt");
     var application = Application.builder().id(APP_ID).county(Olmsted)
         .applicationData(applicationData).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(
             List.of(new ApplicationStatus(APP_ID, UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName.txt")));
     when(applicationRepository.find(APP_ID)).thenReturn(application);
@@ -279,14 +277,14 @@ class ResubmissionServiceTest {
     verify(emailClient, never())
         .resubmitFailedEmail(DEFAULT_EMAIL, UPLOADED_DOC, uploadedDocWithCoverPageFile,
             application);
-    verify(documentStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, UPLOADED_DOC, "Olmsted",
         RESUBMISSION_FAILED, "fileName.txt");
   }
 
   @Test
   void shouldUpdateStatusToResubmissionFailedForUnknownCounty() {
     Application application = Application.builder().id(APP_ID).county(Anoka).build();
-    when(documentStatusRepository.getDocumentStatusToResubmit())
+    when(applicationStatusRepository.getDocumentStatusToResubmit())
         .thenReturn(List.of(
             new ApplicationStatus(APP_ID, CAF, "Anoka", DELIVERY_FAILED, ""),
             new ApplicationStatus(APP_ID, CAF, "Invalid County", DELIVERY_FAILED, ""),
@@ -299,9 +297,9 @@ class ResubmissionServiceTest {
 
     resubmissionService.resubmitFailedApplications();
 
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED_BY_EMAIL, "");
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Invalid County",
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Anoka", DELIVERED_BY_EMAIL, "");
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Invalid County",
         RESUBMISSION_FAILED, "");
-    verify(documentStatusRepository).createOrUpdate(APP_ID, CAF, "Olmsted", DELIVERED_BY_EMAIL, "");
+    verify(applicationStatusRepository).createOrUpdate(APP_ID, CAF, "Olmsted", DELIVERED_BY_EMAIL, "");
   }
 }

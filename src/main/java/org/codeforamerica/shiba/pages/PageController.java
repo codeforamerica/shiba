@@ -42,7 +42,7 @@ import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -118,7 +118,7 @@ public class PageController {
   private final RoutingDecisionService routingDecisionService;
   private final DocumentRepository documentRepository;
   private final RoutingDestinationMessageService routingDestinationMessageService;
-  private final DocumentStatusRepository documentStatusRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
 
   public PageController(
@@ -140,7 +140,7 @@ public class PageController {
       DocumentRepository documentRepository,
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
-      DocumentStatusRepository documentStatusRepository,
+      ApplicationStatusRepository applicationStatusRepository,
       EligibilityListBuilder listBuilder) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
@@ -160,7 +160,7 @@ public class PageController {
     this.documentRepository = documentRepository;
     this.applicationRepository = applicationRepository;
     this.routingDestinationMessageService = routingDestinationMessageService;
-    this.documentStatusRepository = documentStatusRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
   }
 
@@ -659,7 +659,7 @@ public class PageController {
       application.setCompletedAtTime(clock); // how we mark that the application is complete
       recordDeviceType(device, application);
       applicationRepository.save(application);
-      documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
+      applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
       log.info("Invoking pageEventPublisher for application submission: " + application.getId());
       pageEventPublisher.publish(
           new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
@@ -829,11 +829,11 @@ public class PageController {
     if (applicationData.getFlow() == LATER_DOCS) {
       application.setCompletedAtTime(clock);
     }
-    documentStatusRepository.getAndSetFileNames(application, UPLOADED_DOC);
+    applicationStatusRepository.getAndSetFileNames(application, UPLOADED_DOC);
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      documentStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
+      applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

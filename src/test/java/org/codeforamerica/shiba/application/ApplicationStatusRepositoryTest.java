@@ -16,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
@@ -35,7 +34,7 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  private DocumentStatusRepository documentStatusRepository;
+  private ApplicationStatusRepository applicationStatusRepository;
 
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
   private CountyMap<CountyRoutingDestination> countyMap;
@@ -53,7 +52,7 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         .build();
     countyMap.setDefaultValue(routingDestination);
     filenameGenerator = new FilenameGenerator(countyMap);
-    documentStatusRepository = new DocumentStatusRepository(jdbcTemplate,
+    applicationStatusRepository = new ApplicationStatusRepository(jdbcTemplate,
         routingDecisionService, filenameGenerator, pdfGenerator );
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
         any(Document.class)))
@@ -62,9 +61,9 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void createOrUpdateShouldCreateOrUpdateStatusesFromAnIdDocTypeDestinationAndStatus() {
-    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
-    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
-    assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
+    applicationStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
+    applicationStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
+    assertThat(applicationStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
         new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName")
     );
   }
@@ -82,40 +81,40 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
 
-    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
+    applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
+    List<ApplicationStatus> resultingStatuses = applicationStatusRepository.findAll(
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING,  documentStatusRepository.getAndSetFileNames(application,CAF).get(0)),
+            SENDING,  applicationStatusRepository.getAndSetFileNames(application,CAF).get(0)),
         new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING, documentStatusRepository.getAndSetFileNames(application,CERTAIN_POPS).get(0))
+            SENDING, applicationStatusRepository.getAndSetFileNames(application,CERTAIN_POPS).get(0))
     );
 
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("CCAP"));
-    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
+    applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
+    resultingStatuses = applicationStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING, documentStatusRepository.getAndSetFileNames(application,CCAP).get(0))
+            SENDING, applicationStatusRepository.getAndSetFileNames(application,CCAP).get(0))
     );
   }
 
   @Test
   void getApplicationStatusToResubmitShouldOnlyReturnFailedSubmissions() {
-    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED, "");
-    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED, "");
+    applicationStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED, "");
+    applicationStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED, "");
 
-    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName");
-    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING, "");
+    applicationStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName");
+    applicationStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING, "");
 
-    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING, "");
-    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING, "fileName");
+    applicationStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING, "");
+    applicationStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING, "fileName");
 
-    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "");
+    applicationStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "");
 
-    List<ApplicationStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
+    List<ApplicationStatus> failedApplications = applicationStatusRepository.getDocumentStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
         new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED, ""),
         new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName"),

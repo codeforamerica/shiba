@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -45,7 +45,7 @@ class AppsStuckSendingResubmissionTest {
   private ApplicationRepository applicationRepository;
 
   @Autowired
-  private DocumentStatusRepository documentStatusRepository;
+  private ApplicationStatusRepository applicationStatusRepository;
 
   @MockBean
   private PageEventPublisher pageEventPublisher;
@@ -158,13 +158,13 @@ class AppsStuckSendingResubmissionTest {
     applicationRepository.save(applicationStuckSending);
 
     // Save CAF
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         Document.CAF,
         "Anoka",
         SENDING,"");
 
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         UPLOADED_DOC,
         "Anoka",
@@ -197,19 +197,19 @@ class AppsStuckSendingResubmissionTest {
     applicationRepository.save(applicationStuckSending);
 
     // Save CAF
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         Document.CAF,
         "Anoka",
         SENDING,"");
 
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         UPLOADED_DOC,
         "Anoka",
         SENDING,"fileName");
     
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         UPLOADED_DOC,
         "Anoka",
@@ -239,7 +239,7 @@ class AppsStuckSendingResubmissionTest {
         .build();
     applicationRepository.save(sendingApplicationThatShouldBeCompleted);
 
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         Document.CAF,
         "Anoka",
@@ -268,7 +268,7 @@ class AppsStuckSendingResubmissionTest {
         .build();
     applicationRepository.save(sendingApplicationThatShouldBeCompleted);
 
-    documentStatusRepository.createOrUpdate(
+    applicationStatusRepository.createOrUpdate(
         applicationId,
         Document.CAF,
         "Anoka",

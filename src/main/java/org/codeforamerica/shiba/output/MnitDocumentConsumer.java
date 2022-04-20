@@ -18,7 +18,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
@@ -43,7 +43,7 @@ public class MnitDocumentConsumer {
   private final PdfGenerator pdfGenerator;
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
-  private final DocumentStatusRepository documentStatusRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final FilenetWebServiceClient mnitFilenetClient;
   private final FilenameGenerator filenameGenerator;
@@ -53,7 +53,7 @@ public class MnitDocumentConsumer {
       PdfGenerator pdfGenerator,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      DocumentStatusRepository documentStatusRepository,
+      ApplicationStatusRepository applicationStatusRepository,
       FeatureFlagConfiguration featureFlagConfiguration,
       FilenetWebServiceClient mnitFilenetClient,
       FilenameGenerator filenameGenerator) {
@@ -61,7 +61,7 @@ public class MnitDocumentConsumer {
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
-    this.documentStatusRepository = documentStatusRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
     this.emailClient = emailClient;
     this.featureFlagConfiguration = featureFlagConfiguration;
     this.mnitFilenetClient = mnitFilenetClient;
@@ -126,7 +126,7 @@ public class MnitDocumentConsumer {
     if (uploadedDocs.isEmpty()) {
       log.error(
           "There was an issue processing and delivering uploaded documents. Reach out to client to upload again.");
-      documentStatusRepository.createOrUpdateAllForDocumentType(application,
+      applicationStatusRepository.createOrUpdateAllForDocumentType(application,
           UNDELIVERABLE, UPLOADED_DOC);
       return;
     }
@@ -185,11 +185,11 @@ public class MnitDocumentConsumer {
 
     String id = application.getId();
     try {
-      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
+      applicationStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
           SENDING,applicationFile.getFileName());
       sendFile(application, documentType, applicationFile, routingDestination);
     } catch (Exception e) {
-      documentStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
+      applicationStatusRepository.createOrUpdate(id, documentType, routingDestination.getName(),
           DELIVERY_FAILED,applicationFile.getFileName());
       log.error("Failed to send document %s to recipient %s for application %s with error, "
           .formatted(documentType, routingDestination.getName(), id), e);

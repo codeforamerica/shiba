@@ -27,7 +27,7 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.codeforamerica.shiba.application.DocumentStatusRepository;
+import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.filenetwsdl.CmisContentStreamType;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertiesType;
@@ -65,7 +65,7 @@ public class FilenetWebServiceClient {
   private final String username;
   private final String password;
   private final String routerUrl;
-  private final DocumentStatusRepository documentStatusRepository;
+  private final ApplicationStatusRepository applicationStatusRepository;
 
   @Autowired
   private RestTemplate restTemplate;
@@ -77,13 +77,13 @@ public class FilenetWebServiceClient {
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
       @Value("${mnit-filenet.router-url}") String routerUrl,
-      DocumentStatusRepository documentStatusRepository) {
+      ApplicationStatusRepository applicationStatusRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
     this.routerUrl = routerUrl;
-    this.documentStatusRepository = documentStatusRepository;
+    this.applicationStatusRepository = applicationStatusRepository;
   }
 
   @Retryable(
@@ -168,7 +168,7 @@ public class FilenetWebServiceClient {
         throw new IllegalStateException(eMessage);
       }
 
-      documentStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+      applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
           routingDestination.getName(),
           DELIVERED,applicationFile.getFileName());
     } catch (Exception e) {
@@ -181,7 +181,7 @@ public class FilenetWebServiceClient {
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber, Document applicationDocument, FlowType flowType) {
-    documentStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+    applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
         routingDestination.getName(),
         DELIVERY_FAILED,applicationFile.getFileName());
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
