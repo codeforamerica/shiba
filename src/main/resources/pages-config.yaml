@@ -2115,32 +2115,29 @@ pageDefinitions:
       # Here are two approaches for certain pops unearned income:
 # These are the pages for unearned income defined separately. May not need to define each if we use the template householdSelectionForUnearnedIncome 
   - &socialSecurityIncomeSource
-      - condition:
+    name: socialSecurityIncomeSource
+    pageTitle: social-security-income-source.title
+    headerKey: social-security-income-source.who-receives
+    headerHelpMessageKey: social-security-income-source.you-can-select-more-than-one
+    contextFragment: medicalInOtherStateFragment
   - &supplementalSecurityIncomeSource
+    name: supplementalSecurityIncomeSource
+    pageTitle: supplemental-security-income-source.title
+    headerKey: supplemental-security-income-source.
+    headerHelpMessageKey: supplemental-security-income-source.
   - &veteransBenefitsIncomeSource
+    name: veteransBenefitsIncomeSource
+    pageTitle: veterans-benefits-income-source.title
+    headerKey: veterans-benefits-income-source.
+    headerHelpMessageKey: veterans-benefits-income-source.
+     
   - &unemploymentIncomeSource
+  
+  
   - &workersCompIncomeSource
   - &retirementIncomeSource
   - &childOrSpousalSupportIncomeSource
   - &tribalPaymentIncomeSource
-# New template for dynamically generated page that displays each person in household to assign unearned income for each person and source.
-  - &householdSelectionForUnearnedIncome
-    name: householdSelectionForUnearnedIncome
-    pageTitle: household-selection-for-unearned-income.title
-    headerKey: household-selection-for-unearned-income.who.recieves.income
-    helpMessageKey: household-selection-for-unearned-income.you.can.select.more
-    inputs:
-      - type: CUSTOM
-        name: whoReceivesUnearnedIncome
-        customInputFragment: householdOptionsRadios
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          datasources:
-            - pageName: unearnedIncome
-            - groupName: household
-          
 
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
@@ -3707,10 +3704,29 @@ workflow:
     pageConfiguration: *unearnedIncome
     nextPages:
       - pageName: unearnedIncomeSources
+        condition: *livesAlone?
+      - pageName: socialSecurityIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: SOCIAL_SECURITY
+          - *doesNotLiveAlone?
     datasources:
       - pageName: addHouseholdMembers
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+  socialSecurityIncomeSource:
+    pageConfiguration: *socialSecurityIncomeSource
     nextPages:
       - pageName: unearnedIncomeCcap
     skipCondition:
