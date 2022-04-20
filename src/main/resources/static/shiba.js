@@ -65,11 +65,7 @@ var hasError = (function() {
 						var errorMessageSpanID = $(span).attr('id');
 						// If the described by doesn't exist yet, set its value to empty string, otherwise use it's current value
 						var inputDescribedBy = $(inputIdWithHash).attr('aria-describedby');
-						if (inputDescribedBy) {
-							inputDescribedBy = " " + inputDescribedBy;
-						} else {
-							inputDescribedBy = "";
-						}
+						inputDescribedBy = inputDescribedBy ? " " + inputDescribedBy : "";
 						// Append the error spans id to the description which may or may not include a helper message id already
 						$(inputIdWithHash).attr('aria-describedby', errorMessageSpanID + inputDescribedBy);
 					});
