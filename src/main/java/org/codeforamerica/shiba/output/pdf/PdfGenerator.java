@@ -145,8 +145,9 @@ public class PdfGenerator implements FileGenerator {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
 
-      String filename =
-          fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension);
+      String filename = uploadedDocument.getSysFileName() == null
+          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension)
+          : uploadedDocument.getSysFileName();
       return new ApplicationFile(fileBytes, filename);
     }
     return null;

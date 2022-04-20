@@ -14,9 +14,12 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.AbstractRepositoryTest;
@@ -24,6 +27,7 @@ import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
@@ -34,14 +38,23 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
   private DocumentStatusRepository documentStatusRepository;
 
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
-  private RoutingDestination routingDestination;
+  private CountyMap<CountyRoutingDestination> countyMap;
+  @MockBean
+  private FilenameGenerator filenameGenerator;
+  private CountyRoutingDestination routingDestination;
+  @MockBean
+  private PdfGenerator pdfGenerator;
 
   @BeforeEach
   void setUp() {
-    documentStatusRepository = new DocumentStatusRepository(jdbcTemplate,
-        routingDecisionService);
-    routingDestination = CountyRoutingDestination.builder().county(Olmsted)
+    countyMap = new CountyMap<>();
+    routingDestination = CountyRoutingDestination.builder()
+        .county(Olmsted)
         .build();
+    countyMap.setDefaultValue(routingDestination);
+    filenameGenerator = new FilenameGenerator(countyMap);
+    documentStatusRepository = new DocumentStatusRepository(jdbcTemplate,
+        routingDecisionService, filenameGenerator, pdfGenerator );
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
         any(Document.class)))
         .thenReturn(List.of(routingDestination));
@@ -49,10 +62,10 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void createOrUpdateShouldCreateOrUpdateStatusesFromAnIdDocTypeDestinationAndStatus() {
-    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED);
-    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
+    documentStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
     assertThat(documentStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
-        new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED)
+        new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName")
     );
   }
 
@@ -74,9 +87,9 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
+            SENDING,  documentStatusRepository.getAndSetFileNames(application,CAF).get(0)),
         new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING)
+            SENDING, documentStatusRepository.getAndSetFileNames(application,CERTAIN_POPS).get(0))
     );
 
     new TestApplicationDataBuilder(applicationData)
@@ -85,67 +98,29 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
     resultingStatuses = documentStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING)
+            SENDING, documentStatusRepository.getAndSetFileNames(application,CCAP).get(0))
     );
   }
 
   @Test
   void getApplicationStatusToResubmitShouldOnlyReturnFailedSubmissions() {
-    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED);
-    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED);
+    documentStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED, "");
+    documentStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED, "");
 
-    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED);
-    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName");
+    documentStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING, "");
 
-    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING);
-    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING);
+    documentStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING, "");
+    documentStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING, "fileName");
 
-    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED);
+    documentStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "");
 
     List<ApplicationStatus> failedApplications = documentStatusRepository.getDocumentStatusToResubmit();
     assertThat(failedApplications).containsExactlyInAnyOrder(
-        new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED),
-        new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED),
-        new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED)
+        new ApplicationStatus("someId1", CAF, "Olmsted", DELIVERY_FAILED, ""),
+        new ApplicationStatus("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName"),
+        new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "")
     );
   }
-
-  @Test
-  void deleteApplicationStatusesNoLongerUsed() {
-    ApplicationData applicationData = new TestApplicationDataBuilder()
-        .base()
-        .withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"))
-        .build();
-    Application application = Application.builder()
-        .id(applicationData.getId())
-        .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
-        .applicationData(applicationData)
-        .county(Olmsted)
-        .build();
-    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<ApplicationStatus> resultingStatuses = documentStatusRepository.findAll(
-        applicationData.getId());
-    assertThat(resultingStatuses).containsExactlyInAnyOrder(
-        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
-        new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING)
-    );
-
-    ApplicationData applicationData2 = new TestApplicationDataBuilder()
-        .base()
-        .withApplicantPrograms(List.of("SNAP", "CCAP"))
-        .build();
-
-    application.setApplicationData(applicationData2);
-    documentStatusRepository.createOrUpdateApplicationType(application, SENDING);
-    List<ApplicationStatus> resultingStatuses2 = documentStatusRepository.findAll(
-        applicationData.getId());
-    assertThat(resultingStatuses2).containsExactlyInAnyOrder(
-        new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING),
-        new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING)
-    );
-  }
+  
 }

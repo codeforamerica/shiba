@@ -350,9 +350,9 @@ class MnitDocumentConsumerTest {
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
     verify(documentStatusRepository).createOrUpdate(application.getId(),
-        CAF, routingDestination.getName(), SENDING);
+        CAF, routingDestination.getName(), SENDING,null);
     verify(documentStatusRepository).createOrUpdate(application.getId(),
-        CCAP, routingDestination.getName(), SENDING);
+        CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
   }
 
   @Test
@@ -372,12 +372,12 @@ class MnitDocumentConsumerTest {
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
     verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
-        CCAP, routingDestination.getName(), SENDING);
+        CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
     verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
-        CAF, routingDestination.getName(), SENDING);
+        CAF, routingDestination.getName(), SENDING,null);
     verify(documentStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
         application.getId(),
-        CCAP, routingDestination.getName(), DELIVERY_FAILED);
+        CCAP, routingDestination.getName(), DELIVERY_FAILED,"someFile.pdf");
   }
 
   @Test
@@ -399,10 +399,10 @@ class MnitDocumentConsumerTest {
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
     verify(documentStatusRepository, times(1)).createOrUpdate(application.getId(),
-        UPLOADED_DOC, routingDestination.getName(), SENDING);
+        UPLOADED_DOC, routingDestination.getName(), SENDING,null);
     verify(documentStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
         application.getId(),
-        UPLOADED_DOC, routingDestination.getName(), DELIVERY_FAILED);
+        UPLOADED_DOC, routingDestination.getName(), DELIVERY_FAILED,null);
   }
 
   @Test
@@ -535,8 +535,8 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(documentStatusRepository, times(2)).createOrUpdate(application.getId(),
-        UPLOADED_DOC, routingDestination.getName(), SENDING);
+    verify(documentStatusRepository,times(2)).createOrUpdate(application.getId(),
+        UPLOADED_DOC, routingDestination.getName(), SENDING,null);
   }
 
   @Test
@@ -546,7 +546,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     verify(documentStatusRepository).createOrUpdateAllForDocumentType(
-        application.getApplicationData(), UNDELIVERABLE, UPLOADED_DOC);
+        application, UNDELIVERABLE, UPLOADED_DOC);
   }
 
   private void mockDocUpload(String uploadedDocFilename, String s3filepath, String contentType,

@@ -160,7 +160,7 @@ class FilenetWebServiceClientTest {
     );
 
     verify(documentStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
-        DELIVERED);
+        DELIVERED,fileName);
 
     mockWebServiceServer.verify();
   }

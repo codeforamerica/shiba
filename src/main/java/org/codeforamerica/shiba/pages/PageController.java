@@ -829,11 +829,11 @@ public class PageController {
     if (applicationData.getFlow() == LATER_DOCS) {
       application.setCompletedAtTime(clock);
     }
+    documentStatusRepository.getAndSetFileNames(application, UPLOADED_DOC);
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      documentStatusRepository.createOrUpdateAllForDocumentType(applicationData, SENDING,
-          UPLOADED_DOC);
+      documentStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

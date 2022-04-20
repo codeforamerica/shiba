@@ -15,7 +15,6 @@ import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,9 @@ import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.DocumentStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -38,9 +40,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-
 @SpringBootTest
 @ActiveProfiles("test")
 // drop all applications and application statuses before this test runs to avoid test pollution
@@ -62,6 +64,15 @@ class AppsWithBlankStatusResubmissionTest {
   @MockBean
   private FeatureFlagConfiguration featureFlagConfiguration;
 
+  @MockBean
+  private ClientRegistrationRepository repository;
+  
+  @MockBean
+  private DocumentRepository documentRepository;
+  
+  @MockBean
+  private PdfGenerator pdfGenerator;
+  
   private final ZonedDateTime moreThan60DaysAgo = now().withFixedOffsetZone().minusDays(60)
       .minusNanos(1);
   private final ZonedDateTime tenHoursAgo = now().withFixedOffsetZone().minusHours(10);
@@ -148,17 +159,28 @@ class AppsWithBlankStatusResubmissionTest {
         Hennepin, moreThan60DaysAgo, true).getId();
 
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-
+    List<String> appWithUploadedDocsOlderThan60DaysFilename = documentStatusRepository.getAndSetFileNames(makeBlankStatusApplication("48",
+        Hennepin, moreThan60DaysAgo),CAF);
+    List<String> appWithUploadedDocsOlderThan60DaysFileNames = documentStatusRepository.getAndSetFileNames(makeBlankStatusApplication("48",
+        Hennepin, moreThan60DaysAgo),UPLOADED_DOC);
+    List<String> laterDocsSubmissionOlderThan60DaysFileNames = documentStatusRepository.getAndSetFileNames(makeBlankStatusLaterDocApplication("51",
+        Hennepin, moreThan60DaysAgo, true),UPLOADED_DOC);
+    
     assertThat(documentStatusRepository.findAll(
         appWithUploadedDocsOlderThan60Days)).containsExactlyInAnyOrder(
-        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING),
+        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING, appWithUploadedDocsOlderThan60DaysFilename.get(0)),
         new ApplicationStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE)
+            Status.UNDELIVERABLE,appWithUploadedDocsOlderThan60DaysFileNames.get(0)),
+        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
+            Status.UNDELIVERABLE,appWithUploadedDocsOlderThan60DaysFileNames.get(1))
     );
     assertThat(documentStatusRepository.findAll(
         laterDocsSubmissionOlderThan60Days)).containsExactlyInAnyOrder(
         new ApplicationStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE)
+            Status.UNDELIVERABLE,laterDocsSubmissionOlderThan60DaysFileNames.get(0)),
+        new ApplicationStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
+            Status.UNDELIVERABLE,laterDocsSubmissionOlderThan60DaysFileNames.get(1))
+
     );
   }
 
@@ -171,15 +193,17 @@ class AppsWithBlankStatusResubmissionTest {
     Application laterDocsWithDocuments = makeBlankStatusLaterDocApplication("61", Hennepin,
         now().minusMinutes(5), true);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+    List<String> laterDocsWithoutDocumentsFileNames = documentStatusRepository.getAndSetFileNames(laterDocsWithoutDocuments, UPLOADED_DOC);
+    List<String> laterDocsWithDocumentsFileNames = documentStatusRepository.getAndSetFileNames(laterDocsWithDocuments, UPLOADED_DOC);
     assertThat(documentStatusRepository.findAll(laterDocsWithDocuments.getId())).contains(
-        new ApplicationStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING)
+        new ApplicationStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING,laterDocsWithDocumentsFileNames.get(0))
     );
     verify(pageEventPublisher).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocuments.getId(),
             LocaleContextHolder.getLocale()));
     assertThat(documentStatusRepository.findAll(laterDocsWithoutDocuments.getId())).contains(
         new ApplicationStatus(laterDocsWithoutDocuments.getId(), UPLOADED_DOC, "Hennepin",
-            UNDELIVERABLE)
+            UNDELIVERABLE,laterDocsWithoutDocumentsFileNames.get(0))
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithoutDocuments.getId(),
@@ -196,9 +220,10 @@ class AppsWithBlankStatusResubmissionTest {
         .forEach(doc -> doc.setSize(0));
     applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
+    List<String> laterDocsWithDocsOfSize0BytesFileNames = documentStatusRepository.getAndSetFileNames(laterDocsWithDocsOfSize0Bytes, UPLOADED_DOC);
     assertThat(documentStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
         new ApplicationStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
-            UNDELIVERABLE)
+            UNDELIVERABLE,laterDocsWithDocsOfSize0BytesFileNames.get(0))
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocsOfSize0Bytes.getId(),
@@ -299,7 +324,7 @@ class AppsWithBlankStatusResubmissionTest {
         applicationId,
         CAF,
         "Anoka",
-        SENDING);
+        SENDING,"");
 
     return applicationThatShouldNotBeResubmitted;
   }

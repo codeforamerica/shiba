@@ -160,6 +160,14 @@ public class ApplicationData implements Serializable {
         thumbnailFilepath, type, file.getSize());
     uploadedDocs.add(uploadedDocument);
   }
+  
+  public void addUploadedDoc(MultipartFile file, String s3Filepath, String thumbnailFilepath,
+      String type, String sysFileName) {
+    UploadedDocument uploadedDocument = new UploadedDocument(file.getOriginalFilename(),
+        s3Filepath,
+        thumbnailFilepath, type, file.getSize(), sysFileName);
+    uploadedDocs.add(uploadedDocument);
+  }
 
   public void removeUploadedDoc(String fileToDelete) {
     UploadedDocument toRemove = uploadedDocs.stream()

@@ -12,4 +12,5 @@ public class ApplicationStatus {
   private Document documentType;
   private String routingDestinationName;
   private Status status;
+  private String documentName;
 }

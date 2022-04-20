@@ -88,6 +88,7 @@ public class ResubmissionService {
       MDC.put("applicationId", id);
       Document document = applicationStatus.getDocumentType();
       String routingDestinationName = applicationStatus.getRoutingDestinationName();
+      String documentName = applicationStatus.getDocumentName();
       log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
           + " for application id " + id);
       try {
@@ -96,18 +97,18 @@ public class ResubmissionService {
             routingDestinationName);
         if (document == UPLOADED_DOC) {
           resubmitUploadedDocumentsForApplication(document, application,
-              routingDestination.getEmail());
+              routingDestination.getEmail(), documentName);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
-        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL);
+        documentStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
       } catch (Exception e) {
         log.error("Failed to resubmit application %s via email".formatted(id), e);
         documentStatusRepository.createOrUpdate(id, document, routingDestinationName,
-            RESUBMISSION_FAILED);
+            RESUBMISSION_FAILED, documentName);
       }
     });
     MDC.clear();
@@ -171,7 +172,7 @@ public class ResubmissionService {
 
       if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
           .getUploadedDocs().isEmpty()) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+        documentStatusRepository.createOrUpdateAllForDocumentType(application,
             SENDING, UPLOADED_DOC);
       }
 
@@ -226,13 +227,13 @@ public class ResubmissionService {
     if (application.getApplicationData().getUploadedDocs().isEmpty() ||
         application.getApplicationData().getUploadedDocs().stream()
             .allMatch(uploadedDocument -> uploadedDocument.getSize() == 0)) {
-      documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+      documentStatusRepository.createOrUpdateAllForDocumentType(application,
           UNDELIVERABLE, UPLOADED_DOC);
     } else {
       // Docs older than 60 days cannot be delivered due to retention policy
       ZonedDateTime sixtyDaysAgo = ZonedDateTime.now().minus(Duration.ofDays(60));
       if (application.getCompletedAt().isBefore(sixtyDaysAgo)) {
-        documentStatusRepository.createOrUpdateAllForDocumentType(application.getApplicationData(),
+        documentStatusRepository.createOrUpdateAllForDocumentType(application,
             UNDELIVERABLE, UPLOADED_DOC);
       } else {
         log.info("Retriggering UploadedDocumentsSubmittedEvent for application with id " + id);
@@ -244,20 +245,19 @@ public class ResubmissionService {
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
-      String recipientEmail) {
+      String recipientEmail, String documentName) {
     var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
-    for (int i = 0; i < uploadedDocs.size(); i++) {
-      UploadedDocument uploadedDocument = uploadedDocs.get(i);
-      ApplicationFile fileToSend = pdfGenerator
-          .generateForUploadedDocument(uploadedDocument, i, application, coverPage);
-      var esbFilename = fileToSend.getFileName();
-      var originalFilename = uploadedDocument.getFilename();
-
-      log.info("Resubmitting uploaded doc: %s original filename: %s"
-          .formatted(esbFilename, originalFilename));
-      emailClient.resubmitFailedEmail(recipientEmail, document, fileToSend, application);
-      log.info("Finished resubmitting document %s".formatted(esbFilename));
-    }
+    var failedDoc = uploadedDocs.stream()
+        .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName))
+        .collect(Collectors.toList());
+    ApplicationFile fileToSend =
+        pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage);
+    var esbFilename = fileToSend.getFileName();
+    var originalFilename = failedDoc.get(0).getFilename();
+    log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(esbFilename,
+        originalFilename));
+    emailClient.resubmitFailedEmail(recipientEmail, document, fileToSend, application);
+    log.info("Finished resubmitting document %s".formatted(esbFilename));
   }
 }

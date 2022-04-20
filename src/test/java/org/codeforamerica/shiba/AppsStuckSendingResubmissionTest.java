@@ -111,6 +111,28 @@ class AppsStuckSendingResubmissionTest {
         new UploadedDocumentsSubmittedEvent("resubmission", applicationIdThatWasDelivered,
             LocaleContextHolder.getLocale()));
   }
+  
+  @Test
+  void itTriggersAnEventForAppsStuckSendingWdTwoUploadDocs() {
+   
+      makeApplicationThatShouldBeResubmittedWithTwoDocs(1);
+
+    // actually try to resubmit it
+    resubmissionService.republishApplicationsInSendingStatus();
+
+    // make sure that the first 50 applications had an applicationSubmittedEvent triggered
+   
+      verify(pageEventPublisher).publish(
+          new ApplicationSubmittedEvent("resubmission", String.valueOf(1), FlowType.FULL,
+              LocaleContextHolder.getLocale()));
+      verify(pageEventPublisher).publish(
+          new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(1),
+              LocaleContextHolder.getLocale()));
+      verify(pageEventPublisher).publish(
+          new UploadedDocumentsSubmittedEvent("resubmission", String.valueOf(1),
+              LocaleContextHolder.getLocale()));
+  }
+
 
   @NotNull
   private String makeApplicationThatShouldBeResubmitted(int id) {
@@ -140,13 +162,58 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        SENDING);
+        SENDING,"");
 
     documentStatusRepository.createOrUpdate(
         applicationId,
         UPLOADED_DOC,
         "Anoka",
-        SENDING);
+        SENDING,"fileName");
+
+    return applicationId;
+  }
+  
+  @NotNull
+  private String makeApplicationThatShouldBeResubmittedWithTwoDocs(int id) {
+    String applicationId = String.valueOf(id);
+
+    ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
+    applicationData.setPagesData(new PagesDataBuilder()
+        .withPageData("contactInfo", Map.of(
+            "email", List.of("test@example.com"),
+            "phoneOrEmail", List.of("EMAIL")))
+        .withPageData("employmentStatus", "areYouWorking", "true")
+        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .build());
+
+    Application applicationStuckSending = Application.builder()
+        .completedAt(now().minusHours(10)) // outside of 8hr window and should be resubmitted
+        .county(Anoka)
+        .id(applicationId)
+        .applicationData(applicationData)
+        .docUploadEmailStatus(null)
+        .flow(FlowType.FULL)
+        .build();
+    applicationRepository.save(applicationStuckSending);
+
+    // Save CAF
+    documentStatusRepository.createOrUpdate(
+        applicationId,
+        Document.CAF,
+        "Anoka",
+        SENDING,"");
+
+    documentStatusRepository.createOrUpdate(
+        applicationId,
+        UPLOADED_DOC,
+        "Anoka",
+        SENDING,"fileName");
+    
+    documentStatusRepository.createOrUpdate(
+        applicationId,
+        UPLOADED_DOC,
+        "Anoka",
+        SENDING,"fileName1");
 
     return applicationId;
   }
@@ -176,7 +243,7 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        SENDING);
+        SENDING,"");
     return applicationId;
   }
 
@@ -205,7 +272,7 @@ class AppsStuckSendingResubmissionTest {
         applicationId,
         Document.CAF,
         "Anoka",
-        DELIVERED);
+        DELIVERED,"");
     return applicationId;
   }
 }
