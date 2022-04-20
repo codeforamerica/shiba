@@ -2112,6 +2112,36 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
+      # Here are two approaches for certain pops unearned income:
+# These are the pages for unearned income defined separately. May not need to define each if we use the template householdSelectionForUnearnedIncome 
+  - &socialSecurityIncomeSource
+      - condition:
+  - &supplementalSecurityIncomeSource
+  - &veteransBenefitsIncomeSource
+  - &unemploymentIncomeSource
+  - &workersCompIncomeSource
+  - &retirementIncomeSource
+  - &childOrSpousalSupportIncomeSource
+  - &tribalPaymentIncomeSource
+# New template for dynamically generated page that displays each person in household to assign unearned income for each person and source.
+  - &householdSelectionForUnearnedIncome
+    name: householdSelectionForUnearnedIncome
+    pageTitle: household-selection-for-unearned-income.title
+    headerKey: household-selection-for-unearned-income.who.recieves.income
+    helpMessageKey: household-selection-for-unearned-income.you.can.select.more
+    inputs:
+      - type: CUSTOM
+        name: whoReceivesUnearnedIncome
+        customInputFragment: householdOptionsRadios
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          datasources:
+            - pageName: unearnedIncome
+            - groupName: household
+          
+
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
