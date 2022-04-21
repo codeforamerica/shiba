@@ -38,8 +38,6 @@ public class ApplicationDataParser {
         new ParsingCoordinate("selfEmployment", "selfEmployment"));
     coordinatesMap.put(Field.WHOSE_JOB_IS_IT,
         new ParsingCoordinate("householdSelectionForIncome", "whoseJobIsIt"));
-    coordinatesMap.put(Field.WHO_RECEIVES_UNEARNED_INCOME,
-            new ParsingCoordinate("householdSelectionForUnearnedIncome", "whoReceivesUnearnedIncome"));    //TODO emj new coordinate
     coordinatesMap.put(Field.EMPLOYERS_NAME,
         new ParsingCoordinate("employersName", "employersName"));
     coordinatesMap.put(Field.ARE_YOU_WORKING,
@@ -300,7 +298,7 @@ public class ApplicationDataParser {
     WHO_IS_GOING_TO_SCHOOL,
     IS_LOOKING_FOR_JOB,
     WHO_IS_LOOKING_FOR_A_JOB,
-    WHO_RECEIVES_UNEARNED_INCOME,
+
     UNEARNED_INCOME,
     UNEARNED_INCOME_CCAP,
     HOME_EXPENSES,

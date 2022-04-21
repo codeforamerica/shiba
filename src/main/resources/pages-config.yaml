@@ -2112,33 +2112,121 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
-      # Here are two approaches for certain pops unearned income:
-# These are the pages for unearned income defined separately. May not need to define each if we use the template householdSelectionForUnearnedIncome 
+
+# These are the pages for unearned income defined separately. 
   - &socialSecurityIncomeSource
     name: socialSecurityIncomeSource
-    pageTitle: social-security-income-source.title
+    pageTitle: unearned-income-source.title
     headerKey: social-security-income-source.who-receives
-    headerHelpMessageKey: social-security-income-source.you-can-select-more-than-one
-    contextFragment: medicalInOtherStateFragment
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeSSorRSDI
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &supplementalSecurityIncomeSource
     name: supplementalSecurityIncomeSource
-    pageTitle: supplemental-security-income-source.title
-    headerKey: supplemental-security-income-source.
-    headerHelpMessageKey: supplemental-security-income-source.
+    pageTitle: unearned-income-source.title
+    headerKey: supplemental-security-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeSSI
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &veteransBenefitsIncomeSource
     name: veteransBenefitsIncomeSource
-    pageTitle: veterans-benefits-income-source.title
-    headerKey: veterans-benefits-income-source.
-    headerHelpMessageKey: veterans-benefits-income-source.
-     
+    pageTitle: unearned-income-source.title
+    headerKey: veterans-benefits-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeVeteransBenefits
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &unemploymentIncomeSource
-  
-  
+    name: unemploymentIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: unemployment-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeUnemployment
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &workersCompIncomeSource
+    name: workersCompIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: workers-comp-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeWorkersComp
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &retirementIncomeSource
+    name: retirementIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: retirement-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeRetirement
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &childOrSpousalSupportIncomeSource
+    name: childOrSpousalSupportIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: child-or-spousal-support-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeChildSpousalSupport
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &tribalPaymentIncomeSource
-
+    name: tribalPaymentIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: tribal-payment-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: authorizedRepContextFragment
+    inputs:
+      - type: CUSTOM
+        name: unearnedIncomeSSorRSDI
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+# End of unearned income source pages
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
@@ -3700,6 +3788,7 @@ workflow:
     pageConfiguration: *incomeUpNext
     nextPages:
       - pageName: unearnedIncome
+# work flows for unearned income
   unearnedIncome:
     pageConfiguration: *unearnedIncome
     nextPages:
@@ -3713,6 +3802,62 @@ workflow:
             input: unearnedIncome
             value: SOCIAL_SECURITY
           - *doesNotLiveAlone?
+      - pageName: supplementalSecurityIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: SSI
+          - *doesNotLiveAlone?
+      - pageName: veteransBenefitsIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: VETERANS_BENEFITS
+          - *doesNotLiveAlone?
+      - pageName: unemploymentIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: UNEMPLOYMENT
+          - *doesNotLiveAlone?
+      - pageName: workersCompIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: WORKERS_COMPENSATION
+          - *doesNotLiveAlone?
+      - pageName: retirementIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: RETIREMENT
+          - *doesNotLiveAlone?
+      - pageName: childOrSpousalSupportIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: CHILD_OR_SPOUSAL_SUPPORT
+          - *doesNotLiveAlone?
+      - pageName: tribalPaymentIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: TRIBAL_PAYMENTS
+          - *doesNotLiveAlone?
     datasources:
       - pageName: addHouseholdMembers
   unearnedIncomeSources:
@@ -3725,8 +3870,31 @@ workflow:
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+# socialSecurityIncomeSource
   socialSecurityIncomeSource:
     pageConfiguration: *socialSecurityIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# supplementalSecurityIncomeSource
+  supplementalSecurityIncomeSource:
+    pageConfiguration: *supplementalSecurityIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# veteransBenefitsIncomeSource
+  veteransBenefitsIncomeSource:
+    pageConfiguration: *veteransBenefitsIncomeSource
     nextPages:
       - pageName: unearnedIncomeCcap
     skipCondition:
