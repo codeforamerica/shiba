@@ -3789,11 +3789,20 @@ workflow:
     nextPages:
       - pageName: unearnedIncome
 # work flows for unearned income
+# ORIGINAL: 
+#  unearnedIncome:
+#    pageConfiguration: *unearnedIncome
+#    nextPages:
+#      - pageName: unearnedIncomeSources
+#    datasources:
+#      - pageName: addHouseholdMembers
   unearnedIncome:
     pageConfiguration: *unearnedIncome
     nextPages:
       - pageName: unearnedIncomeSources
         condition: *livesAlone?
+      - pageName: additionalIncomeInfo
+        condition: *noUnearnedIncomeSelected?
       - pageName: socialSecurityIncomeSource
         condition:
           logicalOperator: AND
@@ -3895,6 +3904,61 @@ workflow:
 # veteransBenefitsIncomeSource
   veteransBenefitsIncomeSource:
     pageConfiguration: *veteransBenefitsIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# unemploymentIncomeSource
+  unemploymentIncomeSource:
+    pageConfiguration: *unemploymentIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# workersCompIncomeSource
+  workersCompIncomeSource:
+    pageConfiguration: *workersCompIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# retirementIncomeSource
+  retirementIncomeSource:
+    pageConfiguration: *retirementIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# childOrSpousalSupportIncomeSource
+  childOrSpousalSupportIncomeSource:
+    pageConfiguration: *childOrSpousalSupportIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      conditions:
+        - *noUnearnedIncomeSelected?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+# tribalPaymentIncomeSource
+  tribalPaymentIncomeSource:
+    pageConfiguration: *tribalPaymentIncomeSource
     nextPages:
       - pageName: unearnedIncomeCcap
     skipCondition:
