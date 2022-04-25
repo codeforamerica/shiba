@@ -48,8 +48,13 @@ public class SessionLogFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     HttpServletRequest httpReq = (HttpServletRequest) request;
+
+    // Don't create a new session in logging and create a "unique" id for expired sessions for tracking
+    String sessionId = httpReq.getSession(false) != null ?
+            httpReq.getSession(false).getId() :  "expired : " + System.currentTimeMillis();
+
     MDC.put("url", String.valueOf(httpReq.getRequestURL()));
-    MDC.put("sessionId", httpReq.getSession().getId());
+    MDC.put("sessionId", sessionId);
     MDC.put("ip", createRequestIp(httpReq));
     if (applicationData != null && applicationData.getId() != null) {
       monitoringService.setApplicationId(applicationData.getId());
@@ -62,7 +67,7 @@ public class SessionLogFilter implements Filter {
       MDC.remove("admin");
     }
     log.info(httpReq.getMethod() + " " + httpReq.getRequestURI());
-    monitoringService.setSessionId(httpReq.getSession().getId());
+    monitoringService.setSessionId(sessionId);
 
     chain.doFilter(request, response);
     MDC.clear();
