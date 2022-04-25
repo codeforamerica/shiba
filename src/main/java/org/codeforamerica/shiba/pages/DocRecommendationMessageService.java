@@ -95,29 +95,24 @@ public class DocRecommendationMessageService {
       LocaleSpecificMessageSource lms) {
     List<DocumentRecommendation> recommendationMessages = new ArrayList<>();
     recommendations.forEach(recommendation -> {
-      DocumentRecommendation docRec;
-
       switch (recommendation) {
         case proofOfIncome -> {
-          docRec = new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort),
-              lms.getMessage(proofOfIncomeTextShort));
-          recommendationMessages.add(docRec);
+          recommendationMessages.add(new DocumentRecommendation(lms.getMessage(proofOfIncomeTitleShort),
+              lms.getMessage(proofOfIncomeTextShort)));
         }
         case proofOfHousingCost -> {
-          docRec = new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort),
-              lms.getMessage(proofOfHousingCostTextShort));
-          recommendationMessages.add(docRec);
+          recommendationMessages.add(new DocumentRecommendation(lms.getMessage(proofOfHousingCostTitleShort),
+              lms.getMessage(proofOfHousingCostTextShort)));
         }
         case proofOfJobLoss -> {
-          docRec = new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort),
-              lms.getMessage(proofOfJobLossTextShort));
-          recommendationMessages.add(docRec);
+          recommendationMessages.add(new DocumentRecommendation(lms.getMessage(proofOfJobLossTitleShort),
+              lms.getMessage(proofOfJobLossTextShort)));
         }
         case proofOfMedicalExpenses -> {
-          docRec = new DocumentRecommendation(lms.getMessage(proofOfMedicalExpensesTitleShort),
-              lms.getMessage(proofOfMedicalExpensesTextShort));
-          recommendationMessages.add(docRec);
+          recommendationMessages.add(new DocumentRecommendation(lms.getMessage(proofOfMedicalExpensesTitleShort),
+              lms.getMessage(proofOfMedicalExpensesTextShort)));
         }
+        default -> System.out.println("No document recommendations");
       }
     });
 
