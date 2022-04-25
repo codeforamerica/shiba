@@ -8,6 +8,9 @@ exclude_patterns = ["**/dropzone.js"]
 name = "javascript"
 enabled = true
 
+  [analyzers.meta]
+  environment = ["jquery"]
+
 [[analyzers]]
 name = "java"
 enabled = true

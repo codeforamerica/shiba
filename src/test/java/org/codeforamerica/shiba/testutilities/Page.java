@@ -81,8 +81,8 @@ public class Page {
               enterInput(firstElement, value);
             }
           }
-          case number, tel -> enterInput(firstElement, value);
           case radio, checkbox -> selectEnumeratedInput(formInputElements, value);
+          default -> enterInput(firstElement, value);
         }
       }
       default -> throw new IllegalArgumentException("Cannot find element");
@@ -254,11 +254,12 @@ public class Page {
   }
 
   public String getInputAriaLabelledBy(String inputName) {
-	return getInputAriaLabelledBy("input", inputName);
+    return getInputAriaLabelledBy("input", inputName);
   }
 
   public String getInputAriaLabelledBy(String elementType, String elementName) {
-    return driver.findElement(By.cssSelector(String.format("%s[name='%s[]']", elementType, elementName)))
+    return driver.findElement(
+            By.cssSelector(String.format("%s[name='%s[]']", elementType, elementName)))
         .getAttribute("aria-labelledby");
   }
 
@@ -269,16 +270,16 @@ public class Page {
   public WebElement findElementById(String id) {
     return driver.findElementById(id);
   }
-  
+
   public boolean elementDoesNotExistById(String id) {
-	try {
-		driver.findElement(By.id(id));
-		return false;//element found, it does exist so return false
-	} catch (org.openqa.selenium.NoSuchElementException e) {
-		return true;//element not found, it does not exist
-	}
+    try {
+      driver.findElement(By.id(id));
+      return false;//element found, it does exist so return false
+    } catch (org.openqa.selenium.NoSuchElementException e) {
+      return true;//element not found, it does not exist
+    }
   }
-  
+
 
   public void clickElementById(String id) {
     WebElement inputToSelect = driver.findElementById(id);
