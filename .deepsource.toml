@@ -20,4 +20,4 @@ enabled = true
 
 [[transformers]]
 name = "google-java-format"
-enabled = true
+enabled = false
