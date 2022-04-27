@@ -183,17 +183,12 @@ public class PageController {
   }
 
   @GetMapping("/errorTimeout")
-  ModelAndView getErrorTimeout(@CookieValue(value = "mnbenefits-appl-id", defaultValue = "") String submittedAppId) {
-
-    var mav = new ModelAndView();
-
+  String getErrorTimeout(@CookieValue(value = "mnbenefits-appl-id", defaultValue = "") String submittedAppId) {
     if (submittedAppId.length() == 0) {
-      mav.setViewName("errorSessionTimeout");
+      return "errorSessionTimeout";
     } else {
-      mav.setViewName("errorUploadTimeout");
+      return "errorUploadTimeout";
     }
-    return mav;
-
   }
 
   @GetMapping("/pages/{pageName}/navigation")
