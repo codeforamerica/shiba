@@ -3883,21 +3883,33 @@ workflow:
   socialSecurityIncomeSource:
     pageConfiguration: *socialSecurityIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: supplementalSecurityIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: SOCIAL_SECURITY
     datasources:
       - pageName: unearnedIncome
+        groupName: unearnedIncomeGroup
       - pageName: addHouseholdMembers
+        
 # supplementalSecurityIncomeSource
   supplementalSecurityIncomeSource:
     pageConfiguration: *supplementalSecurityIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: veteransBenefitsIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: SSI
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3905,10 +3917,15 @@ workflow:
   veteransBenefitsIncomeSource:
     pageConfiguration: *veteransBenefitsIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: unemploymentIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: VETERANS_BENEFITS
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3916,10 +3933,15 @@ workflow:
   unemploymentIncomeSource:
     pageConfiguration: *unemploymentIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: workersCompIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: UNEMPLOYMENT
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3927,10 +3949,15 @@ workflow:
   workersCompIncomeSource:
     pageConfiguration: *workersCompIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: retirementIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: WORKERS_COMPENSATION
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3938,10 +3965,15 @@ workflow:
   retirementIncomeSource:
     pageConfiguration: *retirementIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: childOrSpousalSupportIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: RETIREMENT
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3949,10 +3981,15 @@ workflow:
   childOrSpousalSupportIncomeSource:
     pageConfiguration: *childOrSpousalSupportIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: tribalPaymentIncomeSource
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: CHILD_OR_SPOUSAL_SUPPORT
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -3962,8 +3999,13 @@ workflow:
     nextPages:
       - pageName: unearnedIncomeCcap
     skipCondition:
+      logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: TRIBAL_PAYMENTS
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
@@ -4552,6 +4594,31 @@ pageGroups:
     deleteWarningPage: householdDeleteWarningPage
     restartPage: addHouseholdMembers
     startingCount: 1
+  unearnedIncomeGroup:
+    startPages:
+      - unearnedIncome
+      - socialSecurityIncomeSource
+      - supplementalSecurityIncomeSource
+      - veteransBenefitsIncomeSource
+      - unemploymentIncomeSource
+      - workersCompIncomeSource
+      - retirementIncomeSource
+      - childOrSpoucalSupportIncomeSource
+      - tribalPaymentIncomeSource
+    completePages:
+      - unearnedIncome
+      - unearnedIncome
+      - socialSecurityIncomeSource
+      - supplementalSecurityIncomeSource
+      - veteransBenefitsIncomeSource
+      - unemploymentIncomeSource
+      - workersCompIncomeSource
+      - retirementIncomeSource
+      - childOrSpoucalSupportIncomeSource
+      - tribalPaymentIncomeSource
+    reviewPage: householdList #TODO emj create a review page?
+    deleteWarningPage: householdDeleteWarningPage #TODO create a delete page?
+    restartPage: unearnedIncome
 landmarkPages:
   startTimerPages: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
