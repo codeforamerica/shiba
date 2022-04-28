@@ -53,16 +53,7 @@ class FilenameGeneratorTest {
   private Map<String, TribalNationRoutingDestination> tribalNations;
   private CountyRoutingDestination defaultCountyRoutingDestination;
   
-  UtilityDeductionCalculator mockUtilityDeductionCalculator = mock(
-      UtilityDeductionCalculator.class);
-  GrossMonthlyIncomeParser grossMonthlyIncomeParser = mock(GrossMonthlyIncomeParser.class);
-  TotalIncomeCalculator totalIncomeCalculator = mock(TotalIncomeCalculator.class);
-  UnearnedIncomeCalculator unearnedIncomeCalculator = mock(UnearnedIncomeCalculator.class);
-  
-  SnapExpeditedEligibilityDecider decider = new SnapExpeditedEligibilityDecider(
-      mockUtilityDeductionCalculator, totalIncomeCalculator, grossMonthlyIncomeParser,
-      unearnedIncomeCalculator
-  );
+  SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
   
   @BeforeEach
   void setUp() {
@@ -79,7 +70,7 @@ class FilenameGeneratorTest {
         .id("defaultId")
         .applicationData(applicationData)
         .completedAt(ZonedDateTime.now(ZoneOffset.UTC));
-    filenameGenerator = new FilenameGenerator(countyMap);
+    filenameGenerator = new FilenameGenerator(countyMap, decider);
   }
 
   @Test
@@ -327,22 +318,7 @@ class FilenameGeneratorTest {
   @Test
   void shouldAppendExpeditedFileNameCorrectlyForCAFPdf() {
     TestApplicationDataBuilder applicationDataBuilder = new TestApplicationDataBuilder()
-        .withApplicantPrograms(List.of("SNAP"))
-        .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of("1"))
-        .withPageData("liquidAssets", "liquidAssets", List.of("2"))
-        .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
-        .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("3"))
-        .withPageData("utilityPayments", "payForUtilities", List.of("utility"))
-        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
-        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of())
-        .withPageData("unearnedIncomeCcap", "unearnedIncome", List.of("BENEFITS"))
-        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of())
-        .withPageData("preparingMealsTogether", "isPreparingMealsTogether", List.of("true"));
-        //.build();
-    when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(Money.ZERO);
-    when(grossMonthlyIncomeParser.parse(applicationDataBuilder.build())).thenReturn(emptyList());
-    when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("5000"));
-    when(unearnedIncomeCalculator.unearnedAmount(any())).thenReturn(BigDecimal.ZERO);
+        .withApplicantPrograms(List.of("SNAP"));
    
     ApplicationData applicationData = applicationDataBuilder
         .build();
@@ -352,11 +328,8 @@ class FilenameGeneratorTest {
         .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
 
     String applicationId = "someId";
-    List<Eligibility> expeditedEligibilityList = new ArrayList<>();
-    expeditedEligibilityList.add(decider.decide(applicationData));
-    EligibilityListBuilder listBuilder = new EligibilityListBuilder();
-    List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
-    applicationData.setExpeditedEligibility(list);
+    when(decider.decide(applicationData)).thenReturn(ELIGIBLE);
+    
     Application application = defaultApplicationBuilder
         .id(applicationId)
         .county(county)
@@ -365,17 +338,9 @@ class FilenameGeneratorTest {
         .applicationData(applicationData)
         .build();
     
-    assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
     String  fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
    
     assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s%s.pdf",
-        countyNPI, "20070909", "235959", applicationId, "F", "CAF", ""));
-    //TODO @ParameterizedTest to check for all possible decider output like ELIGIBLE, NOT_ELIGIBLE and UNDERTERMINED
-   /* when(totalIncomeCalculator.calculate(any())).thenReturn(Money.ONE);
-    assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);  
-    fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
-
-    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s%s.pdf",
-        countyNPI, "20070909", "235959", applicationId, "F", "CAF", "_EXPEDITED"));*/
+        countyNPI, "20070909", "235959", applicationId, "F", "CAF", "_EXPEDITED"));
   }
 }

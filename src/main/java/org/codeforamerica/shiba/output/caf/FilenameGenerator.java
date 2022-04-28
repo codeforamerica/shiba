@@ -32,10 +32,12 @@ public class FilenameGenerator {
       "C", Set.of("CCAP")
   );
   private final CountyMap<CountyRoutingDestination> countyMap;
+  private final SnapExpeditedEligibilityDecider decider;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap) {
+  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap, SnapExpeditedEligibilityDecider decider) {
     this.countyMap = countyMap;
+    this.decider = decider;
   }
 
   public String generatePdfFilename(Application application, Document document) {
@@ -50,9 +52,7 @@ public class FilenameGenerator {
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
     String eligible = "";
-    if(document.equals(CAF)) {
-      if (application.getApplicationData().getExpeditedEligibility().stream()
-          .filter(eligibility -> eligibility.toString().contains("ELIGIBLE")).findAny().isPresent())
+    if(decider.decide(application.getApplicationData()) == SnapExpeditedEligibility.ELIGIBLE) {
         eligible = "_EXPEDITED";
     }
     return "%s%s_%s%s.pdf".formatted(prefix, programs, pdfType, eligible);
