@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,6 @@ import org.codeforamerica.shiba.output.LogicalOperator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.jetbrains.annotations.NotNull;
 
 @With
 @Data
@@ -48,25 +48,6 @@ public class Condition implements Serializable {
     this.matcher = matcher;
   }
 
-  public boolean appliesTo(ApplicationData applicationData) {
-    Stream<Condition> conditionStream = conditions.stream();
-    Predicate<Condition> conditionPredicate = getConditionPredicate(applicationData);
-    return switch (logicalOperator) {
-      case AND -> conditionStream.allMatch(conditionPredicate);
-      case OR -> conditionStream.anyMatch(conditionPredicate);
-    };
-  }
-
-  @NotNull
-  private Predicate<Condition> getConditionPredicate(ApplicationData applicationData) {
-    return condition -> {
-      PagesData pagesData = applicationData.getPagesData();
-      return Optional.ofNullable(pagesData.getPage(condition.getPageName()))
-          .map(pageData -> condition.matches(pageData, pagesData))
-          .orElse(false);
-    };
-  }
-
   public boolean matches(PageData pageData, Map<String, PageData> pagesData) {
     if (pageName != null) {
       return satisfies(pagesData.get(pageName));
@@ -80,11 +61,13 @@ public class Condition implements Serializable {
         .matches(pageData.get(input).getValue(), value);
   }
 
+  @SuppressWarnings("unused")
   public void setConditions(List<Condition> conditions) {
     assertCompositeCondition();
     this.conditions = conditions;
   }
 
+  @SuppressWarnings("unused")
   public void setLogicalOperator(LogicalOperator logicalOperator) {
     assertCompositeCondition();
     this.logicalOperator = logicalOperator;

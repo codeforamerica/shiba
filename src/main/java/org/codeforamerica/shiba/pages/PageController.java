@@ -186,7 +186,7 @@ public class PageController {
       @PathVariable String pageName,
       @RequestParam(required = false, defaultValue = "0") Integer option
   ) {
-    PageWorkflowConfiguration currentPage = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration currentPage = applicationConfiguration.getWorkflow().get(pageName);
     if (currentPage == null) {
       return new RedirectView("/error");
     }
@@ -194,8 +194,8 @@ public class PageController {
     PagesData pagesData = applicationData.getPagesData();
     NextPage nextPage = applicationData.getNextPageName(featureFlags, currentPage, option);
     ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
-    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
-        .getPageWorkflow(nextPage.getPageName());
+    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getWorkflow()
+        .get(nextPage.getPageName());
 
     if (shouldSkip(nextPageWorkflow)) {
       pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
@@ -269,7 +269,7 @@ public class PageController {
               landmarkPagesConfiguration.getLandingPages().get(0)));
     }
 
-    var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+    var pageWorkflowConfig = applicationConfiguration.getWorkflow().get(pageName);
     if (pageWorkflowConfig == null) {
       return new ModelAndView("redirect:/error");
     }
@@ -553,8 +553,8 @@ public class PageController {
       nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
     }
 
-    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
-        .getPageWorkflow(nextPage);
+    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getWorkflow()
+        .get(nextPage);
     if (shouldSkip(nextPageWorkflow)) {
       return new RedirectView(String.format("/pages/%s/navigation", nextPage));
     } else {
@@ -579,7 +579,7 @@ public class PageController {
       @PathVariable String pageName,
       HttpSession httpSession
   ) {
-    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getWorkflow().get(pageName);
 
     PageConfiguration page = pageWorkflow.getPageConfiguration();
     PageData pageData = PageData.fillOut(page, model);
@@ -643,7 +643,7 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     String submitPage = landmarkPagesConfiguration.getSubmitPage();
-    PageConfiguration page = applicationConfiguration.getPageWorkflow(submitPage)
+    PageConfiguration page = applicationConfiguration.getWorkflow().get(submitPage)
         .getPageConfiguration();
 
     PageData pageData = PageData.fillOut(page, model);
