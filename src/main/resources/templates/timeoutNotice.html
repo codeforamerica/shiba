@@ -1,0 +1,13 @@
+<div th:fragment="timeoutNotice">
+    <p class="text-25">
+        <span th:text="#{timeout-notice.your-data-will-be-lost}"></span>
+        <b><span th:text="#{timeout-notice.1-hour}"></span></b>
+        <span th:text="#{timeout-notice.this-is-to-protect}"></span>
+    </p>
+
+    <p class="text-25 spacing-below-60">
+        <span th:text="#{timeout-notice.timeout-only-happens}"></span>
+    </p>
+
+    <div th:replace="fragments/continue :: continue"></div>
+</div>
