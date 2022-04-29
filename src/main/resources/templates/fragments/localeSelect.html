@@ -1,8 +1,8 @@
 <div th:fragment="localeSelect" class="select language-select" th:with="lang=${#locale.toString()}">
     <label th:text="#{language-preferences.title}" class="sr-only" for="locales"></label>
     <select class="select__element language-selector"  name="locales" id="locales">
-        <option class="language-selector-option" value="en" th:selected="${lang.equals('en')}" th:text="#{language-preferences.english}"></option>
-        <option class="language-selector-option" value="es" th:selected="${lang.equals('es')}" th:text="#{language-preferences.spanish}"></option>
+        <option class="language-selector-option" lang="en" value="en" th:selected="${lang.equals('en')}" th:text="#{language-preferences.english}"></option>
+        <option class="language-selector-option" lang="es" value="es" th:selected="${lang.equals('es')}" th:text="#{language-preferences.spanish}"></option>
     </select>
     <script>
         $(document).ready(function() {

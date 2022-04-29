@@ -5,7 +5,7 @@ var followUpQuestion = (function() {
 				var self = this;
 				var showFollowUpIfChecked = function(element) {
 					if (element.is(':checked') && element.attr('data-follow-up')
-						!= null) {
+						!== null) {
 						$(element.attr('data-follow-up')).show();
 					}
 				};
@@ -65,11 +65,7 @@ var hasError = (function() {
 						var errorMessageSpanID = $(span).attr('id');
 						// If the described by doesn't exist yet, set its value to empty string, otherwise use it's current value
 						var inputDescribedBy = $(inputIdWithHash).attr('aria-describedby');
-						if (inputDescribedBy) {
-							inputDescribedBy = " " + inputDescribedBy;
-						} else {
-							inputDescribedBy = "";
-						}
+						inputDescribedBy = inputDescribedBy ? " " + inputDescribedBy : "";
 						// Append the error spans id to the description which may or may not include a helper message id already
 						$(inputIdWithHash).attr('aria-describedby', errorMessageSpanID + inputDescribedBy);
 					});
@@ -146,7 +142,7 @@ var preCheckContactInfo = (function() {
 		init: function() {
 			var phoneInputTextBox = document.getElementById('phoneNumber');
 			var emailInputTextBox = document.getElementById('email');
-			if (phoneInputTextBox != null) {
+			if (phoneInputTextBox !== null) {
 				phoneInputTextBox.addEventListener('input', function() {
 					var textCheckbox = document.getElementById('TEXT');
 					if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
@@ -159,7 +155,7 @@ var preCheckContactInfo = (function() {
 					}
 				});
 			}
-			if (emailInputTextBox != null) {
+			if (emailInputTextBox !== null) {
 				emailInputTextBox.addEventListener('input', function() {
 					var emailCheckbox = document.getElementById('EMAIL');
 					if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {

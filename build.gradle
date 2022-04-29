@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.6.6"
+    id("org.springframework.boot") version "2.6.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.1"
@@ -68,7 +68,7 @@ task genJaxbFilenet {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.session:spring-session-bom:2021.1.2")
+        mavenBom("org.springframework.session:spring-session-bom:2021.1.3")
     }
 }
 
@@ -111,7 +111,7 @@ dependencies {
     implementation("com.azure:azure-storage-blob:12.16.0")
     implementation("org.postgresql:postgresql")
     implementation("org.glassfish.jaxb:jaxb-runtime")
-    implementation("org.apache.pdfbox:pdfbox:2.0.25")
+    implementation("org.apache.pdfbox:pdfbox:2.0.26")
     implementation("org.apache.commons:commons-lang3")
     implementation("org.apache.commons:commons-text:1.9")
     implementation("org.jetbrains:annotations:23.0.0")
@@ -122,7 +122,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.google.crypto.tink:tink:1.6.1")
-    implementation("org.flywaydb:flyway-core:8.5.8")
+    implementation("org.flywaydb:flyway-core:8.5.10")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.mixpanel:mixpanel-java:1.5.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")

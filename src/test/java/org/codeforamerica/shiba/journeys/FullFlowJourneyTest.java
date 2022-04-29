@@ -147,7 +147,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("isPregnant", YES.getDisplayValue());
 
     // Who is pregnant?
-    testPage.enter("whoIsPregnant", "Me");
+    testPage.enter("whoIsPregnant", "me");
     testPage.clickContinue();
 
     // Is anyone in your household a migrant or seasonal farm worker?
@@ -157,7 +157,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("isUsCitizen", NO.getDisplayValue());
 
     // Who is not a U.S Citizen?
-    testPage.enter("whoIsNonCitizen", "Me");
+    testPage.enter("whoIsNonCitizen", "me");
     testPage.clickContinue();
 
     // Does anyone in your household have a physical or mental disability that prevents them from working?

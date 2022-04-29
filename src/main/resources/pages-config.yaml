@@ -2129,9 +2129,9 @@ pageDefinitions:
             - pageName: personalInfo
             - groupName: household
         followUpValues:
-          - "true"
+          - unearnedIncomeSSorRSDI
         followUps:
-          - name: monthlyIncome
+          - name: monthlyIncomeSSorRSDI
             type: MONEY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
