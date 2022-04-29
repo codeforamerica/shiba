@@ -31,6 +31,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -89,6 +90,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -179,6 +181,15 @@ public class PageController {
   @GetMapping("/faq")
   String getFaq() {
     return "faq";
+  }
+
+  @GetMapping("/errorTimeout")
+  String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId) {
+    if (submittedAppId.length() == 0) {
+      return "errorSessionTimeout";
+    } else {
+      return "errorUploadTimeout";
+    }
   }
 
   @GetMapping("/pages/{pageName}/navigation")
@@ -637,6 +648,7 @@ public class PageController {
   @PostMapping("/submit")
   ModelAndView submitApplication(
       @RequestBody(required = false) MultiValueMap<String, String> model,
+      HttpServletResponse httpResponse,
       HttpSession httpSession,
       Device device
   ) {
@@ -665,6 +677,13 @@ public class PageController {
           new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
               application.getFlow(), LocaleContextHolder.getLocale())
       );
+
+      // Temporary cookie indicating user submitted an application
+      Cookie submitCookie = new Cookie("application_id", application.getId());
+      submitCookie.setPath("/");
+      submitCookie.setHttpOnly(true);
+      httpResponse.addCookie(submitCookie);
+
       applicationData.setSubmitted(true);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
     } else {
