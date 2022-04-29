@@ -183,7 +183,7 @@ public class PageController {
   }
 
   @GetMapping("/errorTimeout")
-  String getErrorTimeout(@CookieValue(value = "mnbenefits-appl-id", defaultValue = "") String submittedAppId) {
+  String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId) {
     if (submittedAppId.length() == 0) {
       return "errorSessionTimeout";
     } else {
@@ -677,7 +677,7 @@ public class PageController {
       );
 
       // Temporary cookie indicating user submitted an application
-      Cookie submitCookie = new Cookie("mnbenefits-appl-id", application.getId());
+      Cookie submitCookie = new Cookie("application_id", application.getId());
       submitCookie.setPath("/");
       submitCookie.setHttpOnly(true);
       httpResponse.addCookie(submitCookie);
