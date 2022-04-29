@@ -142,7 +142,7 @@ class PageControllerTest {
     applicationData.setStartTimeOnce(Instant.now());
     when(clock.instant())
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
-    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    Map<String, Object> deviceAttribute = new HashMap<>();
     deviceAttribute.put("device", device);
     MockHttpServletRequestBuilder request = post("/submit")
         .flashAttrs(deviceAttribute)
@@ -154,8 +154,8 @@ class PageControllerTest {
     assertThat(secondPage.get("foo").getValue()).contains("some value");
     String devicePlatform = applicationData.getDevicePlatform();
     String deviceType = applicationData.getDeviceType();
-    assertThat(devicePlatform.equalsIgnoreCase(DevicePlatform.ANDROID.toString()));
-    assertThat(deviceType.equalsIgnoreCase(DeviceType.MOBILE.toString()));
+    assertThat(devicePlatform).isEqualToIgnoringCase(DevicePlatform.ANDROID.toString());
+    assertThat(deviceType).isEqualToIgnoringCase(DeviceType.MOBILE.toString());
   }
 
   @Test
@@ -174,7 +174,7 @@ class PageControllerTest {
     when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
     String sessionId = "someSessionId";
     MockHttpSession session = new MockHttpSession(null, sessionId);
-    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    Map<String, Object> deviceAttribute = new HashMap<>();
     deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
         .flashAttrs(deviceAttribute)
@@ -302,7 +302,7 @@ class PageControllerTest {
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
     assertThat(application.getTimeToComplete()).isEqualTo(null);
-    Map<String, Object> deviceAttribute = new HashMap<String, Object>();
+    Map<String, Object> deviceAttribute = new HashMap<>();
     deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
         .flashAttrs(deviceAttribute)
