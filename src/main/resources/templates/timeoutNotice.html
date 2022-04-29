@@ -1,0 +1,11 @@
+<div th:fragment="timeoutNotice">
+    <p class="text-25">
+        <span th:text="#{timeout-notice.protect}"></span>
+    </p>
+
+    <p class="text-25 spacing-below-60">
+        <span th:text="#{timeout-notice.cant-save}"></span>
+    </p>
+
+    <div th:replace="fragments/continue :: continue"></div>
+</div>

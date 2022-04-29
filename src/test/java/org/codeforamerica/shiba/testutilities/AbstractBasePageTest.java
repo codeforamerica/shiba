@@ -495,6 +495,7 @@ public abstract class AbstractBasePageTest {
     testPage.enter("county", "Hennepin");
     testPage.clickContinue();
     testPage.clickContinue();
+    testPage.clickContinue();
     testPage.enter("writtenLanguage", "English");
     testPage.enter("spokenLanguage", "English");
     testPage.enter("needInterpreter", "Yes");
