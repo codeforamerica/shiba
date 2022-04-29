@@ -14,7 +14,6 @@ import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
-import org.codeforamerica.shiba.pages.NextStepsContentService.NextStepSection;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,10 +56,8 @@ public class EmailContentCreator {
       CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
-    String nextSteps = nextStepsContentService
-        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility).stream()
-        .map(NextStepSection::message)
-        .collect(Collectors.joining("<br><br>"));
+    String nextSteps = String.join("<br><br>", nextStepsContentService
+        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility));
 
     List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
         .getConfirmationEmailDocumentRecommendations(applicationData, locale);
