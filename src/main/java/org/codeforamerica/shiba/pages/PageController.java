@@ -679,6 +679,7 @@ public class PageController {
       // Temporary cookie indicating user submitted an application
       Cookie submitCookie = new Cookie("mnbenefits-appl-id", application.getId());
       submitCookie.setPath("/");
+      submitCookie.setHttpOnly(true);
       httpResponse.addCookie(submitCookie);
 
       applicationData.setSubmitted(true);
