@@ -3,34 +3,68 @@ Created using householdOptionsCheckboxes and modifying it.
 This needs to be custom because we're formatting the application data values that are displayed to the applicant on the screen -->
 <th:block th:fragment="householdOptionsCheckboxesWithFollowup (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
-                    inputData=${data.get(input.name)}">
-  <div class="spacing-below-60 word-wrap-break-word">
-    <div role="group" aria-labelledby="page-header">
-      <fieldset>
+                    inputData=${data.get(input.name)},
+                    hasError=${!data.isValid() && !inputData.valid(data)},
+                    hasHelpMessage=${input.helpMessageKey != null},
+                    needsAriaLabel=${input.needsAriaLabel()} ">
+  <div class="form-group">
+ formInputName: <p th:text="${formInputName}"> test</p>
+ inputData: <p th:text="${inputData.toString()}"> test</p>
+
+ 
+  <!-- replaced spacing-below-60 word-wrap-break-word with form-group -->
+    <div class="spacing-above-35 form-group">
+    <!-- replaced role="group" aria-labelledby="page-header" with class="spacing-above-35 form-group" -->
+      <fieldset>ME:
         <label th:for="householdMember-me" class="checkbox"
                th:with="fullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]}">
-          <input type="checkbox"
-                 th:id="householdMember-me"
-                 th:value="${fullName} + ' applicant'"
-                 th:name="${formInputName}"
-                 th:checked="${inputData.value.contains(fullName)}"
-				 th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+          <div class="question-with-follow-up" >
+	          <div class="question-with-follow-up__question">
+		          <input type="checkbox"
+		                 th:id="householdMember-me"
+		                 th:value="${fullName} + ' applicant'"
+		                 th:name="${formInputName}"
+		                 th:checked="${inputData.value.contains(fullName)}"
+		                 th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                                         aria-invalid=${hasError},
                                         aria-label=${needsAriaLabel ? input.name : ''}"
-                 th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
-          <span th:text="#{general.me}"></span>
+                         th:attrappend="data-follow-up=|#${formInputName}-follow-up|">
+		          <span th:text="#{general.me}"></span>
+	          </div>
+	             <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
+			      <th:block th:each="followUp: ${input.followUps}">
+			        <div
+			            th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+			      </th:block> 
+	             </div>
+	       </div>
         </label>
         <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}">
+       Others iteration index: <p th:text="${iterationStat.index}"> test</p>
           <label th:for="|householdMember${iterationStat.index}|"
                  class="checkbox"
                  th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0] + ' ' + iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}">
-            <input type="checkbox"
-                   th:id="|householdMember${iterationStat.index}|"
-                   th:value="${fullName} + ' ' + ${iteration.id}"
-                   th:name="${formInputName}"
-                   th:checked="${inputData.value.contains(fullName)}">
-            <span
-                th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
+            <div class="question-with-follow-up" >
+	            <div class="question-with-follow-up__question">
+		            <input type="checkbox"
+		                   th:id="|householdMember${iterationStat.index}|"
+		                   th:value="${fullName} + ' ' + ${iteration.id}"
+		                   th:name="${formInputName}"
+		                   th:checked="${inputData.value.contains(fullName)}"
+		                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
+                                        aria-invalid=${hasError},
+                                        aria-label=${needsAriaLabel ? input.name : ''}"
+                           th:attrappend="data-follow-up=${input.followUpValues.contains(option.value)} ? |#${input.name}-follow-up| : ''">
+		            <span
+		                th:text="|${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]}&nbsp;${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}|"></span>
+		            <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
+				      <th:block th:each="followUp: ${input.followUps}">
+				        <div
+				            th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+				      </th:block>
+    				</div>
+	            </div>
+            </div>
           </label>
         </th:block>
       </fieldset>

@@ -2128,6 +2128,13 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - "true"
+        followUps:
+          - name: monthlyIncome
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &supplementalSecurityIncomeSource
     name: supplementalSecurityIncomeSource
     pageTitle: unearned-income-source.title
