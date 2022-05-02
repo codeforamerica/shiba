@@ -37,6 +37,8 @@ public enum Validation {
       return false;
     } catch (ParseException e) {
       return false;
+    } catch (IndexOutOfBoundsException e) {
+      return false;
     }
   }),
   ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),

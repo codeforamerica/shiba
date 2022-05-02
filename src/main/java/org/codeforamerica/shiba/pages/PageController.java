@@ -31,6 +31,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -89,6 +90,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -181,12 +183,21 @@ public class PageController {
     return "faq";
   }
 
+  @GetMapping("/errorTimeout")
+  String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId) {
+    if (submittedAppId.length() == 0) {
+      return "errorSessionTimeout";
+    } else {
+      return "errorUploadTimeout";
+    }
+  }
+
   @GetMapping("/pages/{pageName}/navigation")
   RedirectView navigation(
       @PathVariable String pageName,
       @RequestParam(required = false, defaultValue = "0") Integer option
   ) {
-    PageWorkflowConfiguration currentPage = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration currentPage = applicationConfiguration.getWorkflow().get(pageName);
     if (currentPage == null) {
       return new RedirectView("/error");
     }
@@ -194,8 +205,8 @@ public class PageController {
     PagesData pagesData = applicationData.getPagesData();
     NextPage nextPage = applicationData.getNextPageName(featureFlags, currentPage, option);
     ofNullable(nextPage.getFlow()).ifPresent(applicationData::setFlow);
-    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
-        .getPageWorkflow(nextPage.getPageName());
+    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getWorkflow()
+        .get(nextPage.getPageName());
 
     if (shouldSkip(nextPageWorkflow)) {
       pagesData.remove(nextPageWorkflow.getPageConfiguration().getName());
@@ -269,7 +280,7 @@ public class PageController {
               landmarkPagesConfiguration.getLandingPages().get(0)));
     }
 
-    var pageWorkflowConfig = applicationConfiguration.getPageWorkflow(pageName);
+    var pageWorkflowConfig = applicationConfiguration.getWorkflow().get(pageName);
     if (pageWorkflowConfig == null) {
       return new ModelAndView("redirect:/error");
     }
@@ -553,8 +564,8 @@ public class PageController {
       nextPage = applicationConfiguration.getPageGroups().get(groupName).getReviewPage();
     }
 
-    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration
-        .getPageWorkflow(nextPage);
+    PageWorkflowConfiguration nextPageWorkflow = applicationConfiguration.getWorkflow()
+        .get(nextPage);
     if (shouldSkip(nextPageWorkflow)) {
       return new RedirectView(String.format("/pages/%s/navigation", nextPage));
     } else {
@@ -579,7 +590,7 @@ public class PageController {
       @PathVariable String pageName,
       HttpSession httpSession
   ) {
-    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getPageWorkflow(pageName);
+    PageWorkflowConfiguration pageWorkflow = applicationConfiguration.getWorkflow().get(pageName);
 
     PageConfiguration page = pageWorkflow.getPageConfiguration();
     PageData pageData = PageData.fillOut(page, model);
@@ -637,13 +648,14 @@ public class PageController {
   @PostMapping("/submit")
   ModelAndView submitApplication(
       @RequestBody(required = false) MultiValueMap<String, String> model,
+      HttpServletResponse httpResponse,
       HttpSession httpSession,
       Device device
   ) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     String submitPage = landmarkPagesConfiguration.getSubmitPage();
-    PageConfiguration page = applicationConfiguration.getPageWorkflow(submitPage)
+    PageConfiguration page = applicationConfiguration.getWorkflow().get(submitPage)
         .getPageConfiguration();
 
     PageData pageData = PageData.fillOut(page, model);
@@ -665,6 +677,13 @@ public class PageController {
           new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
               application.getFlow(), LocaleContextHolder.getLocale())
       );
+
+      // Temporary cookie indicating user submitted an application
+      Cookie submitCookie = new Cookie("application_id", application.getId());
+      submitCookie.setPath("/");
+      submitCookie.setHttpOnly(true);
+      httpResponse.addCookie(submitCookie);
+
       applicationData.setSubmitted(true);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
     } else {
