@@ -141,16 +141,7 @@ public class MnitDocumentConsumer {
         sendFileAndUpdateStatus(application, XML, xml, routingDestination);
       }
       log.info("Uploaded docs to submit %s".formatted(uploadedDocs.size()));
-      for (int i = 0; i < uploadedDocs.size(); i++) {
-        ApplicationFile uploadedDoc = uploadedDocs.get(i);
-        // rename file with filename that is specific to this destination
-        String extension = Utils.getFileType(uploadedDoc.getFileName());
-        String newFilename = filenameGenerator.generateUploadedDocumentName(application, i,
-            extension, routingDestination, uploadedDocs.size());
-        ApplicationFile renamedFile = new ApplicationFile(uploadedDoc.getFileBytes(),
-            newFilename);
-        sendFileAndUpdateStatus(application, UPLOADED_DOC, renamedFile, routingDestination);
-      }
+      uploadedDocs.stream().forEach(uploadedDoc -> sendFileAndUpdateStatus(application, UPLOADED_DOC, uploadedDoc, routingDestination));
     }
   }
 
@@ -166,15 +157,26 @@ public class MnitDocumentConsumer {
     byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument originalDocument = uploadedDocs.get(i);
-      ApplicationFile preparedDocument =
-          pdfGenerator.generateForUploadedDocument(originalDocument, i, application, coverPage);
-      if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
-        log.info("Now queueing file to send: %s".formatted(preparedDocument.getFileName()));
-        applicationFiles.add(preparedDocument);
-      } else {
-        // This should only happen in a dev environment
-        log.error("Skipped uploading file %s because it was empty.".formatted(
-            originalDocument.getFilename()));
+      try {
+        ApplicationFile preparedDocument =
+            pdfGenerator.generateForUploadedDocument(originalDocument, i, application, coverPage);
+        if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
+          log.info("Now queueing file to send: %s".formatted(preparedDocument.getFileName()));
+          applicationFiles.add(preparedDocument);
+        } else {
+          // This should only happen in a dev environment
+          log.error("Skipped uploading file %s because it was empty."
+              .formatted(originalDocument.getFilename()));
+        }
+      } catch (Exception e) {
+        log.error("Exception Caught while preparing document "+ originalDocument.getSysFileName()+" to send " + e.getMessage());
+        List<RoutingDestination> routingDestinations = routingDecisionService
+            .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
+        for (RoutingDestination routingDestination : routingDestinations) {
+          applicationStatusRepository.createOrUpdate(application.getId(), UPLOADED_DOC, routingDestination.getName(),
+              UNDELIVERABLE, originalDocument.getSysFileName());
+        }
+        continue;
       }
     }
     return applicationFiles;
