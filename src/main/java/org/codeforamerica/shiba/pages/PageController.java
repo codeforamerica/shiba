@@ -15,12 +15,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -76,9 +82,14 @@ import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
@@ -89,6 +100,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -120,6 +132,8 @@ public class PageController {
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
+  private final RestTemplate restTemplate;
+  private final String clammitUrl;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -141,7 +155,8 @@ public class PageController {
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
-      EligibilityListBuilder listBuilder) {
+      EligibilityListBuilder listBuilder, RestTemplateBuilder restTemplateBuilder,
+      @Value("${mnit-clammit.url}") String clammitUrl) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -162,6 +177,8 @@ public class PageController {
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
+    this.restTemplate = restTemplateBuilder.build();
+    this.clammitUrl = clammitUrl;
   }
 
   @GetMapping("/")
@@ -765,18 +782,18 @@ public class PageController {
   private boolean hasSubmittedDocuments() {
     Application application;
     String id = applicationData.getId();
-    
-    if (id == null) 
-    {
+
+    if (id == null) {
       // TODO: session timeout perhaps?
       log.info("Attempt to get application data with null id");
       return false;
     }
-    
+
     try {
       application = applicationRepository.find(id);
     } catch (Exception e) {
-      log.warn("An error finding application with id [" + id + "] failed. Message: " + e.getMessage());
+      log.warn(
+          "An error finding application with id [" + id + "] failed. Message: " + e.getMessage());
       return false;
     }
     return application.getApplicationStatuses(UPLOADED_DOC).stream()
@@ -785,7 +802,7 @@ public class PageController {
 
   @Nullable
   private ResponseEntity<String> getErrorResponseForInvalidFile(MultipartFile file, String type,
-      LocaleSpecificMessageSource lms) throws IOException {
+      LocaleSpecificMessageSource lms) throws IOException, InterruptedException {
     if (file.getSize() == 0) {
       return new ResponseEntity<>(
           lms.getMessage("upload-documents.this-file-appears-to-be-empty"),
@@ -819,6 +836,17 @@ public class PageController {
             HttpStatus.UNPROCESSABLE_ENTITY);
       }
     }
+
+    var client = HttpClient.newHttpClient();
+    var request = HttpRequest.newBuilder(
+            URI.create(clammitUrl))
+        .POST(BodyPublishers.ofByteArray(file.getBytes()))
+        .build();
+
+    var response = client.send(request, BodyHandlers.ofString());
+    log.info("status: " + response.statusCode());
+    log.info("status: " + response.body());
+
     return null;
   }
 
@@ -833,7 +861,8 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
+      applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING,
+          UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

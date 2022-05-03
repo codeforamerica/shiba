@@ -42,6 +42,9 @@ mnit-filenet:
   password: somePassword
   router-url: some-router-url
 
+mnit-clammit:
+  url: 'https://clammit.com/fake-scan'
+
 documentUploadEmails:
   cronExpression: "-" # disable process to send document upload emails
 

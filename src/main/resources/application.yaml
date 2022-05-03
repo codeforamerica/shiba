@@ -70,6 +70,9 @@ mnit-filenet:
   max-delay: 10800000 # 3 hours
   timeout-seconds: 300
 
+mnit-clammit:
+  url: https://clammit-clam-av.apps.gj1k10ie.centralus.aroapp.io/clammit/scan
+
 sender-email: help@mnbenefits.org
 security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
