@@ -2120,6 +2120,7 @@ pageDefinitions:
     headerKey: social-security-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
     contextFragment: authorizedRepContextFragment
+    # usingPageTemplateFragment: false -if set to false, it fails because it can't find the custom html file with this name.
     inputs:
       - type: CUSTOM
         name: unearnedIncomeSSorRSDI

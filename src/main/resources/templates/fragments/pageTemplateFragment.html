@@ -26,6 +26,7 @@
                 autocomplete="off"
                 method="post" th:action="@{${postTo}}">
             <div th:each="input: ${page.inputs}">
+            pageTemplateFragment.html
               <div
                   th:replace="'fragments/inputs/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
             </div>
