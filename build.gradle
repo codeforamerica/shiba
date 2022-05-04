@@ -143,6 +143,8 @@ dependencies {
     implementation("net.coobird:thumbnailator:0.4.17")
     
     implementation("org.springframework.ws:spring-ws-core")
+    implementation("org.springframework.statemachine:spring-statemachine-starter:3.1.0")
+
     jaxb(
             "org.glassfish.jaxb:jaxb-runtime",
             "org.glassfish.jaxb:jaxb-xjc",
