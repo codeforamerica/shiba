@@ -28,7 +28,7 @@ public class EsbWebServiceTemplateConfiguration {
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
       @Value("${mnit-filenet.jaxb-context-path}") String jaxbContextPath,
-      @Value("${mnit-filenet.url}") String url,
+      @Value("${mnit-filenet.upload-url}") String uploadUrl,
       @Value("${mnit-filenet.timeout-seconds}") long timeoutSeconds)
       throws KeyManagementException, NoSuchAlgorithmException {
 
@@ -50,7 +50,7 @@ public class EsbWebServiceTemplateConfiguration {
         .setDefaultRequestConfig(requestConfig)
         .build();
     return webServiceTemplateBuilder
-        .setDefaultUri(url)
+        .setDefaultUri(uploadUrl)
         .setMarshaller(jaxb2Marshaller)
         .setUnmarshaller(jaxb2Marshaller)
         .messageSenders(new HttpComponentsMessageSender(httpClient))
