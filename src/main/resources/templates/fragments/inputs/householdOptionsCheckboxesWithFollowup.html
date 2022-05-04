@@ -10,7 +10,8 @@ This needs to be custom because we're formatting the application data values tha
                     needsAriaLabel=${input.needsAriaLabel()} ">
 
   <!--start of YOU with followup -->
-
+<div class="question-with-follow-up">
+<div class="question-with-follow-up__question">
       <div class="form-group">
           <fieldset>
               <label th:for="householdMember-me" class="checkbox">
@@ -27,39 +28,35 @@ This needs to be custom because we're formatting the application data values tha
                 </label>   
           </fieldset>
       </div>
-
+</div>
        
       <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
-      You question-with-follow-up__follow-up
 		      <th:block th:each="youFollowUp: ${input.followUps}">
-		  <!--    youFollowUp.fragment(): single-input which then takes the MONEY input from the single-input.html file-->
 		        <div
 		            th:replace="'fragments/inputs/'+__${youFollowUp.fragment()}__ :: __${youFollowUp.fragment()}__(${youFollowUp}, ${data})"></div>
 		      </th:block> 
       </div>
+</div>
 <!--end of YOU with followup -->
 <!--start of household members with followup -->
         <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}"
         th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]} + ' ' + ${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}"
         >
             <div class="question-with-follow-up" >
-            householdOptionsCheckboxesWithFollowup.html
 	            <div class="question-with-follow-up__question">
 				<div class="form-group">
 	             <fieldset>
-	              <label th:for="|householdMember${iterationStat.count}|"
-	                 class="checkbox"
-	                 >
-	    
+	              <label th:for="|householdMember${iterationStat.index}|"
+	                 class="checkbox">
 			            <input type="checkbox"
-			                   th:id="|householdMember${iterationStat.count}|"
+			                   th:id="|householdMember${iterationStat.index}|"
 			                   th:value="${fullName}"
 			                   th:name="${formInputName}"
 			                   th:checked="${inputData.value.contains(fullName)}"
 			                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
 	                                        aria-invalid=${hasError},
 	                                        aria-label=${needsAriaLabel ? input.name : ''}"
-	                           th:attrappend="data-follow-up=|#${input.name}${iterationStat.count}-follow-up|">
+	                           th:attrappend="data-follow-up=|#${input.name}${iterationStat.index}-follow-up|">
 			  
 			                <span th:text="${fullName}"></span>
 					</label>
@@ -67,14 +64,13 @@ This needs to be custom because we're formatting the application data values tha
 				</div>
 			</div> <!-- question-with-follow-up__question -->
 
-            <div class="question-with-follow-up__follow-up" th:id="|${input.name}${iterationStat.count}-follow-up|">
-            HH member question-with-follow-up__follow-up
+            <div class="question-with-follow-up__follow-up" th:id="|${input.name}${iterationStat.index}-follow-up|">
 		      <th:block th:each="followUp: ${input.followUps}">
 		      <div class="form-group">
 		      <fieldset>
 		    <!--  followUp.fragment() is single-input because it is a MONEY type -->
 		    <!--/* TODO emj, we may need to number each so that we identify each iterated input.
-		     single-input isn't created to insert iteration counts, may need to create a custion input type?
+		     single-input isn't created to insert iteration counts, may need to create a custom input type?
 		    Or put a case switch in here with itation counts for each input type that we need as we need them?  */-->
 		        <div th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})">
 		        </div>

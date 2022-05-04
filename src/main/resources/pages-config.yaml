@@ -2125,6 +2125,10 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeSSorRSDI
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        # hasCustomFollowUps is an experiment to tell the templating framework to handle these inputs differently.
+        # Do not use the standard way of wrapping the divs with class="question-with-follow-up__question" around inputs.
+        # Let the custom followup wrap the class="question-with-follow-up__question" divs.
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo

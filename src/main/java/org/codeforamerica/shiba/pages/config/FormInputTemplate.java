@@ -22,6 +22,7 @@ public class FormInputTemplate {
   Boolean readOnly;
   String defaultValue;
   List<PageDatasource> datasources;
+  String customFollowUps;
 
   public String fragment() {
     return switch (type) {
@@ -38,7 +39,19 @@ public class FormInputTemplate {
 
   @SuppressWarnings("unused")
   public boolean hasFollowUps() {
-    return !followUps.isEmpty() && !followUpValues.isEmpty();
+	  //TODO emj revert
+	  boolean hasFollowUps = !followUps.isEmpty() && !followUpValues.isEmpty();
+	 // System.out.println("===== FormInputTemplate for name '" + name + "' hasFollowUps() = " + hasFollowUps);
+
+    return hasFollowUps;
+  }
+  
+  @SuppressWarnings("unused")
+  public boolean hasCustomFollowUps() {
+	  //TODO emj experimenting with this
+	  boolean hasCustomFollowUps = Boolean.parseBoolean(customFollowUps);
+	 // System.out.println("===== FormInputTemplate for name '" + name + "' hasCustomFollowUps() = " + hasCustomFollowUps);
+    return hasCustomFollowUps;
   }
 
   public boolean needsAriaLabel() {
