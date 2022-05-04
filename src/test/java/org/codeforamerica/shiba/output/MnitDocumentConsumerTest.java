@@ -416,9 +416,9 @@ class MnitDocumentConsumerTest {
     mockDocUpload("shiba+file.jpg", "someS3FilePath", MediaType.IMAGE_JPEG_VALUE, "jpg");
 
     mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
-    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf"))
+    when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(0), eq("pdf"), any()))
         .thenReturn("pdf1of2.pdf");
-    when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf"))
+    when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(1), eq("pdf"), any()))
         .thenReturn("pdf2of2.pdf");
 
     documentConsumer.processUploadedDocuments(application);
@@ -447,7 +447,7 @@ class MnitDocumentConsumerTest {
 
     application.setFlow(LATER_DOCS);
     mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
-    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf"))
+    when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(0), eq("pdf"), any()))
         .thenReturn("pdf1of1.pdf");
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
     when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
@@ -527,9 +527,9 @@ class MnitDocumentConsumerTest {
 
     mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
 
-    when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf"))
+    when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(0), eq("pdf"), any()))
         .thenReturn("pdf1of2.pdf");
-    when(fileNameGenerator.generateUploadedDocumentName(application, 1, "pdf"))
+    when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(1), eq("pdf"), any()))
         .thenReturn("pdf2of2.pdf");
 
     documentConsumer.processUploadedDocuments(application);

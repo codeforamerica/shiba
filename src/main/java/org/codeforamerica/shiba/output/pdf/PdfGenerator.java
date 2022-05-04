@@ -16,10 +16,12 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -53,6 +55,7 @@ public class PdfGenerator implements FileGenerator {
   private final FilenameGenerator fileNameGenerator;
   private final FileToPDFConverter pdfWordConverter;
   private final FeatureFlagConfiguration featureFlags;
+  private final CountyMap<CountyRoutingDestination> countyMap;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
@@ -62,7 +65,8 @@ public class PdfGenerator implements FileGenerator {
       DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator,
       FileToPDFConverter pdfWordConverter,
-      FeatureFlagConfiguration featureFlagConfiguration
+      FeatureFlagConfiguration featureFlagConfiguration,
+      CountyMap<CountyRoutingDestination> countyMap
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
@@ -73,6 +77,7 @@ public class PdfGenerator implements FileGenerator {
     this.pdfWordConverter = pdfWordConverter;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
+    this.countyMap = countyMap;
   }
 
   @Override
@@ -98,6 +103,12 @@ public class PdfGenerator implements FileGenerator {
     String filename = fileNameGenerator.generatePdfFilename(application, document);
     return generateWithFilename(application, document, recipient, filename);
   }
+  
+  public ApplicationFile generate(Application application, Document document, Recipient recipient,
+      RoutingDestination routingDestination) {
+    String filename = fileNameGenerator.generatePdfFilename(application, document, routingDestination);
+    return generateWithFilename(application, document, recipient, filename);
+  }
 
   private ApplicationFile generateWithFilename(Application application, Document document,
       Recipient recipient, String filename) {
@@ -114,7 +125,7 @@ public class PdfGenerator implements FileGenerator {
   }
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
-      int documentIndex, Application application, byte[] coverPage) {
+      int documentIndex, Application application, byte[] coverPage, RoutingDestination routingDest) {
     var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
@@ -144,15 +155,20 @@ public class PdfGenerator implements FileGenerator {
       if (extension.equals("pdf") && coverPage != null) {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
-
-      String filename = uploadedDocument.getSysFileName() == null
-          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension)
+      String filename = uploadedDocument.getSysFileName();
+     filename = (filename == null || (filename!=null && !filename.contains(routingDest.getDhsProviderId())))
+          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension, routingDest)
           : uploadedDocument.getSysFileName();
       return new ApplicationFile(fileBytes, filename);
     }
     return null;
   }
-
+  
+  public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
+      int documentIndex, Application application, byte[] coverPage) {
+    return generateForUploadedDocument(uploadedDocument, documentIndex, application, coverPage, countyMap.get(application.getCounty()));
+  }
+  
   private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {
     PDFMergerUtility merger = new PDFMergerUtility();
     try (PDDocument coverPageDoc = PDDocument.load(coverPage);
