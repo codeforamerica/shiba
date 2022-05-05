@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 public class StateMachineTest {
+
     @Autowired
     private StateMachineService service;
     private StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> testMachine;

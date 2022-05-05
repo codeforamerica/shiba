@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public  class StateMachineService extends DefaultStateMachineService {
 
-    public StateMachineService(StateMachineFactory stateMachineFactory) {
+    public StateMachineService(StateMachineFactory<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineFactory) {
         super(stateMachineFactory);
     }
 }

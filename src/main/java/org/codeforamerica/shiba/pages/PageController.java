@@ -125,7 +125,7 @@ public class PageController {
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
-  private final StateMachineService stateMachineService;
+  //private final StateMachineService stateMachineService;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -147,8 +147,8 @@ public class PageController {
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
-      EligibilityListBuilder listBuilder,
-      StateMachineService stateMachineService) {
+      EligibilityListBuilder listBuilder
+      /*StateMachineService stateMachineService*/ ) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -169,7 +169,7 @@ public class PageController {
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
-    this.stateMachineService = stateMachineService;
+    //this.stateMachineService = stateMachineService;
   }
 
   @GetMapping("/")
@@ -690,8 +690,8 @@ public class PageController {
       submitCookie.setHttpOnly(true);
       httpResponse.addCookie(submitCookie);
 
-      StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine =
-                                                      this.stateMachineService.acquireStateMachine(applicationData.getId());
+      //StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine =
+      //                                                this.stateMachineService.acquireStateMachine(applicationData.getId());
 
       applicationData.setSubmitted(true);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
