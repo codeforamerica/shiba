@@ -46,6 +46,7 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
+import org.codeforamerica.shiba.statemachine.StateMachineService;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
@@ -75,6 +76,7 @@ import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.MessageSource;
@@ -82,6 +84,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -122,6 +125,7 @@ public class PageController {
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
+  private final StateMachineService stateMachineService;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -143,7 +147,8 @@ public class PageController {
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
-      EligibilityListBuilder listBuilder) {
+      EligibilityListBuilder listBuilder,
+      StateMachineService stateMachineService) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -164,6 +169,7 @@ public class PageController {
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
+    this.stateMachineService = stateMachineService;
   }
 
   @GetMapping("/")
@@ -683,6 +689,9 @@ public class PageController {
       submitCookie.setPath("/");
       submitCookie.setHttpOnly(true);
       httpResponse.addCookie(submitCookie);
+
+      StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine =
+                                                      this.stateMachineService.acquireStateMachine(applicationData.getId());
 
       applicationData.setSubmitted(true);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));

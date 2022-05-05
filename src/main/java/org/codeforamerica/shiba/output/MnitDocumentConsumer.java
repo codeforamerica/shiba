@@ -31,8 +31,11 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Component;
+import org.codeforamerica.shiba.statemachine.StateMachineService;
 
 @Component
 @Slf4j
@@ -47,6 +50,7 @@ public class MnitDocumentConsumer {
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final FilenetWebServiceClient mnitFilenetClient;
   private final FilenameGenerator filenameGenerator;
+  private final StateMachineService stateMachineService;
 
   public MnitDocumentConsumer(EmailClient emailClient,
       XmlGenerator xmlGenerator,
@@ -56,7 +60,8 @@ public class MnitDocumentConsumer {
       ApplicationStatusRepository applicationStatusRepository,
       FeatureFlagConfiguration featureFlagConfiguration,
       FilenetWebServiceClient mnitFilenetClient,
-      FilenameGenerator filenameGenerator) {
+      FilenameGenerator filenameGenerator,
+      StateMachineService stateMachineService) {
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
@@ -66,6 +71,7 @@ public class MnitDocumentConsumer {
     this.featureFlagConfiguration = featureFlagConfiguration;
     this.mnitFilenetClient = mnitFilenetClient;
     this.filenameGenerator = filenameGenerator;
+    this.stateMachineService = stateMachineService;
   }
 
   public void processCafAndCcap(Application application) {
@@ -74,12 +80,17 @@ public class MnitDocumentConsumer {
 
     // Send the CAF, CCAP, and XML files in parallel
     List<Thread> threads = createThreadsForSendingThisApplication(application, id);
+    StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine =
+            this.stateMachineService.acquireStateMachine(application.getId());
+    machine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_DOC);
 
     // Wait for everything to finish before returning
     threads.forEach(thread -> {
       try {
         thread.join();
+        machine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
       } catch (InterruptedException e) {
+        machine.sendEvent(StatesAndEvents.DeliveryEvents.SEND_ERROR);
         log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });
