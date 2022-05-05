@@ -6,7 +6,8 @@ public class StatesAndEvents {
     public enum DeliveryEvents {
         APPLICATION_SUBMITTED,
         DOCUMENT_SUBMITTED,
-        SENDING,
+        SENDING_APP,
+        SENDING_DOC,
         SEND_ERROR,
         RETRY_ERROR,
         DELIVERY_SUCCESS,

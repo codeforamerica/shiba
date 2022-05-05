@@ -22,12 +22,12 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
         transitions
                 .withExternal()
                 .source(StatesAndEvents.DeliveryStates.READY)
-                .event(StatesAndEvents.DeliveryEvents.SENDING)
+                .event(StatesAndEvents.DeliveryEvents.SENDING_APP)
                 .target(StatesAndEvents.DeliveryStates.APPLICATION_SENDING)
                 .and()
                 .withExternal()
                 .source(StatesAndEvents.DeliveryStates.READY)
-                .event(StatesAndEvents.DeliveryEvents.SENDING)
+                .event(StatesAndEvents.DeliveryEvents.SENDING_DOC)
                 .target(StatesAndEvents.DeliveryStates.DOCUMENT_SENDING)
                 .and()
                 .withExternal()
@@ -71,6 +71,9 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
         states
                 .withStates()
                 .initial(StatesAndEvents.DeliveryStates.READY)
+                .state(StatesAndEvents.DeliveryStates.APPLICATION_SENDING)
+                .state(StatesAndEvents.DeliveryStates.DOCUMENT_SENDING)
+                .state(StatesAndEvents.DeliveryStates.RETRYING)
                 .end(StatesAndEvents.DeliveryStates.SENT)
                 .end(StatesAndEvents.DeliveryStates.FAILED);
     }
