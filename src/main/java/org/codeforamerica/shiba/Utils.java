@@ -26,6 +26,7 @@ public class Utils {
     return fileNameParts.length > 1 ? fileNameParts[fileNameParts.length - 1] : "";
   }
 
+  @SuppressWarnings("unused")
   public static void writeByteArrayToFile(byte[] fileBytes, String filename) {
     try (FileOutputStream fos = new FileOutputStream(filename)) {
       fos.write(fileBytes);

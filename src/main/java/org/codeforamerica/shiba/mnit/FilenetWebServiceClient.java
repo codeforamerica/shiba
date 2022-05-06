@@ -100,6 +100,10 @@ public class FilenetWebServiceClient {
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {
     try {
+      log.info("Now sending %s to recipient %s for application %s".formatted(
+          applicationDocument.name(),
+          routingDestination.getName(),
+          applicationNumber));
       MDC.put("applicationFile", applicationFile.getFileName());
       MDC.put("applicationId", applicationNumber);
       CreateDocument createDocument = new CreateDocument();
@@ -170,7 +174,7 @@ public class FilenetWebServiceClient {
 
       applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
           routingDestination.getName(),
-          DELIVERED,applicationFile.getFileName());
+          DELIVERED, applicationFile.getFileName());
     } catch (Exception e) {
       // Retry depends on uncaught exceptions - we want more logging for retries so the exception is rethrown here
       throw e;
@@ -184,7 +188,7 @@ public class FilenetWebServiceClient {
       String applicationNumber, Document applicationDocument, FlowType flowType) {
     applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
         routingDestination.getName(),
-        DELIVERY_FAILED,applicationFile.getFileName());
+        DELIVERY_FAILED, applicationFile.getFileName());
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
 
