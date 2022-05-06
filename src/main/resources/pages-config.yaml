@@ -2123,7 +2123,7 @@ pageDefinitions:
     # usingPageTemplateFragment: false -if set to false, it fails because it can't find the custom html file with this name.
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeSSorRSDI
+        name: monthlyIncomeSSorRSDI
         customInputFragment: householdOptionsCheckboxesWithFollowup
         # hasCustomFollowUps is an experiment to tell the templating framework to handle these inputs differently.
         # Do not use the standard way of wrapping the divs with class="question-with-follow-up__question" around inputs.
@@ -2134,9 +2134,10 @@ pageDefinitions:
             - pageName: personalInfo
             - groupName: household
         followUpValues:
-          - unearnedIncomeSSorRSDI
+          #- unearnedIncomeSSorRSDI
+          - monthlyIncomeSSorRSDI
         followUps:
-          - name: monthlyIncomeSSorRSDI
+          - name: monthlyIncomeSSorRSDIamount
             type: MONEY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
@@ -4618,7 +4619,6 @@ pageGroups:
       - childOrSpoucalSupportIncomeSource
       - tribalPaymentIncomeSource
     completePages:
-      - unearnedIncome
       - unearnedIncome
       - socialSecurityIncomeSource
       - supplementalSecurityIncomeSource

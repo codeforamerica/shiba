@@ -3,7 +3,13 @@ Created using householdOptionsCheckboxes and modifying it.
 This needs to be custom because we're formatting the application data values that are displayed to the applicant on the screen -->
 <th:block th:fragment="householdOptionsCheckboxesWithFollowup (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
-                    inputData=${data.get(input.name)},
+          			inputData=${data.get(input.name)},
+          			inputFollowupsName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.followUps[0].name)},
+          			followUpValues=${input.followUpValues},
+                    inputDataNames=${data.get(input.name)},
+                    inputFollowupData=${data.get(input.followUps[0].name)},
+                    inputDataValues=${data.get(input.name)},
+                    
                     hasError=${!data.isValid() && !inputData.valid(data)},
                     hasHelpMessage=${input.helpMessageKey != null},
                     yourFullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]},
@@ -16,10 +22,10 @@ This needs to be custom because we're formatting the application data values tha
           <fieldset>
               <label th:for="householdMember-me" class="checkbox">
 		          <input type="checkbox"
-		                 th:id="householdMember-me"
+		                 th:id="${formInputName}"
 		                 th:value="${yourFullName} + ' applicant'"
 		                 th:name="${formInputName}"
-		                 th:checked="${inputData.value.contains(fullName)}"
+		                 th:checked="${inputDataNames.value.contains(yourFullName + ' applicant')}"
 		                 th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                                         aria-invalid=${hasError},
                                         aria-label=${needsAriaLabel ? input.name : ''}"
@@ -32,8 +38,32 @@ This needs to be custom because we're formatting the application data values tha
        
       <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
 		      <th:block th:each="youFollowUp: ${input.followUps}">
-		        <div
+		     <!--/* Instead of calling the followUp fragment, just use the html from that fragment.  <div
 		            th:replace="'fragments/inputs/'+__${youFollowUp.fragment()}__ :: __${youFollowUp.fragment()}__(${youFollowUp}, ${data})"></div>
+		            */-->
+		        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${youFollowUp})"></div>
+				    <p class="text--help"
+				       th:id="${youFollowUp.name + '-help-message'}"
+				       th:if="${hasHelpMessage}"
+				       th:utext="#{${youFollowUp.helpMessageKey}}"></p>
+			    <th:block th:switch="${youFollowUp.type}">
+			    <!--/* Attempting to modify input types to work within this fragment */-->
+			        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
+			            <div class="text-input-group__prefix">$</div>
+			            <input type="text"
+			                   class="text-input"
+			                   th:attr="aria-describedby=${hasHelpMessage ? youFollowUp.name + '-help-message' : ''},
+			                            aria-labelledby=${needsAriaLabel ? 'page-header' : ''},
+			                            aria-invalid=${hasError}"
+			                   th:id="|${youFollowUp.name}|"
+			                   th:name="${inputFollowupsName}"
+			                   th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[0] : ''}"
+			            >
+			        </div>
+			        
+			      </th:block><!--/* END of switch case block for input types */-->		            
+		            
+		            
 		      </th:block> 
       </div>
 </div>
@@ -41,6 +71,7 @@ This needs to be custom because we're formatting the application data values tha
 <!--start of household members with followup -->
         <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}"
         th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]} + ' ' + ${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}"
+        
         >
             <div class="question-with-follow-up" >
 	            <div class="question-with-follow-up__question">
@@ -49,10 +80,10 @@ This needs to be custom because we're formatting the application data values tha
 	              <label th:for="|householdMember${iterationStat.index}|"
 	                 class="checkbox">
 			            <input type="checkbox"
-			                   th:id="|householdMember${iterationStat.index}|"
-			                   th:value="${fullName}"
+			                   th:id="|${formInputName}${iterationStat.index}|"
+			                   th:value="${fullName} + ' ' + ${iteration.id}"
 			                   th:name="${formInputName}"
-			                   th:checked="${inputData.value.contains(fullName)}"
+			                   th:checked="${inputDataNames.value.contains(fullName)}"
 			                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
 	                                        aria-invalid=${hasError},
 	                                        aria-label=${needsAriaLabel ? input.name : ''}"
@@ -68,19 +99,37 @@ This needs to be custom because we're formatting the application data values tha
 		      <th:block th:each="followUp: ${input.followUps}">
 		      <div class="form-group">
 		      <fieldset>
-		    <!--  followUp.fragment() is single-input because it is a MONEY type -->
-		    <!--/* TODO emj, we may need to number each so that we identify each iterated input.
-		     single-input isn't created to insert iteration counts, may need to create a custom input type?
-		    Or put a case switch in here with itation counts for each input type that we need as we need them?  */-->
-		        <div th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})">
-		        </div>
+  
+				    <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${followUp})"></div>
+				    <p class="text--help"
+				       th:id="${followUp.name + '-help-message'}"
+				       th:if="${hasHelpMessage}"
+				       th:utext="#{${followUp.helpMessageKey}}"></p>
+				    <th:block th:switch="${followUp.type}">
+				    <!--/* Attempting to modify input types to work within this fragment */-->
+				        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
+				            <div class="text-input-group__prefix">$</div>
+				            <input type="text"
+				                   class="text-input"
+				                   th:attr="aria-describedby=${hasHelpMessage ? followUp.name + '-help-message' : ''},
+				                            aria-labelledby=${needsAriaLabel ? 'page-header' : ''},
+				                            aria-invalid=${hasError}"
+				                   th:id="|${followUp.name}${iterationStat.index}|"
+				                   th:name="${inputFollowupsName}"
+				                   th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[iterationStat.count] : ''}"
+				            >
+				        </div>
+				        
+				      </th:block><!--/* END of switch case block for input types */-->
+				    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>		    
+		    
 		      </fieldset>
 		      </div>
 		        
-		      </th:block>
+		      </th:block><!--/* END of iteration through the list of followups */-->
 			</div> <!-- question-with-follow-up__follow-up -->
             
             </div><!-- question-with-follow-up -->
-        </th:block>
+        </th:block><!--/* END of household member iteration */-->
   <!--end of household members with followup -->
 </th:block>
