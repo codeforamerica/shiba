@@ -41,6 +41,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
@@ -58,6 +60,7 @@ import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.codeforamerica.shiba.testutilities.NonSessionScopedApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -75,6 +78,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -122,7 +127,11 @@ class MnitDocumentConsumerTest {
   @Autowired
   private MnitDocumentConsumer documentConsumer;
 
+  @Autowired
+  private StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService;
+
   private Application application;
+
 
   @BeforeEach
   void setUp() {
@@ -141,13 +150,16 @@ class MnitDocumentConsumerTest {
         ZoneOffset.UTC);
 
     application = Application.builder()
-        .id("someId")
+        .id(String.valueOf(new Random().nextInt(1000)))
         .completedAt(completedAt)
         .applicationData(applicationData)
         .county(Olmsted)
         .timeToComplete(null)
         .flow(FULL)
         .build();
+
+    StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine = this.stateMachineService.acquireStateMachine(applicationData.getId());
+
     when(messageSource.getMessage(any(), any(), any())).thenReturn("default success message");
     when(fileNameGenerator.generatePdfFilename(any(), any())).thenReturn("some-file.pdf");
     when(featureFlagConfig.get("submit-docs-via-email-for-hennepin")).thenReturn(FeatureFlag.ON);
@@ -159,6 +171,7 @@ class MnitDocumentConsumerTest {
   @AfterEach
   void afterEach() {
     resetApplicationData(applicationData);
+    this.stateMachineService.releaseStateMachine(applicationData.getId());
   }
 
   @Test
