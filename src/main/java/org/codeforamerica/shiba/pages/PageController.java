@@ -125,7 +125,7 @@ public class PageController {
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
-  private final StateMachineService stateMachineService;
+  private final StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -148,7 +148,7 @@ public class PageController {
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
       EligibilityListBuilder listBuilder,
-      StateMachineService stateMachineService ) {
+      StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService ) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;

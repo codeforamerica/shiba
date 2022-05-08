@@ -50,7 +50,7 @@ public class MnitDocumentConsumer {
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final FilenetWebServiceClient mnitFilenetClient;
   private final FilenameGenerator filenameGenerator;
-  private final StateMachineService stateMachineService;
+  private final StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService;
 
   public MnitDocumentConsumer(EmailClient emailClient,
       XmlGenerator xmlGenerator,
@@ -61,7 +61,7 @@ public class MnitDocumentConsumer {
       FeatureFlagConfiguration featureFlagConfiguration,
       FilenetWebServiceClient mnitFilenetClient,
       FilenameGenerator filenameGenerator,
-      StateMachineService stateMachineService ) {
+      StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService ) {
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
@@ -80,8 +80,7 @@ public class MnitDocumentConsumer {
 
     // Send the CAF, CCAP, and XML files in parallel
     List<Thread> threads = createThreadsForSendingThisApplication(application, id);
-    StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine =
-            this.stateMachineService.acquireStateMachine(application.getId());
+    StateMachine machine = this.stateMachineService.acquireStateMachine(application.getId());
     machine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_DOC);
 
     // Wait for everything to finish before returning

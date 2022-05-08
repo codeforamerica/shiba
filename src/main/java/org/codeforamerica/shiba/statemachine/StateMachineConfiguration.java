@@ -104,9 +104,7 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
 
         @Bean
         public StateMachineService<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents> stateMachineService(StateMachineFactory<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineFactory) {
-
             return new DefaultStateMachineService<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents>(stateMachineFactory);
-
         }
     }
 }

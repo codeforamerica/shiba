@@ -23,12 +23,14 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.enrichment.ApplicationEnrichment;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -73,12 +75,16 @@ public class AbstractPageControllerTest {
   protected ApplicationStatusRepository applicationStatusRepository;
   @MockBean
   protected EligibilityListBuilder listBuilder;
+  @MockBean
+  private StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> service;
 
   @Autowired
   protected MockMvc mockMvc;
 
   @Autowired
   protected ApplicationData applicationData;
+
+
 
   @AfterEach
   void cleanup() {
