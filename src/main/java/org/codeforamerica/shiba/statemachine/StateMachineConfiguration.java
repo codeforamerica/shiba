@@ -1,11 +1,20 @@
 package org.codeforamerica.shiba.statemachine;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
+import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.config.builders.StateMachineConfigurationConfigurer;
+import org.springframework.statemachine.config.builders.StateMachineModelConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
+import org.springframework.statemachine.service.DefaultStateMachineService;
+import org.springframework.statemachine.service.StateMachineService;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableStateMachineFactory
@@ -15,6 +24,7 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
     public void configure(StateMachineConfigurationConfigurer<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> config) throws Exception {
         config.withConfiguration().autoStartup(true);
     }
+
 
     @Override
     public void configure(StateMachineTransitionConfigurer<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> transitions) throws Exception {
@@ -77,6 +87,31 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
                 .end(StatesAndEvents.DeliveryStates.SENT)
                 .end(StatesAndEvents.DeliveryStates.FAILED);
     }
+
+
+    @Configuration
+    class ShibaMachineFactory {
+
+        @Bean
+        @Primary
+        public StateMachineFactory<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents> getStateMachineFactory(StateMachineFactory<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents> stateMachineFactory) throws Exception {
+            return stateMachineFactory;
+        }
+    }
+
+    @Configuration
+    public static class StateMachineServiceConfig {
+
+        @Bean
+        public StateMachineService<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents> stateMachineService(StateMachineFactory<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineFactory) {
+
+            return new DefaultStateMachineService<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents>(stateMachineFactory);
+
+        }
+    }
 }
+
+
+
 
 
