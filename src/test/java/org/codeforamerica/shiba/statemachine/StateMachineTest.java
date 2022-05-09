@@ -38,6 +38,15 @@ public class StateMachineTest {
         assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.APPLICATION_SENDING);
     }
 
+    @Test
+    void fullSequencewithNoErrors() {
+        boolean eventResult = this.testMachine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_APP);
+        assertThat(eventResult).isEqualTo(true);
+        assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.APPLICATION_SENDING);
+        eventResult = this.testMachine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
+        assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.SENT);
+    }
+
     @AfterEach
     void tearDown() {
         service.releaseStateMachine("testMachine");
