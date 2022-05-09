@@ -89,6 +89,8 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
     }
 
 
+    // This should not be necessary , but EnableStateMachineFactory did not do all that was expected probably
+    // due to some other contributing factor so install these beans
     @Configuration
     class ShibaMachineFactory {
 
@@ -100,7 +102,7 @@ public class StateMachineConfiguration extends StateMachineConfigurerAdapter<Sta
     }
 
     @Configuration
-    public static class StateMachineServiceConfig {
+    class StateMachineServiceConfig {
 
         @Bean
         public StateMachineService<StatesAndEvents.DeliveryStates,StatesAndEvents.DeliveryEvents> stateMachineService(StateMachineFactory<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineFactory) {

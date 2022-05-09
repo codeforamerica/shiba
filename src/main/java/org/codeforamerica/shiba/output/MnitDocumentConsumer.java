@@ -81,15 +81,21 @@ public class MnitDocumentConsumer {
     // Send the CAF, CCAP, and XML files in parallel
     List<Thread> threads = createThreadsForSendingThisApplication(application, id);
     StateMachine machine = this.stateMachineService.acquireStateMachine(application.getId());
-    machine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_DOC);
+    if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_DOC)) {
+      log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.SENDING_DOC);
+    }
 
     // Wait for everything to finish before returning
     threads.forEach(thread -> {
       try {
         thread.join();
-        machine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
+        if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS)) {
+          log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
+        }
       } catch (InterruptedException e) {
-        machine.sendEvent(StatesAndEvents.DeliveryEvents.SEND_ERROR);
+        if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.SEND_ERROR)) {
+          log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.SEND_ERROR);
+        }
         log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });

@@ -171,7 +171,9 @@ class MnitDocumentConsumerTest {
   @AfterEach
   void afterEach() {
     resetApplicationData(applicationData);
-    this.stateMachineService.releaseStateMachine(applicationData.getId());
+    if (null != applicationData.getId()) {
+      this.stateMachineService.releaseStateMachine(applicationData.getId());
+    }
   }
 
   @Test
@@ -184,11 +186,11 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, routingDestination);
+    verify(xmlGenerator).generate("someId", CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, routingDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, routingDestination, application.getId(), XML, FULL);
+    verify(mnitClient).send(pdfApplicationFile, routingDestination, "someId", CAF, FULL);
+    verify(mnitClient).send(xmlApplicationFile, routingDestination, "someId", XML, FULL);
   }
 
   @ParameterizedTest
@@ -214,12 +216,12 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(expectedCounty);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, routingDestination);
+    verify(xmlGenerator).generate("someId", CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), application.getId(),
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), "someId",
         CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), application.getId(),
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), "someId",
         XML, FULL);
   }
 
@@ -240,13 +242,13 @@ class MnitDocumentConsumerTest {
 
     TribalNationRoutingDestination routingDestination = tribalNations.get(
         MILLE_LACS_BAND_OF_OJIBWE);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, routingDestination);
+    verify(xmlGenerator).generate("someId", CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
     verify(mnitClient).send(pdfApplicationFile, routingDestination,
-        application.getId(), CAF, FULL);
+        "someId", CAF, FULL);
     verify(mnitClient).send(xmlApplicationFile, routingDestination,
-        application.getId(), XML, FULL);
+        "someId", XML, FULL);
   }
 
   @Test
@@ -268,12 +270,12 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination olmstedRoutingDestination = countyMap.get(Olmsted);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, olmstedRoutingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, olmstedRoutingDestination);
+    verify(xmlGenerator).generate("someId", CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, olmstedRoutingDestination, application.getId(), CAF,
+    verify(mnitClient).send(pdfApplicationFile, olmstedRoutingDestination, "someId", CAF,
         FULL);
-    verify(mnitClient).send(xmlApplicationFile, olmstedRoutingDestination, application.getId(), XML,
+    verify(mnitClient).send(xmlApplicationFile, olmstedRoutingDestination, "someId", XML,
         FULL);
   }
 
@@ -310,17 +312,17 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processCafAndCcap(application);
 
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, countyDestination);
-    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, nationDestination);
-    verify(pdfGenerator).generate(application.getId(), CCAP, CASEWORKER, countyDestination);
-    verify(xmlGenerator, times(2)).generate(application.getId(), CAF, CASEWORKER);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, countyDestination);
+    verify(pdfGenerator).generate("someId", CAF, CASEWORKER, nationDestination);
+    verify(pdfGenerator).generate("someId", CCAP, CASEWORKER, countyDestination);
+    verify(xmlGenerator, times(2)).generate("someId", CAF, CASEWORKER);
     verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(nationCaf, nationDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, nationDestination, application.getId(), XML, FULL);
-    verify(mnitClient).send(countycaf, countyDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, countyDestination, application.getId(), XML, FULL);
+    verify(mnitClient).send(nationCaf, nationDestination, "someId", CAF, FULL);
+    verify(mnitClient).send(xmlFile, nationDestination, "someId", XML, FULL);
+    verify(mnitClient).send(countycaf, countyDestination, "someId", CAF, FULL);
+    verify(mnitClient).send(xmlFile, countyDestination, "someId", XML, FULL);
     // CCAP never goes to Mille Lacs
-    verify(mnitClient).send(ccap, countyDestination, application.getId(), CCAP, FULL);
+    verify(mnitClient).send(ccap, countyDestination, "someId", CCAP, FULL);
   }
 
   @Test
@@ -343,9 +345,9 @@ class MnitDocumentConsumerTest {
 
     // Send CCAP and XML (but not CAF)
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
+    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), "someId", CCAP,
         FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), XML,
+    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), "someId", XML,
         FULL);
   }
 
@@ -362,9 +364,9 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
-    verify(applicationStatusRepository).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository).createOrUpdate("someId",
         CAF, routingDestination.getName(), SENDING,null);
-    verify(applicationStatusRepository).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository).createOrUpdate("someId",
         CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
   }
 
@@ -384,12 +386,12 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Hennepin);
-    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate("someId",
         CCAP, routingDestination.getName(), SENDING,"someFile.pdf");
-    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate("someId",
         CAF, routingDestination.getName(), SENDING,null);
     verify(applicationStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
-        application.getId(),
+            "someId",
         CCAP, routingDestination.getName(), DELIVERY_FAILED,"someFile.pdf");
   }
 
@@ -411,17 +413,17 @@ class MnitDocumentConsumerTest {
     }
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(applicationStatusRepository, times(1)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository, times(1)).createOrUpdate("someId",
         UPLOADED_DOC, routingDestination.getName(), SENDING,null);
     verify(applicationStatusRepository, timeout(2000).atLeastOnce()).createOrUpdate(
-        application.getId(),
+            "someId",
         UPLOADED_DOC, routingDestination.getName(), DELIVERY_FAILED,null);
   }
 
   @Test
   void sendsApplicationIdToMonitoringService() {
     documentConsumer.processCafAndCcap(application);
-    verify(monitoringService).setApplicationId(application.getId());
+    verify(monitoringService).setApplicationId("someId");
   }
 
   @Test
@@ -438,14 +440,14 @@ class MnitDocumentConsumerTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(mnitClient, times(2))
-        .send(captor.capture(), eq(countyMap.get(Olmsted)), eq(application.getId()),
+        .send(captor.capture(), eq(countyMap.get(Olmsted)), eq("someId"),
             eq(UPLOADED_DOC), any());
     verify(mnitClient, times(0)).send(any(), any(),
-        eq(application.getId()), eq(XML), any()); // XMLs only for Dakota
+        eq("someId"), eq(XML), any()); // XMLs only for Dakota
 
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
-    //    Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
-    //    Utils.writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
+        //Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
+        //Utils.writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
 
     // Assert that converted file contents are as expected
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");
@@ -468,11 +470,11 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-    verify(mnitClient).send(captor.capture(), eq(countyMap.get(Dakota)), eq(application.getId()),
+    verify(mnitClient).send(captor.capture(), eq(countyMap.get(Dakota)), eq("someId"),
         eq(UPLOADED_DOC), any());
 
     verify(mnitClient).send(eq(xmlApplicationFile), eq(countyMap.get(Dakota)),
-        eq(application.getId()), eq(XML), any());
+        eq("someId"), eq(XML), any());
   }
 
   @Test
@@ -529,7 +531,7 @@ class MnitDocumentConsumerTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(mnitClient).send(captor.capture(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
-        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+        eq("someId"), eq(UPLOADED_DOC), eq(FULL));
     assertThat(captor.getValue().getFileName()).isEqualTo("MILLE_LACS_pdf1of1.pdf");
   }
 
@@ -548,7 +550,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
-    verify(applicationStatusRepository,times(2)).createOrUpdate(application.getId(),
+    verify(applicationStatusRepository,times(2)).createOrUpdate("someId",
         UPLOADED_DOC, routingDestination.getName(), SENDING,null);
   }
 
@@ -582,7 +584,7 @@ class MnitDocumentConsumerTest {
     try (var actual = new ByteArrayInputStream(actualFileBytes);
         var expected = Files.newInputStream(getAbsoluteFilepath(expectedFile))) {
       var compareResult = new PdfComparator<>(expected, actual).compare();
-//            compareResult.writeTo("diffOutput"); // uncomment this line to print the diff between the two pdfs
+            compareResult.writeTo("diffOutput"); // uncomment this line to print the diff between the two pdfs
       assertThat(compareResult.isEqual()).isTrue();
     }
   }
