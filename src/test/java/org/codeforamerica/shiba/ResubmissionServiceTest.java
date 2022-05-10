@@ -76,10 +76,9 @@ class ResubmissionServiceTest {
     Map<String, TribalNationRoutingDestination> tribalNations = new TribalNationConfiguration().localTribalNations();
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
         FeatureFlagConfiguration.class));
-    FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(Map.of());
     filenameGenerator = new FilenameGenerator(countyMap);
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
-        pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher, featureFlagConfiguration);
+        pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher);
   }
 
   @Test
