@@ -4,7 +4,6 @@ import static java.time.ZonedDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
@@ -14,7 +13,7 @@ import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,6 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
@@ -42,6 +39,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+
 @SpringBootTest
 @ActiveProfiles("test")
 // drop all applications and application statuses before this test runs to avoid test pollution
@@ -61,25 +59,20 @@ class AppsWithBlankStatusResubmissionTest {
   private PageEventPublisher pageEventPublisher;
 
   @MockBean
-  private FeatureFlagConfiguration featureFlagConfiguration;
+  private ClientRegistrationRepository repository;
 
   @MockBean
-  private ClientRegistrationRepository repository;
-  
-  @MockBean
   private DocumentRepository documentRepository;
-  
+
   @MockBean
   private PdfGenerator pdfGenerator;
-  
+
   private final ZonedDateTime moreThan60DaysAgo = now().withFixedOffsetZone().minusDays(60)
       .minusNanos(1);
   private final ZonedDateTime tenHoursAgo = now().withFixedOffsetZone().minusHours(10);
 
   @Test
   void itTriggersAnEventForAppsWithMissingStatuses() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.OFF);
     for (int i = 0; i < 31; i++) {
       if (i == 0) {
         makeBlankStatusLaterDocApplication(Integer.toString(i), Hennepin,
@@ -111,8 +104,6 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void itDoesNotTriggerAnEventForAppsThatShouldNotBeResubmitted() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.OFF);
     String applicationIdToResubmit = makeBlankStatusApplication("1", Hennepin, tenHoursAgo).getId();
     String appWithExistingStatus = makeSendingApplicationThatShouldNotBeResubmitted().getId();
     String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("4", Anoka,
@@ -150,59 +141,62 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void setsApplicationsWithDocsOlderThan60DaysAsUndeliverable() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.OFF);
     String appWithUploadedDocsOlderThan60Days = makeBlankStatusApplication("48",
         Hennepin, moreThan60DaysAgo).getId();
     String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("51",
         Hennepin, moreThan60DaysAgo, true).getId();
 
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-    List<String> appWithUploadedDocsOlderThan60DaysFilename = applicationStatusRepository.getAndSetFileNames(makeBlankStatusApplication("48",
-        Hennepin, moreThan60DaysAgo),CAF);
-    List<String> appWithUploadedDocsOlderThan60DaysFileNames = applicationStatusRepository.getAndSetFileNames(makeBlankStatusApplication("48",
-        Hennepin, moreThan60DaysAgo),UPLOADED_DOC);
-    List<String> laterDocsSubmissionOlderThan60DaysFileNames = applicationStatusRepository.getAndSetFileNames(makeBlankStatusLaterDocApplication("51",
-        Hennepin, moreThan60DaysAgo, true),UPLOADED_DOC);
-    
+    List<String> appWithUploadedDocsOlderThan60DaysFilename = applicationStatusRepository.getAndSetFileNames(
+        makeBlankStatusApplication("48",
+            Hennepin, moreThan60DaysAgo), CAF);
+    List<String> appWithUploadedDocsOlderThan60DaysFileNames = applicationStatusRepository.getAndSetFileNames(
+        makeBlankStatusApplication("48",
+            Hennepin, moreThan60DaysAgo), UPLOADED_DOC);
+    List<String> laterDocsSubmissionOlderThan60DaysFileNames = applicationStatusRepository.getAndSetFileNames(
+        makeBlankStatusLaterDocApplication("51",
+            Hennepin, moreThan60DaysAgo, true), UPLOADED_DOC);
+
     assertThat(applicationStatusRepository.findAll(
         appWithUploadedDocsOlderThan60Days)).containsExactlyInAnyOrder(
-        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING, appWithUploadedDocsOlderThan60DaysFilename.get(0)),
+        new ApplicationStatus(appWithUploadedDocsOlderThan60Days, CAF, "Hennepin", SENDING,
+            appWithUploadedDocsOlderThan60DaysFilename.get(0)),
         new ApplicationStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE,appWithUploadedDocsOlderThan60DaysFileNames.get(0)),
+            Status.UNDELIVERABLE, appWithUploadedDocsOlderThan60DaysFileNames.get(0)),
         new ApplicationStatus(appWithUploadedDocsOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE,appWithUploadedDocsOlderThan60DaysFileNames.get(1))
+            Status.UNDELIVERABLE, appWithUploadedDocsOlderThan60DaysFileNames.get(1))
     );
     assertThat(applicationStatusRepository.findAll(
         laterDocsSubmissionOlderThan60Days)).containsExactlyInAnyOrder(
         new ApplicationStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE,laterDocsSubmissionOlderThan60DaysFileNames.get(0)),
+            Status.UNDELIVERABLE, laterDocsSubmissionOlderThan60DaysFileNames.get(0)),
         new ApplicationStatus(laterDocsSubmissionOlderThan60Days, UPLOADED_DOC, "Hennepin",
-            Status.UNDELIVERABLE,laterDocsSubmissionOlderThan60DaysFileNames.get(1))
+            Status.UNDELIVERABLE, laterDocsSubmissionOlderThan60DaysFileNames.get(1))
 
     );
   }
 
   @Test
   void shouldSetLaterDocsAppsWithNoDocumentsToUndeliverableAndNotPublishSubmissionEvents() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.OFF);
     Application laterDocsWithoutDocuments = makeBlankStatusLaterDocApplication("60", Hennepin,
         now(), false);
     Application laterDocsWithDocuments = makeBlankStatusLaterDocApplication("61", Hennepin,
         now().minusMinutes(5), true);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-    List<String> laterDocsWithoutDocumentsFileNames = applicationStatusRepository.getAndSetFileNames(laterDocsWithoutDocuments, UPLOADED_DOC);
-    List<String> laterDocsWithDocumentsFileNames = applicationStatusRepository.getAndSetFileNames(laterDocsWithDocuments, UPLOADED_DOC);
+    List<String> laterDocsWithoutDocumentsFileNames = applicationStatusRepository.getAndSetFileNames(
+        laterDocsWithoutDocuments, UPLOADED_DOC);
+    List<String> laterDocsWithDocumentsFileNames = applicationStatusRepository.getAndSetFileNames(
+        laterDocsWithDocuments, UPLOADED_DOC);
     assertThat(applicationStatusRepository.findAll(laterDocsWithDocuments.getId())).contains(
-        new ApplicationStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING,laterDocsWithDocumentsFileNames.get(0))
+        new ApplicationStatus(laterDocsWithDocuments.getId(), UPLOADED_DOC, "Hennepin", SENDING,
+            laterDocsWithDocumentsFileNames.get(0))
     );
     verify(pageEventPublisher).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocuments.getId(),
             LocaleContextHolder.getLocale()));
     assertThat(applicationStatusRepository.findAll(laterDocsWithoutDocuments.getId())).contains(
         new ApplicationStatus(laterDocsWithoutDocuments.getId(), UPLOADED_DOC, "Hennepin",
-            UNDELIVERABLE,laterDocsWithoutDocumentsFileNames.get(0))
+            UNDELIVERABLE, laterDocsWithoutDocumentsFileNames.get(0))
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithoutDocuments.getId(),
@@ -211,47 +205,20 @@ class AppsWithBlankStatusResubmissionTest {
 
   @Test
   void shouldSetLaterDocsAppsWithAllFilesOfSize0BytesToUndeliverableAndNotPublishSubmissionEvents() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.OFF);
     Application laterDocsWithDocsOfSize0Bytes = makeBlankStatusLaterDocApplication("71", Hennepin,
         now().minusMinutes(5), true);
     laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs()
         .forEach(doc -> doc.setSize(0));
     applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-    List<String> laterDocsWithDocsOfSize0BytesFileNames = applicationStatusRepository.getAndSetFileNames(laterDocsWithDocsOfSize0Bytes, UPLOADED_DOC);
+    List<String> laterDocsWithDocsOfSize0BytesFileNames = applicationStatusRepository.getAndSetFileNames(
+        laterDocsWithDocsOfSize0Bytes, UPLOADED_DOC);
     assertThat(applicationStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
         new ApplicationStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
-            UNDELIVERABLE,laterDocsWithDocsOfSize0BytesFileNames.get(0))
+            UNDELIVERABLE, laterDocsWithDocsOfSize0BytesFileNames.get(0))
     );
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocsOfSize0Bytes.getId(),
-            LocaleContextHolder.getLocale()));
-  }
-
-  @Test
-  void ensureOnlyOlmstedAppsAreRetriggeredWhenFeatureFlagIsOn() {
-    when(featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted")).thenReturn(
-        FeatureFlag.ON);
-    Application olmstedApp = makeBlankStatusApplication("1", Olmsted, tenHoursAgo);
-    Application olmstedDoc = makeBlankStatusLaterDocApplication("12", Olmsted, tenHoursAgo, true);
-    Application notOlmstedApp = makeBlankStatusApplication("2", Anoka, tenHoursAgo);
-
-    resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-
-    verify(pageEventPublisher).publish(
-        new ApplicationSubmittedEvent("resubmission", olmstedApp.getId(), FlowType.FULL,
-            LocaleContextHolder.getLocale()));
-    verify(pageEventPublisher).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", olmstedDoc.getId(),
-            LocaleContextHolder.getLocale()));
-
-    verify(pageEventPublisher, never()).publish(
-        new ApplicationSubmittedEvent("resubmission", notOlmstedApp.getId(),
-            FlowType.FULL,
-            LocaleContextHolder.getLocale()));
-    verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", notOlmstedApp.getId(),
             LocaleContextHolder.getLocale()));
   }
 
@@ -323,7 +290,7 @@ class AppsWithBlankStatusResubmissionTest {
         applicationId,
         CAF,
         "Anoka",
-        SENDING,"");
+        SENDING, "");
 
     return applicationThatShouldNotBeResubmitted;
   }

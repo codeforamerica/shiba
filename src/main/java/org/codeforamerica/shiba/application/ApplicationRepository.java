@@ -149,24 +149,6 @@ public class ApplicationRepository {
     );
   }
 
-  public List<Application> findApplicationsWithBlankStatuses(County county) {
-    return jdbcTemplate.query(
-        "WITH no_status_apps as ( "
-            + "select id, count(status) "
-            + "from applications left join application_status on applications.id = application_status.application_id "
-            + "where completed_at is not null and "
-            + "county = ?"
-            + "group by id "
-            + "having count(status) = 0 "
-            + ") "
-            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by completed_at "
-            + "LIMIT 30",
-        applicationRowMapper(),
-        county.toString()
-    );
-  }
-
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
     return Optional.ofNullable(timestamp)
         .map(time -> ZonedDateTime.ofInstant(time.toInstant(), ZoneOffset.UTC))
