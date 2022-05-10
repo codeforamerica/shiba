@@ -47,7 +47,6 @@ public class ResubmissionService {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final PageEventPublisher pageEventPublisher;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
 
 
   public ResubmissionService(ApplicationRepository applicationRepository,
@@ -55,15 +54,13 @@ public class ResubmissionService {
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService,
       ApplicationStatusRepository applicationStatusRepository,
-      PageEventPublisher pageEventPublisher,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+      PageEventPublisher pageEventPublisher) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.pageEventPublisher = pageEventPublisher;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   @Scheduled(
@@ -146,15 +143,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "noStatusEsbResubmissionTask", lockAtMostFor = "${no-status-applications-resubmission.lockAtMostFor}", lockAtLeastFor = "${no-status-applications-resubmission.lockAtLeastFor}")
   public void resubmitBlankStatusApplicationsViaEsb() {
     log.info("Checking for applications that have no statuses");
-
-    List<Application> applicationsWithBlankStatuses;
-
-    if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted").isOn()) {
-      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(
-          Olmsted);
-    } else {
-      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
-    }
+    List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
 
     MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
     log.info(
@@ -248,8 +237,7 @@ public class ResubmissionService {
     var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     var failedDoc = uploadedDocs.stream()
-        .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName))
-        .collect(Collectors.toList());
+        .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName)).toList();
     ApplicationFile fileToSend =
         pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage, routingDestination);
     var esbFilename = fileToSend.getFileName();
