@@ -177,6 +177,10 @@ compileJava {
     inputs.files(processResources)
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+
 def unitTest = tasks.register("unitTest", Test) {
     Test task ->
         task.useJUnitPlatform {
