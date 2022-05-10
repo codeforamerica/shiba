@@ -179,12 +179,7 @@ public class ResubmissionService {
             List.of(CAF, CCAP, CERTAIN_POPS)
                 .contains(documentStatus.getDocumentType())).map(
             ApplicationStatus::getDocumentType
-        ).collect(Collectors.toList());
-
-    if (shouldDeleteDocumentStatuses) {
-      // Will be recreated on submit event
-      applicationStatusRepository.delete(id, documentTypesInSending);
-    }
+        ).toList();
 
     boolean shouldRefireAppSubmittedEvent = documentTypesInSending.stream()
         .anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));

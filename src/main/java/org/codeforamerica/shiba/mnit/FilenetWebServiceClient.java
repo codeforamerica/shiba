@@ -95,7 +95,7 @@ public class FilenetWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void send(ApplicationFile applicationFile,
+  public void sendToFilenet(ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {

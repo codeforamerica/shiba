@@ -39,7 +39,7 @@ public class MnitDocumentConsumer {
   private final MonitoringService monitoringService;
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationStatusRepository applicationStatusRepository;
-  private final FilenetWebServiceClient mnitFilenetClient;
+  private final FilenetWebServiceClient mnitClient;
   private final FilenameGenerator filenameGenerator;
   private final UploadedDocsPreparer uploadedDocsPreparer;
 
@@ -48,7 +48,7 @@ public class MnitDocumentConsumer {
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
       ApplicationStatusRepository applicationStatusRepository,
-      FilenetWebServiceClient mnitFilenetClient,
+      FilenetWebServiceClient mnitClient,
       FilenameGenerator filenameGenerator,
       UploadedDocsPreparer uploadedDocsPreparer) {
     this.xmlGenerator = xmlGenerator;
@@ -56,7 +56,7 @@ public class MnitDocumentConsumer {
     this.monitoringService = monitoringService;
     this.routingDecisionService = routingDecisionService;
     this.applicationStatusRepository = applicationStatusRepository;
-    this.mnitFilenetClient = mnitFilenetClient;
+    this.mnitClient = mnitClient;
     this.filenameGenerator = filenameGenerator;
     this.uploadedDocsPreparer = uploadedDocsPreparer;
   }
@@ -102,7 +102,7 @@ public class MnitDocumentConsumer {
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      Thread thread = new Thread(() -> mnitFilenetClient.send(xml, rd, application.getId(), XML,
+      Thread thread = new Thread(() -> mnitClient.sendToFilenet(xml, rd, application.getId(), XML,
           application.getFlow()));
       thread.start();
       threads.add(thread);
@@ -155,8 +155,9 @@ public class MnitDocumentConsumer {
       applicationStatusRepository.createOrUpdate(application.getId(), document,
           routingDestination.getName(),
           SENDING, renamedFile.getFileName());
-      mnitFilenetClient.send(renamedFile, routingDestination, application.getId(), document,
+      mnitClient.sendToFilenet(renamedFile, routingDestination, application.getId(), document,
           application.getFlow());
+//      mnitFilenetClient.sendToSftp(docIdInFilenet)
     } catch (Exception e) {
       applicationStatusRepository.createOrUpdate(application.getId(), document,
           routingDestination.getName(),
