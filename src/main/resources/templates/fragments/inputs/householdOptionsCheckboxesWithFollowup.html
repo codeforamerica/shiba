@@ -5,11 +5,9 @@ This needs to be custom because we're formatting the application data values tha
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
           			inputData=${data.get(input.name)},
           			inputFollowupsName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.followUps[0].name)},
-          			followUpValues=${input.followUpValues},
                     inputDataNames=${data.get(input.name)},
+					sortedHouseholdMembers=${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberSort(inputDataNames.value)},
                     inputFollowupData=${data.get(input.followUps[0].name)},
-                    inputDataValues=${data.get(input.name)},
-                    
                     hasError=${!data.isValid() && !inputData.valid(data)},
                     hasHelpMessage=${input.helpMessageKey != null},
                     yourFullName=${input.options.datasources.get('personalInfo').get('firstName').value[0] + ' ' + input.options.datasources.get('personalInfo').get('lastName').value[0]},
@@ -25,7 +23,7 @@ This needs to be custom because we're formatting the application data values tha
 		                 th:id="${formInputName}"
 		                 th:value="${yourFullName} + ' applicant'"
 		                 th:name="${formInputName}"
-		                 th:checked="${inputDataNames.value.contains(yourFullName + ' applicant')}"
+		                 th:checked="${T(org.codeforamerica.shiba.pages.PageUtils).listOfNamesContainsName(sortedHouseholdMembers, yourFullName)}"
 		                 th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                                         aria-invalid=${hasError},
                                         aria-label=${needsAriaLabel ? input.name : ''}"
@@ -35,7 +33,7 @@ This needs to be custom because we're formatting the application data values tha
           </fieldset>
       </div>
 </div>
-       
+
       <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
 		      <th:block th:each="youFollowUp: ${input.followUps}">
 		     <!--/* Instead of calling the followUp fragment, just use the html from that fragment.  <div
@@ -60,19 +58,17 @@ This needs to be custom because we're formatting the application data values tha
 			                   th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[0] : ''}"
 			            >
 			        </div>
-			        
-			      </th:block><!--/* END of switch case block for input types */-->		            
-		            
-		            
-		      </th:block> 
+			      </th:block><!--/* END of switch case block for input types */-->		  
+			                
+		      </th:block> <!--/* END of each block for followups */-->	
       </div>
 </div>
 <!--end of YOU with followup -->
 <!--start of household members with followup -->
         <th:block th:each="iteration, iterationStat: ${input.options.subworkflows.get('household')}"
         th:with="fullName=${iteration.getPagesData().get('householdMemberInfo').get('firstName').value[0]} + ' ' + ${iteration.getPagesData().get('householdMemberInfo').get('lastName').value[0]}"
-        
         >
+
             <div class="question-with-follow-up" >
 	            <div class="question-with-follow-up__question">
 				<div class="form-group">
@@ -83,7 +79,7 @@ This needs to be custom because we're formatting the application data values tha
 			                   th:id="|${formInputName}${iterationStat.index}|"
 			                   th:value="${fullName} + ' ' + ${iteration.id}"
 			                   th:name="${formInputName}"
-			                   th:checked="${inputDataNames.value.contains(fullName)}"
+			                   th:checked="${T(org.codeforamerica.shiba.pages.PageUtils).listOfNamesContainsName(sortedHouseholdMembers, fullName)}"
 			                   th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
 	                                        aria-invalid=${hasError},
 	                                        aria-label=${needsAriaLabel ? input.name : ''}"

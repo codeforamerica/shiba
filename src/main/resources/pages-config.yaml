@@ -2120,7 +2120,6 @@ pageDefinitions:
     headerKey: social-security-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
     contextFragment: authorizedRepContextFragment
-    # usingPageTemplateFragment: false -if set to false, it fails because it can't find the custom html file with this name.
     inputs:
       - type: CUSTOM
         name: monthlyIncomeSSorRSDI
@@ -2134,11 +2133,15 @@ pageDefinitions:
             - pageName: personalInfo
             - groupName: household
         followUpValues:
-          #- unearnedIncomeSSorRSDI
           - monthlyIncomeSSorRSDI
         followUps:
           - name: monthlyIncomeSSorRSDIamount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &supplementalSecurityIncomeSource
@@ -2151,10 +2154,23 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeSSI
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeSSI
+        followUps:
+          - name: monthlyIncomeSSIamount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &veteransBenefitsIncomeSource
     name: veteransBenefitsIncomeSource
     pageTitle: unearned-income-source.title
@@ -2165,10 +2181,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeVeteransBenefits
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeVeteransBenefits
+        followUps:
+          - name: monthlyIncomeVeteransBenefitsAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &unemploymentIncomeSource
     name: unemploymentIncomeSource
     pageTitle: unearned-income-source.title
@@ -2179,10 +2203,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeUnemployment
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeUnemployment
+        followUps:
+          - name: monthlyIncomeUnemploymentAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &workersCompIncomeSource
     name: workersCompIncomeSource
     pageTitle: unearned-income-source.title
@@ -2193,10 +2225,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeWorkersComp
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeWorkersComp
+        followUps:
+          - name: monthlyIncomeWorkersCompAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &retirementIncomeSource
     name: retirementIncomeSource
     pageTitle: unearned-income-source.title
@@ -2207,10 +2247,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeRetirement
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeRetirement
+        followUps:
+          - name: monthlyIncomeRetirementAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &childOrSpousalSupportIncomeSource
     name: childOrSpousalSupportIncomeSource
     pageTitle: unearned-income-source.title
@@ -2221,10 +2269,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeChildSpousalSupport
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeChildOrSpousalSupport
+        followUps:
+          - name: monthlyIncomeChildOrSpouscalSupportAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
   - &tribalPaymentIncomeSource
     name: tribalPaymentIncomeSource
     pageTitle: unearned-income-source.title
@@ -2235,10 +2291,18 @@ pageDefinitions:
       - type: CUSTOM
         name: unearnedIncomeSSorRSDI
         customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+        followUpValues:
+          - monthlyIncomeTribalPayment
+        followUps:
+          - name: monthlyIncomeTribalPaymentAmount
+            type: MONEY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
 # End of unearned income source pages
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
