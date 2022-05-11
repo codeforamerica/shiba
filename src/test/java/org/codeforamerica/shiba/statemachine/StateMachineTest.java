@@ -5,11 +5,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.test.context.ActiveProfiles;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -32,18 +39,54 @@ public class StateMachineTest {
     }
 
     @Test
-    void shouldRespondToOneEvent() {
-        boolean eventResult = this.testMachine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_APP);
-        assertThat(eventResult).isEqualTo(true);
+    void shouldRespondToOneEvent() throws Exception {
+
+        Message<StatesAndEvents.DeliveryEvents> event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SENDING_APP).build();
+        AtomicBoolean complete = new AtomicBoolean(false);
+
+        this.testMachine.sendEvent(Mono.just(event))
+                .doOnComplete(() -> {
+                    complete.set(true);
+                })
+                .doOnError(t -> { fail("Sending event to test machine failed: " + t.getMessage());
+                })
+                .subscribe();
+
+        assertThat(complete.get()).isEqualTo(true);
         assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.APPLICATION_SENDING);
     }
 
     @Test
     void fullSequencewithNoErrors() {
-        boolean eventResult = this.testMachine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_APP);
-        assertThat(eventResult).isEqualTo(true);
+
+        Message<StatesAndEvents.DeliveryEvents> sending_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SENDING_APP).build();
+
+        AtomicBoolean complete = new AtomicBoolean(false);
+
+        this.testMachine.sendEvent(Mono.just(sending_event))
+                .doOnComplete(() -> {
+                    complete.set(true);
+                })
+                .doOnError(t -> { fail("Sending event to test machine failed: " + t.getMessage());
+                })
+                .subscribe();
+
+        assertThat(complete.get()).isEqualTo(true);
+
         assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.APPLICATION_SENDING);
-        eventResult = this.testMachine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
+
+        Message<StatesAndEvents.DeliveryEvents> success_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS).build();
+
+        this.testMachine.sendEvent(Mono.just(success_event))
+                .doOnComplete(() -> {
+                    complete.set(true);
+                })
+                .doOnError(t -> { fail("Sending event to test machine failed: " + t.getMessage());
+                })
+                .subscribe();
+
+        assertThat(complete.get()).isEqualTo(true);
+
         assertThat(this.testMachine.getState().getId()).isEqualTo(StatesAndEvents.DeliveryStates.SENT);
     }
 
