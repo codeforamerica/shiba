@@ -33,9 +33,12 @@ import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.service.StateMachineService;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 @Slf4j
@@ -80,22 +83,43 @@ public class MnitDocumentConsumer {
 
     // Send the CAF, CCAP, and XML files in parallel
     List<Thread> threads = createThreadsForSendingThisApplication(application, id);
-    StateMachine machine = this.stateMachineService.acquireStateMachine(application.getId());
-    if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.SENDING_DOC)) {
-      log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.SENDING_DOC);
-    }
+
+    StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine = this.stateMachineService.acquireStateMachine(application.getId());
+
+    Message<StatesAndEvents.DeliveryEvents> sending_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SENDING_APP).build();
+    machine.sendEvent(Mono.just(sending_event))
+            .doOnComplete(() -> {
+              log.info("Sent event " + sending_event.toString() +  " to " +machine.getId());
+            })
+            .doOnError(t -> { log.error("Failed event " + sending_event.toString() +  " to " + machine.getId());
+            })
+            .subscribe();
 
     // Wait for everything to finish before returning
     threads.forEach(thread -> {
       try {
         thread.join();
-        if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS)) {
-          log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS);
-        }
+
+        Message<StatesAndEvents.DeliveryEvents> success_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS).build();
+        machine.sendEvent(Mono.just(success_event))
+                .doOnComplete(() -> {
+                  log.info("Sent event " + success_event.toString() +  " to " +machine.getId());
+                })
+                .doOnError(t -> { log.error("Failed event " + success_event.toString() +  " to " + machine.getId());
+                })
+                .subscribe();
+
       } catch (InterruptedException e) {
-        if (!machine.sendEvent(StatesAndEvents.DeliveryEvents.SEND_ERROR)) {
-          log.error(machine.getId() + " failed to accept event : " + StatesAndEvents.DeliveryEvents.SEND_ERROR);
-        }
+
+        Message<StatesAndEvents.DeliveryEvents> error_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS).build();
+        machine.sendEvent(Mono.just(error_event))
+                .doOnComplete(() -> {
+                  log.info("Sent event " + error_event.toString() +  " to " +machine.getId());
+                })
+                .doOnError(t -> { log.error("Failed event " + error_event.toString() +  " to " + machine.getId());
+                })
+                .subscribe();
+
         log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });
