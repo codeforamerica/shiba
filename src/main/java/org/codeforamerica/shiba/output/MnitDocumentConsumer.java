@@ -86,15 +86,6 @@ public class MnitDocumentConsumer {
 
     StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine = this.stateMachineService.acquireStateMachine(application.getId());
 
-    Message<StatesAndEvents.DeliveryEvents> sending_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SENDING_APP).build();
-    machine.sendEvent(Mono.just(sending_event))
-            .doOnComplete(() -> {
-              log.info("Sent event " + sending_event.toString() +  " to " +machine.getId());
-            })
-            .doOnError(t -> { log.error("Failed event " + sending_event.toString() +  " to " + machine.getId());
-            })
-            .subscribe();
-
     // Wait for everything to finish before returning
     threads.forEach(thread -> {
       try {
@@ -104,10 +95,12 @@ public class MnitDocumentConsumer {
         machine.sendEvent(Mono.just(success_event))
                 .doOnComplete(() -> {
                   log.info("Sent event " + success_event.toString() +  " to " +machine.getId());
+                  this.stateMachineService.releaseStateMachine(application.getId());
                 })
                 .doOnError(t -> { log.error("Failed event " + success_event.toString() +  " to " + machine.getId());
                 })
                 .subscribe();
+
 
       } catch (InterruptedException e) {
 
@@ -123,6 +116,7 @@ public class MnitDocumentConsumer {
         log.error("Thread interrupted for application with id " + application.getId(), e);
       }
     });
+
   }
 
   @NotNull
@@ -146,7 +140,7 @@ public class MnitDocumentConsumer {
         thread.start();
         log.info(
             "Started Thread for: " + doc.name() + " with filename: " + pdf.getFileName() + " to: "
-                + rd.getName());
+                + rd.getName() + "thread ID: " + thread.getId()) ;
         threads.add(thread);
       }
     });

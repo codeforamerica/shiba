@@ -22,10 +22,16 @@ import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
 import org.slf4j.MDC;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Component;
+import org.springframework.statemachine.service.StateMachineService;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -37,6 +43,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
   private final FeatureFlagConfiguration featureFlags;
+  private final StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService;
 
   public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
@@ -45,7 +52,8 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
       FeatureFlagConfiguration featureFlagConfiguration,
-      MonitoringService monitoringService) {
+      MonitoringService monitoringService,
+      StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService ) {
     super(applicationRepository, monitoringService);
     this.mnitDocumentConsumer = mnitDocumentConsumer;
     this.emailClient = emailClient;
@@ -53,6 +61,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.pdfGenerator = pdfGenerator;
     this.featureFlags = featureFlagConfiguration;
+    this.stateMachineService = stateMachineService;
   }
 
   @Async
@@ -63,6 +72,18 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     if (featureFlags.get("submit-via-api").isOn()) {
       Application application = getApplicationFromEvent(event);
       logTimeSinceCompleted(application);
+
+      StateMachine<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> machine = this.stateMachineService.acquireStateMachine(application.getId());
+
+      Message<StatesAndEvents.DeliveryEvents> sending_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SENDING_APP).build();
+      machine.sendEvent(Mono.just(sending_event))
+              .doOnComplete(() -> {
+                log.info("Sent machine event " + sending_event.toString() +  " to " +machine.getId());
+              })
+              .doOnError(t -> { log.error("Failed machine event " + sending_event.toString() +  " to " + machine.getId());
+              })
+              .subscribe();
+
       mnitDocumentConsumer.processCafAndCcap(application);
     }
     MDC.clear();

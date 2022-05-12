@@ -30,6 +30,10 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.statemachine.StatesAndEvents;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.statemachine.service.StateMachineService;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -37,7 +41,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class ApplicationSubmittedListenerTest {
 
   MnitDocumentConsumer mnitDocumentConsumer = mock(MnitDocumentConsumer.class);
@@ -53,6 +60,9 @@ class ApplicationSubmittedListenerTest {
   MonitoringService monitoringService = mock(MonitoringService.class);
   ApplicationSubmittedListener applicationSubmittedListener;
 
+  @Autowired
+  private StateMachineService<StatesAndEvents.DeliveryStates, StatesAndEvents.DeliveryEvents> stateMachineService;
+
   @BeforeEach
   void setUp() {
     LocaleContextHolder.setLocale(Locale.ENGLISH);
@@ -65,7 +75,9 @@ class ApplicationSubmittedListenerTest {
         ccapExpeditedEligibilityDecider,
         pdfGenerator,
         featureFlagConfiguration,
-        monitoringService);
+        monitoringService,
+        stateMachineService);
+
   }
 
   @Nested
