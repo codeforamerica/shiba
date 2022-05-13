@@ -2128,6 +2128,9 @@ pageDefinitions:
         # Do not use the standard way of wrapping the divs with class="question-with-follow-up__question" around inputs.
         # Let the custom followup wrap the class="question-with-follow-up__question" divs.
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2152,9 +2155,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeSSI
+        name: monthlyIncomeSSI
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2179,9 +2185,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeVeteransBenefits
+        name: monthlyIncomeVeteransBenefits
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2191,6 +2200,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeVeteransBenefitsAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &unemploymentIncomeSource
@@ -2201,9 +2215,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeUnemployment
+        name: monthlyIncomeUnemployment
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2213,6 +2230,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeUnemploymentAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &workersCompIncomeSource
@@ -2223,9 +2245,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeWorkersComp
+        name: monthlyIncomeWorkersComp
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2235,6 +2260,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeWorkersCompAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &retirementIncomeSource
@@ -2245,9 +2275,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeRetirement
+        name: monthlyIncomeRetirement
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2257,6 +2290,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeRetirementAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &childOrSpousalSupportIncomeSource
@@ -2267,9 +2305,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeChildSpousalSupport
+        name: monthlyIncomeChildOrSpousalSupport
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2279,6 +2320,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeChildOrSpouscalSupportAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
   - &tribalPaymentIncomeSource
@@ -2289,9 +2335,12 @@ pageDefinitions:
     contextFragment: authorizedRepContextFragment
     inputs:
       - type: CUSTOM
-        name: unearnedIncomeSSorRSDI
+        name: monthlyIncomeTribalPayment
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
         options:
           datasources:
             - pageName: personalInfo
@@ -2301,6 +2350,11 @@ pageDefinitions:
         followUps:
           - name: monthlyIncomeTribalPaymentAmount
             type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
 # End of unearned income source pages
