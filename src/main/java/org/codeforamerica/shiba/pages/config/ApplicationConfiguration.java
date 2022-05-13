@@ -32,8 +32,4 @@ public class ApplicationConfiguration {
    * Used for groups/subworkflows - household, jobs
    */
   private Map<String, PageGroupConfiguration> pageGroups;
-
-  public PageWorkflowConfiguration getPageWorkflow(String pageName) {
-    return this.workflow.get(pageName);
-  }
 }

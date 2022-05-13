@@ -37,7 +37,7 @@ mnit-filenet:
   delay: 1
   multiplier: 1
   max-delay: 1
-  url: some-url
+  upload-url: some-url
   username: someUsername
   password: somePassword
   router-url: some-router-url

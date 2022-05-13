@@ -64,25 +64,24 @@ public class FilenetWebServiceClient {
   private final Clock clock;
   private final String username;
   private final String password;
-  private final String routerUrl;
+  private final String sftpUploadUrl;
   private final ApplicationStatusRepository applicationStatusRepository;
 
   @Autowired
   private RestTemplate restTemplate;
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public FilenetWebServiceClient(
       @Qualifier("filenetWebServiceTemplate") WebServiceTemplate webServiceTemplate,
       Clock clock,
       @Value("${mnit-filenet.username}") String username,
       @Value("${mnit-filenet.password}") String password,
-      @Value("${mnit-filenet.router-url}") String routerUrl,
+      @Value("${mnit-filenet.sftp-upload-url}") String sftpUploadUrl,
       ApplicationStatusRepository applicationStatusRepository) {
     this.filenetWebServiceTemplate = webServiceTemplate;
     this.clock = clock;
     this.username = username;
     this.password = password;
-    this.routerUrl = routerUrl;
+    this.sftpUploadUrl = sftpUploadUrl;
     this.applicationStatusRepository = applicationStatusRepository;
   }
 
@@ -149,10 +148,11 @@ public class FilenetWebServiceClient {
 
       // Now route a copy of the document from Filenet to SFTP
       String idd = response.getObjectId();
-      String routerRequest = String.format("%s/%s", routerUrl, idd);
+      String routerRequest = String.format("%s/%s", sftpUploadUrl, idd);
+      log.info(String.format("Upload to SFTP request: %s", routerRequest));
       String routerResponse = restTemplate.getForObject(routerRequest, String.class);
 
-      log.info(String.format("Response from Filenet: %s", routerResponse));
+      log.info(String.format("Upload to SFTP response: %s", routerResponse));
       JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
 
       // Throw exception if this isnt a successful response
@@ -177,6 +177,7 @@ public class FilenetWebServiceClient {
     }
   }
 
+  @SuppressWarnings("unused")
   @Recover
   public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
       RoutingDestination routingDestination,
@@ -194,7 +195,7 @@ public class FilenetWebServiceClient {
     CmisPropertiesType properties = new CmisPropertiesType();
     List<CmisProperty> propertiesList = properties.getProperty();
 
-    CmisPropertyBoolean read = createCmisPropertyBoolean("Read", false);
+    CmisPropertyBoolean read = createCmisPropertyBoolean();
     CmisPropertyString originalFileName = createCmisPropertyString("OriginalFileName",
         applicationFile.getFileName());
     CmisPropertyString cmisName = createCmisPropertyString("cmis:name",
@@ -207,7 +208,7 @@ public class FilenetWebServiceClient {
         generateDocumentDescription(applicationDocument, applicationNumber, flowType));
     CmisPropertyString source = createCmisPropertyString("Source", "MNITS");
     CmisPropertyString flow = createCmisPropertyString("Flow", "Inbound");
-    CmisPropertyId cmisObjectTypeId = createCmisPropertyId("cmis:objectTypeId", "MNITSMailbox");
+    CmisPropertyId cmisObjectTypeId = createCmisPropertyId();
 
     propertiesList
         .addAll(
@@ -226,19 +227,18 @@ public class FilenetWebServiceClient {
   }
 
   @NotNull
-  private CmisPropertyBoolean createCmisPropertyBoolean(String propertyDefinitionId,
-      Boolean propertyValue) {
+  private CmisPropertyBoolean createCmisPropertyBoolean() {
     CmisPropertyBoolean booleanProperty = new CmisPropertyBoolean();
-    booleanProperty.setPropertyDefinitionId(propertyDefinitionId);
-    booleanProperty.getValue().add(propertyValue);
+    booleanProperty.setPropertyDefinitionId("Read");
+    booleanProperty.getValue().add(false);
     return booleanProperty;
   }
 
   @NotNull
-  private CmisPropertyId createCmisPropertyId(String propertyDefinitionId, String propertyValue) {
+  private CmisPropertyId createCmisPropertyId() {
     CmisPropertyId idProperty = new CmisPropertyId();
-    idProperty.setPropertyDefinitionId(propertyDefinitionId);
-    idProperty.getValue().add(propertyValue);
+    idProperty.setPropertyDefinitionId("cmis:objectTypeId");
+    idProperty.getValue().add("MNITSMailbox");
     return idProperty;
   }
 

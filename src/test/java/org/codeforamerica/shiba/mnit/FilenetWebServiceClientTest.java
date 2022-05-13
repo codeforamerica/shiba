@@ -74,14 +74,14 @@ class FilenetWebServiceClientTest {
   private FilenetWebServiceClient filenetWebServiceClient;
   @MockBean
   private Clock clock;
-  @Value("${mnit-filenet.url}")
+  @Value("${mnit-filenet.upload-url}")
   private String url;
   @Value("${mnit-filenet.username}")
   private String username;
   @Value("${mnit-filenet.password}")
   private String password;
-  @Value("${mnit-filenet.router-url}")
-  private String routerUrl;
+  @Value("${mnit-filenet.sftp-upload-url}")
+  private String sftpUploadUrl;
   private MockWebServiceServer mockWebServiceServer;
   @MockBean
   private ApplicationStatusRepository applicationStatusRepository;
@@ -103,7 +103,7 @@ class FilenetWebServiceClientTest {
     hennepin.setCounty(Hennepin);
     hennepin.setDhsProviderId("A000027200");
 
-    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
   }
 
@@ -151,7 +151,7 @@ class FilenetWebServiceClientTest {
             .evaluatesTo("Inbound"))
         .andRespond(withSoapEnvelope(successResponse));
 
-    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
     filenetWebServiceClient.send(
@@ -246,7 +246,7 @@ class FilenetWebServiceClientTest {
         })
         .andRespond(withSoapEnvelope(successResponse));
 
-    String routerRequest = String.format("%s/%s", routerUrl, filenetIdd);
+    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
     filenetWebServiceClient.send(new ApplicationFile(
