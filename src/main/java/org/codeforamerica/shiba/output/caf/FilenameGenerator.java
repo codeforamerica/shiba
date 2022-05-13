@@ -49,7 +49,13 @@ public class FilenameGenerator {
     String prefix = getSharedApplicationPrefix(application, document, dhsProviderId);
     String programs = getProgramCodes(application);
     String pdfType = document.toString();
-    return "%s%s_%s.pdf".formatted(prefix, programs, pdfType);
+    String eligible = "";
+    if(document.equals(CAF)) {
+      if (application.getApplicationData().getExpeditedEligibility().stream()
+          .filter(eligibility -> eligibility.toString().contains("ELIGIBLE")).findAny().isPresent())
+        eligible = "_EXPEDITED";
+    }
+    return "%s%s_%s%s.pdf".formatted(prefix, programs, pdfType, eligible);
   }
 
   public String generateUploadedDocumentName(Application application, int index, String extension) {

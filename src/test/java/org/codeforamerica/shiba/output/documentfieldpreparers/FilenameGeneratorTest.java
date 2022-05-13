@@ -5,7 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE_NATION;
-
+import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -15,18 +20,28 @@ import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.caf.Eligibility;
+import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
+import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
+import org.codeforamerica.shiba.output.caf.TotalIncomeCalculator;
+import org.codeforamerica.shiba.output.caf.UnearnedIncomeCalculator;
+import org.codeforamerica.shiba.output.caf.UtilityDeductionCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -37,7 +52,18 @@ class FilenameGeneratorTest {
   private Application.ApplicationBuilder defaultApplicationBuilder;
   private Map<String, TribalNationRoutingDestination> tribalNations;
   private CountyRoutingDestination defaultCountyRoutingDestination;
-
+  
+  UtilityDeductionCalculator mockUtilityDeductionCalculator = mock(
+      UtilityDeductionCalculator.class);
+  GrossMonthlyIncomeParser grossMonthlyIncomeParser = mock(GrossMonthlyIncomeParser.class);
+  TotalIncomeCalculator totalIncomeCalculator = mock(TotalIncomeCalculator.class);
+  UnearnedIncomeCalculator unearnedIncomeCalculator = mock(UnearnedIncomeCalculator.class);
+  
+  SnapExpeditedEligibilityDecider decider = new SnapExpeditedEligibilityDecider(
+      mockUtilityDeductionCalculator, totalIncomeCalculator, grossMonthlyIncomeParser,
+      unearnedIncomeCalculator
+  );
+  
   @BeforeEach
   void setUp() {
     countyMap = new CountyMap<>();
@@ -296,5 +322,60 @@ class FilenameGeneratorTest {
     assertThat(fileName).doesNotContain("hennepinNPI_MNB");
     assertThat(notHennepinFileName).doesNotContain("olmstedNPI_DOC");
     assertThat(notHennepinFileName).contains("olmstedNPI_MNB");
+  }
+  
+  @Test
+  void shouldAppendExpeditedFileNameCorrectlyForCAFPdf() {
+    TestApplicationDataBuilder applicationDataBuilder = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("SNAP"))
+        .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of("1"))
+        .withPageData("liquidAssets", "liquidAssets", List.of("2"))
+        .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
+        .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("3"))
+        .withPageData("utilityPayments", "payForUtilities", List.of("utility"))
+        .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of())
+        .withPageData("unearnedIncomeCcap", "unearnedIncome", List.of("BENEFITS"))
+        .withPageData("unearnedIncomeSourcesCcap", "benefitsAmount", List.of())
+        .withPageData("preparingMealsTogether", "isPreparingMealsTogether", List.of("true"));
+        //.build();
+    when(mockUtilityDeductionCalculator.calculate(any())).thenReturn(Money.ZERO);
+    when(grossMonthlyIncomeParser.parse(applicationDataBuilder.build())).thenReturn(emptyList());
+    when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("5000"));
+    when(unearnedIncomeCalculator.unearnedAmount(any())).thenReturn(BigDecimal.ZERO);
+   
+    ApplicationData applicationData = applicationDataBuilder
+        .build();
+    String countyNPI = "someNPI";
+    County county = Hennepin;
+    countyMap.getCounties()
+        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+
+    String applicationId = "someId";
+    List<Eligibility> expeditedEligibilityList = new ArrayList<>();
+    expeditedEligibilityList.add(decider.decide(applicationData));
+    EligibilityListBuilder listBuilder = new EligibilityListBuilder();
+    List<ExpeditedEligibility> list = listBuilder.buildEligibilityList(expeditedEligibilityList);
+    applicationData.setExpeditedEligibility(list);
+    Application application = defaultApplicationBuilder
+        .id(applicationId)
+        .county(county)
+        .completedAt(
+            ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+        .applicationData(applicationData)
+        .build();
+    
+    assertThat(decider.decide(applicationData)).isEqualTo(NOT_ELIGIBLE);
+    String  fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
+   
+    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s%s.pdf",
+        countyNPI, "20070909", "235959", applicationId, "F", "CAF", ""));
+    //TODO @ParameterizedTest to check for all possible decider output like ELIGIBLE, NOT_ELIGIBLE and UNDERTERMINED
+   /* when(totalIncomeCalculator.calculate(any())).thenReturn(Money.ONE);
+    assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);  
+    fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
+
+    assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s%s.pdf",
+        countyNPI, "20070909", "235959", applicationId, "F", "CAF", "_EXPEDITED"));*/
   }
 }
