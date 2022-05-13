@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.application;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+
 @Repository
 @Slf4j
 public class ApplicationStatusRepository {
@@ -31,9 +33,10 @@ public class ApplicationStatusRepository {
   private final RoutingDecisionService routingDecisionService;
   private final FilenameGenerator filenameGenerator;
   private final PdfGenerator pdfGenerator;
-  
+
   public ApplicationStatusRepository(JdbcTemplate jdbcTemplate,
-      RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator, PdfGenerator pdfGenerator) {
+      RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator,
+      PdfGenerator pdfGenerator) {
     this.jdbcTemplate = jdbcTemplate;
     this.routingDecisionService = routingDecisionService;
     this.filenameGenerator = filenameGenerator;
@@ -67,19 +70,19 @@ public class ApplicationStatusRepository {
 
   public void createOrUpdateAllForDocumentType(Application application, Status status,
       Document document) {
-    ApplicationData applicationData = application.getApplicationData(); 
+    ApplicationData applicationData = application.getApplicationData();
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(applicationData, document);
     routingDestinations.forEach(routingDestination -> {
       var fileNames = getAndSetFileNames(application, document);
-      fileNames.stream().forEach(fileName -> createOrUpdate(applicationData.getId(), document,
+      fileNames.forEach(fileName -> createOrUpdate(applicationData.getId(), document,
           routingDestination.getName(), status, fileName));
     });
   }
 
-  public List<String> getAndSetFileNames(Application application, Document document){
+  public List<String> getAndSetFileNames(Application application, Document document) {
     List<String> fileNames = new ArrayList<String>();
-    if(document.equals(UPLOADED_DOC)) {
+    if (document.equals(UPLOADED_DOC)) {
       var uploadedDocs = application.getApplicationData().getUploadedDocs();
       if (uploadedDocs.size() == 0) {
         fileNames.add("");
@@ -99,14 +102,15 @@ public class ApplicationStatusRepository {
         }
         fileNames.add(fileName);
       }
-    }else {
+    } else {
       String fileName = filenameGenerator.generatePdfFilename(application, document);
       fileNames.add(fileName);
     }
     return fileNames;
   }
-  
-  public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
+
+  public void createOrUpdate(String applicationId, Document document,
+      String routingDestinationName,
       Status status, String documentName) {
     if (document == null || routingDestinationName == null) {
       return;
@@ -139,10 +143,18 @@ public class ApplicationStatusRepository {
     if (rowCount != 0) {
       logStatusUpdate(applicationId, document, routingDestinationName, status, documentName);
     }
-
   }
-  
-  
+
+  public void updateFilenetId(String applicationId, Document document,
+      String routingDestinationName, Status status,
+      String documentName, String filenetId) {
+    String updateStatement = """
+        UPDATE application_status SET filenet_id = ? WHERE application_id = ?
+        AND document_type = ? AND status = ? AND routing_destination = ? AND document_name = ?
+        """;
+    jdbcTemplate.update(updateStatement, filenetId, applicationId, document.name(),
+        status.toString(), routingDestinationName, documentName);
+  }
 
   public void delete(String applicationId, List<Document> documents) {
     if (!documents.isEmpty()) {
@@ -169,13 +181,25 @@ public class ApplicationStatusRepository {
       Status status, String documentName) {
     MDC.put("applicationId", id);
     if (status == null) {
-      log.info(String.format("%s = %s to %s #%s application status has been updated to null", document, documentName,
-          routingDestination, id));
+      log.info(
+          String.format("%s = %s to %s #%s application status has been updated to null", document,
+              documentName,
+              routingDestination, id));
       return;
     }
 
     log.info(String.format("%s = %s to %s #%s has been updated to %s", document, documentName,
         routingDestination, id, status));
+  }
+
+  public ApplicationStatus find(String id, Document document, String routingDestinationName,
+      String documentName) {
+    return jdbcTemplate.queryForObject(
+        "SELECT * FROM application_status WHERE application_id = ? AND "
+            + "document_type = ? AND routing_destination = ? AND document_name = ?"
+        , new ApplicationStatusRowMapper(), id, document.toString(),
+        routingDestinationName, documentName
+    );
   }
 
   private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
@@ -187,7 +211,8 @@ public class ApplicationStatusRepository {
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),
           Status.valueFor(rs.getString("status")),
-          rs.getString("document_name")
+          rs.getString("document_name"),
+          rs.getString("filenet_id")
       );
     }
   }

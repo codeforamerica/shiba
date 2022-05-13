@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS  application_status
     status              VARCHAR,
     created_at          TIMESTAMP,
     updated_at          TIMESTAMP,
-    document_name       VARCHAR
+    document_name       VARCHAR,
+    filenet_id          VARCHAR
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id

@@ -3,6 +3,8 @@ package org.codeforamerica.shiba.mnit;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
+import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -107,9 +110,8 @@ class FilenetWebServiceClientTest {
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
   }
 
-  //TODO: namespaces change order. Need to figure out how to use a wildcard in the xpath assertions.  
   @Test
-  void sendsTheDocument() {
+  void sendsTheDocumentToFilenetAndSFTP() {
     mockWebServiceServer.expect(connectionTo(url))
         .andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping)
             .evaluatesTo("Programs"))
@@ -154,13 +156,52 @@ class FilenetWebServiceClientTest {
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
-    filenetWebServiceClient.sendToFilenet(
+    filenetWebServiceClient.send(
         new ApplicationFile(fileContent.getBytes(), fileName),
         olmsted, "someId", Document.CAF, FlowType.FULL
     );
 
     verify(applicationStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
-        DELIVERED,fileName);
+        DELIVERED, fileName);
+
+    mockWebServiceServer.verify();
+  }
+
+  @Test
+  void sendingTheDocumentToFilenetSavesTheFilenetId() {
+    mockWebServiceServer.expect(connectionTo(url))
+        .andRespond(withSoapEnvelope(successResponse));
+
+    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
+    Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
+
+    filenetWebServiceClient.send(
+        new ApplicationFile(fileContent.getBytes(), fileName),
+        olmsted, "someId", Document.CAF, FlowType.FULL
+    );
+
+    verify(applicationStatusRepository).updateFilenetId("someId", Document.CAF, olmsted.getName(),
+        SENDING, fileName, filenetIdd);
+    verify(applicationStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
+        DELIVERED, fileName);
+
+    mockWebServiceServer.verify();
+  }
+
+  @Test
+  void sendsTheDocumentOnlyToSFTPIfAlreadyInFilenet() {
+    when(applicationStatusRepository.find("someId", CAF, olmsted.getName(), "doc-name.pdf"))
+        .thenReturn(new ApplicationStatus(
+            "someId", CAF, olmsted.getName(), SENDING, "doc-name.pdf",
+            "filenetId"
+        )
+    );
+    Mockito.when(restTemplate.getForObject(sftpUploadUrl + "/" + filenetIdd, String.class)).thenReturn(routerResponse);
+
+    filenetWebServiceClient.send(
+        new ApplicationFile(fileContent.getBytes(), fileName),
+        olmsted, "someId", Document.CAF, FlowType.FULL
+    );
 
     mockWebServiceServer.verify();
   }
@@ -175,7 +216,7 @@ class FilenetWebServiceClientTest {
         .andRespond(withSoapEnvelope(successResponse));
 
     filenetWebServiceClient
-        .sendToFilenet(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+        .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
             "someId",
             Document.CAF, FlowType.FULL);
 
@@ -204,7 +245,7 @@ class FilenetWebServiceClientTest {
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), "someFile");
 
     filenetWebServiceClient
-        .sendToFilenet(applicationFile, olmsted, "someId", Document.CAF, FlowType.FULL);
+        .send(applicationFile, olmsted, "someId", Document.CAF, FlowType.FULL);
 
     mockWebServiceServer.verify();
   }
@@ -249,7 +290,7 @@ class FilenetWebServiceClientTest {
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
-    filenetWebServiceClient.sendToFilenet(new ApplicationFile(
+    filenetWebServiceClient.send(new ApplicationFile(
         "whatever".getBytes(),
         "someFileName"), hennepin, "someId", Document.CAF, FlowType.FULL);
 

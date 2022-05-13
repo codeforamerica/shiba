@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED_BY_EMAIL;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -16,7 +15,6 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -28,7 +26,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;

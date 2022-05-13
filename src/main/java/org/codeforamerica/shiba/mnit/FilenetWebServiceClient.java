@@ -1,8 +1,10 @@
 package org.codeforamerica.shiba.mnit;
 
+import static java.util.Objects.requireNonNull;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -95,64 +97,76 @@ public class FilenetWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void sendToFilenet(ApplicationFile applicationFile,
+  public void send(ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {
+    String filenetId;
     try {
-      log.info("Now sending %s to recipient %s for application %s".formatted(
-          applicationDocument.name(),
+      filenetId = applicationStatusRepository.find(applicationNumber,
+          applicationDocument,
           routingDestination.getName(),
-          applicationNumber));
-      MDC.put("applicationFile", applicationFile.getFileName());
-      MDC.put("applicationId", applicationNumber);
-      CreateDocument createDocument = new CreateDocument();
-      createDocument.setRepositoryId("Programs");
-      setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
-          applicationDocument, flowType, createDocument);
-      setContentStreamOnDocument(applicationFile, createDocument);
+          applicationFile.getFileName()).getFilenetId();
+      if (filenetId.isEmpty()) {
+        log.info("Now sending %s to recipient %s for application %s".formatted(
+            applicationDocument.name(),
+            routingDestination.getName(),
+            applicationNumber));
+        MDC.put("applicationFile", applicationFile.getFileName());
+        MDC.put("applicationId", applicationNumber);
+        CreateDocument createDocument = new CreateDocument();
+        createDocument.setRepositoryId("Programs");
+        setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
+            applicationDocument, flowType, createDocument);
+        setContentStreamOnDocument(applicationFile, createDocument);
 
-      // Create the document in Filenet
-      CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate
-          .marshalSendAndReceive(createDocument, message -> {
-            SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
-            try {
-              SOAPHeader soapHeader = soapMessage.getSOAPHeader();
-              QName securityQName = new QName(
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                  "Security", "wsse");
-              QName timestampQName = new QName(
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-                  "Timestamp", "wsu");
-              SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
+        // Create the document in Filenet
+        CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate
+            .marshalSendAndReceive(createDocument, message -> {
+              SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
+              try {
+                SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+                QName securityQName = new QName(
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                    "Security", "wsse");
+                QName timestampQName = new QName(
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+                    "Timestamp", "wsu");
+                SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
 
-              SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
-              SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
-              ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
-              createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
-              SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
-              expiresElement
-                  .setTextContent(
-                      createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
+                SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
+                SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
+                ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
+                createdElement.setTextContent(
+                    createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
+                SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
+                expiresElement
+                    .setTextContent(
+                        createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
 
-              SOAPElement usernameTokenElement = securityElement
-                  .addChildElement("UsernameToken", "wsse");
-              SOAPElement usernameElement = usernameTokenElement
-                  .addChildElement("Username", "wsse");
-              usernameElement.setTextContent(username);
-              SOAPElement passwordElement = usernameTokenElement
-                  .addChildElement("Password", "wsse");
-              passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"),
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-              passwordElement.setTextContent(password);
-            } catch (SOAPException e) {
-              throw new IllegalStateException(e);
-            }
-          });
+                SOAPElement usernameTokenElement = securityElement
+                    .addChildElement("UsernameToken", "wsse");
+                SOAPElement usernameElement = usernameTokenElement
+                    .addChildElement("Username", "wsse");
+                usernameElement.setTextContent(username);
+                SOAPElement passwordElement = usernameTokenElement
+                    .addChildElement("Password", "wsse");
+                passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"),
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
+                passwordElement.setTextContent(password);
+              } catch (SOAPException e) {
+                throw new IllegalStateException(e);
+              }
+            });
+        // Save filenetId so we can retry only sending to SFTP
+        filenetId = response.getObjectId();
+        applicationStatusRepository.updateFilenetId(applicationNumber, applicationDocument,
+            routingDestination.getName(),
+            SENDING, applicationFile.getFileName(), response.getObjectId());
+      }
 
       // Now route a copy of the document from Filenet to SFTP
-      String idd = response.getObjectId();
-      String routerRequest = String.format("%s/%s", sftpUploadUrl, idd);
+      String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetId);
       log.info(String.format("Upload to SFTP request: %s", routerRequest));
       String routerResponse = restTemplate.getForObject(routerRequest, String.class);
 
@@ -161,7 +175,8 @@ public class FilenetWebServiceClient {
 
       // Throw exception if this isnt a successful response
       String eMessage = String
-          .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
+          .format("The MNIT Router did not respond with a \"Success\" message for %s",
+              filenetId);
       if (jsonObject != null) {
         JsonElement messageElement = jsonObject.get("message");
         if (messageElement.isJsonNull()

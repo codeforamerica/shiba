@@ -102,7 +102,7 @@ public class MnitDocumentConsumer {
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      Thread thread = new Thread(() -> mnitClient.sendToFilenet(xml, rd, application.getId(), XML,
+      Thread thread = new Thread(() -> mnitClient.send(xml, rd, application.getId(), XML,
           application.getFlow()));
       thread.start();
       threads.add(thread);
@@ -155,7 +155,7 @@ public class MnitDocumentConsumer {
       applicationStatusRepository.createOrUpdate(application.getId(), document,
           routingDestination.getName(),
           SENDING, renamedFile.getFileName());
-      mnitClient.sendToFilenet(renamedFile, routingDestination, application.getId(), document,
+      mnitClient.send(renamedFile, routingDestination, application.getId(), document,
           application.getFlow());
 //      mnitFilenetClient.sendToSftp(docIdInFilenet)
     } catch (Exception e) {
