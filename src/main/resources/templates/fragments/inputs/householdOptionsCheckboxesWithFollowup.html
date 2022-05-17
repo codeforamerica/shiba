@@ -43,16 +43,13 @@ This needs to be custom because we're formatting the application data values tha
 
       <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
 		      <th:block th:each="youFollowUp: ${input.followUps}">
-		     <!--/* Instead of calling the followUp fragment, just use the html from that fragment.  <div
-		            th:replace="'fragments/inputs/'+__${youFollowUp.fragment()}__ :: __${youFollowUp.fragment()}__(${youFollowUp}, ${data})"></div>
-		            */-->
 		        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${youFollowUp})"></div>
 				    <p class="text--help"
 				       th:id="${youFollowUp.name + '-help-message'}"
 				       th:if="${hasHelpMessage}"
 				       th:utext="#{${youFollowUp.helpMessageKey}}"></p>
 			    <th:block th:switch="${youFollowUp.type}">
-			    <!--/* Attempting to modify input types to work within this fragment. Including switch/case for future use. */-->
+			    <!--/*  Including switch/case for future use. */-->
 			    <div class="form-group" th:classappend="${inputFollowupsHasErrors} ? 'form-group--error' : ''" >
 			        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
 			            <div class="text-input-group__prefix">$</div>
@@ -70,7 +67,6 @@ This needs to be custom because we're formatting the application data values tha
 			      </th:block><!--/* END of switch case block for input types */-->		  
           
 		      </th:block> <!--/* END of each block for followups */-->	
-		      <!--/* TODO, if displaying errors for each followup, it will go here */-->	
 
       </div>
 </div>
@@ -112,7 +108,7 @@ This needs to be custom because we're formatting the application data values tha
 				       th:if="${hasHelpMessage}"
 				       th:utext="#{${followUp.helpMessageKey}}"></p>
 				    <th:block th:switch="${followUp.type}">
-				    <!--/* Attempting to modify input types to work within this fragment. Including switch/case for future use. */-->
+				    <!--/*  Including switch/case for future use. */-->
 				        <div class="text-input-group" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
 				            <div class="text-input-group__prefix">$</div>
 				            <input type="text"
@@ -125,23 +121,12 @@ This needs to be custom because we're formatting the application data values tha
 				                   th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[iterationStat.count] : ''}"
 				            >
 				        </div>
-				        
 				      </th:block><!--/* END of switch case block for input types */-->
-				    		    
 		      </div>
-		        
 		      </th:block><!--/* END of iteration through the list of followups */-->
-		      <!--/* TODO, if displaying errors for each followup, it will go here */-->
-
 			</div> <!-- question-with-follow-up__follow-up -->
-            
             </div><!-- question-with-follow-up -->
-
         </th:block><!--/* END of household member iteration */-->
-        
-
-  <!--end of household members with followup -->
-
 		<div th:if="!${#arrays.isEmpty(inputDataErrors)}">
 			<p class="text--error"
 			      th:aria-label="#{error.title}"

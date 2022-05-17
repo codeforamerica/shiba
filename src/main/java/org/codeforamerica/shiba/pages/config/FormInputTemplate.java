@@ -39,19 +39,12 @@ public class FormInputTemplate {
 
   @SuppressWarnings("unused")
   public boolean hasFollowUps() {
-	  //TODO emj revert
-	  boolean hasFollowUps = !followUps.isEmpty() && !followUpValues.isEmpty();
-	 // System.out.println("===== FormInputTemplate for name '" + name + "' hasFollowUps() = " + hasFollowUps);
-
-    return hasFollowUps;
+    return !followUps.isEmpty() && !followUpValues.isEmpty();
   }
   
   @SuppressWarnings("unused")
   public boolean hasCustomFollowUps() {
-	  //TODO emj experimenting with this
-	  boolean hasCustomFollowUps = Boolean.parseBoolean(customFollowUps);
-	 // System.out.println("===== FormInputTemplate for name '" + name + "' hasCustomFollowUps() = " + hasCustomFollowUps);
-    return hasCustomFollowUps;
+    return Boolean.parseBoolean(customFollowUps);
   }
 
   public boolean needsAriaLabel() {

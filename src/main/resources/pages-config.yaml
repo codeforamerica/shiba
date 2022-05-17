@@ -3941,8 +3941,12 @@ workflow:
     pageConfiguration: *unearnedIncome
     nextPages:
       - pageName: unearnedIncomeSources
-        condition: *livesAlone?
-      - pageName: additionalIncomeInfo
+        condition: 
+          logicalOperator: OR
+          conditions: 
+            - *applicantDidNotChooseCERTAINPOPS?
+            - *livesAlone?
+      - pageName: unearnedIncomeCcap
         condition: *noUnearnedIncomeSelected?
       - pageName: socialSecurityIncomeSource
         condition:
@@ -4010,6 +4014,7 @@ workflow:
           - *doesNotLiveAlone?
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
@@ -4029,6 +4034,7 @@ workflow:
       logicalOperator: OR
       conditions:
         - *noUnearnedIncomeSelected?
+        - *applicantDidNotChooseCERTAINPOPS?
         - pageName: unearnedIncome
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
@@ -4037,7 +4043,7 @@ workflow:
       - pageName: unearnedIncome
         groupName: unearnedIncomeGroup
       - pageName: addHouseholdMembers
-        
+      - pageName: choosePrograms
 # supplementalSecurityIncomeSource
   supplementalSecurityIncomeSource:
     pageConfiguration: *supplementalSecurityIncomeSource
@@ -4051,9 +4057,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: SSI
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # veteransBenefitsIncomeSource
   veteransBenefitsIncomeSource:
     pageConfiguration: *veteransBenefitsIncomeSource
@@ -4067,9 +4075,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: VETERANS_BENEFITS
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # unemploymentIncomeSource
   unemploymentIncomeSource:
     pageConfiguration: *unemploymentIncomeSource
@@ -4083,9 +4093,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: UNEMPLOYMENT
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # workersCompIncomeSource
   workersCompIncomeSource:
     pageConfiguration: *workersCompIncomeSource
@@ -4099,9 +4111,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: WORKERS_COMPENSATION
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # retirementIncomeSource
   retirementIncomeSource:
     pageConfiguration: *retirementIncomeSource
@@ -4115,9 +4129,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: RETIREMENT
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # childOrSpousalSupportIncomeSource
   childOrSpousalSupportIncomeSource:
     pageConfiguration: *childOrSpousalSupportIncomeSource
@@ -4131,9 +4147,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: CHILD_OR_SPOUSAL_SUPPORT
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
 # tribalPaymentIncomeSource
   tribalPaymentIncomeSource:
     pageConfiguration: *tribalPaymentIncomeSource
@@ -4147,9 +4165,11 @@ workflow:
           input: unearnedIncome
           matcher: DOES_NOT_CONTAIN
           value: TRIBAL_PAYMENTS
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   unearnedIncomeCcap:
     pageConfiguration: *unearnedIncomeCcap
     skipCondition: *noOneChoseCCAP?
