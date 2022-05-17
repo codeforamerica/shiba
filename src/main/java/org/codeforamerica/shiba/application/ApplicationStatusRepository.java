@@ -86,7 +86,7 @@ public class ApplicationStatusRepository {
       }
       for (int i = 0; i < uploadedDocs.size(); i++) {
         String fileName = uploadedDocs.get(i).getSysFileName();
-        if (fileName == null || (fileName!=null && !fileName.contains(routingDest.getDhsProviderId()))) {
+        if (fileName == null || !fileName.contains(routingDest.getDhsProviderId())) {
           String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
           fileName =
               filenameGenerator.generateUploadedDocumentName(application, i, extension, routingDest);
