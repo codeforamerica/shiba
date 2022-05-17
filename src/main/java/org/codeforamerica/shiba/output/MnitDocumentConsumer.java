@@ -104,7 +104,7 @@ public class MnitDocumentConsumer {
 
       } catch (InterruptedException e) {
 
-        Message<StatesAndEvents.DeliveryEvents> error_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.DELIVERY_SUCCESS).build();
+        Message<StatesAndEvents.DeliveryEvents> error_event = MessageBuilder.withPayload(StatesAndEvents.DeliveryEvents.SEND_ERROR).build();
         machine.sendEvent(Mono.just(error_event))
                 .doOnComplete(() -> {
                   log.info("Sent event " + error_event.toString() +  " to " +machine.getId());
