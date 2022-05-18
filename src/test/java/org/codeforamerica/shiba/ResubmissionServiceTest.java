@@ -90,7 +90,7 @@ class ResubmissionServiceTest {
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
-    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+    when(pdfGenerator.generate(eq(application), eq(CAF), eq(Recipient.CASEWORKER), any())).thenReturn(applicationFile);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -108,7 +108,7 @@ class ResubmissionServiceTest {
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
-    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+    when(pdfGenerator.generate(eq(application), eq(CAF), eq(Recipient.CASEWORKER), any())).thenReturn(applicationFile);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -130,7 +130,7 @@ class ResubmissionServiceTest {
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
-    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+    when(pdfGenerator.generate(eq(application), eq(CAF), eq(Recipient.CASEWORKER), any())).thenReturn(applicationFile);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -152,7 +152,7 @@ class ResubmissionServiceTest {
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
-    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+    when(pdfGenerator.generate(eq(application), eq(CAF), eq(Recipient.CASEWORKER), any())).thenReturn(applicationFile);
 
     doNothing().when(emailClient)
         .resubmitFailedEmail(ANOKA_EMAIL, CAF, applicationFile, application);
@@ -186,9 +186,9 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generateCoverPageForUploadedDocs(any()))
         .thenReturn(coverPage);
     var uploadedDocs = applicationData.getUploadedDocs();
-    when(pdfGenerator.generateForUploadedDocument(uploadedDocs.get(0), 0, application, coverPage))
+    when(pdfGenerator.generateForUploadedDocument(eq(uploadedDocs.get(0)), eq(0), eq(application), eq(coverPage), any()))
         .thenReturn(applicationFile1);
-    when(pdfGenerator.generateForUploadedDocument(uploadedDocs.get(1), 0, application, coverPage))
+    when(pdfGenerator.generateForUploadedDocument(eq(uploadedDocs.get(1)), eq(0), eq(application), eq(coverPage), any()))
         .thenReturn(applicationFile2);
 
     resubmissionService.resubmitFailedApplications();
@@ -224,11 +224,11 @@ class ResubmissionServiceTest {
     var coverPage = "someCoverPageText".getBytes();
     when(pdfGenerator.generateCoverPageForUploadedDocs(application)).thenReturn(coverPage);
     UploadedDocument firstUploadedDoc = applicationData.getUploadedDocs().get(0);
-    when(pdfGenerator.generateForUploadedDocument(firstUploadedDoc, 0, application,
-        coverPage)).thenReturn(uploadedDocWithCoverPageFile);
+    when(pdfGenerator.generateForUploadedDocument(eq(firstUploadedDoc), eq(0), eq(application),
+        eq(coverPage), any())).thenReturn(uploadedDocWithCoverPageFile);
 
     var ccapFile = new ApplicationFile("fileContent".getBytes(), "");
-    when(pdfGenerator.generate(application, CCAP, Recipient.CASEWORKER)).thenReturn(ccapFile);
+    when(pdfGenerator.generate(eq(application), eq(CCAP), eq(Recipient.CASEWORKER), any())).thenReturn(ccapFile);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -269,8 +269,8 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generateCoverPageForUploadedDocs(any()))
     .thenReturn(coverPage);
     when(pdfGenerator
-        .generateForUploadedDocument(applicationData.getUploadedDocs().get(0), 0, application,
-            coverPage)).thenThrow(RuntimeException.class);
+        .generateForUploadedDocument(eq(applicationData.getUploadedDocs().get(0)), eq(0), eq(application),
+            eq(coverPage), any())).thenThrow(RuntimeException.class);
 
     resubmissionService.resubmitFailedApplications();
 
@@ -293,7 +293,7 @@ class ResubmissionServiceTest {
     when(applicationRepository.find(APP_ID)).thenReturn(application);
 
     ApplicationFile applicationFile = new ApplicationFile("fileContent".getBytes(), "fileName.txt");
-    when(pdfGenerator.generate(application, CAF, Recipient.CASEWORKER)).thenReturn(applicationFile);
+    when(pdfGenerator.generate(eq(application), eq(CAF), eq(Recipient.CASEWORKER),any())).thenReturn(applicationFile);
 
     resubmissionService.resubmitFailedApplications();
 

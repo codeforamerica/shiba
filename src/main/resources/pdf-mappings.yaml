@@ -151,6 +151,30 @@ mappings:
     retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
     childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
     tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+  socialSecurityIncomeSource:
+    socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
+    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
+  supplementalSecurityIncomeSource:
+    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
+  veteransBenefitsIncomeSource:
+    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
+    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
+  unemploymentIncomeSource:
+    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
+    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
+  workersCompIncomeSource:
+    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
+  retirementIncomeSource:
+    retirementAmount: RETIREMENT_BENEFITS_AMOUNT
+    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
+  childOrSpousalSupportIncomeSource:
+    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
+    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
+  tribalPaymentIncomeSource:
+    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
   unearnedIncomeSourcesCcap:
     benefitsAmount: BENEFITS_AMOUNT
     insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT

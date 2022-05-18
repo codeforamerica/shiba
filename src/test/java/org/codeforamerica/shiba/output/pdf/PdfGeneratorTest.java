@@ -8,9 +8,11 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
+import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.*;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
@@ -20,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 
 class PdfGeneratorTest {
 
@@ -35,6 +36,7 @@ class PdfGeneratorTest {
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers;
   private FeatureFlagConfiguration featureFlags;
+  private  CountyMap<CountyRoutingDestination> countyMap;
 
   @BeforeEach
   void setUp() {
@@ -77,7 +79,8 @@ class PdfGeneratorTest {
         preparers,
         fileNameGenerator,
         pdfWordConverter,
-        featureFlags);
+        featureFlags,
+        countyMap);
     when(applicationRepository.find(applicationId)).thenReturn(application);
   }
 

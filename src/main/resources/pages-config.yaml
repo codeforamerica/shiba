@@ -2118,8 +2118,6 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
-
-# These are the pages for unearned income defined separately. 
   - &socialSecurityIncomeSource
     name: socialSecurityIncomeSource
     pageTitle: unearned-income-source.title
@@ -2130,9 +2128,6 @@ pageDefinitions:
       - type: CUSTOM
         name: monthlyIncomeSSorRSDI
         customInputFragment: householdOptionsCheckboxesWithFollowup
-        # hasCustomFollowUps is an experiment to tell the templating framework to handle these inputs differently.
-        # Do not use the standard way of wrapping the divs with class="question-with-follow-up__question" around inputs.
-        # Let the custom followup wrap the class="question-with-follow-up__question" divs.
         customFollowUps: 'true'
         validators:
           - validation: NOT_BLANK
@@ -2144,7 +2139,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeSSorRSDI
         followUps:
-          - name: monthlyIncomeSSorRSDIamount
+          - name: socialSecurityAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2174,7 +2169,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeSSI
         followUps:
-          - name: monthlyIncomeSSIamount
+          - name: supplementalSecurityIncomeAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2204,7 +2199,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeVeteransBenefits
         followUps:
-          - name: monthlyIncomeVeteransBenefitsAmount
+          - name: veteransBenefitsAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2234,7 +2229,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeUnemployment
         followUps:
-          - name: monthlyIncomeUnemploymentAmount
+          - name: unemploymentAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2264,7 +2259,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeWorkersComp
         followUps:
-          - name: monthlyIncomeWorkersCompAmount
+          - name: workersCompensationAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2294,7 +2289,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeRetirement
         followUps:
-          - name: monthlyIncomeRetirementAmount
+          - name: retirementAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2324,7 +2319,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeChildOrSpousalSupport
         followUps:
-          - name: monthlyIncomeChildOrSpouscalSupportAmount
+          - name: childOrSpousalSupportAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2354,7 +2349,7 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeTribalPayment
         followUps:
-          - name: monthlyIncomeTribalPaymentAmount
+          - name: tribalPaymentsAmount
             type: MONEY
             validators:
               - validation: MONEY
@@ -2363,7 +2358,6 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
-# End of unearned income source pages
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
@@ -3929,14 +3923,6 @@ workflow:
     pageConfiguration: *incomeUpNext
     nextPages:
       - pageName: unearnedIncome
-# work flows for unearned income
-# ORIGINAL: 
-#  unearnedIncome:
-#    pageConfiguration: *unearnedIncome
-#    nextPages:
-#      - pageName: unearnedIncomeSources
-#    datasources:
-#      - pageName: addHouseholdMembers
   unearnedIncome:
     pageConfiguration: *unearnedIncome
     nextPages:
@@ -3956,6 +3942,7 @@ workflow:
             input: unearnedIncome
             value: SOCIAL_SECURITY
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: supplementalSecurityIncomeSource
         condition:
           logicalOperator: AND
@@ -3964,6 +3951,7 @@ workflow:
             input: unearnedIncome
             value: SSI
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: veteransBenefitsIncomeSource
         condition:
           logicalOperator: AND
@@ -3972,6 +3960,7 @@ workflow:
             input: unearnedIncome
             value: VETERANS_BENEFITS
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: unemploymentIncomeSource
         condition:
           logicalOperator: AND
@@ -3980,6 +3969,7 @@ workflow:
             input: unearnedIncome
             value: UNEMPLOYMENT
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: workersCompIncomeSource
         condition:
           logicalOperator: AND
@@ -3988,6 +3978,7 @@ workflow:
             input: unearnedIncome
             value: WORKERS_COMPENSATION
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: retirementIncomeSource
         condition:
           logicalOperator: AND
@@ -3996,6 +3987,7 @@ workflow:
             input: unearnedIncome
             value: RETIREMENT
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: childOrSpousalSupportIncomeSource
         condition:
           logicalOperator: AND
@@ -4004,6 +3996,7 @@ workflow:
             input: unearnedIncome
             value: CHILD_OR_SPOUSAL_SUPPORT
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
       - pageName: tribalPaymentIncomeSource
         condition:
           logicalOperator: AND
@@ -4012,6 +4005,7 @@ workflow:
             input: unearnedIncome
             value: TRIBAL_PAYMENTS
           - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
@@ -4025,7 +4019,6 @@ workflow:
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
-# socialSecurityIncomeSource
   socialSecurityIncomeSource:
     pageConfiguration: *socialSecurityIncomeSource
     nextPages:
@@ -4044,7 +4037,6 @@ workflow:
         groupName: unearnedIncomeGroup
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# supplementalSecurityIncomeSource
   supplementalSecurityIncomeSource:
     pageConfiguration: *supplementalSecurityIncomeSource
     nextPages:
@@ -4062,7 +4054,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# veteransBenefitsIncomeSource
   veteransBenefitsIncomeSource:
     pageConfiguration: *veteransBenefitsIncomeSource
     nextPages:
@@ -4080,7 +4071,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# unemploymentIncomeSource
   unemploymentIncomeSource:
     pageConfiguration: *unemploymentIncomeSource
     nextPages:
@@ -4098,7 +4088,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# workersCompIncomeSource
   workersCompIncomeSource:
     pageConfiguration: *workersCompIncomeSource
     nextPages:
@@ -4116,7 +4105,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# retirementIncomeSource
   retirementIncomeSource:
     pageConfiguration: *retirementIncomeSource
     nextPages:
@@ -4134,7 +4122,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# childOrSpousalSupportIncomeSource
   childOrSpousalSupportIncomeSource:
     pageConfiguration: *childOrSpousalSupportIncomeSource
     nextPages:
@@ -4152,7 +4139,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-# tribalPaymentIncomeSource
   tribalPaymentIncomeSource:
     pageConfiguration: *tribalPaymentIncomeSource
     nextPages:
@@ -4776,8 +4762,6 @@ pageGroups:
       - retirementIncomeSource
       - childOrSpoucalSupportIncomeSource
       - tribalPaymentIncomeSource
-    reviewPage: householdList #TODO emj create a review page?
-    deleteWarningPage: householdDeleteWarningPage #TODO create a delete page?
     restartPage: unearnedIncome
 landmarkPages:
   startTimerPages: # "the first page" of a flow, where we set applicationData.startTime

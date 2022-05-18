@@ -141,7 +141,7 @@ public class MnitDocumentConsumer {
         sendFileAndUpdateStatus(application, XML, xml, routingDestination);
       }
       log.info("Uploaded docs to submit %s".formatted(uploadedDocs.size()));
-      for (int i = 0; i < uploadedDocs.size(); i++) {
+     for (int i = 0; i < uploadedDocs.size(); i++) {
         ApplicationFile uploadedDoc = uploadedDocs.get(i);
         // rename file with filename that is specific to this destination
         String extension = Utils.getFileType(uploadedDoc.getFileName());
@@ -166,15 +166,30 @@ public class MnitDocumentConsumer {
     byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     for (int i = 0; i < uploadedDocs.size(); i++) {
       UploadedDocument originalDocument = uploadedDocs.get(i);
-      ApplicationFile preparedDocument =
-          pdfGenerator.generateForUploadedDocument(originalDocument, i, application, coverPage);
-      if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
-        log.info("Now queueing file to send: %s".formatted(preparedDocument.getFileName()));
-        applicationFiles.add(preparedDocument);
-      } else {
-        // This should only happen in a dev environment
-        log.error("Skipped uploading file %s because it was empty.".formatted(
-            originalDocument.getFilename()));
+      try {
+        ApplicationFile preparedDocument =
+            pdfGenerator.generateForUploadedDocument(originalDocument, i, application, coverPage);
+        if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
+          log.info("Now queueing file to send: %s".formatted(preparedDocument.getFileName()));
+          applicationFiles.add(preparedDocument);
+        } else {
+          // This should only happen in a dev environment
+          log.error("Skipped uploading file %s because it was empty."
+              .formatted(originalDocument.getFilename()));
+        }
+      } catch (NullPointerException e) {
+        log.warn("Null Pointer Exception Caught while preparing document "+ originalDocument.getSysFileName()+" to send " + e.getMessage());
+        ApplicationFile preparedDocument =
+            pdfGenerator.generateForUploadedDocument(originalDocument, i, application, null);
+        if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
+          log.info("Now queueing file to send: %s".formatted(preparedDocument.getFileName()) +" without cover page");
+          applicationFiles.add(preparedDocument);
+        } else {
+          // This should only happen in a dev environment
+          log.error("Skipped uploading file %s because it was empty."
+              .formatted(originalDocument.getFilename()));
+        }
+        continue;
       }
     }
     return applicationFiles;

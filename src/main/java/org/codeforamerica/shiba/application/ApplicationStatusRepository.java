@@ -71,13 +71,13 @@ public class ApplicationStatusRepository {
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(applicationData, document);
     routingDestinations.forEach(routingDestination -> {
-      var fileNames = getAndSetFileNames(application, document);
+      var fileNames = getAndSetFileNames(application, document, routingDestination);
       fileNames.stream().forEach(fileName -> createOrUpdate(applicationData.getId(), document,
           routingDestination.getName(), status, fileName));
     });
   }
 
-  public List<String> getAndSetFileNames(Application application, Document document){
+  public List<String> getAndSetFileNames(Application application, Document document, RoutingDestination routingDest){
     List<String> fileNames = new ArrayList<String>();
     if(document.equals(UPLOADED_DOC)) {
       var uploadedDocs = application.getApplicationData().getUploadedDocs();
@@ -86,12 +86,12 @@ public class ApplicationStatusRepository {
       }
       for (int i = 0; i < uploadedDocs.size(); i++) {
         String fileName = uploadedDocs.get(i).getSysFileName();
-        if (fileName == null) {
+        if (fileName == null || !fileName.contains(routingDest.getDhsProviderId())) {
           String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
           fileName =
-              filenameGenerator.generateUploadedDocumentName(application, i, extension);
+              filenameGenerator.generateUploadedDocumentName(application, i, extension, routingDest);
           ApplicationFile preparedDocument =
-              pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null);
+              pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null, routingDest);
           if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
             fileName = preparedDocument.getFileName();
           }
@@ -100,10 +100,17 @@ public class ApplicationStatusRepository {
         fileNames.add(fileName);
       }
     }else {
-      String fileName = filenameGenerator.generatePdfFilename(application, document);
+      String fileName = filenameGenerator.generatePdfFilename(application, document, routingDest);
       fileNames.add(fileName);
     }
     return fileNames;
+  }
+  
+  public List<String> getAndSetFileNames(Application application, Document document){
+    List<RoutingDestination> routingDestinations =
+        routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
+   var fileName = routingDestinations.stream().distinct().map(rtDest -> getAndSetFileNames(application, document, rtDest)).collect(Collectors.toList());
+   return fileName.get(0);
   }
   
   public void createOrUpdate(String applicationId, Document document, String routingDestinationName,

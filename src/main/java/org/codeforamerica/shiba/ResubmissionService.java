@@ -96,9 +96,9 @@ public class ResubmissionService {
             routingDestinationName);
         if (document == UPLOADED_DOC) {
           resubmitUploadedDocumentsForApplication(document, application,
-              routingDestination.getEmail(), documentName);
+              routingDestination.getEmail(), documentName, routingDestination);
         } else {
-          var applicationFile = pdfGenerator.generate(application, document, CASEWORKER);
+          var applicationFile = pdfGenerator.generate(application, document, CASEWORKER, routingDestination);
           emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
               application);
         }
@@ -244,14 +244,14 @@ public class ResubmissionService {
   }
 
   private void resubmitUploadedDocumentsForApplication(Document document, Application application,
-      String recipientEmail, String documentName) {
+      String recipientEmail, String documentName, RoutingDestination routingDestination) {
     var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     var failedDoc = uploadedDocs.stream()
         .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName))
         .collect(Collectors.toList());
     ApplicationFile fileToSend =
-        pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage);
+        pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage, routingDestination);
     var esbFilename = fileToSend.getFileName();
     var originalFilename = failedDoc.get(0).getFilename();
     log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(esbFilename,
