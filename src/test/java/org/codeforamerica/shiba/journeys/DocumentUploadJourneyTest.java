@@ -21,7 +21,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     getToDocumentUploadScreen();
     uploadXfaFormatPdf();
     waitForErrorMessage();
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText()).contains(
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
         "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
         "0 files added");
@@ -29,7 +29,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
 
     uploadPasswordProtectedPdf();
     waitForErrorMessage();
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText()).contains(
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
         "This PDF is password protected. Try removing the password or uploading a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
         "0 files added");
@@ -39,7 +39,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
 
     uploadInvalidJpg();
     waitForErrorMessage();
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText()).
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).
         contains("This image cannot be uploaded to your application. Please try another file or upload a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files"))
         .getText()).contains("0 files added");
@@ -55,7 +55,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     List<WebElement> deleteLinks = driver.findElements(By.linkText("delete"));
     assertThat(deleteLinks.size()).isEqualTo(0);
     waitForErrorMessage();
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText()).isEqualTo(
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).isEqualTo(
         "There was an issue processing this file on our end. Sorry about that! Please try another file or upload a screenshot instead.");
   }
 
@@ -67,19 +67,19 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     // should disallow adding files with types that are not on the allow list
     driver.executeScript(
         "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.xyz', size: 1000, type: 'not-an-image'})");
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText())
         .contains("You can't upload files of this type");
     testPage.clickLink("remove");
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("1 file added");
 
     // special case error message for the .heic (iPhone) file type that is not on the allow list
     driver.executeScript(
         "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.heic', size: 1000, type: 'not-an-image'})");
-    assertThat(driver.findElementsByClassName("text--error").get(0).getText())
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText())
         .contains("HEIC files, an iPhone file type, are not accepted.");
     testPage.clickLink("remove");
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("1 file added");
 
     // should show max filesize error message for files that are too big
@@ -88,17 +88,17 @@ public class DocumentUploadJourneyTest extends JourneyTest {
         "$('#document-upload').get(0).dropzone.addFile({name: 'testFile.pdf', size: "
         + largeFilesize + ", type: 'not-an-image'})");
     int maxFileSize = uploadDocumentConfiguration.getMaxFilesize();
-    assertThat(driver.findElementByClassName("text--error").getText()).contains(
+    assertThat(driver.findElement(By.className("text--error")).getText()).contains(
         "This file is too large and cannot be uploaded (max size: " + maxFileSize + " MB)");
     testPage.clickLink("remove");
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("1 file added");
 
 
 
     // should alert the user when they have uploaded the maximum number of files
     IntStream.range(0, 19).forEach(c -> uploadJpgFile());
-    assertThat(driver.findElementById("max-files").getText()).contains(
+    assertThat(driver.findElement(By.id("max-files")).getText()).contains(
         "You have uploaded the maximum number of files (20). You will have the opportunity to share more with a caseworker later.");
   }
 }

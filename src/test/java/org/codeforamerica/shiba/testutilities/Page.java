@@ -24,7 +24,7 @@ public class Page {
 
   private void checkForBadMessageKeys() {
     assertThat(getTitle()).doesNotContain("??");
-    assertThat(driver.findElementByXPath("/html").getText()).doesNotContain("??");
+    assertThat(driver.findElement(By.xpath("/html")).getText()).doesNotContain("??");
   }
 
   public String getHeader() {
@@ -112,7 +112,7 @@ public class Page {
   }
 
   private void enterInputById(String inputId, String value) {
-    enterInput(driver.findElementById(inputId), value);
+    enterInput(driver.findElement(By.id(inputId)), value);
   }
 
   private void enterDateInput(String inputName, String value) {
@@ -160,7 +160,7 @@ public class Page {
   }
 
   public WebElement getSelectedOption(String elementId) {
-    return driver.findElementById(elementId)
+    return driver.findElement(By.id(elementId))
         .findElements(By.tagName("option")).stream()
         .filter(WebElement::isSelected)
         .findFirst()
@@ -173,7 +173,7 @@ public class Page {
   }
 
   public String getElementText(String inputId) {
-    return driver.findElementById(inputId).getText();
+    return driver.findElement(By.id(inputId)).getText();
   }
 
   public String getBirthDateValue(String inputName, DatePart datePart) {
@@ -215,7 +215,7 @@ public class Page {
   }
 
   public boolean selectHasInputError(String inputName) {
-    return !driver.findElementsById(String.format("%s-error-p", inputName)).isEmpty();
+    return !driver.findElements(By.id(String.format("%s-error-p", inputName))).isEmpty();
   }
 
   public boolean hasErrorText(String errorMessage) {
@@ -268,7 +268,7 @@ public class Page {
   }
 
   public WebElement findElementById(String id) {
-    return driver.findElementById(id);
+    return driver.findElement(By.id(id));
   }
 
   public boolean elementDoesNotExistById(String id) {
@@ -282,7 +282,7 @@ public class Page {
 
 
   public void clickElementById(String id) {
-    WebElement inputToSelect = driver.findElementById(id);
+    WebElement inputToSelect = driver.findElement(By.id(id));
     inputToSelect.click();
   }
 

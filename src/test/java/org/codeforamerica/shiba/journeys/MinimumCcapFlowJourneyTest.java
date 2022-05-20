@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import okhttp3.internal.cache.DiskLruCache.Snapshot;
+
 
 @Tag("minimumFlowJourney")
 public class MinimumCcapFlowJourneyTest extends JourneyTest{
@@ -76,7 +76,8 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest{
 
 		// Tell us the name of any parent living outside the home.
 		String parentNotAtHomeName = "My child's parent";
-		driver.findElementByName("whatAreTheParentsNames[]").sendKeys(parentNotAtHomeName);
+		//driver.findElementByName("whatAreTheParentsNames[]").sendKeys(parentNotAtHomeName);
+		driver.findElement(By.name("whatAreTheParentsNames[]")).sendKeys(parentNotAtHomeName);
 		testPage.clickContinue();
 
 		// What is your current living situation?

@@ -164,7 +164,7 @@ public abstract class AbstractBasePageTest {
 
   protected void waitForDocumentUploadToComplete() {
     await().atMost(15, TimeUnit.SECONDS)
-        .until(() -> driver.findElementsByLinkText("cancel").isEmpty());
+    .until(() -> driver.findElement(By.linkText("cancel")).isDisplayed());
   }
 
   @SuppressWarnings("unused")
@@ -247,7 +247,7 @@ public abstract class AbstractBasePageTest {
 
     testPage.clickElementById("enriched-address");
     testPage.clickContinue();
-    assertThat(driver.findElementById("mailingAddress-address_street").getText())
+    assertThat(driver.findElement(By.id("mailingAddress-address_street")).getText())
         .isEqualTo("smarty street");
   }
 
@@ -445,7 +445,7 @@ public abstract class AbstractBasePageTest {
     WebElement upload = driver.findElement(By.className("dz-hidden-input"));
     upload.sendKeys(filepath);
     await().until(
-        () -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML")
+        () -> !driver.findElements(By.className("file-details")).get(0).getAttribute("innerHTML")
             .isBlank());
   }
 
@@ -465,10 +465,10 @@ public abstract class AbstractBasePageTest {
     testPage.clickElementById("drag-and-drop-box"); // is this needed?
     WebElement upload = driver.findElement(By.className("dz-hidden-input"));
     upload.sendKeys(TestUtils.getAbsoluteFilepathString(UPLOADED_JPG_FILE_NAME));
-    assertThat(driver.findElementById("submit-my-documents").getAttribute("class"))
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
     .contains("disabled");
     await().until(
-        () -> !driver.findElementsByClassName("file-details").get(0).getAttribute("innerHTML")
+        () -> !driver.findElements(By.className("file-details")).get(0).getAttribute("innerHTML")
             .isBlank());
     assertThat(driver.findElement(By.id("document-upload")).getText())
         .contains(UPLOADED_JPG_FILE_NAME);
@@ -522,7 +522,7 @@ public abstract class AbstractBasePageTest {
 
   @NotNull
   protected Callable<Boolean> uploadCompletes() {
-    return () -> !getAttributeForElementAtIndex(driver.findElementsByClassName("dz-remove"),
+    return () -> !getAttributeForElementAtIndex(driver.findElements(By.className("dz-remove")),
         0,
         "innerHTML").isBlank();
   }

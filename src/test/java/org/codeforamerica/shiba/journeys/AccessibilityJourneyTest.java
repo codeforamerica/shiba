@@ -95,7 +95,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // Enter incorrect information to get validation errors to check against aria-properties
     assertThat(testPage.inputIsValid("firstName")).isTrue();
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo(
+    assertThat(driver.findElement(By.id("dateOfBirth-day")).getAttribute("aria-invalid")).isEqualTo(
         "false");
     assertThat(testPage.inputIsValid("ssn")).isTrue();
     testPage.enter("firstName", "");
@@ -107,17 +107,17 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(testPage.hasInputError("firstName")).isTrue();
     assertThat(testPage.hasInputError("ssn")).isTrue();
     assertThat(testPage.inputIsValid("firstName")).isFalse();
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-invalid")).isEqualTo(
+    assertThat(driver.findElement(By.id("dateOfBirth-day")).getAttribute("aria-invalid")).isEqualTo(
         "true");
     assertThat(testPage.inputIsValid("ssn")).isFalse();
     assertThat(testPage.getInputAriaLabelledBy("firstName")).isEqualTo(
         "firstName-error-p firstName-label");
     assertThat(testPage.getInputAriaDescribedBy("firstName")).isEqualTo(
         "firstName-error-message-1 firstName-help-message");
-    assertThat(driver.findElementById("dateOfBirth-day").getAttribute("aria-labelledby")).isEqualTo(
+    assertThat(driver.findElement(By.id("dateOfBirth-day")).getAttribute("aria-labelledby")).isEqualTo(
         "dateOfBirth-error-p dateOfBirth-legend dateOfBirth-day-label");
     assertThat(
-        driver.findElementById("dateOfBirth-day").getAttribute("aria-describedby")).isEqualTo(
+        driver.findElement(By.id("dateOfBirth-day")).getAttribute("aria-describedby")).isEqualTo(
         "dateOfBirth-error-message-1");
     ;
     assertThat(testPage.getInputAriaLabelledBy("ssn")).isEqualTo("ssn-error-p ssn-label");
