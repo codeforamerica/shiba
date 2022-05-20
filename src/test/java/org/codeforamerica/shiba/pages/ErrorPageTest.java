@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 public class ErrorPageTest extends AbstractBasePageTest {
 
@@ -21,9 +22,9 @@ public class ErrorPageTest extends AbstractBasePageTest {
   void shouldDisplayTheSameErrorPageForDifferentClassesOfErrors() {
     driver.navigate().to(baseUrl + "/foo"); // not found
     assertThat(driver.getTitle()).isEqualTo("Error");
-    assertEquals(driver.findElementByTagName("h1").getText(), "Something went wrong!");
+    assertEquals(driver.findElement(By.tagName("h1")).getText(), "Something went wrong!");
     driver.navigate().to(baseUrl + "/;"); // internal server error
     assertThat(driver.getTitle()).isEqualTo("Error");
-    assertEquals(driver.findElementByTagName("h1").getText(), "Something went wrong!");
+    assertEquals(driver.findElement(By.tagName("h1")).getText(), "Something went wrong!");
   }
 }
