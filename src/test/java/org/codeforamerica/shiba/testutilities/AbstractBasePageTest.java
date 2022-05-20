@@ -163,8 +163,8 @@ public abstract class AbstractBasePageTest {
   }
 
   protected void waitForDocumentUploadToComplete() {
-    await().atMost(15, TimeUnit.SECONDS)
-    .until(() -> driver.findElement(By.linkText("cancel")).isDisplayed());
+    await().atMost(20, TimeUnit.SECONDS)
+    .until(() -> driver.findElements(By.linkText("cancel")).isEmpty());
   }
 
   @SuppressWarnings("unused")
