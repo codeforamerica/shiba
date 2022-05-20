@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 
 public class PageUtils {
 
@@ -90,6 +92,10 @@ public class PageUtils {
 	 */
 	public static boolean listOfNamesContainsName(Collection<String> listOfNames, String name) {
 		return listOfNames.stream().filter(k -> k.contains(name)).collect(Collectors.toList()).size() > 0;
+	}
+	
+	public static int findNumberOfHouseholdMembers(Subworkflow datasourcePages) {
+		return datasourcePages.size();
 	}
   
 }
