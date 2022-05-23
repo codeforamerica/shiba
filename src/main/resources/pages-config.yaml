@@ -2127,6 +2127,7 @@ pageDefinitions:
     inputs:
       - type: CUSTOM
         name: monthlyIncomeSSorRSDI
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2148,6 +2149,7 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &supplementalSecurityIncomeSource
     name: supplementalSecurityIncomeSource
     pageTitle: unearned-income-source.title
