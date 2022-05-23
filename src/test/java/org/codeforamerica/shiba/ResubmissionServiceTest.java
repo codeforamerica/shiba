@@ -22,6 +22,7 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -77,7 +78,8 @@ class ResubmissionServiceTest {
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
         FeatureFlagConfiguration.class));
     FeatureFlagConfiguration featureFlagConfiguration = new FeatureFlagConfiguration(Map.of());
-    filenameGenerator = new FilenameGenerator(countyMap);
+    SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
+    filenameGenerator = new FilenameGenerator(countyMap, decider);
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
         pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher, featureFlagConfiguration);
   }

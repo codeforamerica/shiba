@@ -18,6 +18,7 @@ import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
+import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -51,7 +52,8 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         .county(Olmsted)
         .build();
     countyMap.setDefaultValue(routingDestination);
-    filenameGenerator = new FilenameGenerator(countyMap);
+    SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
+    filenameGenerator = new FilenameGenerator(countyMap, decider);
     applicationStatusRepository = new ApplicationStatusRepository(jdbcTemplate,
         routingDecisionService, filenameGenerator, pdfGenerator );
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
