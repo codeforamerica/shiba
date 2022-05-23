@@ -90,7 +90,7 @@ public class FilenameGenerator {
   private String getSharedApplicationPrefix(Application application, Document document,
       String dhsProviderId) {
     boolean isHennepinUploadedDoc =
-        document == UPLOADED_DOC && application.getCounty() == County.Hennepin;
+        document == UPLOADED_DOC && (application.getCounty() == County.Hennepin || application.getCounty() == County.Other);
     String fileSource = isHennepinUploadedDoc ? "DOC" : "MNB";
 
     ZonedDateTime completedAt = application.getCompletedAt();
