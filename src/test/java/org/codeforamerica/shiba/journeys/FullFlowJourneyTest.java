@@ -38,10 +38,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     // Assert intercom button is present on landing page
-    await().atMost(5, SECONDS).until(() -> !driver.findElementsById("intercom-frame").isEmpty());
-    assertThat(driver.findElementById("intercom-frame")).isNotNull();
+    await().atMost(5, SECONDS).until(() -> !driver.findElements(By.id("intercom-frame")).isEmpty());
+    assertThat(driver.findElement(By.id("intercom-frame"))).isNotNull();
     // Assert that the Delayed Processing Time Notice is displayed on the landing page.
-    assertThat(driver.findElementById("delayed-processing-time-notice")).isNotNull();
+    assertThat(driver.findElement(By.id("delayed-processing-time-notice"))).isNotNull();
 
     List<String> programSelections = List
         .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
@@ -100,17 +100,17 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Verify spouse option has been removed
     testPage.clickLink("Add a person");
     Select relationshipSelectWithRemovedSpouseOption = new Select(
-        driver.findElementById("relationship"));
+        driver.findElement(By.id("relationship")));
     assertThat(relationshipSelectWithRemovedSpouseOption.getOptions().stream()
         .noneMatch(option -> option.getText().equals("My spouse (e.g. wife, husband)"))).isTrue();
     testPage.goBack();
 
     // You are about to delete householdMember2 as a household member.
-    driver.findElementById("iteration1-delete").click();
+    driver.findElement(By.id("iteration1-delete")).click();
     testPage.clickButton("Yes, remove them");
     // Check that My Spouse is now an option again after deleting the spouse
     testPage.clickLink("Add a person");
-    Select relationshipSelectWithSpouseOption = new Select(driver.findElementById("relationship"));
+    Select relationshipSelectWithSpouseOption = new Select(driver.findElement(By.id("relationship")));
     assertThat(relationshipSelectWithSpouseOption.getOptions().stream()
         .anyMatch(option -> option.getText().equals("My spouse (e.g. wife, husband)"))).isTrue();
     testPage.goBack();
@@ -126,7 +126,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Tell us the name of any parent living outside the home.
     String parentNotAtHomeName = "My child's parent";
-    driver.findElementByName("whatAreTheParentsNames[]").sendKeys(parentNotAtHomeName);
+    driver.findElement(By.name("whatAreTheParentsNames[]")).sendKeys(parentNotAtHomeName);
     testPage.clickContinue();
 
     // Does everyone in your household buy and prepare food with you?
@@ -247,7 +247,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // You are about to delete your job
-    driver.findElementById("iteration1-delete").click();
+    driver.findElement(By.id("iteration1-delete")).click();
     testPage.clickButton("Yes, remove the job");
 
     testPage.clickButton("No, that's it.");
@@ -263,7 +263,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Tell us how much money is received.
-    driver.findElementById("monthlyIncomeSSorRSDI[]").click();
+    driver.findElement(By.id("monthlyIncomeSSorRSDI[]")).click();
     testPage.enter("socialSecurityAmount", "200.30");
     testPage.clickContinue();
 
@@ -426,7 +426,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     navigateTo("documentSubmitConfirmation");
     assertThat(driver.getTitle()).isEqualTo("Your next steps");
     // Assert that the Delayed Processing Time Notice is displayed on the nextSteps page.
-    assertThat(driver.findElementById("delayed-processing-time-notice")).isNotNull();
+    assertThat(driver.findElement(By.id("delayed-processing-time-notice"))).isNotNull();
     testPage.clickContinue();
 
     SuccessPage successPage = new SuccessPage(driver);
@@ -719,24 +719,24 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Uploading multiple docs should work
     uploadJpgFile();
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("1 file added");
     uploadPdfFile();
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("2 files added");
     uploadFile(getAbsoluteFilepathString(
         "pdf-without-acroform.pdf")); // Assert that we can still upload PDFs without acroforms
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("3 files added");
     waitForDocumentUploadToComplete();
     assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(3);
 
     // After deleting a file, the order of the remaining files should be maintained
     deleteAFile();
-    assertThat(driver.findElementById("number-of-uploaded-files").getText())
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText())
         .isEqualTo("2 files added");
-    var filenameTextElements = driver.findElementsByClassName("filename-text");
-    var fileDetailsElements = driver.findElementsByClassName("file-details");
+    var filenameTextElements = driver.findElements(By.className("filename-text"));
+    var fileDetailsElements = driver.findElements(By.className("file-details"));
     assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 0, "test-caf", "pdf",
         "0.4", "MB");
     assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 1, "shiba", "jpg",
@@ -758,35 +758,35 @@ public class FullFlowJourneyTest extends JourneyTest {
   }
 
   private void assertStylingOfNonEmptyDocumentUploadPage() {
-    assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).contains(
+    assertThat(driver.findElement(By.id("drag-and-drop-box")).getAttribute("class")).contains(
         "drag-and-drop-box-compact");
-    assertThat(driver.findElementById("upload-button")
+    assertThat(driver.findElement(By.id("upload-button"))
         .getAttribute("class")).contains("grid--item width-one-third");
-    assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class"))
+    assertThat(driver.findElement(By.id("vertical-header-desktop")).getAttribute("class"))
         .contains("hidden");
-    assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class"))
+    assertThat(driver.findElement(By.id("vertical-header-mobile")).getAttribute("class"))
         .contains("hidden");
-    assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class"))
+    assertThat(driver.findElement(By.id("horizontal-header-desktop")).getAttribute("class"))
         .doesNotContain("hidden");
-    assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class"))
+    assertThat(driver.findElement(By.id("horizontal-header-mobile")).getAttribute("class"))
         .doesNotContain("hidden");
-    assertThat(driver.findElementById("upload-doc-div").getAttribute("class"))
+    assertThat(driver.findElement(By.id("upload-doc-div")).getAttribute("class"))
         .doesNotContain("hidden");
   }
 
   private void assertStylingOfEmptyDocumentUploadPage() {
-    assertThat(driver.findElementById("drag-and-drop-box").getAttribute("class")).doesNotContain(
+    assertThat(driver.findElement(By.id("drag-and-drop-box")).getAttribute("class")).doesNotContain(
         "drag-and-drop-box-compact");
-    assertThat(driver.findElementById("upload-button").getAttribute("class")).doesNotContain(
+    assertThat(driver.findElement(By.id("upload-button")).getAttribute("class")).doesNotContain(
         "grid--item width-one-third");
-    assertThat(driver.findElementById("vertical-header-desktop").getAttribute("class"))
+    assertThat(driver.findElement(By.id("vertical-header-desktop")).getAttribute("class"))
         .doesNotContain("hidden");
-    assertThat(driver.findElementById("vertical-header-mobile").getAttribute("class"))
+    assertThat(driver.findElement(By.id("vertical-header-mobile")).getAttribute("class"))
         .doesNotContain("hidden");
-    assertThat(driver.findElementById("horizontal-header-desktop").getAttribute("class"))
+    assertThat(driver.findElement(By.id("horizontal-header-desktop")).getAttribute("class"))
         .contains("hidden");
-    assertThat(driver.findElementById("horizontal-header-mobile").getAttribute("class"))
+    assertThat(driver.findElement(By.id("horizontal-header-mobile")).getAttribute("class"))
         .contains("hidden");
-    assertThat(driver.findElementById("upload-doc-div").getAttribute("class")).contains("hidden");
+    assertThat(driver.findElement(By.id("upload-doc-div")).getAttribute("class")).contains("hidden");
   }
 }

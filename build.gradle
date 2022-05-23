@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.6.7"
+    id("org.springframework.boot") version "2.7.0"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.1"
@@ -68,7 +68,7 @@ task genJaxbFilenet {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.session:spring-session-bom:2021.1.3")
+        mavenBom("org.springframework.session:spring-session-bom:2021.2.0")
     }
 }
 
@@ -135,7 +135,7 @@ dependencies {
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
     implementation("ch.qos.logback:logback-core:1.2.0")
     implementation("ch.qos.logback:logback-classic:1.2.0")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.1.1")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.2")
     implementation("net.javacrumbs.shedlock:shedlock-spring:4.35.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.35.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")

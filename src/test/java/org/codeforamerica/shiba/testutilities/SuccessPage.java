@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.testutilities;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
@@ -21,6 +22,6 @@ public class SuccessPage extends Page {
   }
 
   public int countDownloadLinks() {
-    return driver.findElementsByClassName("link--subtle").size();
+    return driver.findElements(By.className("link--subtle")).size();
   }
 }

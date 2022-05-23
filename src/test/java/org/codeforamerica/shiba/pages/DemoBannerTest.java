@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.pages;
 import org.codeforamerica.shiba.testutilities.AbstractBasePageTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
@@ -22,6 +23,6 @@ public class DemoBannerTest extends AbstractBasePageTest {
 
   @Test
   void shouldDisplayBannerWhenDemo() {
-    assertEquals(driver.findElementByClassName("demo-banner").isDisplayed(), true); // Verify Banner
+    assertEquals(driver.findElement(By.className("demo-banner")).isDisplayed(), true); // Verify Banner
   }
 }

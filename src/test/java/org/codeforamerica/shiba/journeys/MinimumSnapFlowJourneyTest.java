@@ -37,7 +37,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.enter("isHomeless", "I don't have a permanent address"); // check
     testPage.enter("isHomeless", "I don't have a permanent address"); // uncheck
     testPage.clickContinue();
-    assertThat(driver.findElementById("state").getAttribute("value")).isEqualTo("MN");
+    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("MN");
     assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
     testPage.enter("isHomeless", "I don't have a permanent address"); // check
     testPage.clickContinue();
@@ -63,7 +63,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     fillOutContactAndReview(false);
 
     // Let's review your info
-    assertThat(driver.findElementById("homeAddress-address_message").getText())
+    assertThat(driver.findElement(By.id("homeAddress-address_message")).getText())
         .isEqualTo("No permanent address");
     assertThat(testPage.findElementById("generalDelivery_streetAddress").getText())
         .isEqualTo("100 S 1st St");
@@ -258,9 +258,9 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     // should load back to success page, check to see if button is no longer shown
     testPage.clickButton("Give us feedback");
     assertThat(testPage.getTitle()).isEqualTo("Feedback");
-    assertThat(driver.findElementById("happy")).isNotNull();
-    assertThat(driver.findElementById("meh")).isNotNull();
-    assertThat(driver.findElementById("sad")).isNotNull();
+    assertThat(driver.findElement(By.id("happy"))).isNotNull();
+    assertThat(driver.findElement(By.id("meh"))).isNotNull();
+    assertThat(driver.findElement(By.id("sad"))).isNotNull();
     testPage.chooseSentiment(Sentiment.MEH);
     testPage.clickButton("Submit feedback");
   }

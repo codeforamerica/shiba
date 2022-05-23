@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -265,7 +266,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     if (isReview)
     {
       // Let's review your info
-      assertThat(driver.findElementById("mailingAddress-address_street").getText())
+      assertThat(driver.findElement(By.id("mailingAddress-address_street")).getText())
           .isEqualTo("smarty street");           
     }
     
@@ -285,7 +286,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
   protected void deleteAFile() {
     await().until(
-		  () -> driver.findElementsByClassName("dz-remove").get(0).getAttribute("innerHTML")
+		  () -> driver.findElements(By.className("dz-remove")).get(0).getAttribute("innerHTML")
 		  .contains("delete"));
     testPage.clickLink("delete");
 
@@ -294,7 +295,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
   }
 
   protected void waitForErrorMessage() {
-    WebElement errorMessage = driver.findElementByClassName("text--error");
+    WebElement errorMessage = driver.findElement(By.className("text--error"));
     await().until(() -> !errorMessage.getText().isEmpty());
   }
 }
