@@ -109,7 +109,7 @@ logging:
     org.springframework.ws.client.MessageTracing.received: DEBUG
     org.springframework.ws.server.MessageTracing.received: DEBUG
     org.springframework.context.event.EventListener: TRACE
-    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
+    org.springframework.web.client.RestTemplate: TRACE
 
 pagesConfig: pages-config.yaml
 
