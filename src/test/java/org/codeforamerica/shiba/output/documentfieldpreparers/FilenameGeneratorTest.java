@@ -2,8 +2,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.County.Hennepin;
-import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.County.*;
 import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE_NATION;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
@@ -314,7 +313,32 @@ class FilenameGeneratorTest {
     assertThat(notHennepinFileName).doesNotContain("olmstedNPI_DOC");
     assertThat(notHennepinFileName).contains("olmstedNPI_MNB");
   }
-  
+
+  @Test
+  void shouldBeDocInsteadOfMnbIfCountyIsOther() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+            .withApplicantPrograms(List.of("SNAP")).build();
+
+    String OtherCountyNPI = "hennepinNPI";
+    County hennepinCounty = Other;
+
+    countyMap.getCounties().put(hennepinCounty,
+            CountyRoutingDestination.builder().dhsProviderId(OtherCountyNPI).build());
+    String applicationId = "someId";
+
+    Application hennepinApplication = defaultApplicationBuilder
+            .id(applicationId)
+            .county(hennepinCounty)
+            .completedAt(
+                    ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+            .applicationData(applicationData)
+            .build();
+
+    String fileName = filenameGenerator.generateUploadedDocumentName(hennepinApplication, 0, "pdf");
+
+    assertThat(fileName).contains("hennepinNPI_DOC");
+    assertThat(fileName).doesNotContain("hennepinNPI_MNB");
+  }
   @Test
   void shouldAppendExpeditedFileNameCorrectlyForCAFPdf() {
     TestApplicationDataBuilder applicationDataBuilder = new TestApplicationDataBuilder()
