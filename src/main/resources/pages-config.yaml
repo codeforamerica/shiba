@@ -1955,6 +1955,7 @@ pageDefinitions:
   - &unearnedIncome
     name: unearnedIncome
     pageTitle: unearned-income.title
+    contextFragment: unearnedIncomeContextFragment
     headerKey:
       defaultValue: unearned-income.household-get-income-from-any-of-these-sources
       conditionalValues:
@@ -2123,7 +2124,7 @@ pageDefinitions:
     pageTitle: unearned-income-source.title
     headerKey: social-security-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeSSorRSDI
@@ -2155,10 +2156,11 @@ pageDefinitions:
     pageTitle: unearned-income-source.title
     headerKey: supplemental-security-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeSSI
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2180,15 +2182,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &veteransBenefitsIncomeSource
     name: veteransBenefitsIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: veterans-benefits-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeVeteransBenefits
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2210,15 +2214,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &unemploymentIncomeSource
     name: unemploymentIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: unemployment-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeUnemployment
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2240,15 +2246,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &workersCompIncomeSource
     name: workersCompIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: workers-comp-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeWorkersComp
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2270,15 +2278,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &retirementIncomeSource
     name: retirementIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: retirement-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeRetirement
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2300,15 +2310,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &childOrSpousalSupportIncomeSource
     name: childOrSpousalSupportIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: child-or-spousal-support-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeChildOrSpousalSupport
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2330,15 +2342,17 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &tribalPaymentIncomeSource
     name: tribalPaymentIncomeSource
     pageTitle: unearned-income-source.title
     headerKey: tribal-payment-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
-    contextFragment: authorizedRepContextFragment
+    contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeTribalPayment
+        helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
         validators:
@@ -2360,6 +2374,7 @@ pageDefinitions:
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
