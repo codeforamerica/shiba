@@ -104,13 +104,13 @@ logging:
     org.apache.pdfbox.cos: ERROR
     org.apache.pdfbox.pdmodel.font: ERROR
     org.springframework.web: ERROR
+    org.springframework.web.client.RestTemplate: TRACE
     org.springframework.ws.client.MessageTracing.sent: DEBUG
     org.springframework.ws.server.MessageTracing.sent: DEBUG
     org.springframework.ws.client.MessageTracing.received: DEBUG
     org.springframework.ws.server.MessageTracing.received: DEBUG
     org.springframework.context.event.EventListener: TRACE
-    org.springframework.web.client.RestTemplate: TRACE
-
+    
 pagesConfig: pages-config.yaml
 
 asyncConfiguration:
