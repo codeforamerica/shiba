@@ -22,4 +22,5 @@ public class FormInput {
   private String defaultValue;
   private Condition condition;
   private List<PageDatasource> datasources; // for options
+  private String customFollowUps;
 }

@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.codeforamerica.shiba.pages.data.DatasourcePages;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 
 public class PageUtils {
 
@@ -80,4 +82,20 @@ public class PageUtils {
 
     return StringUtils.join(fullNameParts, " ");
   }
+  
+	/**
+	 * Tests if String name is in a list of names, of which each name contains the name plus id.
+	 * This method is different than Arraylist.contains() which simply matches each string.
+	 * @param listOfNames
+	 * @param name
+	 * @return
+	 */
+	public static boolean listOfNamesContainsName(Collection<String> listOfNames, String name) {
+		return listOfNames.stream().filter(k -> k.contains(name)).collect(Collectors.toList()).size() > 0;
+	}
+	
+	public static int findNumberOfHouseholdMembers(Subworkflow datasourcePages) {
+		return datasourcePages.size();
+	}
+  
 }

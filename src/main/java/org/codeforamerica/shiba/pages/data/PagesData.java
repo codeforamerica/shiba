@@ -190,7 +190,8 @@ public class PagesData extends HashMap<String, PageData> {
         formInput.getFollowUpValues(),
         formInput.getReadOnly(),
         formInput.getDefaultValue(),
-        formInput.getDatasources()
+        formInput.getDatasources(),
+        formInput.getCustomFollowUps()
     );
   }
 }

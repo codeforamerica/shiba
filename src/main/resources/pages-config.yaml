@@ -1955,6 +1955,7 @@ pageDefinitions:
   - &unearnedIncome
     name: unearnedIncome
     pageTitle: unearned-income.title
+    contextFragment: unearnedIncomeContextFragment
     headerKey:
       defaultValue: unearned-income.household-get-income-from-any-of-these-sources
       conditionalValues:
@@ -2118,6 +2119,262 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
+  - &socialSecurityIncomeSource
+    name: socialSecurityIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: social-security-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeSSorRSDI
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeSSorRSDI
+        followUps:
+          - name: socialSecurityAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &supplementalSecurityIncomeSource
+    name: supplementalSecurityIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: supplemental-security-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeSSI
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeSSI
+        followUps:
+          - name: supplementalSecurityIncomeAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &veteransBenefitsIncomeSource
+    name: veteransBenefitsIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: veterans-benefits-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeVeteransBenefits
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeVeteransBenefits
+        followUps:
+          - name: veteransBenefitsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &unemploymentIncomeSource
+    name: unemploymentIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: unemployment-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeUnemployment
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeUnemployment
+        followUps:
+          - name: unemploymentAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &workersCompIncomeSource
+    name: workersCompIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: workers-comp-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeWorkersComp
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeWorkersComp
+        followUps:
+          - name: workersCompensationAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &retirementIncomeSource
+    name: retirementIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: retirement-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeRetirement
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeRetirement
+        followUps:
+          - name: retirementAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &childOrSpousalSupportIncomeSource
+    name: childOrSpousalSupportIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: child-or-spousal-support-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeChildOrSpousalSupport
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeChildOrSpousalSupport
+        followUps:
+          - name: childOrSpousalSupportAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &tribalPaymentIncomeSource
+    name: tribalPaymentIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: tribal-payment-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeTribalPayment
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeTribalPayment
+        followUps:
+          - name: tribalPaymentsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+              - validation: NOT_BLANK
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &unearnedIncomeCcap
     name: unearnedIncomeCcap
     pageTitle: unearned-income.title
@@ -3687,8 +3944,88 @@ workflow:
     pageConfiguration: *unearnedIncome
     nextPages:
       - pageName: unearnedIncomeSources
+        condition: 
+          logicalOperator: OR
+          conditions: 
+            - *applicantDidNotChooseCERTAINPOPS?
+            - *livesAlone?
+      - pageName: unearnedIncomeCcap
+        condition: *noUnearnedIncomeSelected?
+      - pageName: socialSecurityIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: SOCIAL_SECURITY
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: supplementalSecurityIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: SSI
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: veteransBenefitsIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: VETERANS_BENEFITS
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: unemploymentIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: UNEMPLOYMENT
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: workersCompIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: WORKERS_COMPENSATION
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: retirementIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: RETIREMENT
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: childOrSpousalSupportIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: CHILD_OR_SPOUSAL_SUPPORT
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
+      - pageName: tribalPaymentIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:        
+          - pageName: unearnedIncome
+            input: unearnedIncome
+            value: TRIBAL_PAYMENTS
+          - *doesNotLiveAlone?
+          - *applicantChoseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
@@ -3699,6 +4036,143 @@ workflow:
     datasources:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
+  socialSecurityIncomeSource:
+    pageConfiguration: *socialSecurityIncomeSource
+    nextPages:
+      - pageName: supplementalSecurityIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - *applicantDidNotChooseCERTAINPOPS?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: SOCIAL_SECURITY
+    datasources:
+      - pageName: unearnedIncome
+        groupName: unearnedIncomeGroup
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  supplementalSecurityIncomeSource:
+    pageConfiguration: *supplementalSecurityIncomeSource
+    nextPages:
+      - pageName: veteransBenefitsIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: SSI
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  veteransBenefitsIncomeSource:
+    pageConfiguration: *veteransBenefitsIncomeSource
+    nextPages:
+      - pageName: unemploymentIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: VETERANS_BENEFITS
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  unemploymentIncomeSource:
+    pageConfiguration: *unemploymentIncomeSource
+    nextPages:
+      - pageName: workersCompIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: UNEMPLOYMENT
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  workersCompIncomeSource:
+    pageConfiguration: *workersCompIncomeSource
+    nextPages:
+      - pageName: retirementIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: WORKERS_COMPENSATION
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  retirementIncomeSource:
+    pageConfiguration: *retirementIncomeSource
+    nextPages:
+      - pageName: childOrSpousalSupportIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: RETIREMENT
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  childOrSpousalSupportIncomeSource:
+    pageConfiguration: *childOrSpousalSupportIncomeSource
+    nextPages:
+      - pageName: tribalPaymentIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: CHILD_OR_SPOUSAL_SUPPORT
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
+  tribalPaymentIncomeSource:
+    pageConfiguration: *tribalPaymentIncomeSource
+    nextPages:
+      - pageName: unearnedIncomeCcap
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: TRIBAL_PAYMENTS
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: unearnedIncome
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   unearnedIncomeCcap:
     pageConfiguration: *unearnedIncomeCcap
     skipCondition: *noOneChoseCCAP?
@@ -4284,6 +4758,28 @@ pageGroups:
     deleteWarningPage: householdDeleteWarningPage
     restartPage: addHouseholdMembers
     startingCount: 1
+  unearnedIncomeGroup:
+    startPages:
+      - unearnedIncome
+      - socialSecurityIncomeSource
+      - supplementalSecurityIncomeSource
+      - veteransBenefitsIncomeSource
+      - unemploymentIncomeSource
+      - workersCompIncomeSource
+      - retirementIncomeSource
+      - childOrSpoucalSupportIncomeSource
+      - tribalPaymentIncomeSource
+    completePages:
+      - unearnedIncome
+      - socialSecurityIncomeSource
+      - supplementalSecurityIncomeSource
+      - veteransBenefitsIncomeSource
+      - unemploymentIncomeSource
+      - workersCompIncomeSource
+      - retirementIncomeSource
+      - childOrSpoucalSupportIncomeSource
+      - tribalPaymentIncomeSource
+    restartPage: unearnedIncome
 landmarkPages:
   startTimerPages: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
