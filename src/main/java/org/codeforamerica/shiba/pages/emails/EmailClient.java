@@ -5,8 +5,8 @@ import java.util.Locale;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 
 public interface EmailClient {
@@ -15,8 +15,8 @@ public interface EmailClient {
       String recipientEmail,
       String confirmationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
@@ -24,8 +24,8 @@ public interface EmailClient {
       String recipientEmail,
       String confirmationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
@@ -33,8 +33,8 @@ public interface EmailClient {
       String recipientEmail,
       String confirmationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale);
 

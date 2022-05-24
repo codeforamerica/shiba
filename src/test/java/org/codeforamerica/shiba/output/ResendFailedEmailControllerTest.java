@@ -21,9 +21,9 @@ import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -66,16 +66,16 @@ class ResendFailedEmailControllerTest {
     var programs = List.of(Program.SNAP);
     String recipientEmail = "test@example.com";
     String emailContent = "content";
-    SnapExpeditedEligibility snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
-    CcapExpeditedEligibility ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
+    ExpeditedSnap expeditedSnap = ExpeditedSnap.ELIGIBLE;
+    ExpeditedCcap expeditedCcap = ExpeditedCcap.ELIGIBLE;
     String confirmationId = "6730000290";
 
     var applicationData = new ApplicationData();
     when(emailContentCreator.createFullClientConfirmationEmail(applicationData,
         confirmationId,
         programs,
-        snapExpeditedEligibility,
-        ccapExpeditedEligibility,
+        expeditedSnap,
+        expeditedCcap,
         Locale.ENGLISH)).thenReturn(emailContent);
 
     Application application = Application.builder()
@@ -88,9 +88,9 @@ class ResendFailedEmailControllerTest {
 
     when(applicationRepository.find(confirmationId)).thenReturn(application);
     when(snapExpeditedEligibilityDecider.decide(applicationData))
-        .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+        .thenReturn(ExpeditedSnap.ELIGIBLE);
     when(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
+        .thenReturn(ExpeditedCcap.NOT_ELIGIBLE);
     String fileContent = "someContent";
     String fileName = "someFileName";
     when(pdfGenerator.generate(eq(confirmationId), eq(CAF), eq(CLIENT)))
@@ -109,7 +109,7 @@ class ResendFailedEmailControllerTest {
             .string("Successfully resent confirmation email for application: " + confirmationId));
     verify(emailClient)
         .sendConfirmationEmail(applicationData, recipientEmail, confirmationId, programs,
-            SnapExpeditedEligibility.ELIGIBLE, CcapExpeditedEligibility.NOT_ELIGIBLE,
+            ExpeditedSnap.ELIGIBLE, ExpeditedCcap.NOT_ELIGIBLE,
             List.of(new ApplicationFile(fileContent.getBytes(), fileName)), Locale.ENGLISH);
   }
 }

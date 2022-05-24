@@ -14,9 +14,9 @@ import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -60,9 +60,9 @@ public class ResendFailedEmailController {
           if (application.getFlow() == FlowType.LATER_DOCS) {
             emailClient.sendLaterDocsConfirmationEmail(email, LocaleContextHolder.getLocale());
           } else {
-            SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
+            ExpeditedSnap expeditedSnap = snapExpeditedEligibilityDecider
                 .decide(application.getApplicationData());
-            CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider
+            ExpeditedCcap expeditedCcap = ccapExpeditedEligibilityDecider
                 .decide(application.getApplicationData());
             List<Document> docs = DocumentListParser.parse(applicationData);
             List<ApplicationFile> pdfs = docs.stream()
@@ -74,7 +74,7 @@ public class ResendFailedEmailController {
                 : LocaleContextHolder.getLocale();
             emailClient.sendConfirmationEmail(applicationData, email, applicationId,
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs,
+                expeditedSnap, expeditedCcap, pdfs,
                 local);
           }
         });

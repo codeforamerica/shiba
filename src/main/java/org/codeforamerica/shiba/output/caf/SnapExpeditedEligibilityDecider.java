@@ -11,8 +11,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.JOBS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedSnap.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedSnap.NOT_ELIGIBLE;
 
 import java.util.List;
 import org.codeforamerica.shiba.Money;
@@ -51,7 +51,7 @@ public class SnapExpeditedEligibilityDecider {
    * @param applicationData Applicant data to check
    * @return SNAP eligibility given the applicant data
    */
-  public SnapExpeditedEligibility decide(ApplicationData applicationData) {
+  public ExpeditedSnap decide(ApplicationData applicationData) {
     if (applicationData.getPagesData().safeGetPageInputValue("expeditedSnap", "expeditedSnap").equals(List.of("true"))) {
       return ELIGIBLE;
     } else {

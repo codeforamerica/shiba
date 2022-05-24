@@ -36,8 +36,8 @@ class ExpeditedEligibilityMapperTest {
         .timeToComplete(null)
         .build();
 
-    when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.ELIGIBLE);
-    when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.ELIGIBLE);
+    when(mockSnapDecider.decide(any())).thenReturn(ExpeditedSnap.ELIGIBLE);
+    when(mockCcapDecider.decide(any())).thenReturn(ExpeditedCcap.ELIGIBLE);
 
     assertThat(mapper.map(application, null, Recipient.CLIENT, null)).containsExactly(
         new ApplicationInput(
@@ -71,8 +71,8 @@ class ExpeditedEligibilityMapperTest {
         .timeToComplete(null)
         .build();
 
-    when(mockSnapDecider.decide(any())).thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
-    when(mockCcapDecider.decide(any())).thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
+    when(mockSnapDecider.decide(any())).thenReturn(ExpeditedSnap.NOT_ELIGIBLE);
+    when(mockCcapDecider.decide(any())).thenReturn(ExpeditedCcap.NOT_ELIGIBLE);
 
     List<ApplicationInput> result = mapper.map(application, null, Recipient.CLIENT, null);
 

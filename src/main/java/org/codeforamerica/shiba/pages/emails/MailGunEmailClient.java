@@ -20,8 +20,8 @@ import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -86,8 +86,8 @@ public class MailGunEmailClient implements EmailClient {
       String recipientEmail,
       String applicationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
@@ -96,8 +96,8 @@ public class MailGunEmailClient implements EmailClient {
         applicationData,
         applicationId,
         programs,
-        snapExpeditedEligibility,
-        ccapExpeditedEligibility,
+        expeditedSnap,
+        expeditedCcap,
         locale);
     sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles);
     log.info("Confirmation email sent for " + applicationId);
@@ -108,8 +108,8 @@ public class MailGunEmailClient implements EmailClient {
       String recipientEmail,
       String applicationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
     var lms = new LocaleSpecificMessageSource(locale, messageSource);
@@ -124,8 +124,8 @@ public class MailGunEmailClient implements EmailClient {
       String recipientEmail,
       String applicationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility,
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap,
       List<ApplicationFile> applicationFiles,
       Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
@@ -133,8 +133,8 @@ public class MailGunEmailClient implements EmailClient {
     String emailContent = emailContentCreator.createNextStepsEmail(
         applicationId,
         programs,
-        snapExpeditedEligibility,
-        ccapExpeditedEligibility,
+        expeditedSnap,
+        expeditedCcap,
         locale);
     sendEmail(subject, senderEmail, recipientEmail, emailContent, emptyList());
     log.info("Next steps email sent for " + applicationId);

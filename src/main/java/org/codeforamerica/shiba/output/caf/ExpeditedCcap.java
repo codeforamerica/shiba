@@ -1,12 +1,12 @@
 package org.codeforamerica.shiba.output.caf;
 
-public enum SnapExpeditedEligibility {
-  ELIGIBLE("SNAP"),
+public enum ExpeditedCcap {
+  ELIGIBLE("CCAP"),
   NOT_ELIGIBLE("");
 
   private final String status;
 
-  SnapExpeditedEligibility(String status) {
+  ExpeditedCcap(String status) {
     this.status = status;
   }
 

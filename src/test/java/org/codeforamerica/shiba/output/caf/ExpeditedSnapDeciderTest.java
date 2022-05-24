@@ -2,8 +2,8 @@ package org.codeforamerica.shiba.output.caf;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedSnap.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedSnap.NOT_ELIGIBLE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class SnapExpeditedEligibilityDeciderTest {
+class ExpeditedSnapDeciderTest {
 
   UtilityDeductionCalculator mockUtilityDeductionCalculator = mock(
       UtilityDeductionCalculator.class);
@@ -55,7 +55,7 @@ class SnapExpeditedEligibilityDeciderTest {
   void shouldQualify_whenMeetingIncomeAndAssetsThresholds(
       String incomeString,
       String assetString,
-      SnapExpeditedEligibility expectedDecision
+      ExpeditedSnap expectedDecision
   ) {
     Money income = Money.parse(incomeString);
     when(totalIncomeCalculator.calculate(new TotalIncome(income, emptyList()))).thenReturn(income);
@@ -78,7 +78,7 @@ class SnapExpeditedEligibilityDeciderTest {
   void shouldQualify_whenApplicantIsMigrantWorkerAndMeetAssetThreshold(
       String assets,
       String isMigrantWorker,
-      SnapExpeditedEligibility expectedDecision
+      ExpeditedSnap expectedDecision
   ) {
     when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("9999"));
 
@@ -96,7 +96,7 @@ class SnapExpeditedEligibilityDeciderTest {
       "500,499,NOT_ELIGIBLE",
   })
   void shouldQualifyWhenIncomeAndAssetsAreLessThanExpenses(
-      String assets, String housingCosts, SnapExpeditedEligibility expectedDecision
+      String assets, String housingCosts, ExpeditedSnap expectedDecision
   ) {
     List<String> utilitySelections = List.of("utility");
     when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(Money.ONE);

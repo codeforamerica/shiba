@@ -2,7 +2,6 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
 import java.util.List;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
@@ -10,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class CcapExpeditedEligibilityDeciderTest {
+class ExpeditedCcapDeciderTest {
 
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = new CcapExpeditedEligibilityDecider();
 
@@ -30,7 +29,7 @@ class CcapExpeditedEligibilityDeciderTest {
   })
   void shouldQualifyWhenLivingSituationIsEligible(
       String livingSituation,
-      CcapExpeditedEligibility expectedDecision
+      ExpeditedCcap expectedDecision
   ) {
     ApplicationData applicationData = createApplicationData(List.of(livingSituation), "CCAP");
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(expectedDecision);
@@ -41,7 +40,7 @@ class CcapExpeditedEligibilityDeciderTest {
     ApplicationData applicationData = createApplicationData(
         List.of("TEMPORARILY_WITH_FRIENDS_OR_FAMILY_OTHER_REASONS"), "CCAP");
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
+        .isEqualTo(ExpeditedCcap.NOT_ELIGIBLE);
   }
 
   private ApplicationData createApplicationData(List<String> livingSituation, String program) {

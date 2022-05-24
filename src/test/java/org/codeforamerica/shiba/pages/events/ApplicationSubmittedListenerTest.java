@@ -24,9 +24,9 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
@@ -129,9 +129,9 @@ class ApplicationSubmittedListenerTest {
       when(applicationData.isCAFApplication()).thenReturn(true);
       when(applicationData.getPagesData()).thenReturn(new PagesData());
       when(snapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+          .thenReturn(ExpeditedSnap.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
+          .thenReturn(ExpeditedCcap.NOT_ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
@@ -145,8 +145,8 @@ class ApplicationSubmittedListenerTest {
           email,
           appIdFromDb,
           List.of(),
-          SnapExpeditedEligibility.ELIGIBLE,
-          CcapExpeditedEligibility.NOT_ELIGIBLE,
+          ExpeditedSnap.ELIGIBLE,
+          ExpeditedCcap.NOT_ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);
     }
@@ -171,9 +171,9 @@ class ApplicationSubmittedListenerTest {
       when(applicationData.getPagesData()).thenReturn(new PagesDataBuilder().build(List.of(
           new PageDataBuilder("contactInfo", Map.of("phoneOrEmail", List.of("EMAIL"))))));
       when(snapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+          .thenReturn(ExpeditedSnap.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.NOT_ELIGIBLE);
+          .thenReturn(ExpeditedCcap.NOT_ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(pdfGenerator.generate(appIdFromDb, Document.CAF, CLIENT)).thenReturn(applicationFile);
@@ -187,8 +187,8 @@ class ApplicationSubmittedListenerTest {
           email,
           appIdFromDb,
           List.of(),
-          SnapExpeditedEligibility.ELIGIBLE,
-          CcapExpeditedEligibility.NOT_ELIGIBLE,
+          ExpeditedSnap.ELIGIBLE,
+          ExpeditedCcap.NOT_ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);
     }
@@ -210,9 +210,9 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(snapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(SnapExpeditedEligibility.NOT_ELIGIBLE);
+          .thenReturn(ExpeditedSnap.NOT_ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.ELIGIBLE);
+          .thenReturn(ExpeditedCcap.ELIGIBLE);
       ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(applicationData.isCCAPApplication()).thenReturn(true);
@@ -227,8 +227,8 @@ class ApplicationSubmittedListenerTest {
           email,
           appIdFromDb,
           List.of(),
-          SnapExpeditedEligibility.NOT_ELIGIBLE,
-          CcapExpeditedEligibility.ELIGIBLE,
+          ExpeditedSnap.NOT_ELIGIBLE,
+          ExpeditedCcap.ELIGIBLE,
           List.of(applicationFile),
           Locale.ENGLISH);
     }
@@ -250,9 +250,9 @@ class ApplicationSubmittedListenerTest {
           null,
           Locale.ENGLISH);
       when(snapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+          .thenReturn(ExpeditedSnap.ELIGIBLE);
       when(ccapExpeditedEligibilityDecider.decide(applicationData))
-          .thenReturn(CcapExpeditedEligibility.ELIGIBLE);
+          .thenReturn(ExpeditedCcap.ELIGIBLE);
       ApplicationFile applicationFileCAF = new ApplicationFile("someContent".getBytes(),
           "someFileName");
       when(applicationData.isCAFApplication()).thenReturn(true);
@@ -274,8 +274,8 @@ class ApplicationSubmittedListenerTest {
           email,
           appIdFromDb,
           List.of(),
-          SnapExpeditedEligibility.ELIGIBLE,
-          CcapExpeditedEligibility.ELIGIBLE,
+          ExpeditedSnap.ELIGIBLE,
+          ExpeditedCcap.ELIGIBLE,
           applicationFiles,
           Locale.ENGLISH);
     }
@@ -356,7 +356,7 @@ class ApplicationSubmittedListenerTest {
             null,
             Locale.ENGLISH);
         when(snapExpeditedEligibilityDecider.decide(applicationData))
-            .thenReturn(SnapExpeditedEligibility.ELIGIBLE);
+            .thenReturn(ExpeditedSnap.ELIGIBLE);
         ApplicationFile applicationFile = new ApplicationFile("someContent".getBytes(),
             "someFileName");
         when(pdfGenerator.generate(appIdFromDb, Document.CAF, CASEWORKER))

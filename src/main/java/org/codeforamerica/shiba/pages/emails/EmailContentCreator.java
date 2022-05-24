@@ -6,11 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
@@ -52,12 +51,12 @@ public class EmailContentCreator {
 
   public String createFullClientConfirmationEmail(ApplicationData applicationData,
       String confirmationId,
-      List<String> programs, SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+      List<String> programs, ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
 
     String nextSteps = String.join("<br><br>", nextStepsContentService
-        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility));
+        .getNextSteps(programs, expeditedSnap, expeditedCcap));
 
     List<DocumentRecommendation> documentRecommendations = docRecommendationMessageService
         .getConfirmationEmailDocumentRecommendations(applicationData, locale);
@@ -101,8 +100,8 @@ public class EmailContentCreator {
 
   public String createNextStepsEmail(String confirmationId,
       List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap, Locale locale) {
     LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
     return "";
   }

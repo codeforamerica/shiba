@@ -2,28 +2,19 @@ package org.codeforamerica.shiba.pages.emails;
 
 import static java.util.Locale.ENGLISH;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.Program.CASH;
 import static org.codeforamerica.shiba.Program.CCAP;
 import static org.codeforamerica.shiba.Program.EA;
-import static org.codeforamerica.shiba.Program.GRH;
 import static org.codeforamerica.shiba.Program.SNAP;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflows;
-import org.codeforamerica.shiba.testutilities.PageDataBuilder;
-import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -142,8 +133,8 @@ class EmailContentCreatorTest {
     String emailContent = emailContentCreator.createNextStepsEmail(
         "someNumber",
         programs,
-        SnapExpeditedEligibility.ELIGIBLE,
-        CcapExpeditedEligibility.ELIGIBLE,
+        ExpeditedSnap.ELIGIBLE,
+        ExpeditedCcap.ELIGIBLE,
         ENGLISH);
     assertThat(emailContent).contains(
         "<html><body><strong>You Are Eligible for Expedited SNAP:</strong><br>"

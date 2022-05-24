@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
-import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.NOT_ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedCcap.ELIGIBLE;
+import static org.codeforamerica.shiba.output.caf.ExpeditedCcap.NOT_ELIGIBLE;
 
 import java.util.List;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class CcapExpeditedEligibilityDecider {
       = Set.of("HOTEL_OR_MOTEL", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP",
       "EMERGENCY_SHELTER", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
 
-  public CcapExpeditedEligibility decide(ApplicationData applicationData) {
+  public ExpeditedCcap decide(ApplicationData applicationData) {
     if (applicationData.getPagesData().safeGetPageInputValue("expeditedCcap", "expeditedCcap").equals(
         List.of("true"))) {
       return ELIGIBLE;

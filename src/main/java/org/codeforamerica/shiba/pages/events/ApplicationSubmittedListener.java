@@ -17,9 +17,9 @@ import org.codeforamerica.shiba.mnit.MnitCountyInformation;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -79,9 +79,9 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     EmailParser.parse(applicationData)
         .ifPresent(email -> {
           String applicationId = application.getId();
-          SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
+          ExpeditedSnap expeditedSnap = snapExpeditedEligibilityDecider
               .decide(applicationData);
-          CcapExpeditedEligibility ccapExpeditedEligibility = ccapExpeditedEligibilityDecider
+          ExpeditedCcap expeditedCcap = ccapExpeditedEligibilityDecider
               .decide(applicationData);
           List<Document> docs = DocumentListParser.parse(applicationData);
           List<ApplicationFile> pdfs = docs.stream()
@@ -90,11 +90,11 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
           if (applicationData.getPagesData().safeGetPageInputValue("contactInfo", "phoneOrEmail").contains("EMAIL")) {
             emailClient.sendShortConfirmationEmail(applicationData, email, applicationId,
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+                expeditedSnap, expeditedCcap, pdfs, event.getLocale());
             // send next steps email
             emailClient.sendNextStepsEmail(applicationData, email, applicationId,
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+                expeditedSnap, expeditedCcap, pdfs, event.getLocale());
 
             // schedule(?) docs email for 24 hours in the future
 
@@ -102,7 +102,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
           } else {
             emailClient.sendConfirmationEmail(applicationData, email, applicationId,
                 new ArrayList<>(applicationData.getApplicantAndHouseholdMemberPrograms()),
-                snapExpeditedEligibility, ccapExpeditedEligibility, pdfs, event.getLocale());
+                expeditedSnap, expeditedCcap, pdfs, event.getLocale());
           }
 
         });

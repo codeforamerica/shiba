@@ -1,11 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.codeforamerica.shiba.Program.CASH;
-import static org.codeforamerica.shiba.Program.CCAP;
-import static org.codeforamerica.shiba.Program.EA;
-import static org.codeforamerica.shiba.Program.GRH;
-import static org.codeforamerica.shiba.Program.SNAP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,8 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
-import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
+import org.codeforamerica.shiba.output.caf.ExpeditedCcap;
+import org.codeforamerica.shiba.output.caf.ExpeditedSnap;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
@@ -65,8 +60,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
         Arguments.of(
             "Example 1 (Only Expedited SNAP)",
             List.of(SNAP),
-            SnapExpeditedEligibility.ELIGIBLE,
-            CcapExpeditedEligibility.NOT_ELIGIBLE,
+            ExpeditedSnap.ELIGIBLE,
+            ExpeditedCcap.NOT_ELIGIBLE,
             List.of(
                 "Within 24 hours, expect a call from your county about your food assistance application.",
                 "If you don't hear from your county within 3 days or want an update on your case, please call your county."
@@ -78,15 +73,15 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   @ParameterizedTest(name = "{0}")
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#nextStepMessageTestCases")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
-      SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
+      ExpeditedSnap expeditedSnap,
+      ExpeditedCcap expeditedCcap, List<String> expectedMessages)
       throws Exception {
     PageData programsPage = new PageData();
     programsPage.put("programs", InputData.builder().value(programs).build());
     applicationData.getPagesData().put("choosePrograms", programsPage);
 
-    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
-    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
+    when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(expeditedSnap);
+    when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(expeditedCcap);
 
     ResultActions resultActions = mockMvc.perform(
             get("/pages/nextSteps").session(new MockHttpSession()))
