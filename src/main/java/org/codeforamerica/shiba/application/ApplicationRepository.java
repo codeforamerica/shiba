@@ -23,6 +23,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Slf4j
@@ -52,6 +54,7 @@ public class ApplicationRepository {
     return idBuilder.toString();
   }
 
+  @Transactional(isolation = Isolation.READ_COMMITTED)
   public void save(Application application) {
     ApplicationData applicationData = application.getApplicationData();
     HashMap<String, Object> parameters = new HashMap<>(Map.of(
