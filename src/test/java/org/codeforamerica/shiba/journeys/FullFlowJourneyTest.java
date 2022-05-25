@@ -263,7 +263,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Tell us how much money is received.
-    driver.findElement(By.id("monthlyIncomeSSorRSDI[]")).click();
+    driver.findElement(By.id("householdMember-me")).click();  
     testPage.enter("socialSecurityAmount", "200.30");
     testPage.clickContinue();
 
