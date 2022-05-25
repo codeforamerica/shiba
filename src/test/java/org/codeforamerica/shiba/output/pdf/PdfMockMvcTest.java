@@ -672,6 +672,18 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
             "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
+      
+      @Test
+      void shouldMapCoverPageSelfEmploymentField()
+          throws Exception {
+        postExpectingSuccess("identifyCounty", "county", "Morrison");
+        addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
+        addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
+        completeHelperWorkflow(true);
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("SELF_EMPLOYMENT_0", "No", ccap);
+        assertPdfFieldEquals("SELF_EMPLOYMENT_1", "Yes", ccap);
+      }
 
       @Test
       void shouldMapEnrichedHomeAddressToMailingAddressIfSameMailingAddressIsTrueAndUseEnrichedAddressIsTrue()

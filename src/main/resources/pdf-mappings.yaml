@@ -202,6 +202,8 @@ mappings:
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
   employersName:
     employersName: EMPLOYERS_NAME
+  selfEmployment:
+    selfEmployment: SELF_EMPLOYMENT
   hourlyWage:
     hourlyWage: [ HOURLY_WAGE, INCOME_PER_PAY_PERIOD ]
   nonSelfEmployment_hourlyWage:
