@@ -11,7 +11,7 @@
           <div th:replace="'fragments/contextFragments' :: ${page.contextFragment}"></div>
         </th:block>
         <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
-          <h1 id="page-header" class="h2" th:text="#{${page.headerKey}}"></h1>
+          <h1 id="page-header" class="h2" th:utext="#{${page.headerKey}}"></h1>
           <p id="page-header-help-message"
              th:if="${page.hasHeaderHelpMessageKey()}"
              th:text="#{${page.headerHelpMessageKey}}"></p>

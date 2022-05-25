@@ -2146,8 +2146,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: socialSecurityAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2178,8 +2179,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: supplementalSecurityIncomeAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2210,8 +2212,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: veteransBenefitsAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2242,8 +2245,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: unemploymentAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2274,8 +2278,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: workersCompensationAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2306,8 +2311,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: retirementAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2338,8 +2344,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: childOrSpousalSupportAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
@@ -2370,8 +2377,9 @@ pageDefinitions:
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-              - validation: NOT_BLANK
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: tribalPaymentsAmount
+                  matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have

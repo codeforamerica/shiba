@@ -22,10 +22,8 @@
 			<div class="question-with-follow-up__question">
 				<div class="form-group">
 					<label th:for="householdMember-me" class="checkbox display-flex" style="margin-bottom: 1rem;">
-						<input type="checkbox" th:id="${formInputName}" th:value="${yourFullName} + ' applicant'"
-							th:name="${formInputName}" th:checked="${youIsChecked}" th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-                                        aria-invalid=${hasError},
-                                        aria-label=${needsAriaLabel ? input.name : ''}"
+						<input type="checkbox" th:id="householdMember-me" th:value="${yourFullName} + ' applicant'"
+							th:name="${formInputName}" th:checked="${youIsChecked}" 
 							th:attrappend="data-follow-up=|#${input.name}-follow-up|">
 						<span th:text="|${yourFullName} #{general.you}|"> </span>
 					</label>
@@ -43,7 +41,7 @@
 								th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
 								<div class="text-input-group__prefix">$</div>
 								<input type="text" class="text-input" th:attr="aria-describedby=${hasHelpMessage ? youFollowUp.name + '-help-message' : ''},
-			                            aria-labelledby=${needsAriaLabel ? 'page-header' : ''},
+			                            aria-labelledby=${needsAriaLabel ? youFollowUp.name+'-label' : ''},
 			                            aria-invalid=${hasError}" th:id="|${youFollowUp.name}|" th:name="${inputFollowupsName}"
 									th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[0] : ''}">
 									<div class="text-input-group__postfix" style="width:35%">/per month</div>
@@ -61,13 +59,10 @@
 				<div class="question-with-follow-up__question">
 					<div class="form-group">
 
-						<label th:for="|householdMember${iterationStat.index}|" class="checkbox display-flex">
+						<label th:for="|${formInputName}${iterationStat.index}|" class="checkbox display-flex">
 							<input type="checkbox" th:id="|${formInputName}${iterationStat.index}|"
 								th:value="${fullName} + ' ' + ${iteration.id}" th:name="${formInputName}"
 								th:checked="${T(org.codeforamerica.shiba.pages.PageUtils).listOfNamesContainsName(sortedHouseholdMembers, fullName)}"
-								th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
-	                                        aria-invalid=${hasError},
-	                                        aria-label=${needsAriaLabel ? input.name : ''}"
 								th:attrappend="data-follow-up=|#${input.name}${iterationStat.index}-follow-up|">
 							<span th:text="${fullName}"></span>
 						</label>
@@ -78,7 +73,7 @@
 					<th:block th:each="followUp: ${input.followUps}">
 						<div class="form-group" th:classappend="${inputFollowupsHasErrors} ? 'form-group--error' : ''">
 							<div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${followUp})"></div>
-							<p class="text--help" th:id="${followUp.name + '-help-message'}" th:if="${hasHelpMessage}"
+							<p class="text--help" th:id="${followUp.name+iterationStat.index + '-help-message'}" th:if="${hasHelpMessage}"
 								th:utext="#{${followUp.helpMessageKey}}"></p>
 							<th:block th:switch="${followUp.type}">
 								<!--/*  Including switch/case for future addition of other input types. */-->
@@ -86,8 +81,8 @@
 									th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
 									<div class="text-input-group__prefix">$</div>
 									<input type="text" class="text-input" th:attr="aria-describedby=${hasHelpMessage ? followUp.name + '-help-message' : ''},
-				                            aria-labelledby=${needsAriaLabel ? 'page-header' : ''},
-				                            aria-invalid=${hasError}" th:id="|${followUp.name}${iterationStat.index}|"
+                                        aria-labelledby=${needsAriaLabel ? followUp.name+'-label' : ''},
+                                        aria-invalid=${hasError}" th:id="|${followUp.name}${iterationStat.index}|"
 										th:name="${inputFollowupsName}"
 										th:value="${(iterationStat.count < inputFollowupData.value.size() && !inputFollowupData.value[iterationStat.count].isEmpty() ) ?inputFollowupData.value[iterationStat.count]:''}">
 										<div class="text-input-group__postfix" style="width:35%">/per month</div>
