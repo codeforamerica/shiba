@@ -937,6 +937,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInPersonalInfoAndContactInfoAndAddress();
       postExpectingSuccess("livingSituation", "livingSituation",
           "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
+      fillInApplicantHealthcareCoverageQuestionAsTrue();
 
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
@@ -956,8 +957,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), pdf);
 
       // Basic Criteria Questions
-      assertPdfFieldEquals("BLIND", "Yes", pdf);
-      assertPdfFieldEquals("HELP_WITH_MEDICARE", "Yes", pdf);
+      assertPdfFieldEquals("BLIND", "Yes", pdf);;
       assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
       assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
       assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);
@@ -1015,6 +1015,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
+
+      //CertainPops Healthcare Coverage Question
+      assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
     }
 
     @Test
