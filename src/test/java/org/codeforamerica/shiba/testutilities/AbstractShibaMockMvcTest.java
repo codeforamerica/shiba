@@ -766,7 +766,7 @@ public class AbstractShibaMockMvcTest {
     assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
   }
 
-  protected void fillAdditionalIncomeInfoToHaveVehicle() throws Exception {
+  protected void fillAdditionalIncomeInfo() throws Exception {
     postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
         "one more thing you need to know is...", "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
@@ -775,8 +775,6 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("energyAssistance", "energyAssistance", "false", "medicalExpenses");
     postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE",
         "supportAndCare");
-    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "vehicle");
-    postExpectingSuccess("vehicle", "haveVehicle", "false");
   }
 
   protected void completeFlowFromLandingPageThroughReviewInfo(String... programSelections)
@@ -958,10 +956,10 @@ public class AbstractShibaMockMvcTest {
         "medicalExpenses");
     postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE",
         "supportAndCare");
-    postExpectingRedirect("supportAndCare", "supportAndCare", "true", "vehicle");
-    postExpectingRedirect("vehicle", "haveVehicle", "false", "realEstate");
-    postExpectingRedirect("realEstate", "ownRealEstate", "true", "investments");
-    postExpectingRedirect("investments", "haveInvestments", "false", "savings");
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsCcap");
+    postExpectingSuccess("assetsCcap", "assets", "REAL_ESTATE");
+    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
+    
 
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "millionDollar");

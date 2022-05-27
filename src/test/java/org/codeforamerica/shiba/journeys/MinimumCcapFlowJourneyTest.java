@@ -153,15 +153,9 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest{
 		// support, child care support or medical care?
 		testPage.enter("supportAndCare", NO.getDisplayValue());
 
-		// Does anyone in the household own a vehicle?
-		testPage.enter("haveVehicle", NO.getDisplayValue());
-
-		// Do anyone in the household own any real estate (not including the home you
-		// currently live in)?
-		testPage.enter("ownRealEstate", NO.getDisplayValue());
-
-		// Does anyone in the household have stocks, bonds or a 401k?
-		testPage.enter("haveInvestments", NO.getDisplayValue());
+		// Does anyone in your household have any of these?
+	    testPage.enter("assets", "None of the above");
+	    testPage.clickContinue();
 
 		// Does anyone in the household have money in a bank account or debit card?
 		testPage.enter("haveSavings", NO.getDisplayValue());

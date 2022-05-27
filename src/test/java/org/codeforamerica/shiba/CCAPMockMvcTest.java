@@ -38,9 +38,10 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "additionalIncomeInfo");
-    fillAdditionalIncomeInfoToHaveVehicle();
-    assertNavigationRedirectsToCorrectNextPage("vehicle", "investments");
-    postExpectingRedirect("investments", "haveInvestments", "false", "savings");
+    fillAdditionalIncomeInfo();
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsSnap");
+    postExpectingSuccess("assetsSnap", "assets", "VEHICLE");
+    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
@@ -59,9 +60,10 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "additionalIncomeInfo");
-    fillAdditionalIncomeInfoToHaveVehicle();
-    assertNavigationRedirectsToCorrectNextPage("vehicle", "investments");
-    postExpectingRedirect("investments", "haveInvestments", "true", "savings");
+    fillAdditionalIncomeInfo();
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsSnap");
+    postExpectingSuccess("assetsSnap", "assets", "VEHICLE");
+    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
@@ -186,10 +188,10 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         "unearnedIncomeCcap",
         "NO_UNEARNED_INCOME_CCAP_SELECTED",
         "additionalIncomeInfo");
-    fillAdditionalIncomeInfoToHaveVehicle();
-    assertNavigationRedirectsToCorrectNextPage("vehicle", "realEstate");
-    postExpectingRedirect("realEstate", "ownRealEstate", "false", "investments");
-    postExpectingRedirect("investments", "haveInvestments", "false", "savings");
+    fillAdditionalIncomeInfo();
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsCcap");
+    postExpectingSuccess("assetsCcap", "assets", "NONE");
+    assertNavigationRedirectsToCorrectNextPage("assetsCcap", "savings");
     postExpectingRedirect("savings", "haveSavings", "false", "soldAssets");
     // Go back and enter true for savings
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");

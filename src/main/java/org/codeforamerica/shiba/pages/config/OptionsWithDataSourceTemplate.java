@@ -60,7 +60,6 @@ public interface OptionsWithDataSourceTemplate {
     valuesToBeRemoved.forEach(value -> {
       selectableOptions.remove(selectableOptionValues.indexOf(value));
     });
-
     SelectableOptionsTemplate optionsTemplate = new SelectableOptionsTemplate();
     optionsTemplate.setSelectableOptions(selectableOptions);
     return optionsTemplate;

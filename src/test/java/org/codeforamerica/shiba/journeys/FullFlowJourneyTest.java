@@ -338,15 +338,11 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Does anyone in the household pay for court-ordered child support, spousal support, child care support or medical care?
     testPage.enter("supportAndCare", YES.getDisplayValue());
-
-    // Does anyone in the household own a vehicle?
-    testPage.enter("haveVehicle", YES.getDisplayValue());
-
-    // Do anyone in the household own any real estate (not including the home you currently live in)?
-    testPage.enter("ownRealEstate", YES.getDisplayValue());
-
-    // Does anyone in the household have stocks, bonds or a 401k?
-    testPage.enter("haveInvestments", NO.getDisplayValue());
+   // takeSnapShot("image.png");
+    // Does anyone in your household have any of these?
+    testPage.enter("assets", "A vehicle");
+    testPage.enter("assets", "Real estate (not including your own home)");
+    testPage.clickContinue();
 
     // Does anyone in the household have money in a bank account or debit card?
     testPage.enter("haveSavings", YES.getDisplayValue());

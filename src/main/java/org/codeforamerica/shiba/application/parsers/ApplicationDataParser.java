@@ -148,6 +148,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
         new ParsingCoordinate("utilityPayments", "payForUtilities"));
+    coordinatesMap.put(Field.ASSETS_TYPE,
+        new ParsingCoordinate("assets", "assets"));
     coordinatesMap.put(Field.SAVINGS,
         new ParsingCoordinate("savings", "haveSavings"));
     coordinatesMap.put(Field.RECEIVES_ENERGY_ASSISTANCE,
@@ -303,7 +305,7 @@ public class ApplicationDataParser {
     UNEARNED_INCOME_CCAP,
     HOME_EXPENSES,
     UTILITY_PAYMENTS,
-
+    ASSETS_TYPE,
     SAVINGS,
 
     RECEIVES_ENERGY_ASSISTANCE,

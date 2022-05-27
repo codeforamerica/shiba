@@ -354,9 +354,9 @@ public abstract class AbstractBasePageTest {
     testPage.enter("medicalExpenses", "None of the above");
     testPage.clickContinue();
     testPage.enter("supportAndCare", YES.getDisplayValue());
-    testPage.enter("haveVehicle", YES.getDisplayValue());
-    testPage.enter("ownRealEstate", YES.getDisplayValue());
-    testPage.enter("haveInvestments", NO.getDisplayValue());
+    testPage.enter("assets", "A vehicle");
+    testPage.enter("assets", "Real estate (not including your own home)");
+    testPage.clickContinue();
     testPage.enter("haveSavings", YES.getDisplayValue());
     testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();

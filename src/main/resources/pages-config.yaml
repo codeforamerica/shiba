@@ -68,6 +68,14 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantChoseCASH?
+    pageName: choosePrograms
+    value: CASH
+    input: programs
+  - &applicantChoseGRH?
+    pageName: choosePrograms
+    value: GRH
+    input: programs
   - &applicantChoseCERTAINPOPS?
     pageName: choosePrograms
     value: CERTAIN_POPS
@@ -177,6 +185,47 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: CONTAINS
+  - &applicantChoseHasCERTAINPOPS?
+    pageName: choosePrograms
+    value: CERTAIN_POPS
+    input: programs
+    matcher: CONTAINS
+  - &someoneChoseSNAP?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: SNAP
+      - pageName: householdMemberInfo
+        input: programs
+        value: SNAP
+  - &someoneChoseCCAP?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: CCAP
+      - pageName: householdMemberInfo
+        input: programs
+        value: CCAP
+  - &someoneChoseGRH?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: GRH
+      - pageName: householdMemberInfo
+        input: programs
+        value: GRH
+  - &someoneChoseEA?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: EA
+      - pageName: householdMemberInfo
+        input: programs
+        value: EA
 pageDefinitions:
   - &landing
     name: landing
@@ -2931,42 +2980,6 @@ pageDefinitions:
     inputs:
       - name: haveSavings
         type: YES_NO
-  - &investments
-    name: investments
-    pageTitle: investments.title
-    headerKey:
-      defaultValue: investments.household-stocks
-      conditionalValues:
-        - value: investments.do-you-have-any-stocks-bonds-or-a-401k
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: haveInvestments
-        type: YES_NO
-  - &vehicle
-    name: vehicle
-    pageTitle: vehicle.title
-    headerKey:
-      defaultValue: vehicle.household-own-vehicle
-      conditionalValues:
-        - value: vehicle.do-you-own-a-vehicle
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: haveVehicle
-        type: YES_NO
-  - &realEstate
-    name: realEstate
-    pageTitle: real-estate.title
-    headerKey:
-      defaultValue: real-estate.household-own-real-estate
-      conditionalValues:
-        - value: real-estate.do-you-own-any-real-estate
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: ownRealEstate
-        type: YES_NO
   - &millionDollar
     name: millionDollar
     pageTitle: million-dollar.title
@@ -3196,6 +3209,112 @@ pageDefinitions:
             type: TEXT
             promptMessage:
               promptMessageKey: race-and-ethnicity.write-your-race-or-ethnicity
+  - &assetsSnap
+    name: assets
+    pageTitle: assets.title
+    headerKey: assets.does-any-one-in-your
+    headerHelpMessageKey: assets.select-all-that-apply
+    contextFragment: assetsContextFragment
+    inputs:
+    - name: assets
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: VEHICLE
+            messageKey: assets.a-vehicle
+          - value: STOCK_BOND
+            messageKey: assets.stocks-bonds-401k
+          - value: NONE
+            messageKey: assets.none-of-the-above
+            isNone: true
+  - &assetsCcap
+    name: assets1
+    pageTitle: assets.title
+    headerKey: assets.does-any-one-in-your
+    headerHelpMessageKey: assets.select-all-that-apply
+    contextFragment: assetsContextFragment
+    inputs:
+    - name: assets
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: VEHICLE
+            messageKey: assets.a-vehicle
+          - value: STOCK_BOND
+            messageKey: assets.stocks-bonds-401k
+          - value: REAL_ESTATE
+            messageKey: assets.real-estate
+          - value: ONE_MILLION_ASSETS
+            messageKey: assets.more-than-1-million-in-family-assets
+          - value: NONE
+            messageKey: assets.none-of-the-above
+            isNone: true
+  - &assetsCertainPops
+    name: assets2
+    pageTitle: assets.title
+    headerKey: assets.does-any-one-in-your
+    headerHelpMessageKey: assets.select-all-that-apply
+    contextFragment: assetsContextFragment
+    inputs:
+    - name: assets
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: VEHICLE
+            messageKey: assets.a-vehicle
+          - value: STOCK_BOND
+            messageKey: assets.stocks-bonds-401k
+          - value: LIFE_INSURANCE
+            messageKey: assets.life-insurance
+          - value: BURIAL_ACCOUNT
+            messageKey: assets.a-prepaid-burial-account
+          - value: OWNERSHIP_BUSINESS
+            messageKey: assets.ownership-in-a-business
+          - value: REAL_ESTATE
+            messageKey: assets.real-estate
+          - value: NONE
+            messageKey: assets.none-of-the-above
+            isNone: true
+  - &assetsCertainPopsAndCcap
+    name: assets3
+    pageTitle: assets.title
+    headerKey: assets.does-any-one-in-your
+    headerHelpMessageKey: assets.select-all-that-apply
+    contextFragment: assetsContextFragment
+    inputs:
+    - name: assets
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: VEHICLE
+            messageKey: assets.a-vehicle
+          - value: STOCK_BOND
+            messageKey: assets.stocks-bonds-401k
+          - value: LIFE_INSURANCE
+            messageKey: assets.life-insurance
+          - value: BURIAL_ACCOUNT
+            messageKey: assets.a-prepaid-burial-account
+          - value: OWNERSHIP_BUSINESS
+            messageKey: assets.ownership-in-a-business
+          - value: REAL_ESTATE
+            messageKey: assets.real-estate
+          - value: ONE_MILLION_ASSETS
+            messageKey: assets.more-than-1-million-in-family-assets
+          - value: NONE
+            messageKey: assets.none-of-the-above
+            isNone: true
 workflow:
   landing:
     pageConfiguration: *landing
@@ -4340,10 +4459,59 @@ workflow:
       - pageName: choosePrograms
   supportAndCare:
     pageConfiguration: *supportAndCare
-    nextPages:
-      - pageName: vehicle
+    nextPages:  
+      - pageName: assetsSnap
+        condition:
+          logicalOperator: AND
+          conditions:
+            - logicalOperator: OR
+              conditions:
+                - *someoneChoseSNAP?
+                - *someoneChoseGRH?
+                - *someoneChoseCASH?
+            - *noOneChoseCCAP?
+            - *applicantDidNotChooseCERTAINPOPS?
+      - pageName: assetsCcap
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *someoneChoseCCAP?
+            - *applicantDidNotChooseCERTAINPOPS?  
+      - pageName: assetsCertainPops
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - *noOneChoseCCAP?  
+      - pageName: assetsCertainPopsAndCcap
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseHasCERTAINPOPS?
+            - *someoneChoseCCAP?  
     datasources:
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household  
       - pageName: addHouseholdMembers
+  assetsSnap:
+    pageConfiguration: *assetsSnap
+    nextPages:
+      - pageName: savings
+  assetsCcap:
+    pageConfiguration: *assetsCcap
+    nextPages:
+      - pageName: savings
+  assetsCertainPops:
+    pageConfiguration: *assetsCertainPops
+    nextPages:
+      - pageName: savings
+  assetsCertainPopsAndCcap:
+    pageConfiguration: *assetsCertainPopsAndCcap
+    nextPages:
+      - pageName: savings
+    datasources:
+      - pageName: choosePrograms     
   savings:
     pageConfiguration: *savings
     nextPages:
@@ -4358,57 +4526,36 @@ workflow:
       value: "false"
     datasources:
       - pageName: savings
-      - pageName: addHouseholdMembers
     nextPages:
       - pageName: millionDollar
-  investments:
-    pageConfiguration: *investments
-    nextPages:
-      - pageName: savings
-    datasources:
-      - pageName: addHouseholdMembers
-  vehicle:
-    pageConfiguration: *vehicle
-    nextPages:
-      - pageName: realEstate
-    datasources:
-      - pageName: addHouseholdMembers
-  realEstate:
-    pageConfiguration: *realEstate
-    skipCondition: *noOneChoseCCAP?
-    nextPages:
-      - pageName: investments
-    datasources:
-      - pageName: addHouseholdMembers
-      - pageName: choosePrograms
-      - pageName: householdMemberInfo
-        groupName: household
   millionDollar:
     pageConfiguration: *millionDollar
     skipCondition:
       logicalOperator: OR
       conditions:
         - *noOneChoseCCAP?
-        - conditions:
-            - pageName: vehicle
-              input: haveVehicle
-              value: "false"
-            - pageName: investments
-              input: haveInvestments
-              value: "false"
+        - logicalOperator: AND 
+          conditions:
             - pageName: savings
               input: haveSavings
               value: "false"
-            - pageName: realEstate
-              input: ownRealEstate
-              value: "false"
+            - pageName: assets
+              input: assets
+              value: VEHICLE
+              matcher: DOES_NOT_CONTAIN
+            - pageName: assets
+              input: assets
+              value: STOCK_BOND
+              matcher: DOES_NOT_CONTAIN
+            - pageName: assets
+              input: assets
+              value: REAL_ESTATE
+              matcher: DOES_NOT_CONTAIN
     nextPages:
       - pageName: soldAssets
     datasources:
-      - pageName: vehicle
-      - pageName: investments
+      - pageName: assets
       - pageName: savings
-      - pageName: realEstate
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
       - pageName: householdMemberInfo
