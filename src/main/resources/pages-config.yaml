@@ -3231,7 +3231,7 @@ pageDefinitions:
             messageKey: assets.none-of-the-above
             isNone: true
   - &assetsCcap
-    name: assets1
+    name: assets
     pageTitle: assets.title
     headerKey: assets.does-any-one-in-your
     headerHelpMessageKey: assets.select-all-that-apply
@@ -3256,7 +3256,7 @@ pageDefinitions:
             messageKey: assets.none-of-the-above
             isNone: true
   - &assetsCertainPops
-    name: assets2
+    name: assets
     pageTitle: assets.title
     headerKey: assets.does-any-one-in-your
     headerHelpMessageKey: assets.select-all-that-apply
@@ -3285,7 +3285,7 @@ pageDefinitions:
             messageKey: assets.none-of-the-above
             isNone: true
   - &assetsCertainPopsAndCcap
-    name: assets3
+    name: assets
     pageTitle: assets.title
     headerKey: assets.does-any-one-in-your
     headerHelpMessageKey: assets.select-all-that-apply
