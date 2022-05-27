@@ -37,14 +37,14 @@
 					<th:block th:switch="${youFollowUp.type}">
 						<!--/*  Including switch/case for future addition of other input types. */-->
 						<div class="form-group" th:classappend="${inputFollowupsHasErrors} ? 'form-group--error' : ''">
-							<div class="text-input-group"
+							<div class="text-input-group" 
 								th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
-								<div class="text-input-group__prefix">$</div>
+								<div class="text-input-group__prefix" style="background-color:#FFFFFF">$</div>
 								<input type="text" class="text-input" th:attr="aria-describedby=${hasHelpMessage ? youFollowUp.name + '-help-message' : ''},
 			                            aria-labelledby=${needsAriaLabel ? youFollowUp.name+'-label' : ''},
 			                            aria-invalid=${hasError}" th:id="|${youFollowUp.name}|" th:name="${inputFollowupsName}"
 									th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[0] : ''}">
-									<div class="text-input-group__postfix" style="width:35%">/per month</div>
+									<div class="text-input-group__postfix" style="width:35%; background-color:#FFFFFF">/per month</div>
 							</div>
 						</div>
 					</th:block>
@@ -77,15 +77,15 @@
 								th:utext="#{${followUp.helpMessageKey}}"></p>
 							<th:block th:switch="${followUp.type}">
 								<!--/*  Including switch/case for future addition of other input types. */-->
-								<div class="text-input-group"
+								<div class="text-input-group" 
 									th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).MONEY}">
-									<div class="text-input-group__prefix">$</div>
+									<div class="text-input-group__prefix" style="background-color: #FFFFFF">$</div>
 									<input type="text" class="text-input" th:attr="aria-describedby=${hasHelpMessage ? followUp.name + '-help-message' : ''},
                                         aria-labelledby=${needsAriaLabel ? followUp.name+'-label' : ''},
                                         aria-invalid=${hasError}" th:id="|${followUp.name}${iterationStat.index}|"
 										th:name="${inputFollowupsName}"
 										th:value="${(iterationStat.count < inputFollowupData.value.size() && !inputFollowupData.value[iterationStat.count].isEmpty() ) ?inputFollowupData.value[iterationStat.count]:''}">
-										<div class="text-input-group__postfix" style="width:35%">/per month</div>
+										<div class="text-input-group__postfix" style="width:35%;background-color: #FFFFFF">/per month</div>
 								</div>
 							</th:block>
 						</div>
