@@ -85,7 +85,7 @@ public class FilenameGenerator {
     String programs = getProgramCodes(application);
     String eligible = "";
     if(decider.decide(application.getApplicationData()) == SnapExpeditedEligibility.ELIGIBLE) {
-      eligible = "_EXPEDITED";
+      eligible = "_CAF_EXPEDITED";
     }
     return "%s%s%s.xml".formatted(prefix, programs, eligible);
   }
