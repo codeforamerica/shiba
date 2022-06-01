@@ -67,8 +67,9 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
     try {
       PDDocument loadedDoc = PDDocument.load(pdfResource.getInputStream());
       PDAcroForm acroForm = loadedDoc.getDocumentCatalog().getAcroForm();
-      acroForm.setNeedAppearances(true);
+      acroForm.setNeedAppearances(false);
       fillAcroForm(fields, acroForm);
+      acroForm.flatten();
       return loadedDoc;
     } catch (IOException e) {
       throw new RuntimeException(e);
