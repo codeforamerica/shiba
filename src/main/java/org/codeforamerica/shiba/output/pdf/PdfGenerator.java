@@ -56,10 +56,14 @@ public class PdfGenerator implements FileGenerator {
   private final FileToPDFConverter pdfWordConverter;
   private final FeatureFlagConfiguration featureFlags;
   private final CountyMap<CountyRoutingDestination> countyMap;
+  private final Map<Recipient, Map<Document, ramseyPdfFieldFiller>> ramseyPdfFieldFillerMap;
+  private final Map<Recipient, Map<Document, ramseyPdfFieldFiller>> ramseyPdfFieldWithCAFHHSuppFillersMap;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
+      Map<Recipient, Map<Document, ramseyPdfFieldFiller>> ramseyPdfFieldFillers,
+      Map<Recipient, Map<Document, ramseyPdfFieldFiller>> ramseyPdfFieldWithCAFHHSuppFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
@@ -77,6 +81,8 @@ public class PdfGenerator implements FileGenerator {
     this.pdfWordConverter = pdfWordConverter;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
+    this.ramseyPdfFieldFillerMap = ramseyPdfFieldFillers;
+    this.ramseyPdfFieldWithCAFHHSuppFillersMap = ramseyPdfFieldWithCAFHHSuppFillers;
     this.countyMap = countyMap;
   }
 
@@ -115,13 +121,21 @@ public class PdfGenerator implements FileGenerator {
     List<DocumentField> documentFields = preparers.prepareDocumentFields(application, document,
         recipient);
     var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
-    PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
-    if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
-      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+    if (countyMap.get(application.getCounty()).getName().equals("Ramsey")){
+      ramseyPdfFieldFiller ramseyPdfFiller = ramseyPdfFieldFillerMap.get(recipient).get(document);
+      if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+        ramseyPdfFiller = ramseyPdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+      }
+      List<PdfField> fields = pdfFieldMapper.map(documentFields);
+      return ramseyPdfFiller.fill(fields, application.getId(), filename);
+    }else {
+      PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
+      if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+        pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+      }
+      List<PdfField> fields = pdfFieldMapper.map(documentFields);
+      return pdfFiller.fill(fields, application.getId(), filename);
     }
-   
-    List<PdfField> fields = pdfFieldMapper.map(documentFields);
-    return pdfFiller.fill(fields, application.getId(), filename);
   }
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 
 @Slf4j
-public class PDFBoxFieldFiller implements PdfFieldFiller {
+public class PDFBoxFieldFiller implements PdfFieldFiller, ramseyPdfFieldFiller {
 
   private final List<Resource> pdfs;
 
