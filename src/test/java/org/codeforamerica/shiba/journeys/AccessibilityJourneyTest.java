@@ -330,7 +330,6 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("haveSavings", YES.getDisplayValue());
     testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();
-    testPage.enter("haveMillionDollars", NO.getDisplayValue());
     testPage.enter("haveSoldAssets", NO.getDisplayValue());
     testPage.clickContinue();
     testPage.clickButton("Yes, send me more info");

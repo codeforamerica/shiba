@@ -39,9 +39,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "additionalIncomeInfo");
     fillAdditionalIncomeInfo();
-    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsSnap");
-    postExpectingSuccess("assetsSnap", "assets", "VEHICLE");
-    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
+    postExpectingSuccess("assets", "assets", "VEHICLE");
+    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
@@ -61,9 +61,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "additionalIncomeInfo");
     fillAdditionalIncomeInfo();
-    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsSnap");
-    postExpectingSuccess("assetsSnap", "assets", "VEHICLE");
-    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
+    postExpectingSuccess("assets", "assets", "VEHICLE");
+    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
@@ -189,14 +189,13 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         "NO_UNEARNED_INCOME_CCAP_SELECTED",
         "additionalIncomeInfo");
     fillAdditionalIncomeInfo();
-    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsCcap");
-    postExpectingSuccess("assetsCcap", "assets", "NONE");
-    assertNavigationRedirectsToCorrectNextPage("assetsCcap", "savings");
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
+    postExpectingSuccess("assets", "assets", "NONE");
+    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
     postExpectingRedirect("savings", "haveSavings", "false", "soldAssets");
     // Go back and enter true for savings
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
-    postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "millionDollar");
-    postExpectingRedirect("millionDollar", "haveMillionDollars", "false", "soldAssets");
+    postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "soldAssets");
     assertPageHasElementWithId("legalStuff", "ccap-legal");
   }
 }

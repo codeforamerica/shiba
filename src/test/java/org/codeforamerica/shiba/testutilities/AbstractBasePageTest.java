@@ -360,7 +360,6 @@ public abstract class AbstractBasePageTest {
     testPage.enter("haveSavings", YES.getDisplayValue());
     testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();
-    testPage.enter("haveMillionDollars", NO.getDisplayValue());
     testPage.enter("haveSoldAssets", NO.getDisplayValue());
     testPage.clickContinue();
     testPage.enter("registerToVote", "Yes, send me more info");

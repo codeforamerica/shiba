@@ -351,9 +351,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();
 
-    // Does your family have more than $1 million in assets?
-    testPage.enter("haveMillionDollars", NO.getDisplayValue());
-
     // In the last 12 months, has anyone in the household given away or sold any assets?
     testPage.enter("haveSoldAssets", NO.getDisplayValue());
 

@@ -956,14 +956,13 @@ public class AbstractShibaMockMvcTest {
         "medicalExpenses");
     postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE",
         "supportAndCare");
-    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assetsCcap");
-    postExpectingSuccess("assetsCcap", "assets", "REAL_ESTATE");
-    assertNavigationRedirectsToCorrectNextPage("assetsSnap", "savings");
+    postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
+    postExpectingSuccess("assets", "assets", "REAL_ESTATE");
+    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
     
 
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
-    postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "millionDollar");
-    postExpectingRedirect("millionDollar", "haveMillionDollars", "false", "soldAssets");
+    postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "soldAssets");
     postExpectingRedirect("soldAssets", "haveSoldAssets", "false", "submittingApplication");
     assertNavigationRedirectsToCorrectNextPage("submittingApplication", "registerToVote");
     postExpectingRedirect("registerToVote", "registerToVote", "YES", "healthcareCoverage");

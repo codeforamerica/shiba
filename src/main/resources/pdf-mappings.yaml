@@ -241,8 +241,7 @@ mappings:
   assets:
     STOCK_BOND: HAVE_INVESTMENTS
     VEHICLE: HAVE_VEHICLE
-  millionDollar:
-    haveMillionDollars: HAVE_MILLION_DOLLARS
+    ONE_MILLION_ASSETS: HAVE_MILLION_DOLLARS
   soldAssets:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
