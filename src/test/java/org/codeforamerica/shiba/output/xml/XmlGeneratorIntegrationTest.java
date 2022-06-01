@@ -90,6 +90,7 @@ public class XmlGeneratorIntegrationTest {
                       case DATE -> List.of(LocalDate.ofEpochDay(0).plusDays(new Random().nextInt())
                           .format(DateTimeFormatter.ofPattern("MM/dd/yyyy")).split("/"));
                       case YES_NO -> List.of(String.valueOf(new Random().nextBoolean()));
+                      case MONEY -> List.of(Integer.valueOf(0).toString());
                       default -> Optional.ofNullable(input.getValidators())
                           .filter(validators -> validators.size() == 1)
                           .map(validators -> switch (validators.get(0).getValidation()) {

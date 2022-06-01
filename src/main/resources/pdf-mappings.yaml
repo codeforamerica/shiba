@@ -246,6 +246,8 @@ mappings:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
     registerToVoteSelection: REGISTER_TO_VOTE
+  healthcareCoverage:
+    healthcareCoverage: HAVE_HEALTHCARE_COVERAGE
   authorizedRep:
     helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRepCommunicate:

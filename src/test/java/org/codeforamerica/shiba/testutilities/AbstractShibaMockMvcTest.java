@@ -846,6 +846,9 @@ public class AbstractShibaMockMvcTest {
     ));
   }
 
+  protected void fillInApplicantHealthcareCoverageQuestionAsTrue() throws Exception{
+    postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");;
+  }
 
   protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking)
       throws Exception {

@@ -81,9 +81,13 @@ public class FilenameGenerator {
   public String generateXmlFilename(Application application) {
     String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, CAF,
-        dhsProviderId);
+            dhsProviderId);
     String programs = getProgramCodes(application);
-    return "%s%s.xml".formatted(prefix, programs);
+    String eligible = "";
+    if(decider.decide(application.getApplicationData()) == SnapExpeditedEligibility.ELIGIBLE) {
+      eligible = "_CAF_EXPEDITED";
+    }
+    return "%s%s%s.xml".formatted(prefix, programs, eligible);
   }
 
   @NotNull

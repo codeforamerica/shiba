@@ -158,6 +158,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("energyAssistanceMoreThan20", "energyAssistanceMoreThan20"));
     coordinatesMap.put(Field.REGISTER_TO_VOTE,
         new ParsingCoordinate("registerToVote", "registerToVote"));
+    coordinatesMap.put(Field.HAVE_HEALTHCARE_COVERAGE,
+            new ParsingCoordinate("healthcareCoverage", "healthcareCoverage"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
@@ -312,6 +314,8 @@ public class ApplicationDataParser {
     ENERGY_ASSISTANCE_OVER_20,
 
     REGISTER_TO_VOTE,
+
+    HAVE_HEALTHCARE_COVERAGE,
 
     PERSONAL_INFO_DOB,
     PERSONAL_INFO_SSN,
