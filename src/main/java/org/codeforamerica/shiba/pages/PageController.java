@@ -687,6 +687,7 @@ public class PageController {
       applicationData.setSubmitted(true);
       return new ModelAndView(String.format("redirect:/pages/%s/navigation", submitPage));
     } else {
+      log.error("Invalid page data at submit, application Id:  " + applicationData.getId());
       return new ModelAndView("redirect:/pages/" + submitPage);
     }
   }
