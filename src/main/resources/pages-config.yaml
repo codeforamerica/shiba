@@ -2594,15 +2594,6 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: future-income.is-there-anything-else-youd-like-to-share-about-your-income
         helpMessageKey: general.inputs.optional
-  - &additionalIncomeInfo
-    name: additionalIncomeInfo
-    pageTitle: additional-income-info.title
-    headerKey:
-      defaultValue: future-income.is-there-anything-else-youd-like-to-share-about-your-income
-    headerHelpMessageKey: general.inputs.optional
-    inputs:
-      - name: additionalIncomeInfo
-        type: TEXTAREA
   - &employersName
     name: employersName
     pageTitle: employers-name.title
@@ -4333,18 +4324,6 @@ workflow:
   unearnedIncomeSourcesCcap:
     pageConfiguration: *unearnedIncomeSourcesCcap
     nextPages:
-      - pageName: additionalIncomeInfo
-        condition:
-          logicalOperator: AND
-          conditions:
-            - logicalOperator: OR
-              conditions:
-                - *noOneChoseCCAP?
-                - *noUnearnedCcapSelected?
-            - *noUnearnedIncomeSelected?
-            - pageName: employmentStatus
-              input: areYouWorking
-              value: "false"
       - pageName: futureIncome
     skipCondition:
       logicalOperator: OR
@@ -4358,12 +4337,6 @@ workflow:
       - pageName: unearnedIncome
       - pageName: unearnedIncomeCcap
       - pageName: employmentStatus
-      - pageName: addHouseholdMembers
-  additionalIncomeInfo:
-    pageConfiguration: *additionalIncomeInfo
-    nextPages:
-      - pageName: startExpenses
-    datasources:
       - pageName: addHouseholdMembers
   futureIncome:
     pageConfiguration: *futureIncome

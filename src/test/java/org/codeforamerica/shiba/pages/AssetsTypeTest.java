@@ -101,7 +101,7 @@ public class AssetsTypeTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("unearnedIncomeCcap",
         "unearnedIncomeCcap",
         "NO_UNEARNED_INCOME_CCAP_SELECTED",
-        "additionalIncomeInfo");
+        "futureIncome");
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
   }

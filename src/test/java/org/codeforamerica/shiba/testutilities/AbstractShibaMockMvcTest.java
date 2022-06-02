@@ -767,7 +767,7 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void fillAdditionalIncomeInfo() throws Exception {
-    postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo",
+    postExpectingRedirect("futureIncome", "additionalIncomeInfo",
         "one more thing you need to know is...", "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");

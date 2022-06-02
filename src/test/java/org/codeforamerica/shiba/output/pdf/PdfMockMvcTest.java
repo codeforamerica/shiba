@@ -616,10 +616,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
             "unearnedIncomeCcap");
         postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
-            "NO_UNEARNED_INCOME_CCAP_SELECTED", "additionalIncomeInfo");
+            "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
 
         var additionalIncomeInfo = "Here's something else about my situation";
-        postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo", additionalIncomeInfo,
+        postExpectingRedirect("futureIncome", "additionalIncomeInfo", additionalIncomeInfo,
             "startExpenses");
 
         var caf = submitAndDownloadCaf();
