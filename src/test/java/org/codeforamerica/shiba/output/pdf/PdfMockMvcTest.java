@@ -123,9 +123,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("energyAssistance", "energyAssistance", "false");
     postExpectingSuccess("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
     postExpectingSuccess("supportAndCare", "supportAndCare", "false");
-    postExpectingSuccess("vehicle", "haveVehicle", "false");
-    postExpectingSuccess("realEstate", "ownRealEstate", "false");
-    postExpectingSuccess("investments", "haveInvestments", "false");
+    postExpectingSuccess("assets", "assets", "NONE");
     postExpectingSuccess("savings", "haveSavings", "false");
 
     var ccap = submitAndDownloadCcap();
@@ -139,12 +137,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("energyAssistance", "energyAssistance", "false");
     postExpectingSuccess("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE");
     postExpectingSuccess("supportAndCare", "supportAndCare", "false");
-    postExpectingSuccess("vehicle", "haveVehicle", "false");
-    postExpectingSuccess("realEstate", "ownRealEstate", "false");
-    postExpectingSuccess("investments", "haveInvestments", "true");
+    postExpectingSuccess("assets", "assets", List.of("STOCK_BOND", "ONE_MILLION_ASSETS"));
     postExpectingSuccess("savings", "haveSavings", "false");
-    postExpectingSuccess("millionDollar", "haveMillionDollars", "true");
-
+    
     var ccap = submitAndDownloadCcap();
     assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
   }

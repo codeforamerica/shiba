@@ -138,4 +138,11 @@ public class FormPage {
   public String getTextAreaAriaLabelledBy(String inputName) {
     return html.select("textarea[name='%s[]']".formatted(inputName)).attr("aria-labelledby");
   }
+  
+  public List<String> getOptionValues(String inputName) {
+    return html.select("input[name='%s[]']".formatted(inputName)).stream()
+        .map(element -> element.attr("value"))
+        .toList();
+
+  }
 }

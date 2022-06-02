@@ -68,6 +68,14 @@ conditionDefinitions:
     pageName: choosePrograms
     value: SNAP
     input: programs
+  - &applicantChoseCASH?
+    pageName: choosePrograms
+    value: CASH
+    input: programs
+  - &applicantChoseGRH?
+    pageName: choosePrograms
+    value: GRH
+    input: programs
   - &applicantChoseCERTAINPOPS?
     pageName: choosePrograms
     value: CERTAIN_POPS
@@ -2931,51 +2939,6 @@ pageDefinitions:
     inputs:
       - name: haveSavings
         type: YES_NO
-  - &investments
-    name: investments
-    pageTitle: investments.title
-    headerKey:
-      defaultValue: investments.household-stocks
-      conditionalValues:
-        - value: investments.do-you-have-any-stocks-bonds-or-a-401k
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: haveInvestments
-        type: YES_NO
-  - &vehicle
-    name: vehicle
-    pageTitle: vehicle.title
-    headerKey:
-      defaultValue: vehicle.household-own-vehicle
-      conditionalValues:
-        - value: vehicle.do-you-own-a-vehicle
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: haveVehicle
-        type: YES_NO
-  - &realEstate
-    name: realEstate
-    pageTitle: real-estate.title
-    headerKey:
-      defaultValue: real-estate.household-own-real-estate
-      conditionalValues:
-        - value: real-estate.do-you-own-any-real-estate
-          condition: *livesAlone?
-    hasPrimaryButton: false
-    inputs:
-      - name: ownRealEstate
-        type: YES_NO
-  - &millionDollar
-    name: millionDollar
-    pageTitle: million-dollar.title
-    headerKey: million-dollar.does-your-family-have-more-than-1-million
-    headerHelpMessageKey: million-dollar.do-not-include
-    hasPrimaryButton: false
-    inputs:
-      - name: haveMillionDollars
-        type: YES_NO
   - &soldAssets
     name: soldAssets
     pageTitle: sold-assets.title
@@ -3196,6 +3159,70 @@ pageDefinitions:
             type: TEXT
             promptMessage:
               promptMessageKey: race-and-ethnicity.write-your-race-or-ethnicity
+  - &assets
+    name: assets
+    pageTitle: assets.title
+    headerKey: assets.does-any-one-in-your
+    headerHelpMessageKey: assets.select-all-that-apply
+    contextFragment: assetsContextFragment
+    inputs:
+    - name: assets
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: VEHICLE
+            messageKey: assets.a-vehicle
+          - value: STOCK_BOND
+            messageKey: assets.stocks-bonds-401k
+          - value: LIFE_INSURANCE
+            messageKey: assets.life-insurance
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
+          - value: BURIAL_ACCOUNT
+            messageKey: assets.a-prepaid-burial-account
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
+          - value: OWNERSHIP_BUSINESS
+            messageKey: assets.ownership-in-a-business
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
+          - value: REAL_ESTATE
+            messageKey: assets.real-estate
+            condition:
+              logicalOperator: OR
+              conditions:
+                - pageName: choosePrograms
+                  input: programs
+                  matcher: CONTAINS
+                  value: CCAP
+                - pageName: choosePrograms
+                  input: programs
+                  matcher: CONTAINS
+                  value: CERTAIN_POPS
+          - value: ONE_MILLION_ASSETS
+            messageKey: assets.more-than-1-million-in-family-assets
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CCAP
+          - value: NONE
+            messageKey: assets.none-of-the-above
+            isNone: true
+        datasources:
+          - pageName: choosePrograms
 workflow:
   landing:
     pageConfiguration: *landing
@@ -4340,10 +4367,12 @@ workflow:
       - pageName: choosePrograms
   supportAndCare:
     pageConfiguration: *supportAndCare
+    nextPages:  
+      - pageName: assets
+  assets:
+    pageConfiguration: *assets
     nextPages:
-      - pageName: vehicle
-    datasources:
-      - pageName: addHouseholdMembers
+      - pageName: savings
   savings:
     pageConfiguration: *savings
     nextPages:
@@ -4356,63 +4385,10 @@ workflow:
       pageName: savings
       input: haveSavings
       value: "false"
-    datasources:
-      - pageName: savings
-      - pageName: addHouseholdMembers
-    nextPages:
-      - pageName: millionDollar
-  investments:
-    pageConfiguration: *investments
-    nextPages:
-      - pageName: savings
-    datasources:
-      - pageName: addHouseholdMembers
-  vehicle:
-    pageConfiguration: *vehicle
-    nextPages:
-      - pageName: realEstate
-    datasources:
-      - pageName: addHouseholdMembers
-  realEstate:
-    pageConfiguration: *realEstate
-    skipCondition: *noOneChoseCCAP?
-    nextPages:
-      - pageName: investments
-    datasources:
-      - pageName: addHouseholdMembers
-      - pageName: choosePrograms
-      - pageName: householdMemberInfo
-        groupName: household
-  millionDollar:
-    pageConfiguration: *millionDollar
-    skipCondition:
-      logicalOperator: OR
-      conditions:
-        - *noOneChoseCCAP?
-        - conditions:
-            - pageName: vehicle
-              input: haveVehicle
-              value: "false"
-            - pageName: investments
-              input: haveInvestments
-              value: "false"
-            - pageName: savings
-              input: haveSavings
-              value: "false"
-            - pageName: realEstate
-              input: ownRealEstate
-              value: "false"
     nextPages:
       - pageName: soldAssets
     datasources:
-      - pageName: vehicle
-      - pageName: investments
       - pageName: savings
-      - pageName: realEstate
-      - pageName: addHouseholdMembers
-      - pageName: choosePrograms
-      - pageName: householdMemberInfo
-        groupName: household
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:

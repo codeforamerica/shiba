@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS_TYPE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.ELIGIBLE;
@@ -32,18 +33,17 @@ public class CcapExpeditedEligibilityDecider {
   
 
   public CcapExpeditedEligibility decide(ApplicationData applicationData) {
-    String hasMillionDollarAsset = getMillionDollarAsset(applicationData);
+    boolean hasMillionDollarAsset = getMillionDollarAsset(applicationData);
     String livingSituation = getLivingSituation(applicationData);
     if (null == livingSituation || !applicationData.isCCAPApplication()
         || !applicationData.getSubworkflows().containsKey("household")
-        || hasNotEnteredHouseholdMemberBirthDates(applicationData)
-        || null == hasMillionDollarAsset) {
+        || hasNotEnteredHouseholdMemberBirthDates(applicationData)) {
       return UNDETERMINED;
     }
 
     if (EXPEDITED_LIVING_SITUATIONS.contains(livingSituation) 
         && hasHouseholdMemberUnder12(applicationData) 
-        && hasMillionDollarAsset.equals("false")) {
+        && !hasMillionDollarAsset) {
       return ELIGIBLE;
     } else {
       return NOT_ELIGIBLE;
@@ -74,9 +74,8 @@ public class CcapExpeditedEligibilityDecider {
         .getPageInputFirstValue("livingSituation", "livingSituation");
   }
   
-  private String getMillionDollarAsset(ApplicationData applicationData) {
-    return applicationData.getPagesData()
-        .getPageInputFirstValue("millionDollar", "haveMillionDollars");
+  private boolean getMillionDollarAsset(ApplicationData applicationData) {
+    return getValues(applicationData.getPagesData(),ASSETS_TYPE).contains("ONE_MILLION_ASSETS");
   }
 
   private List<LocalDate> getHouseHoldMemberBirthdatesAsDates(List<String> birthDatesAsStrings) {

@@ -238,12 +238,10 @@ mappings:
     supportAndCare: SUPPORT_AND_CARE
   savings:
     haveNonZeroSavings: HAVE_SAVINGS
-  investments:
-    haveInvestments: HAVE_INVESTMENTS
-  vehicle:
-    haveVehicle: HAVE_VEHICLE
-  millionDollar:
-    haveMillionDollars: HAVE_MILLION_DOLLARS
+  assets:
+    STOCK_BOND: HAVE_INVESTMENTS
+    VEHICLE: HAVE_VEHICLE
+    ONE_MILLION_ASSETS: HAVE_MILLION_DOLLARS
   soldAssets:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
