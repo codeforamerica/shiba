@@ -49,6 +49,8 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
+  private final Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldFillerMap;
+  private final Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldWithCAFHHSuppFillersMap;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
@@ -57,9 +59,12 @@ public class PdfGenerator implements FileGenerator {
   private final FeatureFlagConfiguration featureFlags;
   private final CountyMap<CountyRoutingDestination> countyMap;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
+      Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldFillers,
+      Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldWithCAFHHSuppFillers,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
@@ -77,6 +82,8 @@ public class PdfGenerator implements FileGenerator {
     this.pdfWordConverter = pdfWordConverter;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
+    this.ramseyPdfFieldFillerMap = ramseyPdfFieldFillers;
+    this.ramseyPdfFieldWithCAFHHSuppFillersMap = ramseyPdfFieldWithCAFHHSuppFillers;
     this.countyMap = countyMap;
   }
 
@@ -116,10 +123,18 @@ public class PdfGenerator implements FileGenerator {
         recipient);
     var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
-    if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
-      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+    if(countyMap.get(application.getCounty()).getName().equals("Ramsey")) {
+      if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)){
+        pdfFiller = ramseyPdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+      }else{
+        pdfFiller = ramseyPdfFieldFillerMap.get(recipient).get(document);
+      }
+    }else{
+      if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+        pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+      }
     }
-   
+
     List<PdfField> fields = pdfFieldMapper.map(documentFields);
     return pdfFiller.fill(fields, application.getId(), filename);
   }
@@ -156,7 +171,7 @@ public class PdfGenerator implements FileGenerator {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
       String filename = uploadedDocument.getSysFileName();
-     filename = (filename == null || (filename!=null && !filename.contains(routingDest.getDhsProviderId())))
+     filename = (filename == null || (!filename.contains(routingDest.getDhsProviderId())))
           ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension, routingDest)
           : uploadedDocument.getSysFileName();
       return new ApplicationFile(fileBytes, filename);
