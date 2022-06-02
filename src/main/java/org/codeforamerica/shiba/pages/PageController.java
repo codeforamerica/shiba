@@ -665,6 +665,7 @@ public class PageController {
     if (pageData.isValid()) {
       if (applicationData.getId() == null) {
         // only happens in framework tests now we think, left in out of an abundance of caution
+        log.error("Unexpected null applicationData ID on submit");
         applicationData.setId(applicationRepository.getNextId());
       }
       Application application = applicationFactory.newApplication(applicationData);
