@@ -10,7 +10,7 @@ public class AssetsTypePreparer extends OneToManyDocumentFieldPreparer {
 
   private static final List<String> ASSETS_TYPE_OPTIONS = List.of("VEHICLE", "STOCK_BOND",
       "LIFE_INSURANCE",
-      "BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_STATE", "ONE_MILLION_ASSETS");
+      "BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_ESTATE", "ONE_MILLION_ASSETS");
 
   @Override
   protected OneToManyParams getParams() {
