@@ -19,6 +19,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.Sentiment;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -99,10 +100,17 @@ public class ApplicationRepository {
     Application application = jdbcTemplate.queryForObject(
         "SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    Objects.requireNonNull(application).setApplicationStatuses(
-        jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
-            new ApplicationStatusRowMapper(), id));
-    return application;
+    try {
+      Objects.requireNonNull(application).setApplicationStatuses(
+              jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
+                      new ApplicationStatusRowMapper(), id));
+      return application;
+    } catch(EmptyResultDataAccessException e) {
+      log.error("Application find failed, id: " + id);
+      throw new EmptyResultDataAccessException(e.getMessage() + ", searching for application Id:" + id,
+                                               e.getExpectedSize(),
+                                               e);
+    }
   }
 
   public List<Application> findApplicationsStuckSending() {
