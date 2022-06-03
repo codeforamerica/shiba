@@ -23,6 +23,7 @@ public class FormInputTemplate {
   String defaultValue;
   List<PageDatasource> datasources;
   String customFollowUps;
+  String inputPostfix;
 
   public String fragment() {
     return switch (type) {

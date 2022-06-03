@@ -2151,6 +2151,7 @@ pageDefinitions:
         followUps:
           - name: socialSecurityAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2184,6 +2185,7 @@ pageDefinitions:
         followUps:
           - name: supplementalSecurityIncomeAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2217,6 +2219,7 @@ pageDefinitions:
         followUps:
           - name: veteransBenefitsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2250,6 +2253,7 @@ pageDefinitions:
         followUps:
           - name: unemploymentAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2283,6 +2287,7 @@ pageDefinitions:
         followUps:
           - name: workersCompensationAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2316,6 +2321,7 @@ pageDefinitions:
         followUps:
           - name: retirementAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2349,6 +2355,7 @@ pageDefinitions:
         followUps:
           - name: childOrSpousalSupportAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2382,6 +2389,7 @@ pageDefinitions:
         followUps:
           - name: tribalPaymentsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2939,6 +2947,40 @@ pageDefinitions:
     inputs:
       - name: haveSavings
         type: YES_NO
+# New page for liquidAssetSources using childOrSpousalSupportIncomeSource as example
+  - &liquidAssetSources
+    name: liquidAssetSources
+    pageTitle: liquid-assets-source.title
+    headerKey: liquid-assets-source.who-does-money-belong-to
+    headerHelpMessageKey: liquid-assets-source.this-helps-us-determine
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeChildOrSpousalSupport
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - liquidAssetSourcesAmount
+        followUps:
+          - name: liquidAssetAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: liquidAssetAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: liquid-assets-source.how-much-money-available
+            helpMessageKey: general.if-you-dont-have  
   - &soldAssets
     name: soldAssets
     pageTitle: sold-assets.title
@@ -4598,6 +4640,20 @@ workflow:
       - pageName: addHouseholdMembers
   savingsAmount:
     pageConfiguration: *liquidAssets
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: savings
+          input: haveSavings
+          value: "false"
+        - *applicantChoseCERTAINPOPS?
+    nextPages:
+      - pageName: liquidAssetSources
+    datasources:
+      - pageName: savings
+#TODO new page for liquidAssetSources =====================
+  liquidAssetSources:
+    pageConfiguration: *liquidAssetSources
     skipCondition:
       pageName: savings
       input: haveSavings
