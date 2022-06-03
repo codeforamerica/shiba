@@ -41,7 +41,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "VEHICLE");
-    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
+    assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
+    postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource", "Dwight Schrute applicant",
+        "savings");
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");

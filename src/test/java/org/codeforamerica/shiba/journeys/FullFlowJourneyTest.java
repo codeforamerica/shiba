@@ -344,6 +344,16 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("assets", "Real estate (not including your own home)");
     testPage.clickContinue();
 
+    // Who has a vehicle?
+    assertThat(testPage.getTitle()).isEqualTo("Who has a vehicle");
+    driver.findElement(By.id("householdMember-me")).click();  
+    testPage.clickContinue();
+    
+    //Who has real estate (not including your own home)
+    assertThat(testPage.getTitle()).isEqualTo("Who has real estate (not including your own home)");
+    driver.findElement(By.id("householdMember-me")).click();  
+    testPage.clickContinue();
+    
     // Does anyone in the household have money in a bank account or debit card?
     testPage.enter("haveSavings", YES.getDisplayValue());
 
