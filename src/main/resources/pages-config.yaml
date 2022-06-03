@@ -1268,7 +1268,7 @@ pageDefinitions:
     pageTitle: medical-expenses-sources.title
     headerKey:
       defaultValue: medical-expenses-sources.tell-us-how-much-money-is-paid
-    headerHelpMessageKey: medical-expenses-source.if-you-dont-have-all-this-information-by-hand-skip
+    headerHelpMessageKey: medical-expenses-source.if-you-dont-have-this-information-right-now
     inputs:
       - name: medicalInsurancePremiumAmount
         type: MONEY
