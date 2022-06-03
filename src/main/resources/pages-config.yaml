@@ -3223,6 +3223,118 @@ pageDefinitions:
             isNone: true
         datasources:
           - pageName: choosePrograms
+  - &vehicleAssetSource
+    name: vehicleAssetSource
+    pageTitle: vehicle-asset-source.title
+    headerKey: vehicle-asset-source.who-has
+    headerHelpMessageKey: vehicle-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: vehicleAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &stockAssetSource
+    name: stockAssetSource
+    pageTitle: stock-asset-source.title
+    headerKey: stock-asset-source.who-has
+    headerHelpMessageKey: stock-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: stockAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &lifeInsuranceAssetSource
+    name: lifeInsuranceAssetSource
+    pageTitle: life-insurance-asset-source.title
+    headerKey: life-insurance-asset-source.who-has
+    headerHelpMessageKey: life-insurance-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: lifeInsuranceAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &burialAccountAssetSource
+    name: burialAccountAssetSource
+    pageTitle: burial-account-asset-source.title
+    headerKey: burial-account-asset-source.who-has
+    headerHelpMessageKey: burial-account-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: burialAccountAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &businessOwnershipAssetSource
+    name: businessOwnershipAssetSource
+    pageTitle: business-ownership-asset-source.title
+    headerKey: business-ownership-asset-source.who-has
+    headerHelpMessageKey: business-ownership-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: businessOwnershipAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &realEstateAssetSource
+    name: realEstateAssetSource
+    pageTitle: real-estate-asset-source.title
+    headerKey: real-estate-asset-source.who-has
+    headerHelpMessageKey: real-estate-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: realEstateAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &oneMillionDollarAssetSource
+    name: oneMillionDollarAssetSource
+    pageTitle: one-million-dollar-asset-source.title
+    headerKey: one-million-dollar-asset-source.who-has
+    headerHelpMessageKey: one-million-dollar-asset-source.choose-whoever-is-listed
+    inputs:
+      - type: CUSTOM
+        name: oneMillionDollarAssetSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
 workflow:
   landing:
     pageConfiguration: *landing
@@ -4372,7 +4484,112 @@ workflow:
   assets:
     pageConfiguration: *assets
     nextPages:
+      - pageName: vehicleAssetSource
+  vehicleAssetSource:
+    pageConfiguration: *vehicleAssetSource
+    nextPages:
+      - pageName: stockAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: VEHICLE
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  stockAssetSource:
+    pageConfiguration: *stockAssetSource
+    nextPages:
+      - pageName: lifeInsuranceAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: STOCK_BOND
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  lifeInsuranceAssetSource:
+    pageConfiguration: *lifeInsuranceAssetSource
+    nextPages:
+      - pageName: burialAccountAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: LIFE_INSURANCE
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  burialAccountAssetSource:
+    pageConfiguration: *burialAccountAssetSource
+    nextPages:
+      - pageName: businessOwnershipAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: BURIAL_ACCOUNT
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  businessOwnershipAssetSource:
+    pageConfiguration: *businessOwnershipAssetSource
+    nextPages:
+      - pageName: realEstateAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: OWNERSHIP_BUSINESS
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  realEstateAssetSource:
+    pageConfiguration: *realEstateAssetSource
+    nextPages:
+      - pageName: oneMillionDollarAssetSource
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: REAL_ESTATE
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+  oneMillionDollarAssetSource:
+    pageConfiguration: *oneMillionDollarAssetSource
+    nextPages:
       - pageName: savings
+    skipCondition:
+      logicalOperator: OR  
+      conditions:
+        - pageName: assets
+          input: assets
+          value: ONE_MILLION_ASSETS
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
   savings:
     pageConfiguration: *savings
     nextPages:
