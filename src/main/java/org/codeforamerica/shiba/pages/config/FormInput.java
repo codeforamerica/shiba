@@ -23,4 +23,5 @@ public class FormInput {
   private Condition condition;
   private List<PageDatasource> datasources; // for options
   private String customFollowUps;
+  private String inputPostfix; // for text behind the input, name is from honeycrisp css class
 }
