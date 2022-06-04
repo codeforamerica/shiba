@@ -7,6 +7,7 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +42,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -121,7 +122,7 @@ public abstract class AbstractBasePageTest {
     try {
       FileInputStream inputStream = new FileInputStream(file);
       ZipInputStream zipStream = new ZipInputStream(inputStream);
-      ZipEntry zEntry = null;
+      ZipEntry zEntry;
       String destination = path.toFile().getPath();
       while ((zEntry = zipStream.getNextEntry()) != null) {
         if(zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP") ) {
@@ -130,7 +131,7 @@ public abstract class AbstractBasePageTest {
             FileOutputStream fout = new FileOutputStream(files);
             BufferedOutputStream bufout = new BufferedOutputStream(fout);
             byte[] buffer = new byte[1024];
-            int read = 0;
+            int read;
             while ((read = zipStream.read(buffer)) != -1) {
               bufout.write(buffer, 0, read);
             }
@@ -336,7 +337,7 @@ public abstract class AbstractBasePageTest {
     testPage.clickContinue();
     testPage.enter("socialSecurityAmount", "200");
     testPage.clickContinue();
-    testPage.enter("unearnedIncomeCcap", "Money from a Trust");
+    testPage.enter("otherUnearnedIncome", "Money from a Trust");
     testPage.clickContinue();
     testPage.enter("trustMoneyAmount", "200");
     testPage.clickContinue();

@@ -29,10 +29,11 @@ conditionDefinitions:
     input: whoseJobIsIt
     value: applicant
     matcher: CONTAINS_SUBSTRING
-  - &noUnearnedCcapSelected?
-    pageName: unearnedIncomeCcap
-    input: unearnedIncomeCcap
-    value: NO_UNEARNED_INCOME_CCAP_SELECTED
+  - &selectedOtherUnearnedIncome?
+    pageName: otherUnearnedIncome
+    input: otherUnearnedIncome
+    value: NO_OTHER_UNEARNED_INCOME_SELECTED
+    matcher: DOES_NOT_CONTAIN
   - &noUnearnedIncomeSelected?
     pageName: unearnedIncome
     input: unearnedIncome
@@ -2391,155 +2392,298 @@ pageDefinitions:
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly
             helpMessageKey: general.if-you-dont-have
-  - &unearnedIncomeCcap
-    name: unearnedIncomeCcap
+  - &otherUnearnedIncome
+    name: otherUnearnedIncome
     pageTitle: unearned-income.title
     headerKey:
-      defaultValue: unearned-income-ccap.household-get-income-from-any-of-these-sources
+      defaultValue: unearned-income-other.household-get-income-from-any-of-these-sources
       conditionalValues:
-        - value: unearned-income-ccap.do-you-get-income-from-any-of-these-sources
+        - value: unearned-income-other.do-you-get-income-from-any-of-these-sources
           condition: *livesAlone?
     headerHelpMessageKey: unearned-income.check-all-that-apply-you-do-not-need-to-report-income-you-havent-received-yet
     inputs:
-      - name: unearnedIncomeCcap
+      - name: otherUnearnedIncome
         type: CHECKBOX
         validators:
           - validation: SELECT_AT_LEAST_ONE
             errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
         options:
           selectableOptions:
-            - value: BENEFITS
-              messageKey: unearned-income-ccap.benefits-programs
             - value: INSURANCE_PAYMENTS
-              messageKey: unearned-income-ccap.insurance-payments
-            - value: CONTRACT_FOR_DEED
-              messageKey: unearned-income-ccap.contract-for-deed
+              messageKey: unearned-income-other.insurance-payments
             - value: TRUST_MONEY
-              messageKey: unearned-income-ccap.money-from-a-trust
-            - value: HEALTH_CARE_REIMBURSEMENT
-              messageKey: unearned-income-ccap.health-care-reimbursement
+              messageKey: unearned-income-other.money-from-a-trust
+            - value: RENTAL_INCOME
+              messageKey: unearned-income-other.rental-income
             - value: INTEREST_DIVIDENDS
-              messageKey: unearned-income-ccap.interest-dividends
-            - value: OTHER_SOURCES
-              messageKey: unearned-income-ccap.other-sources
-            - value: NO_UNEARNED_INCOME_CCAP_SELECTED
+              messageKey: unearned-income-other.interest-dividends
+            - value: HEALTH_CARE_REIMBURSEMENT
+              messageKey: unearned-income-other.health-care-reimbursement
+            - value: CONTRACT_FOR_DEED
+              messageKey: unearned-income-other.contract-for-deed
+            - value: BENEFITS
+              messageKey: unearned-income-other.benefits-programs
+            - value: OTHER_PAYMENTS
+              messageKey: unearned-income-other.other-payments
+            - value: NO_OTHER_UNEARNED_INCOME_SELECTED
               messageKey: general.inputs.none-of-the-above
               isNone: true
-  - &unearnedIncomeSourcesCcap
-    name: unearnedIncomeSourcesCcap
-    pageTitle: unearned-income-sources.title
-    headerKey:
-      defaultValue: unearned-income-sources.tell-us-how-much-money-is-received
-      conditionalValues:
-        - value: unearned-income-sources.tell-us-how-much-money-you-receive
-          condition: *livesAlone?
-    headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
+  - &benefitsProgramsIncomeSource
+    name: benefitsProgramsIncomeSource
+    pageTitle: unearned-income-other.benefits-programs
+    headerKey: unearned-income-benefits-programs.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
     inputs:
-      - name: benefitsAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.benefits-programs
-        helpMessageKey: general.monthly-amount
+      - type: CUSTOM
+        name: monthlyIncomeBenefitsPrograms
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: benefitsAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: BENEFITS
-      - name: insurancePaymentsAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.insurance-payments
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeBenefitsPrograms
+        followUps:
+          - name: benefitsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: benefitsAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &insurancePaymentsIncomeSource
+    name: insurancePaymentsIncomeSource
+    pageTitle: unearned-income-other.insurance-payments
+    headerKey: unearned-income-insurance-payments.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeInsurancePayments
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: insurancePaymentsAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: INSURANCE_PAYMENTS
-      - name: contractForDeedAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.contract-for-deed
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeInsurancePayments
+        followUps:
+          - name: insurancePaymentsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: insurancePaymentsAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &contractForDeedIncomeSource
+    name: contractForDeedIncomeSource
+    pageTitle: unearned-income-other.contract-for-deed
+    headerKey: unearned-income-contract-for-deed.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeContractForDeed
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: contractForDeedAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: CONTRACT_FOR_DEED
-      - name: trustMoneyAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.money-from-a-trust
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeContractForDeed
+        followUps:
+          - name: contractForDeedAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: contractForDeedAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &trustMoneyIncomeSource
+    name: trustMoneyIncomeSource
+    pageTitle: unearned-income-other.money-from-a-trust
+    headerKey: unearned-income-money-from-a-trust.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeTrustMoney
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: trustMoneyAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: TRUST_MONEY
-      - name: healthCareReimbursementAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.health-care-reimbursement
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeTrustMoney
+        followUps:
+          - name: trustMoneyAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: trustMoneyAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &healthcareReimbursementIncomeSource
+    name: healthcareReimbursementIncomeSource
+    pageTitle: unearned-income-other.health-care-reimbursement
+    headerKey: unearned-income-health-care-reimbursement.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeHealthcareReimbursement
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: healthCareReimbursementAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: HEALTH_CARE_REIMBURSEMENT
-      - name: interestDividendsAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.interest-dividends
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeHealthcareReimbursement
+        followUps:
+          - name: healthcareReimbursementAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: healthcareReimbursementAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &interestDividendsIncomeSource
+    name: interestDividendsIncomeSource
+    pageTitle: unearned-income-other.interest-dividends
+    headerKey: unearned-income-interest-dividends.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeInterestDividends
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: interestDividendsAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: INTEREST_DIVIDENDS
-      - name: otherSourcesAmount
-        type: MONEY
-        promptMessage:
-          promptMessageKey: unearned-income-ccap.other-sources
-        helpMessageKey: general.monthly-amount
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeInterestDividends
+        followUps:
+          - name: interestDividendsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: interestDividendsAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &rentalIncomeSource
+    name: rentalIncomeSource
+    pageTitle: unearned-income-other.rental-income
+    headerKey: unearned-income-rental-income.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeRental
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
         validators:
-          - validation: MONEY
-            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-            condition:
-              input: otherSourcesAmount
-              matcher: NOT_EMPTY
-        condition:
-          pageName: unearnedIncomeCcap
-          input: unearnedIncomeCcap
-          value: OTHER_SOURCES
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeRental
+        followUps:
+          - name: rentalIncomeAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: rentalIncomeAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &otherPaymentsIncomeSource
+    name: otherPaymentsIncomeSource
+    pageTitle: unearned-income-other.other-payments
+    headerKey: unearned-income-other.other-payments.header
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeOtherPayments
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeOtherPayments
+        followUps:
+          - name: otherPaymentsAmount
+            type: MONEY
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: otherPaymentsAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
   - &livingSituation
     name: livingSituation
     pageTitle: living-situation.title
@@ -4082,92 +4226,92 @@ workflow:
     pageConfiguration: *unearnedIncome
     nextPages:
       - pageName: unearnedIncomeSources
-        condition: 
+        condition:
           logicalOperator: OR
-          conditions: 
+          conditions:
             - *applicantDidNotChooseCERTAINPOPS?
             - *livesAlone?
-      - pageName: unearnedIncomeCcap
+      - pageName: otherUnearnedIncome
         condition: *noUnearnedIncomeSelected?
       - pageName: socialSecurityIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: SOCIAL_SECURITY
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: SOCIAL_SECURITY
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: supplementalSecurityIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: SSI
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: SSI
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: veteransBenefitsIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: VETERANS_BENEFITS
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: VETERANS_BENEFITS
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: unemploymentIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: UNEMPLOYMENT
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: UNEMPLOYMENT
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: workersCompIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: WORKERS_COMPENSATION
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: WORKERS_COMPENSATION
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: retirementIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: RETIREMENT
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: RETIREMENT
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: childOrSpousalSupportIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: CHILD_OR_SPOUSAL_SUPPORT
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: CHILD_OR_SPOUSAL_SUPPORT
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: tribalPaymentIncomeSource
         condition:
           logicalOperator: AND
-          conditions:        
-          - pageName: unearnedIncome
-            input: unearnedIncome
-            value: TRIBAL_PAYMENTS
-          - *doesNotLiveAlone?
-          - *applicantChoseCERTAINPOPS?
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: TRIBAL_PAYMENTS
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: otherUnearnedIncome
     skipCondition:
       conditions:
         - *noUnearnedIncomeSelected?
@@ -4297,7 +4441,7 @@ workflow:
   tribalPaymentIncomeSource:
     pageConfiguration: *tribalPaymentIncomeSource
     nextPages:
-      - pageName: unearnedIncomeCcap
+      - pageName: otherUnearnedIncome
     skipCondition:
       logicalOperator: OR
       conditions:
@@ -4311,33 +4455,116 @@ workflow:
       - pageName: unearnedIncome
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
-  unearnedIncomeCcap:
-    pageConfiguration: *unearnedIncomeCcap
-    skipCondition: *noOneChoseCCAP?
+  otherUnearnedIncome:
+    pageConfiguration: *otherUnearnedIncome
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *noOneChoseCCAP?
+        - *applicantDidNotChooseCERTAINPOPS?
     nextPages:
-      - pageName: unearnedIncomeSourcesCcap
+      - pageName: insurancePaymentsIncomeSource
+        condition: *selectedOtherUnearnedIncome?
+      - pageName: futureIncome
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
-      - pageName: householdMemberInfo
-        groupName: household
-  unearnedIncomeSourcesCcap:
-    pageConfiguration: *unearnedIncomeSourcesCcap
-    nextPages:
-      - pageName: futureIncome
-    skipCondition:
-      logicalOperator: OR
-      conditions:
-        - *noOneChoseCCAP?
-        - *noUnearnedCcapSelected?
-    datasources:
-      - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
       - pageName: unearnedIncome
       - pageName: unearnedIncomeCcap
       - pageName: employmentStatus
-      - pageName: addHouseholdMembers
+  insurancePaymentsIncomeSource:
+    pageConfiguration: *insurancePaymentsIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: INSURANCE_PAYMENTS
+    nextPages:
+      - pageName: trustMoneyIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  trustMoneyIncomeSource:
+    pageConfiguration: *trustMoneyIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: TRUST_MONEY
+    nextPages:
+      - pageName: rentalIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  rentalIncomeSource:
+    pageConfiguration: *rentalIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: otherUnearnedIncome
+          input: otherUnearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: TRUST_MONEY
+        - *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: interestDividendsIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  interestDividendsIncomeSource:
+    pageConfiguration: *interestDividendsIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: CONTRACT_FOR_DEED
+    nextPages:
+      - pageName: healthcareReimbursementIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  healthcareReimbursementIncomeSource:
+    pageConfiguration: *healthcareReimbursementIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: HEALTH_CARE_REIMBURSEMENT
+    nextPages:
+      - pageName: benefitsProgramsIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  benefitsProgramsIncomeSource:
+    pageConfiguration: *benefitsProgramsIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: BENEFITS
+    nextPages:
+      - pageName: contractForDeedIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  contractForDeedIncomeSource:
+    pageConfiguration: *contractForDeedIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: CONTRACT_FOR_DEED
+    nextPages:
+      - pageName: otherPaymentsIncomeSource
+    datasources:
+      - pageName: otherUnearnedIncome
+  otherPaymentsIncomeSource:
+    pageConfiguration: *otherPaymentsIncomeSource
+    skipCondition:
+      pageName: otherUnearnedIncome
+      input: otherUnearnedIncome
+      matcher: DOES_NOT_CONTAIN
+      value: OTHER_PAYMENTS
+    nextPages:
+      - pageName: futureIncome
+    datasources:
+      - pageName: otherUnearnedIncome
   futureIncome:
     pageConfiguration: *futureIncome
     nextPages:
@@ -4452,7 +4679,7 @@ workflow:
       - pageName: choosePrograms
   supportAndCare:
     pageConfiguration: *supportAndCare
-    nextPages:  
+    nextPages:
       - pageName: assets
   assets:
     pageConfiguration: *assets
@@ -4463,7 +4690,7 @@ workflow:
     nextPages:
       - pageName: stockAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4478,7 +4705,7 @@ workflow:
     nextPages:
       - pageName: lifeInsuranceAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4493,7 +4720,7 @@ workflow:
     nextPages:
       - pageName: burialAccountAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4508,7 +4735,7 @@ workflow:
     nextPages:
       - pageName: businessOwnershipAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4523,7 +4750,7 @@ workflow:
     nextPages:
       - pageName: realEstateAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4538,7 +4765,7 @@ workflow:
     nextPages:
       - pageName: oneMillionDollarAssetSource
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets
@@ -4553,7 +4780,7 @@ workflow:
     nextPages:
       - pageName: savings
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: OR
       conditions:
         - pageName: assets
           input: assets

@@ -185,10 +185,10 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   private void fillUnearnedIncomeToLegalStuffCCAP() throws Exception {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "unearnedIncomeCcap");
-    postExpectingRedirect("unearnedIncomeCcap",
-        "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED",
+        "otherUnearnedIncome");
+    postExpectingRedirect("otherUnearnedIncome",
+        "otherUnearnedIncome",
+        "NO_OTHER_UNEARNED_INCOME_SELECTED",
         "futureIncome");
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");

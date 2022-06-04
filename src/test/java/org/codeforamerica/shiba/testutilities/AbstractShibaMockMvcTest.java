@@ -383,9 +383,9 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected List<File> unzip(ZipInputStream zipStream) {
-    List<File> fileList = new ArrayList<File>();
+    List<File> fileList = new ArrayList<>();
     try {
-      ZipEntry zEntry = null;
+      ZipEntry zEntry;
       Path destination = Files.createTempDirectory("");
       while ((zEntry = zipStream.getNextEntry()) != null) {
           if (!zEntry.isDirectory()) {
@@ -393,7 +393,7 @@ public class AbstractShibaMockMvcTest {
             FileOutputStream fout = new FileOutputStream(files);
             BufferedOutputStream bufout = new BufferedOutputStream(fout);
             byte[] buffer = new byte[1024];
-            int read = 0;
+            int read;
             while ((read = zipStream.read(buffer)) != -1) {
               bufout.write(buffer, 0, read);
             }
@@ -847,7 +847,7 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void fillInApplicantHealthcareCoverageQuestionAsTrue() throws Exception{
-    postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");;
+    postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
   }
 
   protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking)
@@ -944,10 +944,9 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "SOCIAL_SECURITY",
         "unearnedIncomeSources");
     postExpectingRedirect("unearnedIncomeSources", "socialSecurityAmount", "200",
-        "unearnedIncomeCcap");
-    postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap", "TRUST_MONEY",
-        "unearnedIncomeSourcesCcap");
-    postExpectingRedirect("unearnedIncomeSourcesCcap", "trustMoneyAmount", "200", "futureIncome");
+        "otherUnearnedIncome");
+    postExpectingRedirect("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED",
+        "futureIncome");
     postExpectingRedirect("futureIncome", "earnLessMoneyThisMonth", "true", "startExpenses");
     assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
     postExpectingRedirect("homeExpenses", "homeExpenses", "RENT", "homeExpensesAmount");

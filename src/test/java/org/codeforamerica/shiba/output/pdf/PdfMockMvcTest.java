@@ -148,8 +148,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() throws Exception {
     selectPrograms("CCAP");
     fillInRequiredPages();
-    postExpectingSuccess("unearnedIncomeCcap", "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED");
+    postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome",
+        "NO_OTHER_UNEARNED_INCOME_SELECTED");
 
     var ccap = submitAndDownloadCcap();
     assertPdfFieldEquals("BENEFITS", "No", ccap);
@@ -158,7 +158,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     assertPdfFieldEquals("TRUST_MONEY", "No", ccap);
     assertPdfFieldEquals("HEALTH_CARE_REIMBURSEMENT", "No", ccap);
     assertPdfFieldEquals("INTEREST_DIVIDENDS", "No", ccap);
-    assertPdfFieldEquals("OTHER_SOURCES", "No", ccap);
+    assertPdfFieldEquals("OTHER_PAYMENTS", "No", ccap);
   }
 
   @Test
@@ -614,9 +614,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
         postExpectingSuccess("employmentStatus", "areYouWorking", "false");
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-            "unearnedIncomeCcap");
-        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
-            "NO_UNEARNED_INCOME_CCAP_SELECTED", "futureIncome");
+            "otherUnearnedIncome");
+        postExpectingRedirect("otherUnearnedIncome", "otherUnearnedIncome",
+            "NO_OTHER_UNEARNED_INCOME_SELECTED", "futureIncome");
 
         var additionalIncomeInfo = "Here's something else about my situation";
         postExpectingRedirect("futureIncome", "additionalIncomeInfo", additionalIncomeInfo,
@@ -964,7 +964,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), pdf);
 
       // Basic Criteria Questions
-      assertPdfFieldEquals("BLIND", "Yes", pdf);;
+      assertPdfFieldEquals("BLIND", "Yes", pdf);
       assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
       assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
       assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);

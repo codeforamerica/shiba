@@ -142,8 +142,45 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.UNEARNED_INCOME,
         new ParsingCoordinate("unearnedIncome", "unearnedIncome"));
-    coordinatesMap.put(Field.UNEARNED_INCOME_CCAP,
-        new ParsingCoordinate("unearnedIncomeCcap", "unearnedIncomeCcap"));
+    coordinatesMap.put(Field.SOCIAL_SECURITY_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "socialSecurityAmount"));
+    coordinatesMap.put(Field.SSI_AMOUNT, new ParsingCoordinate("unearnedIncomeSources",
+        "supplementalSecurityIncomeAmount"));
+    coordinatesMap.put(Field.VETERANS_BENEFITS_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "veteransBenefitsAmount"));
+    coordinatesMap.put(Field.UNEMPLOYMENT_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "unemploymentAmount"));
+    coordinatesMap.put(Field.
+            WORKERS_COMPENSATION_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources",
+            "workersCompensationAmount"));
+    coordinatesMap.put(Field.RETIREMENT_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "retirementAmount"));
+    coordinatesMap.put(Field.CHILD_OR_SPOUSAL_SUPPORT_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "childOrSpousalSupportAmount"));
+    coordinatesMap.put(Field.TRIBAL_PAYMENTS_AMOUNT,
+        new ParsingCoordinate("unearnedIncomeSources", "tribalPaymentsAmount"));
+
+    coordinatesMap.put(Field.UNEARNED_INCOME_OTHER,
+        new ParsingCoordinate("otherUnearnedIncome", "otherUnearnedIncome"));
+    coordinatesMap.put(Field.BENEFITS_PROGRAMS_AMOUNT,
+        new ParsingCoordinate("benefitsProgramsIncomeSource", "benefitsAmount"));
+    coordinatesMap.put(Field.INSURANCE_PAYMENTS_AMOUNT,
+        new ParsingCoordinate("insurancePaymentsIncomeSource", "insurancePaymentsAmount"));
+    coordinatesMap.put(Field.CONTRACT_FOR_DEED_AMOUNT,
+        new ParsingCoordinate("contractForDeedIncomeSource", "contractForDeedAmount"));
+    coordinatesMap.put(Field.TRUST_MONEY_AMOUNT,
+        new ParsingCoordinate("trustMoneyIncomeSource", "trustMoneyAmount"));
+    coordinatesMap.put(Field.HEALTHCARE_REIMBURSEMENT_AMOUNT,
+        new ParsingCoordinate("healthcareReimbursementIncomeSource",
+            "healthcareReimbursementAmount"));
+    coordinatesMap.put(Field.INTEREST_DIVIDENDS_AMOUNT,
+        new ParsingCoordinate("interestDividendsIncomeSource", "interestDividendsAmount"));
+    coordinatesMap.put(Field.RENTAL_AMOUNT,
+        new ParsingCoordinate("rentalIncomeSource", "rentalIncomeAmount"));
+    coordinatesMap.put(Field.OTHER_PAYMENTS_AMOUNT,
+        new ParsingCoordinate("otherPaymentsIncomeSource", "otherPaymentsAmount"));
+
     coordinatesMap.put(Field.HOME_EXPENSES,
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
@@ -159,13 +196,13 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.REGISTER_TO_VOTE,
         new ParsingCoordinate("registerToVote", "registerToVote"));
     coordinatesMap.put(Field.HAVE_HEALTHCARE_COVERAGE,
-            new ParsingCoordinate("healthcareCoverage", "healthcareCoverage"));
+        new ParsingCoordinate("healthcareCoverage", "healthcareCoverage"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
-    	.put(Field.PERSONAL_INFO_SSN, new ParsingCoordinate("personalInfo", "ssn"));
+        .put(Field.PERSONAL_INFO_SSN, new ParsingCoordinate("personalInfo", "ssn"));
     coordinatesMap
-    	.put(Field.PERSONAL_INFO_NO_SSN, new ParsingCoordinate("personalInfo", "noSSNCheck"));
+        .put(Field.PERSONAL_INFO_NO_SSN, new ParsingCoordinate("personalInfo", "noSSNCheck"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_FIRST_NAME, new ParsingCoordinate("personalInfo", "firstName"));
     coordinatesMap
@@ -304,7 +341,25 @@ public class ApplicationDataParser {
     WHO_IS_LOOKING_FOR_A_JOB,
 
     UNEARNED_INCOME,
-    UNEARNED_INCOME_CCAP,
+    SOCIAL_SECURITY_AMOUNT,
+    SSI_AMOUNT,
+    VETERANS_BENEFITS_AMOUNT,
+    UNEMPLOYMENT_AMOUNT,
+    WORKERS_COMPENSATION_AMOUNT,
+    RETIREMENT_AMOUNT,
+    CHILD_OR_SPOUSAL_SUPPORT_AMOUNT,
+    TRIBAL_PAYMENTS_AMOUNT,
+
+    UNEARNED_INCOME_OTHER,
+    BENEFITS_PROGRAMS_AMOUNT,
+    INSURANCE_PAYMENTS_AMOUNT,
+    CONTRACT_FOR_DEED_AMOUNT,
+    TRUST_MONEY_AMOUNT,
+    HEALTHCARE_REIMBURSEMENT_AMOUNT,
+    INTEREST_DIVIDENDS_AMOUNT,
+    RENTAL_AMOUNT,
+    OTHER_PAYMENTS_AMOUNT,
+
     HOME_EXPENSES,
     UTILITY_PAYMENTS,
     ASSETS_TYPE,

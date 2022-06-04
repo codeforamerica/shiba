@@ -119,7 +119,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     assertThat(
         driver.findElement(By.id("dateOfBirth-day")).getAttribute("aria-describedby")).isEqualTo(
         "dateOfBirth-error-message-1");
-    ;
+
     assertThat(testPage.getInputAriaLabelledBy("ssn")).isEqualTo("ssn-error-p ssn-label");
     assertThat(testPage.getInputAriaDescribedBy("ssn")).isEqualTo(
         "ssn-error-message-1 ssn-help-message");
@@ -278,7 +278,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.clickButton("Continue");
     testPage.enter("unearnedIncome", "None of the above");
     testPage.clickButton("Continue");
-    testPage.enter("unearnedIncomeCcap", "None of the above");
+    testPage.enter("otherUnearnedIncome", "None of the above");
     testPage.clickButton("Continue");
     assertThat(testPage.getInputAriaLabelledBy("div", "earnLessMoneyThisMonth-div")).isEqualTo("page-header page-header-help-message");
     // now back up to jobBuilder page
@@ -306,10 +306,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     testPage.enter("socialSecurityAmount", "200");
     testPage.clickContinue();
-    testPage.enter("unearnedIncomeCcap", "Money from a Trust");
-    testPage.clickContinue();
-    testPage.enter("trustMoneyAmount", "200");
-    testPage.clickContinue();
+    driver.navigate().to(baseUrl + "/pages/futureIncome");
     testPage.enter("earnLessMoneyThisMonth", "Yes");
     testPage.clickContinue();
     testPage.clickContinue();
