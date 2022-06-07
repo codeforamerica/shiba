@@ -2,6 +2,9 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.codeforamerica.shiba.output.FullNameFormatter.getFullName;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getListOfSelectedFullNames;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS_TYPE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,7 +24,8 @@ public class AssetOwnerPreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     List<DocumentField> results = new ArrayList<>();
-    boolean hasHouseHold = application.getApplicationData().getPageData("addHouseholdMembers").get("addHouseholdMembers").getValue().contains("true");
+    boolean hasHouseHold = getValues(application.getApplicationData().getPagesData(),HAS_HOUSE_HOLD).contains("true");
+      
     List<DocumentField> stockOwners = getAssetsOwnerSection(application, "stockAssetSource", "stockAssetSource","stockOwners", hasHouseHold, "STOCK_BOND" );
     results.addAll(stockOwners);
     List<DocumentField> vechicleOwners = getAssetsOwnerSection(application, "vehicleAssetSource", "vehicleAssetSource","vehicleOwners", hasHouseHold, "VEHICLE" );
@@ -50,8 +54,7 @@ public class AssetOwnerPreparer implements DocumentFieldPreparer {
               List.of(fullName), DocumentFieldType.SINGLE_VALUE, i.getAndIncrement()))
           .collect(Collectors.toList());
     } else {
-      if (application.getApplicationData().getPageData("assets").get("assets").getValue()
-          .contains(assetType))
+      if (getValues(application.getApplicationData().getPagesData(),ASSETS_TYPE).contains(assetType))
         fields.add(
             new DocumentField("assetOwnerSource", outputName, List.of(getFullName(application)),
                 DocumentFieldType.SINGLE_VALUE, i.getAndIncrement()));
