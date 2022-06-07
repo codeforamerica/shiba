@@ -8,8 +8,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
-
-import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
@@ -37,11 +35,9 @@ class PdfGeneratorTest {
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers;
-  private Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldFillers;
-  private Map<Recipient, Map<Document, PdfFieldFiller>> ramseyPdfFieldWithCAFHHSuppFillers;
   private FeatureFlagConfiguration featureFlags;
   private  CountyMap<CountyRoutingDestination> countyMap;
-  private CountyRoutingDestination defaultCountyRoutingDestination;
+
   @BeforeEach
   void setUp() {
     pdfFieldMapper = mock(PdfFieldMapper.class);
@@ -50,20 +46,12 @@ class PdfGeneratorTest {
     PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
-
-    PdfFieldFiller ramseyClientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
-    PdfFieldFiller ramseyClientFiller = mock(PdfFieldFiller.class);
-    PdfFieldFiller ramseyCcapFiller = mock(PdfFieldFiller.class);
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
     FileToPDFConverter pdfWordConverter = mock(FileToPDFConverter.class);
     featureFlags = mock(FeatureFlagConfiguration.class);
-    countyMap = new CountyMap<>();
-    defaultCountyRoutingDestination = CountyRoutingDestination.builder()
-                    .county(County.Anoka).phoneNumber("555-5555").build();
-    countyMap.setDefaultValue(defaultCountyRoutingDestination);
-
+    
 
     pdfFieldFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
@@ -73,16 +61,6 @@ class PdfGeneratorTest {
     pdfFieldWithCAFHHSuppFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
         CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
-    );
-
-    ramseyPdfFieldFillers = Map.of(
-            CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ramseyCcapFiller),
-            CLIENT, Map.of(Document.CAF, ramseyClientFiller, Document.CCAP, ramseyCcapFiller)
-    );
-
-    ramseyPdfFieldWithCAFHHSuppFillers = Map.of(
-            CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
-            CLIENT, Map.of(Document.CAF, ramseyClientCafWdHouseholdSuppFiller)
     );
 
     application = Application.builder()
@@ -96,8 +74,6 @@ class PdfGeneratorTest {
         pdfFieldMapper,
         pdfFieldFillers,
         pdfFieldWithCAFHHSuppFillers,
-        ramseyPdfFieldFillers,
-        ramseyPdfFieldWithCAFHHSuppFillers,
         applicationRepository,
         null,
         preparers,
