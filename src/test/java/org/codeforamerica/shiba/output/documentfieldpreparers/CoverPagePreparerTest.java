@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
@@ -41,7 +40,6 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class CoverPagePreparerTest {
 
-  private CountyMap<Map<Recipient, String>> countyInstructionsMapping;
   private CoverPagePreparer preparer;
   private ApplicationData applicationData;
   @MockBean
@@ -51,17 +49,17 @@ class CoverPagePreparerTest {
 
   @BeforeEach
   public void setUp() {
-
-    countyInstructionsMapping = new CountyMap<>();
-    CountyMap<CountyRoutingDestination> countyInformationMapping = new CountyMap<>();
     StaticMessageSource staticMessageSource = new StaticMessageSource();
+    staticMessageSource.addMessages(Map.of(
+        "county-to-instructions.generic-client", "Client Instructions",
+        "county-to-instructions.generic-caseworker", "Caseworker Instructions"), LocaleContextHolder.getLocale()
+    );
+    staticMessageSource.addMessage(
+        "county-to-instructions.generic-client", new Locale("es"), "Client Instructions En Español"
+    );
     applicationData = new ApplicationData();
-    preparer = new CoverPagePreparer(countyInstructionsMapping,
-        countyInformationMapping, staticMessageSource, routingDecisionService,
+    preparer = new CoverPagePreparer(staticMessageSource, routingDecisionService,
         routingDestinationMessageService);
-    countyInstructionsMapping.getCounties().put(Other, Map.of(
-        Recipient.CLIENT, "county-to-instructions.default-client",
-        Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
     CountyRoutingDestination countyRoutingDestination = new CountyRoutingDestination(
         Hennepin, "someDhsProviderId", "someEmail", "555-123-4567");
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
@@ -69,25 +67,6 @@ class CoverPagePreparerTest {
         .thenReturn(List.of(countyRoutingDestination));
     when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(),
         any())).thenReturn("");
-    countyInformationMapping.setDefaultValue(countyRoutingDestination);
-    staticMessageSource
-        .addMessage("county-to-instructions.default-client",
-            LocaleContextHolder.getLocale(),
-            "Default client");
-    staticMessageSource
-        .addMessage("county-to-instructions.default-caseworker",
-            LocaleContextHolder.getLocale(),
-            "Default caseworker");
-    staticMessageSource
-        .addMessage("county-to-instructions.olmsted-caseworker",
-            LocaleContextHolder.getLocale(),
-            "Olmsted caseworker");
-    staticMessageSource
-        .addMessage("county-to-instructions.olmsted-client",
-            LocaleContextHolder.getLocale(),
-            "Olmsted client");
-    staticMessageSource.addMessage("county-to-instructions.olmsted-client", new Locale("es"),
-        "Olmsted client instructions in spanish");
   }
 
   @Test
@@ -205,53 +184,6 @@ class CoverPagePreparerTest {
   }
 
   @Test
-  void shouldIncludeCountyInstructionsInputWithMatchingCountyInstructions() {
-    Application application = Application.builder()
-        .id("someId")
-        .completedAt(ZonedDateTime.now())
-        .applicationData(applicationData)
-        .county(Olmsted)
-        .timeToComplete(null)
-        .build();
-    countyInstructionsMapping.getCounties().put(Olmsted, Map.of(
-        Recipient.CLIENT, "county-to-instructions.olmsted-client",
-        Recipient.CASEWORKER, "county-to-instructions.olmsted-caseworker"
-    ));
-
-    List<DocumentField> documentFields = preparer
-        .prepareDocumentFields(application, CAF, Recipient.CASEWORKER);
-    assertThat(documentFields).contains(
-        new DocumentField(
-            "coverPage",
-            "countyInstructions",
-            "Olmsted caseworker",
-            DocumentFieldType.SINGLE_VALUE
-        ));
-
-    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT
-    );
-    assertThat(documentFields).contains(
-        new DocumentField(
-            "coverPage",
-            "countyInstructions",
-            "Olmsted client",
-            DocumentFieldType.SINGLE_VALUE
-        ));
-
-    new TestApplicationDataBuilder(applicationData)
-        .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
-    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT
-    );
-    assertThat(documentFields).contains(
-        new DocumentField(
-            "coverPage",
-            "countyInstructions",
-            "Olmsted client instructions in spanish",
-            DocumentFieldType.SINGLE_VALUE
-        ));
-  }
-
-  @Test
   void shouldIncludeCombinedFirstNameAndLastNameInput() {
     new TestApplicationDataBuilder(applicationData)
         .withPageData("personalInfo", "firstName", "someFirstName")
@@ -358,5 +290,46 @@ class CoverPagePreparerTest {
             "utmSource",
             List.of(""),
             DocumentFieldType.SINGLE_VALUE));
+  }
+
+  @Test
+  void shouldIncludeCountyInstructionsInputBasedOnRecipientAndLanguage() {
+    Application application = Application.builder()
+        .id("someId")
+        .completedAt(ZonedDateTime.now())
+        .applicationData(applicationData)
+        .county(Olmsted)
+        .timeToComplete(null)
+        .build();
+
+    List<DocumentField> documentFields = preparer
+        .prepareDocumentFields(application, CAF, Recipient.CASEWORKER);
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "countyInstructions",
+            "Caseworker Instructions",
+            DocumentFieldType.SINGLE_VALUE
+        ));
+
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT);
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "countyInstructions",
+            "Client Instructions",
+            DocumentFieldType.SINGLE_VALUE
+        ));
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("languagePreferences", "writtenLanguage", "SPANISH");
+
+    documentFields = preparer.prepareDocumentFields(application, CAF, Recipient.CLIENT);
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "countyInstructions",
+            "Client Instructions En Español",
+            DocumentFieldType.SINGLE_VALUE
+        ));
   }
 }

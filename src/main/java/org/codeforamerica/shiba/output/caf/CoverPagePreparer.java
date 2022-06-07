@@ -10,6 +10,8 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.codeforamerica.shiba.output.documentfieldpreparers.ApplicantProgramsPreparer.prepareProgramSelections;
 
 import java.util.ArrayList;
@@ -17,13 +19,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.FullNameFormatter;
@@ -43,19 +42,17 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   public static final String CHILDCARE_WAITING_LIST_UTM_SOURCE = "childcare_waiting_list";
   private static final Map<String, String> UTM_SOURCE_MAPPING =
       Map.of(CHILDCARE_WAITING_LIST_UTM_SOURCE, "FROM BSF WAITING LIST");
-  private final CountyMap<Map<Recipient, String>> countyInstructionsMapping;
-  private final CountyMap<CountyRoutingDestination> countyInformationMapping;
+  private static final Map<Recipient, String> countyInstructionsMapping = Map.of(
+      CLIENT, "county-to-instructions.generic-client",
+      CASEWORKER, "county-to-instructions.generic-caseworker"
+  );
   private final MessageSource messageSource;
   private final RoutingDecisionService routingDecisionService;
   private final RoutingDestinationMessageService routingDestinationMessageService;
 
-  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public CoverPagePreparer(CountyMap<Map<Recipient, String>> countyInstructionsMapping,
-      CountyMap<CountyRoutingDestination> countyInformationMapping, MessageSource messageSource,
+  public CoverPagePreparer(MessageSource messageSource,
       RoutingDecisionService routingDecisionService,
       RoutingDestinationMessageService routingDestinationMessageService) {
-    this.countyInstructionsMapping = countyInstructionsMapping;
-    this.countyInformationMapping = countyInformationMapping;
     this.messageSource = messageSource;
     this.routingDecisionService = routingDecisionService;
     this.routingDestinationMessageService = routingDestinationMessageService;
@@ -161,9 +158,7 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     };
 
     var lms = new LocaleSpecificMessageSource(locale, messageSource);
-
-    var messageCode = countyInstructionsMapping.get(application.getCounty()).get(recipient);
-
+    var messageCode = countyInstructionsMapping.get(recipient);
     var county = application.getCounty();
     var routingDestinations =
         routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
