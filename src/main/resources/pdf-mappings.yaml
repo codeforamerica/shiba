@@ -242,6 +242,10 @@ mappings:
     STOCK_BOND: HAVE_INVESTMENTS
     VEHICLE: HAVE_VEHICLE
     ONE_MILLION_ASSETS: HAVE_MILLION_DOLLARS
+    LIFE_INSURANCE: HAVE_LIFE_INSURANCE
+    BURIAL_ACCOUNT: HAVE_BURIAL_ACCOUNT
+    OWNERSHIP_BUSINESS: HAVE_OWNERSHIP_BUSINESS
+    REAL_ESTATE: HAVE_REAL_ESTATE
   soldAssets:
     haveSoldAssets: HAVE_SOLD_ASSETS
   registerToVote:
@@ -335,6 +339,13 @@ mappings:
     drugFelony: DRUG_FELONY
   applyForTribalTANF:
     applyForTribalTANF: TANF
+  assetOwnerSource:
+    stockOwners: STOCK_OWNER_FULL_NAME
+    vehicleOwners: VEHICLE_OWNER_FULL_NAME
+    lifeInsuranceOwners: LIFE_INSURANCE_OWNER_FULL_NAME
+    burialAccountOwners: BURIAL_ACCOUNT_OWNER_FULL_NAME
+    businessOwnershipOwners: BUSINESS_OWNERSHIP_OWNER_FULL_NAME
+    realEstateOwners: REAL_ESTATE_OWNER_FULL_NAME
 enums:
   EVERY_WEEK: Every week
   EVERY_TWO_WEEKS: Every two weeks

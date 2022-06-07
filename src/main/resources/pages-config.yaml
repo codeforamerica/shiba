@@ -4497,9 +4497,11 @@ workflow:
           value: VEHICLE
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   stockAssetSource:
     pageConfiguration: *stockAssetSource
     nextPages:
@@ -4512,9 +4514,11 @@ workflow:
           value: STOCK_BOND
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   lifeInsuranceAssetSource:
     pageConfiguration: *lifeInsuranceAssetSource
     nextPages:
@@ -4527,9 +4531,11 @@ workflow:
           value: LIFE_INSURANCE
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   burialAccountAssetSource:
     pageConfiguration: *burialAccountAssetSource
     nextPages:
@@ -4542,9 +4548,11 @@ workflow:
           value: BURIAL_ACCOUNT
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   businessOwnershipAssetSource:
     pageConfiguration: *businessOwnershipAssetSource
     nextPages:
@@ -4557,9 +4565,11 @@ workflow:
           value: OWNERSHIP_BUSINESS
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   realEstateAssetSource:
     pageConfiguration: *realEstateAssetSource
     nextPages:
@@ -4572,9 +4582,11 @@ workflow:
           value: REAL_ESTATE
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   oneMillionDollarAssetSource:
     pageConfiguration: *oneMillionDollarAssetSource
     nextPages:
@@ -4587,9 +4599,11 @@ workflow:
           value: ONE_MILLION_ASSETS
           matcher: DOES_NOT_CONTAIN
         - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: assets
+      - pageName: choosePrograms
   savings:
     pageConfiguration: *savings
     nextPages:
