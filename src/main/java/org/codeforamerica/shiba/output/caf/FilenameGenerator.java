@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -31,11 +31,11 @@ public class FilenameGenerator {
       "F", Set.of("SNAP"),
       "C", Set.of("CCAP")
   );
-  private final CountyMap<CountyRoutingDestination> countyMap;
+  private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
   private final SnapExpeditedEligibilityDecider decider;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-  public FilenameGenerator(CountyMap<CountyRoutingDestination> countyMap, SnapExpeditedEligibilityDecider decider) {
+  public FilenameGenerator(ServicingAgencyMap<CountyRoutingDestination> countyMap, SnapExpeditedEligibilityDecider decider) {
     this.countyMap = countyMap;
     this.decider = decider;
   }
@@ -98,7 +98,7 @@ public class FilenameGenerator {
     String fileSource = isHennepinUploadedDoc ? "DOC" : "MNB";
 
     ZonedDateTime completedAt = application.getCompletedAt();
-    ZonedDateTime completedAtCentralTime = null;
+    ZonedDateTime completedAtCentralTime;
     if(completedAt != null) {
         completedAtCentralTime = completedAt.withZoneSameInstant(ZoneId.of("America/Chicago"));
     }else {

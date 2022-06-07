@@ -42,7 +42,7 @@ public class RoutingDestinationMessageService {
   private String setCountyName(County county, RoutingDestination routingDestination) {
     String clientCounty = routingDestination.getName();
     if (county == County.Other) {
-      clientCounty = County.Hennepin.displayName();
+      clientCounty = County.Hennepin.toString();
     }
     return clientCounty;
   }

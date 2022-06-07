@@ -1,7 +1,7 @@
 package org.codeforamerica.shiba.pages;
 
 import static org.codeforamerica.shiba.Program.*;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.*;
+import static org.codeforamerica.shiba.TribalNation.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
@@ -10,10 +10,11 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
+import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -33,18 +34,17 @@ import org.springframework.stereotype.Service;
  */
 public class RoutingDecisionService {
 
-  private final List<String> TRIBES_WE_CAN_ROUTE_TO = List.of(MILLE_LACS_BAND_OF_OJIBWE,
-      WHITE_EARTH, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE, RED_LAKE_NATION,
-      OTHER_FEDERALLY_RECOGNIZED_TRIBE);
-  private final Map<String, TribalNationRoutingDestination> tribalNations;
-  private final CountyMap<CountyRoutingDestination> countyRoutingDestinations;
+  private final List<String> TRIBES_WE_CAN_ROUTE_TO = Stream.of(MilleLacsBandOfOjibwe,
+      WhiteEarth, BoisForte, FondDuLac, GrandPortage, LeechLake, RedLakeNation,
+      OtherFederallyRecognizedTribe).map(Enum::toString).toList();
+  private final ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
+  private final ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations;
   private final FeatureFlagConfiguration featureFlagConfiguration;
   private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
 
-  public RoutingDecisionService(Map<String, TribalNationRoutingDestination> tribalNations,
-      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") CountyMap<CountyRoutingDestination> countyRoutingDestinations,
+  public RoutingDecisionService(ServicingAgencyMap<TribalNationRoutingDestination> tribalNations,
+      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations,
       FeatureFlagConfiguration featureFlagConfiguration) {
-
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
     this.featureFlagConfiguration = featureFlagConfiguration;
@@ -57,13 +57,15 @@ public class RoutingDecisionService {
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
 
     if (tribeName != null && TRIBES_WE_CAN_ROUTE_TO.contains(tribeName)) {
+      TribalNation tribalNation = TribalNation.getFromName(tribeName);
       // Route members of Tribal Nations we service
-      return switch (tribeName) {
-        case WHITE_EARTH -> routeWhiteEarthClients(programs, applicationData, document, county);
-        case MILLE_LACS_BAND_OF_OJIBWE, BOIS_FORTE, FOND_DU_LAC, GRAND_PORTAGE, LEECH_LAKE -> routeClientsServicedByMilleLacs(
-            programs, applicationData, document, county);
-        case RED_LAKE_NATION -> routeRedLakeClients(programs, applicationData, county);
-        case OTHER_FEDERALLY_RECOGNIZED_TRIBE -> routeClientsInOtherFederallyRecognizedTribe(
+      return switch (tribalNation) {
+        case WhiteEarth -> routeWhiteEarthClients(programs, applicationData, document, county);
+        case MilleLacsBandOfOjibwe, BoisForte, FondDuLac, GrandPortage, LeechLake ->
+            routeClientsServicedByMilleLacs(
+                programs, applicationData, document, county);
+        case RedLakeNation -> routeRedLakeClients(programs, applicationData, county);
+        case OtherFederallyRecognizedTribe -> routeClientsInOtherFederallyRecognizedTribe(
             county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
@@ -74,8 +76,13 @@ public class RoutingDecisionService {
   }
 
   public RoutingDestination getRoutingDestinationByName(String name) {
-    RoutingDestination result = tribalNations.get(name);
-    return result != null ? result : countyRoutingDestinations.get(County.getCountyForName(name));
+    RoutingDestination result;
+    try {
+      result = tribalNations.get(TribalNation.getFromName(name));
+    } catch (IllegalArgumentException e) {
+      result = countyRoutingDestinations.get(County.getForName(name));
+    }
+    return result;
   }
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
@@ -84,7 +91,7 @@ public class RoutingDecisionService {
         featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
       return List.of(countyRoutingDestinations.get(county));
     }
-    return List.of(tribalNations.get(RED_LAKE_NATION));
+    return List.of(tribalNations.get(RedLakeNation));
   }
 
   private List<RoutingDestination> routeRedLakeClients(Set<String> programs,
@@ -98,10 +105,10 @@ public class RoutingDecisionService {
     }
 
     if (programs.contains(GRH)) {
-      return List.of(countyRoutingDestinations.get(county), tribalNations.get(RED_LAKE_NATION));
+      return List.of(countyRoutingDestinations.get(county), tribalNations.get(RedLakeNation));
     }
 
-    return List.of(tribalNations.get(RED_LAKE_NATION));
+    return List.of(tribalNations.get(RedLakeNation));
   }
 
   private boolean isOnlyApplyingForGrh(Set<String> programs, ApplicationData applicationData) {
@@ -120,7 +127,7 @@ public class RoutingDecisionService {
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
 
     if (livesInCountyServicedByWhiteEarth(county, selectedTribeName)) {
-      return List.of(tribalNations.get(WHITE_EARTH));
+      return List.of(tribalNations.get(WhiteEarth));
     }
 
     if (URBAN_COUNTIES.contains(county)) {
@@ -131,7 +138,7 @@ public class RoutingDecisionService {
 
   private boolean livesInCountyServicedByWhiteEarth(County county, String selectedTribeName) {
     return selectedTribeName != null
-        && selectedTribeName.equals(WHITE_EARTH)
+        && selectedTribeName.equals(WhiteEarth.toString())
         && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
   }
 
@@ -143,7 +150,7 @@ public class RoutingDecisionService {
       ApplicationData applicationData, Document document, County county) {
     List<RoutingDestination> result = new ArrayList<>();
     if (shouldSendToMilleLacs(applicationData, document)) {
-      result.add(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE));
+      result.add(tribalNations.get(MilleLacsBandOfOjibwe));
     }
     if (shouldSendToCounty(programs, applicationData, document)) {
       result.add(countyRoutingDestinations.get(county));
@@ -167,7 +174,7 @@ public class RoutingDecisionService {
     var programs = applicationData.getApplicantAndHouseholdMemberPrograms();
 
     return selectedTribeName != null
-        && tribalNations.get(selectedTribeName) != null
+        && tribalNations.get(TribalNation.getFromName(selectedTribeName)) != null
         && (isApplyingForTribalTanf(pagesData) || programs.contains(EA))
         && Document.CCAP != document;
   }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.documentfieldpreparers.MailingAddressStreetPreparer;
@@ -31,11 +31,11 @@ import org.springframework.stereotype.Component;
 public class GeneralDeliveryAddressEnrichment implements Enrichment {
 
   private final CityInfoConfiguration cityInfoConfiguration;
-  private final CountyMap<CountyRoutingDestination> countyMap;
+  private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
 
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public GeneralDeliveryAddressEnrichment(CityInfoConfiguration cityInfoConfiguration,
-      CountyMap<CountyRoutingDestination> countyMap) {
+      ServicingAgencyMap<CountyRoutingDestination> countyMap) {
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.countyMap = countyMap;
   }
@@ -51,7 +51,7 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
     County county = County.valueOf(countyName);
     CountyRoutingDestination countyInfo = countyMap.get(county);
     String phoneNumber = countyInfo.getPhoneNumber();
-    String displayCounty = county.displayName() + " County";
+    String displayCounty = county + " County";
     String addressFromCity = cityName + ", MN";
 
     List<String> enrichedAddressLines = new ArrayList<>();
@@ -68,8 +68,8 @@ public class GeneralDeliveryAddressEnrichment implements Enrichment {
       enrichedAddressLines.add("Main Post Office.");
       enrichedAddressLines.add(addressFromCity);
       enrichedAddressLines.add(postOfficeAddress.getCity() + ", MN " + zipcodeFromCity);
-      callYourCounty += "-" + county.displayName().toLowerCase();
-      tellCountyWorker += "-" + county.displayName().toLowerCase();
+      callYourCounty += "-" + county.toString().toLowerCase();
+      tellCountyWorker += "-" + county.toString().toLowerCase();
     } else {
       enrichedAddressLines.add(addressFromCity);
       enrichedAddressLines.add(zipcodeFromCity);
