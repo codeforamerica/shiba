@@ -961,13 +961,8 @@ public class AbstractShibaMockMvcTest {
         "supportAndCare");
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "REAL_ESTATE");
-    if (hasHousehold) {
-    assertNavigationRedirectsToCorrectNextPage("assets", "realEstateAssetSource");
-    postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource", me,
-        "savings");
-    } else {
-      assertNavigationRedirectsToCorrectNextPage("assets", "savings");
-    }
+    assertNavigationRedirectsToCorrectNextPage("assets", "savings");
+    
     postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
     postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "soldAssets");
     postExpectingRedirect("soldAssets", "haveSoldAssets", "false", "submittingApplication");

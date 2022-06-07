@@ -953,7 +953,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
-
+      postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "LIFE_INSURANCE", "BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_ESTATE"));
+      assertNavigationRedirectsToCorrectNextPage("assets", "savings");
       completeHelperWorkflow(true);
 
       submitApplication();
@@ -1025,6 +1026,68 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       //CertainPops Healthcare Coverage Question
       assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
+      
+      //Section 18
+      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      
+      //Section 15
+      assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      
+      //Section 20
+      assertPdfFieldEquals("LIFE_INSURANCE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      
+      //Section 21
+      assertPdfFieldEquals("BURIAL_ACCOUNT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      
+      //Section 22
+      assertPdfFieldEquals("BUSINESS_OWNERSHIP_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      
+      //Section 16
+      assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+    }
+    
+    @Test
+    void shouldMapAssetsOwnersForHousehold() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+      selectPrograms("CERTAIN_POPS");
+      postExpectingRedirect("basicCriteria", "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "certainPopsConfirm");
+      addHouseholdMembersWithProgram("CCAP");
+      String jimHalpertId = getFirstHouseholdMemberId();
+      /*
+       * fillInPersonalInfoAndContactInfoAndAddress(); postExpectingRedirect("addHouseholdMembers",
+       * "addHouseholdMembers", "true", "startHousehold"); fillOutHousemateInfo("SNAP");
+       */
+      postExpectingSuccess("livingSituation", "livingSituation",
+          "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
+      fillInApplicantHealthcareCoverageQuestionAsTrue();
+      
+      postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "REAL_ESTATE"));
+      assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
+      postExpectingRedirect("vehicleAssetSource", "vehicleAssetSource", List.of("Dwight Schrute applicant","Jim Halpert " + jimHalpertId),
+          "stockAssetSource");
+      postExpectingRedirect("stockAssetSource", "stockAssetSource", List.of("Dwight Schrute applicant","Jim Halpert " + jimHalpertId),
+          "realEstateAssetSource");
+      postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource", List.of("Jim Halpert " + jimHalpertId),
+          "savings");
+      completeHelperWorkflow(true);
+
+      submitApplication();
+      var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+      //Section 18
+      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
+      
+      //Section 15
+      assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
+      
+      //Section 16
+      assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Jim Halpert", pdf);
     }
 
     @Test
