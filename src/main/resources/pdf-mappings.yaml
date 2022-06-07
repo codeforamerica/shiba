@@ -319,8 +319,10 @@ mappings:
     thirtyDayIncome: MONEY_MADE_LAST_MONTH
   householdPregnancy:
     householdPregnancy: WHO_IS_PREGNANT
-  householdNonUsCitizen:
-    householdNonUsCitizen: IS_US_CITIZEN
+  whoisNonUSCitizen:
+    applicantAndSpouseUSCitizens: IS_US_CITIZEN
+    nameOfApplicantOrSpouseNonUSCitizen1: NAME_OF_NON_US_CITIZEN_1
+    nameOfApplicantOrSpouseNonUSCitizen2: NAME_OF_NON_US_CITIZEN_2
   householdSelectionForIncome:
     whoseJobIsItFormatted: EMPLOYEE_FULL_NAME
   nonSelfEmployment_householdSelectionForIncome:
