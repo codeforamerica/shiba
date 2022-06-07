@@ -148,10 +148,18 @@ public List<String> getAndSetFileNames(Application application, Document documen
     if (rowCount != 0) {
       logStatusUpdate(applicationId, document, routingDestinationName, status, documentName);
     }
-
   }
-  
-  
+
+  public void updateFilenetId(String applicationId, Document document,
+      String routingDestinationName, Status status,
+      String documentName, String filenetId) {
+    String updateStatement = """
+        UPDATE application_status SET filenet_id = ? WHERE application_id = ?
+        AND document_type = ? AND status = ? AND routing_destination = ? AND document_name = ?
+        """;
+    jdbcTemplate.update(updateStatement, filenetId, applicationId, document.name(),
+        status.toString(), routingDestinationName, documentName);
+  }
 
   public void delete(String applicationId, List<Document> documents) {
     if (!documents.isEmpty()) {
@@ -178,13 +186,25 @@ public List<String> getAndSetFileNames(Application application, Document documen
       Status status, String documentName) {
     MDC.put("applicationId", id);
     if (status == null) {
-      log.info(String.format("%s = %s to %s #%s application status has been updated to null", document, documentName,
-          routingDestination, id));
+      log.info(
+          String.format("%s = %s to %s #%s application status has been updated to null", document,
+              documentName,
+              routingDestination, id));
       return;
     }
 
     log.info(String.format("%s = %s to %s #%s has been updated to %s", document, documentName,
         routingDestination, id, status));
+  }
+
+  public ApplicationStatus find(String id, Document document, String routingDestinationName,
+      String documentName) {
+    return jdbcTemplate.queryForObject(
+        "SELECT * FROM application_status WHERE application_id = ? AND "
+            + "document_type = ? AND routing_destination = ? AND document_name = ?"
+        , new ApplicationStatusRowMapper(), id, document.toString(),
+        routingDestinationName, documentName
+    );
   }
 
   private static class ApplicationStatusRowMapper implements RowMapper<ApplicationStatus> {
@@ -196,7 +216,8 @@ public List<String> getAndSetFileNames(Application application, Document documen
           Document.valueOf(rs.getString("document_type")),
           rs.getString("routing_destination"),
           Status.valueFor(rs.getString("status")),
-          rs.getString("document_name")
+          rs.getString("document_name"),
+          rs.getString("filenet_id")
       );
     }
   }

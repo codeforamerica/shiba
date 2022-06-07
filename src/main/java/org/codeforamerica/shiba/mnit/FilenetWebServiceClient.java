@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.mnit;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
+import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
@@ -95,11 +96,16 @@ public class FilenetWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void sendToFilenet(ApplicationFile applicationFile,
+  public void send(ApplicationFile applicationFile,
       RoutingDestination routingDestination,
       String applicationNumber,
       Document applicationDocument, FlowType flowType) {
-    try {
+    String filenetId;
+    filenetId = applicationStatusRepository.find(applicationNumber,
+        applicationDocument,
+        routingDestination.getName(),
+        applicationFile.getFileName()).getFilenetId();
+    if (filenetId.isEmpty()) {
       log.info("Now sending %s to recipient %s for application %s".formatted(
           applicationDocument.name(),
           routingDestination.getName(),
@@ -129,7 +135,8 @@ public class FilenetWebServiceClient {
               SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
               SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
               ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
-              createdElement.setTextContent(createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
+              createdElement.setTextContent(
+                  createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
               SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
               expiresElement
                   .setTextContent(
@@ -149,36 +156,38 @@ public class FilenetWebServiceClient {
               throw new IllegalStateException(e);
             }
           });
+      // Save filenetId so we can retry only sending to SFTP
+      filenetId = response.getObjectId();
+      applicationStatusRepository.updateFilenetId(applicationNumber, applicationDocument,
+          routingDestination.getName(),
+          SENDING, applicationFile.getFileName(), response.getObjectId());
+    }
 
-      // Now route a copy of the document from Filenet to SFTP
-      String idd = response.getObjectId();
-      String routerRequest = String.format("%s/%s", sftpUploadUrl, idd);
-      log.info(String.format("Upload to SFTP request: %s", routerRequest));
-      String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+    // Now route a copy of the document from Filenet to SFTP
+    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetId);
+    log.info(String.format("Upload to SFTP request: %s", routerRequest));
+    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
 
-      log.info(String.format("Upload to SFTP response: %s", routerResponse));
-      JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+    log.info(String.format("Upload to SFTP response: %s", routerResponse));
+    JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
 
-      // Throw exception if this isnt a successful response
-      String eMessage = String
-          .format("The MNIT Router did not respond with a \"Success\" message for %s", idd);
-      if (jsonObject != null) {
-        JsonElement messageElement = jsonObject.get("message");
-        if (messageElement.isJsonNull()
-            || !messageElement.getAsString().equalsIgnoreCase("Success")) {
-          throw new IllegalStateException(eMessage);
-        }
-      } else {
+    // Throw exception if this isnt a successful response
+    String eMessage = String
+        .format("The MNIT Router did not respond with a \"Success\" message for %s",
+            filenetId);
+    if (jsonObject != null) {
+      JsonElement messageElement = jsonObject.get("message");
+      if (messageElement.isJsonNull()
+          || !messageElement.getAsString().equalsIgnoreCase("Success")) {
         throw new IllegalStateException(eMessage);
       }
-
-      applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
-          routingDestination.getName(),
-          DELIVERED, applicationFile.getFileName());
-    } catch (Exception e) {
-      // Retry depends on uncaught exceptions - we want more logging for retries so the exception is rethrown here
-      throw e;
+    } else {
+      throw new IllegalStateException(eMessage);
     }
+
+    applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+        routingDestination.getName(),
+        DELIVERED, applicationFile.getFileName());
   }
 
   @SuppressWarnings("unused")
@@ -290,5 +299,4 @@ public class FilenetWebServiceClient {
     }
     return docDescription;
   }
-
 }

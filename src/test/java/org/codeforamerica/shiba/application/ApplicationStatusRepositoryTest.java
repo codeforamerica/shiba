@@ -123,5 +123,27 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         new ApplicationStatus("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "")
     );
   }
-  
+
+  @Test
+  void findReturnsOneStatusByIdDocTypeRoutingDestinationAndFilename() {
+    applicationStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", SENDING,
+        "file-we-want.pdf");
+    applicationStatusRepository.createOrUpdate("someId1", CAF, "Mille Lacs", SENDING,
+        "file-we-want.pdf");
+    applicationStatusRepository.createOrUpdate("someId2", CAF, "Olmsted", DELIVERY_FAILED,
+        "fileName");
+
+    applicationStatusRepository.updateFilenetId("someId1", CAF, "Olmsted", SENDING,
+        "file-we-want.pdf", "filenetId");
+
+    ApplicationStatus status = applicationStatusRepository.find("someId1", CAF, "Olmsted",
+        "file-we-want.pdf");
+
+    ApplicationStatus statusWithFilenetId = new ApplicationStatus("someId1", CAF, "Olmsted",
+        SENDING,
+        "file-we-want.pdf");
+    statusWithFilenetId.setFilenetId("filenetId");
+
+    assertThat(status).isEqualTo(statusWithFilenetId);
+  }
 }
