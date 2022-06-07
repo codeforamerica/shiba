@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
@@ -34,25 +34,23 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
-
   private ApplicationStatusRepository applicationStatusRepository;
-
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
   @MockBean
   private FilenameGenerator filenameGenerator;
-  private CountyRoutingDestination routingDestination;
   @MockBean
   private PdfGenerator pdfGenerator;
+  private CountyRoutingDestination routingDestination;
 
   @BeforeEach
   void setUp() {
-    CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
+    ServicingAgencyMap<CountyRoutingDestination> countyMap = new ServicingAgencyMap<>();
     routingDestination = new CountyRoutingDestination(Olmsted, "dpi", "email", "phoneNumber");
     countyMap.setDefaultValue(routingDestination);
     SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
     filenameGenerator = new FilenameGenerator(countyMap, decider);
     applicationStatusRepository = new ApplicationStatusRepository(jdbcTemplate,
-        routingDecisionService, filenameGenerator, pdfGenerator );
+        routingDecisionService, filenameGenerator, pdfGenerator);
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
         any(Document.class)))
         .thenReturn(List.of(routingDestination));
@@ -60,8 +58,10 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @Test
   void createOrUpdateShouldCreateOrUpdateStatusesFromAnIdDocTypeDestinationAndStatus() {
-    applicationStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
-    applicationStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED, "sysGeneratedName");
+    applicationStatusRepository.createOrUpdate("someId", CAF, "Hennepin", DELIVERED,
+        "sysGeneratedName");
+    applicationStatusRepository.createOrUpdate("someId2", CAF, "Hennepin", DELIVERED,
+        "sysGeneratedName");
     assertThat(applicationStatusRepository.findAll("someId")).containsExactlyInAnyOrder(
         new ApplicationStatus("someId", CAF, "Hennepin", DELIVERED, "sysGeneratedName")
     );
@@ -85,9 +85,10 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
         applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CAF, routingDestination.getName(),
-            SENDING,  applicationStatusRepository.getAndSetFileNames(application,CAF).get(0)),
+            SENDING, applicationStatusRepository.getAndSetFileNames(application, CAF).get(0)),
         new ApplicationStatus(applicationData.getId(), CERTAIN_POPS, routingDestination.getName(),
-            SENDING, applicationStatusRepository.getAndSetFileNames(application,CERTAIN_POPS).get(0))
+            SENDING,
+            applicationStatusRepository.getAndSetFileNames(application, CERTAIN_POPS).get(0))
     );
 
     new TestApplicationDataBuilder(applicationData)
@@ -96,7 +97,7 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
     resultingStatuses = applicationStatusRepository.findAll(applicationData.getId());
     assertThat(resultingStatuses).containsExactlyInAnyOrder(
         new ApplicationStatus(applicationData.getId(), CCAP, routingDestination.getName(),
-            SENDING, applicationStatusRepository.getAndSetFileNames(application,CCAP).get(0))
+            SENDING, applicationStatusRepository.getAndSetFileNames(application, CCAP).get(0))
     );
   }
 
@@ -105,11 +106,13 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
     applicationStatusRepository.createOrUpdate("someId1", CAF, "Olmsted", DELIVERY_FAILED, "");
     applicationStatusRepository.createOrUpdate("someId1", XML, "Olmsted", DELIVERED, "");
 
-    applicationStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED, "fileName");
+    applicationStatusRepository.createOrUpdate("someId2", UPLOADED_DOC, "Olmsted", DELIVERY_FAILED,
+        "fileName");
     applicationStatusRepository.createOrUpdate("someId2", CERTAIN_POPS, "Olmsted", SENDING, "");
 
     applicationStatusRepository.createOrUpdate("someId3", CAF, "Olmsted", SENDING, "");
-    applicationStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING, "fileName");
+    applicationStatusRepository.createOrUpdate("someId3", UPLOADED_DOC, "Olmsted", SENDING,
+        "fileName");
 
     applicationStatusRepository.createOrUpdate("someId4", CCAP, "Olmsted", DELIVERY_FAILED, "");
 

@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.application;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+
 @Repository
 @Slf4j
 public class ApplicationStatusRepository {
@@ -31,9 +33,10 @@ public class ApplicationStatusRepository {
   private final RoutingDecisionService routingDecisionService;
   private final FilenameGenerator filenameGenerator;
   private final PdfGenerator pdfGenerator;
-  
+
   public ApplicationStatusRepository(JdbcTemplate jdbcTemplate,
-      RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator, PdfGenerator pdfGenerator) {
+      RoutingDecisionService routingDecisionService, FilenameGenerator filenameGenerator,
+      PdfGenerator pdfGenerator) {
     this.jdbcTemplate = jdbcTemplate;
     this.routingDecisionService = routingDecisionService;
     this.filenameGenerator = filenameGenerator;
@@ -67,19 +70,19 @@ public class ApplicationStatusRepository {
 
   public void createOrUpdateAllForDocumentType(Application application, Status status,
       Document document) {
-    ApplicationData applicationData = application.getApplicationData(); 
+    ApplicationData applicationData = application.getApplicationData();
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(applicationData, document);
     routingDestinations.forEach(routingDestination -> {
       var fileNames = getAndSetFileNames(application, document, routingDestination);
-      fileNames.stream().forEach(fileName -> createOrUpdate(applicationData.getId(), document,
+      fileNames.forEach(fileName -> createOrUpdate(applicationData.getId(), document,
           routingDestination.getName(), status, fileName));
     });
   }
 
-  public List<String> getAndSetFileNames(Application application, Document document, RoutingDestination routingDest){
-    List<String> fileNames = new ArrayList<String>();
-    if(document.equals(UPLOADED_DOC)) {
+  public List<String> getAndSetFileNames(Application application, Document document, RoutingDestination routingDest) {
+    List<String> fileNames = new ArrayList<>();
+    if (document.equals(UPLOADED_DOC)) {
       var uploadedDocs = application.getApplicationData().getUploadedDocs();
       if (uploadedDocs.size() == 0) {
         fileNames.add("");
@@ -99,21 +102,20 @@ public class ApplicationStatusRepository {
         }
         fileNames.add(fileName);
       }
-    }else {
+    } else {
       String fileName = filenameGenerator.generatePdfFilename(application, document, routingDest);
       fileNames.add(fileName);
     }
     return fileNames;
   }
-  
-  public List<String> getAndSetFileNames(Application application, Document document){
+public List<String> getAndSetFileNames(Application application, Document document){
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);
    var fileName = routingDestinations.stream().distinct().map(rtDest -> getAndSetFileNames(application, document, rtDest)).collect(Collectors.toList());
    return fileName.get(0);
   }
-  
-  public void createOrUpdate(String applicationId, Document document, String routingDestinationName,
+  public void createOrUpdate(String applicationId, Document document,
+      String routingDestinationName,
       Status status, String documentName) {
     if (document == null || routingDestinationName == null) {
       return;

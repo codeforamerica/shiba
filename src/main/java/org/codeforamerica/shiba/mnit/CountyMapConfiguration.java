@@ -89,7 +89,7 @@ import static org.codeforamerica.shiba.County.Wright;
 import static org.codeforamerica.shiba.County.YellowMedicine;
 
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -99,19 +99,19 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class CountyMapConfiguration {
 
-  private CountyMap<CountyRoutingDestination> countyMap;
+  private ServicingAgencyMap<CountyRoutingDestination> countyMap;
   private final String DEV_EMAIL = "help+dev@mnbenefits.org";
 
   @Bean
   @Profile({"default", "test", "dev", "atst"})
-  CountyMap<CountyRoutingDestination> nonProdMapping() {
+  ServicingAgencyMap<CountyRoutingDestination> nonProdMapping() {
     initializeDefaultCountyMap();
     return countyMap;
   }
 
   @Bean
   @Profile("production")
-  CountyMap<CountyRoutingDestination> productionMapping() {
+  ServicingAgencyMap<CountyRoutingDestination> productionMapping() {
     initializeDefaultCountyMap();
     updateCounty(Aitkin, "achhs@co.aitkin.mn.us", "A000001900");
     updateCounty(Anoka, "EADocs@co.anoka.mn.us", "1023250115");
@@ -207,7 +207,7 @@ public class CountyMapConfiguration {
   }
 
   private void initializeDefaultCountyMap() {
-    countyMap = new CountyMap<>();
+    countyMap = new ServicingAgencyMap<>();
     addCountyDefaults(Aitkin, "A000001900", "800-328-3744");
     addCountyDefaults(Anoka, "1023250115", "763-422-7200");
     addCountyDefaults(Becker, "A000003500", "218-847-5628");
@@ -236,7 +236,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Grant, "A000061200", "320-634-7758");
     addCountyDefaults(Hennepin, "A000027200", "612-596-1300", new Address(
         "100 S 1st St", "Minneapolis", "MN", "55401", "",
-        Hennepin.displayName()
+        Hennepin.toString()
     ));
     addCountyDefaults(Houston, "A000028100", "507-725-5811");
     addCountyDefaults(Hubbard, "A000029900", "877-450-1451");
@@ -303,13 +303,13 @@ public class CountyMapConfiguration {
 
   private void addCountyDefaults(County county, String dhsProviderId, String phoneNumber,
       Address address) {
-    countyMap.getCounties().put(county,
+    countyMap.getAgencies().put(county,
         new CountyRoutingDestination(county, dhsProviderId, DEV_EMAIL, phoneNumber,
             address));
   }
 
   private void addCountyDefaults(County county, String dhsProviderId, String phoneNumber) {
-    countyMap.getCounties().put(county,
+    countyMap.getAgencies().put(county,
         new CountyRoutingDestination(county, dhsProviderId, DEV_EMAIL,
             phoneNumber));
   }

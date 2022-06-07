@@ -16,9 +16,9 @@ public class CountyParser {
     String countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY);
 
     try {
-      return County.getCountyForName(countyName);
+      return County.getForName(countyName);
     } catch (Exception e) {
-      log.error("Could not retrieve County object corresponding to county name: " + countyName, e);
+      log.warn("Could not retrieve County object corresponding to county name: " + countyName, e);
       return County.Other;
     }
   }

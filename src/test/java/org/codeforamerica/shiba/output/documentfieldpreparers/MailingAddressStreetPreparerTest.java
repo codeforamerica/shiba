@@ -30,7 +30,7 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 
 class MailingAddressStreetPreparerTest {
 
-  private final CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
+  private final ServicingAgencyMap<CountyRoutingDestination> countyMap = new ServicingAgencyMap<>();
   private final CityInfoConfiguration cityInfo = new CityInfoConfiguration();
 
   private final MailingAddressStreetPreparer preparer =
@@ -56,7 +56,7 @@ class MailingAddressStreetPreparerTest {
   void setup() {
     Address hennepinPostOfficeAddress = new Address("123 hennepin st", "Minneapolis", "MN", "55555",
         null, "Hennepin");
-    countyMap.getCounties().putAll(Map.of(
+    countyMap.getAgencies().putAll(Map.of(
         Hennepin, new CountyRoutingDestination(Hennepin, "npi", "email", "765-4321",
             hennepinPostOfficeAddress),
         OtterTail, new CountyRoutingDestination(OtterTail, "npi", "email", "123-4567"))

@@ -27,6 +27,6 @@ public class CountyRoutingDestination extends RoutingDestination {
 
   @Override
   public String getName() {
-    return county.displayName();
+    return county.toString();
   }
 }

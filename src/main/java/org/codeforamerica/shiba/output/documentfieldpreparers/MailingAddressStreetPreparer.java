@@ -37,7 +37,7 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -56,11 +56,12 @@ public class MailingAddressStreetPreparer implements DocumentFieldPreparer {
   private final static String GENERAL_DELIVERY = "General Delivery";
 
   private final CityInfoConfiguration cityInfoConfiguration;
-  private final CountyMap<CountyRoutingDestination> countyMap;
+  private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
 
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   public MailingAddressStreetPreparer(
       CityInfoConfiguration cityInfoConfiguration,
-      CountyMap<CountyRoutingDestination> countyMap) {
+      ServicingAgencyMap<CountyRoutingDestination> countyMap) {
     this.cityInfoConfiguration = cityInfoConfiguration;
     this.countyMap = countyMap;
   }

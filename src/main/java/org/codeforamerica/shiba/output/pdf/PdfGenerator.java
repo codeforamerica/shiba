@@ -3,20 +3,21 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
+import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -34,10 +35,6 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Component
 @Slf4j
 public class PdfGenerator implements FileGenerator {
@@ -45,7 +42,7 @@ public class PdfGenerator implements FileGenerator {
   private static final List<String> IMAGE_TYPES_TO_CONVERT_TO_PDF = List
       .of("jpg", "jpeg", "png", "gif");
   private static final List<String> DOC_TYPES_TO_CONVERT_TO_PDF = List
-	      .of("doc", "docx");
+      .of("doc", "docx");
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
@@ -55,7 +52,7 @@ public class PdfGenerator implements FileGenerator {
   private final FilenameGenerator fileNameGenerator;
   private final FileToPDFConverter pdfWordConverter;
   private final FeatureFlagConfiguration featureFlags;
-  private final CountyMap<CountyRoutingDestination> countyMap;
+  private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
@@ -66,7 +63,7 @@ public class PdfGenerator implements FileGenerator {
       FilenameGenerator fileNameGenerator,
       FileToPDFConverter pdfWordConverter,
       FeatureFlagConfiguration featureFlagConfiguration,
-      CountyMap<CountyRoutingDestination> countyMap
+      ServicingAgencyMap<CountyRoutingDestination> countyMap
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
     this.pdfFieldFillerMap = pdfFieldFillers;
@@ -103,10 +100,11 @@ public class PdfGenerator implements FileGenerator {
     String filename = fileNameGenerator.generatePdfFilename(application, document);
     return generateWithFilename(application, document, recipient, filename);
   }
-  
+
   public ApplicationFile generate(Application application, Document document, Recipient recipient,
       RoutingDestination routingDestination) {
-    String filename = fileNameGenerator.generatePdfFilename(application, document, routingDestination);
+    String filename = fileNameGenerator.generatePdfFilename(application, document,
+        routingDestination);
     return generateWithFilename(application, document, recipient, filename);
   }
 
@@ -116,59 +114,66 @@ public class PdfGenerator implements FileGenerator {
         recipient);
     var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
-    if(document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
-      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+
+      if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+        pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+
     }
-   
+
     List<PdfField> fields = pdfFieldMapper.map(documentFields);
     return pdfFiller.fill(fields, application.getId(), filename);
   }
 
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
-      int documentIndex, Application application, byte[] coverPage, RoutingDestination routingDest) {
+      int documentIndex, Application application, byte[] coverPage,
+      RoutingDestination routingDest) {
     var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
-      boolean flagIsNotNull = featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
-		if (flagIsNotNull && featureFlags.get("word-to-pdf").isOn() && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-		  try {
-				InputStream inputStream = new ByteArrayInputStream(fileBytes);
-				fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);
-				extension = "pdf";
-			} catch (PdfOfficeException |IOException e) {
-                log.warn("failed to convert document " + uploadedDocument.getFilename()
-                + " to pdf. Maintaining original type. " + e.getMessage());
-			}
+      boolean flagIsNotNull =
+          featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
+      if (flagIsNotNull && featureFlags.get("word-to-pdf").isOn()
+          && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+        try {
+          InputStream inputStream = new ByteArrayInputStream(fileBytes);
+          fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);
+          extension = "pdf";
+        } catch (PdfOfficeException | IOException e) {
+          log.warn("failed to convert document " + uploadedDocument.getFilename()
+              + " to pdf. Maintaining original type. " + e.getMessage());
+        }
 
-		} else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-			try {
-				fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
-				extension = "pdf";
-			} catch (Exception e) {
-				log.warn("failed to convert document " + uploadedDocument.getFilename()
-						+ " to pdf. Maintaining original type");
-			}
-		} else if (!extension.equals("pdf")) {
-			log.warn("Unsupported file-type: " + extension);
-		}
+      } else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+        try {
+          fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
+          extension = "pdf";
+        } catch (Exception e) {
+          log.warn("failed to convert document " + uploadedDocument.getFilename()
+              + " to pdf. Maintaining original type");
+        }
+      } else if (!extension.equals("pdf")) {
+        log.warn("Unsupported file-type: " + extension);
+      }
 
       if (extension.equals("pdf") && coverPage != null) {
         fileBytes = addCoverPageToPdf(coverPage, fileBytes);
       }
       String filename = uploadedDocument.getSysFileName();
-     filename = (filename == null || (filename!=null && !filename.contains(routingDest.getDhsProviderId())))
-          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension, routingDest)
+      filename = (filename == null || (filename!=null && !filename.contains(routingDest.getDhsProviderId())))
+          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension,
+          routingDest)
           : uploadedDocument.getSysFileName();
       return new ApplicationFile(fileBytes, filename);
     }
     return null;
   }
-  
+
   public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
       int documentIndex, Application application, byte[] coverPage) {
-    return generateForUploadedDocument(uploadedDocument, documentIndex, application, coverPage, countyMap.get(application.getCounty()));
+    return generateForUploadedDocument(uploadedDocument, documentIndex, application, coverPage,
+        countyMap.get(application.getCounty()));
   }
-  
+
   private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {
     PDFMergerUtility merger = new PDFMergerUtility();
     try (PDDocument coverPageDoc = PDDocument.load(coverPage);
@@ -184,7 +189,7 @@ public class PdfGenerator implements FileGenerator {
     return fileBytes;
   }
 
-  private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception{
+  private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception {
     try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, filename);
       // Figure out page size
@@ -212,8 +217,9 @@ public class PdfGenerator implements FileGenerator {
       doc.save(outputStream);
       return outputStream.toByteArray();
     } catch (Exception e) {
-		log.error("convertImageToPdf Error for file " + filename + ". Error message: " + e.getMessage());
-		throw e;
-	}
+      log.error(
+          "convertImageToPdf Error for file " + filename + ". Error message: " + e.getMessage());
+      throw e;
+    }
   }
 }
