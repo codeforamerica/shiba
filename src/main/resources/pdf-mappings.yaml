@@ -46,6 +46,24 @@ mappings:
       CCAP: CCAP
       NONE: PROGRAM_NONE
     programList: PROGRAMS
+  spouseInfo:
+    firstName: SPOUSE_FIRST_NAME
+    lastName: SPOUSE_LAST_NAME
+    maritalStatus: SPOUSE_MARITAL_STATUS
+    otherName: OTHER_NAME
+    dateOfBirth: SPOUSE_DOB
+    ssn: SPOUSE_SSN
+    sex: SPOUSE_SEX
+    relationship: SPOUSE_RELATIONSHIP
+    moveToMnDate: DATE_OF_MOVING_TO_MN
+    moveToMnPreviousState: PREVIOUS_STATE
+    programs:
+      SNAP: FOOD
+      CASH: CASH
+      EA: EMERGENCY
+      CCAP: CCAP
+      NONE: PROGRAM_NONE
+    programList: PROGRAMS
   basicCriteria:
     BLIND: BLIND
     HELP_WITH_MEDICARE: HELP_WITH_MEDICARE
