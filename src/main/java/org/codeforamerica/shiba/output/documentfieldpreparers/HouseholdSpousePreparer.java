@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
@@ -56,7 +57,7 @@ private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subwo
     {
       var pgFirstName = getFirstValue(pagesData, HOUSEHOLD_INFO_FIRST_NAME);
       var pgLastName = getFirstValue(pagesData, HOUSEHOLD_INFO_LAST_NAME);
-      var pgDOB = getFirstValue(pagesData, HOUSEHOLD_INFO_DOB);
+      var pgDOB = getValues(pagesData, HOUSEHOLD_INFO_DOB);
       var pgSex = getFirstValue(pagesData, HOUSEHOLD_INFO_SEX);
       var pgMaritalStatus = getFirstValue(pagesData, HOUSEHOLD_INFO_MARITAL_STATUS);
       var pgRelationship = getFirstValue(pagesData, HOUSEHOLD_INFO_RELATIONSHIP);
