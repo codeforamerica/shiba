@@ -2947,13 +2947,12 @@ pageDefinitions:
     inputs:
       - name: haveSavings
         type: YES_NO
-# New page for liquidAssetSources using childOrSpousalSupportIncomeSource as example
   - &liquidAssetSources
     name: liquidAssetSources
     pageTitle: liquid-assets-source.title
     headerKey: liquid-assets-source.who-does-money-belong-to
     headerHelpMessageKey: liquid-assets-source.this-helps-us-determine
-    contextFragment: personIncomeContextFragment
+    contextFragment: liquidAssetsContextFragment
     inputs:
       - type: CUSTOM
         name: monthlyIncomeChildOrSpousalSupport
@@ -4636,32 +4635,42 @@ workflow:
     pageConfiguration: *savings
     nextPages:
       - pageName: savingsAmount
+        condition: 
+          pageName: savings
+          input: haveSavings
+          value: "true"
+      - pageName: soldAssets
+        condition: 
+          pageName: savings
+          input: haveSavings
+          value: "false"
     datasources:
       - pageName: addHouseholdMembers
   savingsAmount:
     pageConfiguration: *liquidAssets
     skipCondition:
-      logicalOperator: OR  
+      logicalOperator: AND
       conditions:
-        - pageName: savings
-          input: haveSavings
-          value: "false"
         - *applicantChoseCERTAINPOPS?
+        - *doesNotLiveAlone?
     nextPages:
       - pageName: liquidAssetSources
     datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
       - pageName: savings
-#TODO new page for liquidAssetSources =====================
   liquidAssetSources:
     pageConfiguration: *liquidAssetSources
     skipCondition:
-      pageName: savings
-      input: haveSavings
-      value: "false"
+      logicalOperator: OR
+      conditions:
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
     nextPages:
       - pageName: soldAssets
     datasources:
-      - pageName: savings
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:
