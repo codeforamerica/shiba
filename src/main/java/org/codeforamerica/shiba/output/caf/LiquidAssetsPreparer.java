@@ -20,6 +20,10 @@ public class LiquidAssetsPreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     var liquidAssets = getFirstValue(application.getApplicationData().getPagesData(), ASSETS);
+    //TODO emj new method of finding liquidAssets
+    // Could be more than one value so need to use calculator instead of getting first value
+    
+    
     return List.of(
         new DocumentField(
             "liquidAssets",

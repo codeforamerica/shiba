@@ -2948,7 +2948,7 @@ pageDefinitions:
       - name: haveSavings
         type: YES_NO
   - &liquidAssetSources
-    name: liquidAssetSources
+    name: liquidAssets
     pageTitle: liquid-assets-source.title
     headerKey: liquid-assets-source.who-does-money-belong-to
     headerHelpMessageKey: liquid-assets-source.this-helps-us-determine
@@ -2969,13 +2969,13 @@ pageDefinitions:
         followUpValues:
           - liquidAssetSourcesAmount
         followUps:
-          - name: liquidAssetAmount
+          - name: liquidAssets
             type: MONEY
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
                 condition:
-                  input: liquidAssetAmount
+                  input: liquidAssets
                   matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: liquid-assets-source.how-much-money-available
