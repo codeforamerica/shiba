@@ -34,6 +34,11 @@ conditionDefinitions:
     input: otherUnearnedIncome
     value: NO_OTHER_UNEARNED_INCOME_SELECTED
     matcher: DOES_NOT_CONTAIN
+  - &selectedUnearnedIncome?
+    pageName: unearnedIncome
+    input: unearnedIncome
+    value: NO_UNEARNED_INCOME_SELECTED
+    matcher: DOES_NOT_CONTAIN
   - &noUnearnedIncomeSelected?
     pageName: unearnedIncome
     input: unearnedIncome
@@ -94,6 +99,15 @@ conditionDefinitions:
       - pageName: householdMemberInfo
         input: programs
         value: CASH
+  - &someoneChoseCCAP?
+    logicalOperator: OR
+    conditions:
+      - pageName: choosePrograms
+        input: programs
+        value: CCAP
+      - pageName: householdMemberInfo
+        input: programs
+        value: CCAP
   - &applicantDidNotChooseProgram?
     pageName: choosePrograms
     input: programs
@@ -4359,17 +4373,18 @@ workflow:
   unearnedIncome:
     pageConfiguration: *unearnedIncome
     nextPages:
+      - pageName: unearnedIncomeSources 
+        condition: 
+          logicalOperator: OR
+          conditions:
+            - *applicantDidNotChooseCERTAINPOPS?
+            - *livesAlone? 
       - pageName: otherUnearnedIncome
-        condition:
+        condition: 
           logicalOperator: AND
           conditions:
+            - *doesNotLiveAlone?
             - *noUnearnedIncomeSelected?
-            - logicalOperator: OR
-              conditions:
-                - *applicantChoseCCAPProgram?
-                - *applicantChoseCERTAINPOPS?
-      - pageName: unearnedIncomeSources
-        condition: *livesAlone?
       - pageName: socialSecurityIncomeSource
         condition:
           logicalOperator: AND
@@ -4445,6 +4460,8 @@ workflow:
     datasources:
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   unearnedIncomeSources:
     pageConfiguration: *unearnedIncomeSources
     nextPages:
@@ -4604,8 +4621,16 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - *noOneChoseCCAP?
-        - *applicantDidNotChooseCERTAINPOPS?
+        - logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCERTAINPOPS?
+            - *applicantDidNotChooseCCAP?
+            - *livesAlone?
+        - logicalOperator: AND
+          conditions:
+            - *applicantDidNotChooseCERTAINPOPS?
+            - *applicantDidNotChooseCCAP?
+            - *householdMemberDidNotChooseCCAP?
     nextPages:
       - pageName: otherUnearnedIncomeSources
         condition:
@@ -4663,7 +4688,7 @@ workflow:
         - pageName: otherUnearnedIncome
           input: otherUnearnedIncome
           matcher: DOES_NOT_CONTAIN
-          value: TRUST_MONEY
+          value: RENTAL_INCOME
         - *applicantDidNotChooseCERTAINPOPS?
     nextPages:
       - pageName: interestDividendsIncomeSource
@@ -4675,7 +4700,7 @@ workflow:
       pageName: otherUnearnedIncome
       input: otherUnearnedIncome
       matcher: DOES_NOT_CONTAIN
-      value: CONTRACT_FOR_DEED
+      value: INTEREST_DIVIDENDS
     nextPages:
       - pageName: healthcareReimbursementIncomeSource
     datasources:
