@@ -171,12 +171,20 @@ public class ApplicationDataParser {
     coordinatesMap
         .put(Field.PERSONAL_INFO_LAST_NAME, new ParsingCoordinate("personalInfo", "lastName"));
 
-    coordinatesMap
-        .put(Field.HOUSEHOLD_INFO_DOB, new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB,
+        new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_FIRST_NAME,
         new ParsingCoordinate("householdMemberInfo", "firstName"));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_LAST_NAME,
         new ParsingCoordinate("householdMemberInfo", "lastName"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_RELATIONSHIP,
+        new ParsingCoordinate("householdMemberInfo", "relationship"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_SEX,
+        new ParsingCoordinate("householdMemberInfo", "sex"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_SSN,
+        new ParsingCoordinate("householdMemberInfo", "ssn"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_MARITAL_STATUS,
+        new ParsingCoordinate("householdMemberInfo", "maritalStatus"));
 
     coordinatesMap.put(Field.MATCH_INFO_DOB, new ParsingCoordinate("matchInfo", "dateOfBirth"));
     coordinatesMap
@@ -328,6 +336,10 @@ public class ApplicationDataParser {
     HOUSEHOLD_INFO_DOB,
     HOUSEHOLD_INFO_FIRST_NAME(""),
     HOUSEHOLD_INFO_LAST_NAME(""),
+    HOUSEHOLD_INFO_RELATIONSHIP(""),
+    HOUSEHOLD_INFO_SEX(""),
+    HOUSEHOLD_INFO_MARITAL_STATUS(""),
+    HOUSEHOLD_INFO_SSN(""),
 
     MATCH_INFO_DOB,
     MATCH_INFO_FIRST_NAME(""),
