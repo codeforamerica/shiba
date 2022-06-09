@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAVE_HEALTHCARE_COVERAGE;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.REGISTER_TO_VOTE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 @Component
