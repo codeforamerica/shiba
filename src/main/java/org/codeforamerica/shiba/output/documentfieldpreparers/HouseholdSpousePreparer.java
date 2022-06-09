@@ -10,6 +10,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_RELATIONSHIP;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_SEX;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_SSN;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_MARITAL_STATUS;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
@@ -61,6 +62,7 @@ private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subwo
       var pgSex = getFirstValue(pagesData, HOUSEHOLD_INFO_SEX);
       var pgMaritalStatus = getFirstValue(pagesData, HOUSEHOLD_INFO_MARITAL_STATUS);
       var pgRelationship = getFirstValue(pagesData, HOUSEHOLD_INFO_RELATIONSHIP);
+      var pgSSN = getFirstValue(pagesData, HOUSEHOLD_INFO_SSN);
       
 
       inputsForSubworkflow.add(new DocumentField("spouseInfo", "firstName", pgFirstName, SINGLE_VALUE));
@@ -74,6 +76,12 @@ private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subwo
       inputsForSubworkflow.add(new DocumentField("spouseInfo", "sex", pgSex, ENUMERATED_SINGLE_VALUE));
       
       inputsForSubworkflow.add(new DocumentField("spouseInfo", "maritalStatus", pgMaritalStatus, ENUMERATED_SINGLE_VALUE));
+      
+      if (pgSSN.length() > 0)
+      {        
+        inputsForSubworkflow.add(new DocumentField("spouseInfo", "ssn", pgSSN, SINGLE_VALUE));
+        inputsForSubworkflow.add(new DocumentField("spouseInfo", "ssnYesNo", "Yes", SINGLE_VALUE));       
+      }
 
     }
     

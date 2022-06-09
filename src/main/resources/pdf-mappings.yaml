@@ -52,7 +52,8 @@ mappings:
     maritalStatus: SPOUSE_MARITAL_STATUS
     otherName: OTHER_NAME
     dateOfBirth: SPOUSE_DOB
-    ssn: SPOUSE_SSN
+    ssn: SPOUSE_SSN_VAL
+    ssnYesNo: SPOUSE_YESNO
     sex: SPOUSE_SEX
     relationship: SPOUSE_RELATIONSHIP
     moveToMnDate: DATE_OF_MOVING_TO_MN
