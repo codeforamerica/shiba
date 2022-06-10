@@ -4636,8 +4636,11 @@ workflow:
         condition:
           logicalOperator: AND
           conditions:
-            - *livesAlone?
             - *selectedOtherUnearnedIncome?
+            - logicalOperator: OR
+              conditions:
+                - *livesAlone?
+                - *applicantDidNotChooseCERTAINPOPS?
       - pageName: insurancePaymentsIncomeSource
         condition: *selectedOtherUnearnedIncome?
       - pageName: insurancePaymentsIncomeSource
