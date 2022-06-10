@@ -1,8 +1,7 @@
 package org.codeforamerica.shiba.output.caf;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
 import java.util.List;
+
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.Document;
@@ -15,20 +14,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class LiquidAssetsPreparer implements DocumentFieldPreparer {
 
+	private final LiquidAssetsCalculator liquidAssetsCalculator;
+	
+	LiquidAssetsPreparer(){
+		this.liquidAssetsCalculator = new LiquidAssetsCalculator();
+	}
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
-    var liquidAssets = getFirstValue(application.getApplicationData().getPagesData(), ASSETS);
-    //TODO emj new method of finding liquidAssets
-    // Could be more than one value so need to use calculator instead of getting first value
-    
-    
+    String totalAmount = liquidAssetsCalculator.findTotalLiquidAssets(application.getApplicationData());
+    System.out.println("totalAmount = " + totalAmount);
     return List.of(
         new DocumentField(
             "liquidAssets",
             "liquidAssetsValue",
-            List.of(liquidAssets.isBlank() ? Money.ZERO.toString() : Money.parse(liquidAssets).toString()),
+            List.of(totalAmount.isBlank() ? Money.ZERO.toString() : Money.parse(totalAmount).toString()),// List of one element
             DocumentFieldType.SINGLE_VALUE
         )
     );

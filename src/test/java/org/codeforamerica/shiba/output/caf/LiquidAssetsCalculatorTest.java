@@ -52,8 +52,10 @@ public class LiquidAssetsCalculatorTest {
 	                "TRUST_MONEY", "HEALTH_CARE_REIMBURSEMENT", "INTEREST_DIVIDENDS", "OTHER_SOURCES"))
 
 	        .build();
-	    BigDecimal totalLiquidAssets = liquidAssetsCalculator.totalLiquidAssets(applicationData);
-	    assertThat(totalLiquidAssets).isEqualTo(new BigDecimal("500"));
+	    String totalLiquidAssetsString = liquidAssetsCalculator.findTotalLiquidAssets(applicationData);
+	    assertThat(totalLiquidAssetsString).isEqualTo("500");
+//	    BigDecimal totalLiquidAssets = liquidAssetsCalculator.totalLiquidAssets(applicationData);
+//	    assertThat(totalLiquidAssets).isEqualTo(new BigDecimal("500"));
 	  }
 
 	  @Test
