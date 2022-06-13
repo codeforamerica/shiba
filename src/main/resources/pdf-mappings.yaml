@@ -320,7 +320,6 @@ mappings:
   householdPregnancy:
     householdPregnancy: WHO_IS_PREGNANT
   whoisNonUSCitizen:
-    applicantAndSpouseUSCitizens: IS_US_CITIZEN
     nameOfApplicantOrSpouseNonUSCitizen1: NAME_OF_NON_US_CITIZEN_1
     nameOfApplicantOrSpouseNonUSCitizen2: NAME_OF_NON_US_CITIZEN_2
   householdSelectionForIncome:
