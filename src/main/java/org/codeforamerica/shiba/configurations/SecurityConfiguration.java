@@ -2,17 +2,17 @@ package org.codeforamerica.shiba.configurations;
 
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,10 +22,6 @@ import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 @Slf4j
@@ -64,7 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "touhid.khan@state.mn.us",
       "william.prew@state.mn.us",
       "ramesh.shakya@state.mn.us",
-      "jeffrey.hendrix@state.mn.us"
+      "jeffrey.hendrix@state.mn.us",
+      "jenna.penfieldlaw@state.mn.us"
   );
 
   @Override
@@ -126,13 +123,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException {
       log.info("User session timed out on page: " + request.getRequestURL());
       errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
     }
 
     @Override
-    public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
+    public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException {
       log.info("User session timed out on page: " + event.getRequest().getRequestURL());
       errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(event.getRequest(), event.getResponse());
     }

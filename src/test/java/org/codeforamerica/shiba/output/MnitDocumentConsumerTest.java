@@ -431,8 +431,8 @@ class MnitDocumentConsumerTest {
         eq(application.getId()), eq(XML), any()); // XMLs only for Dakota
 
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
-    //    Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
-    //    Utils.writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
+//        Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
+//        Utils.writeByteArrayToFile(captor.getAllValues().get(1).getFileBytes(), "src/test/resources/test-uploaded-pdf-with-coverpage.pdf");
 
     // Assert that converted file contents are as expected
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "shiba+file.pdf");

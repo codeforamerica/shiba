@@ -324,10 +324,6 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("assets", "A vehicle");
     testPage.enter("assets", "Real estate (not including your own home)");
     testPage.clickContinue();
-    driver.findElement(By.id("householdMember-me")).click();  
-    testPage.clickContinue();
-    driver.findElement(By.id("householdMember-me")).click();  
-    testPage.clickContinue();
     testPage.enter("haveSavings", YES.getDisplayValue());
     testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();
