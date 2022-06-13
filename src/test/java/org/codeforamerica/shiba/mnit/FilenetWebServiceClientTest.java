@@ -94,20 +94,14 @@ class FilenetWebServiceClientTest {
   void setUp() {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+    olmsted = new CountyRoutingDestination(Olmsted, "A000055800", "email", "8004112222");
+    hennepin = new CountyRoutingDestination(Hennepin, "A000027200", "email", "8004112222");
+
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
-    olmsted = new CountyRoutingDestination();
-    olmsted.setCounty(Olmsted);
-    olmsted.setDhsProviderId("A000055800");
-
-    hennepin = new CountyRoutingDestination();
-    hennepin.setCounty(Hennepin);
-    hennepin.setDhsProviderId("A000027200");
-
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
   }
 
-  //TODO: namespaces change order. Need to figure out how to use a wildcard in the xpath assertions.  
   @Test
   void sendsTheDocument() {
     mockWebServiceServer.expect(connectionTo(url))
@@ -160,7 +154,7 @@ class FilenetWebServiceClientTest {
     );
 
     verify(applicationStatusRepository).createOrUpdate("someId", Document.CAF, olmsted.getName(),
-        DELIVERED,fileName);
+        DELIVERED, fileName);
 
     mockWebServiceServer.verify();
   }

@@ -57,11 +57,10 @@ class MailingAddressStreetPreparerTest {
     Address hennepinPostOfficeAddress = new Address("123 hennepin st", "Minneapolis", "MN", "55555",
         null, "Hennepin");
     countyMap.getCounties().putAll(Map.of(
-        Hennepin, CountyRoutingDestination.builder()
-            .county(Hennepin).phoneNumber("765-4321")
-            .postOfficeAddress(hennepinPostOfficeAddress).build(),
-        OtterTail, CountyRoutingDestination.builder()
-            .county(OtterTail).phoneNumber("123-4567").build()));
+        Hennepin, new CountyRoutingDestination(Hennepin, "npi", "email", "765-4321",
+            hennepinPostOfficeAddress),
+        OtterTail, new CountyRoutingDestination(OtterTail, "npi", "email", "123-4567"))
+    );
 
     cityInfo.getCityToZipAndCountyMapping().putAll(Map.of(
         "Ada",

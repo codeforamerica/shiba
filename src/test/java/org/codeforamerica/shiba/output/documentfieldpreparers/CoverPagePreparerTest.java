@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.County.Other;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -61,11 +62,8 @@ class CoverPagePreparerTest {
     countyInstructionsMapping.getCounties().put(Other, Map.of(
         Recipient.CLIENT, "county-to-instructions.default-client",
         Recipient.CASEWORKER, "county-to-instructions.default-caseworker"));
-    CountyRoutingDestination countyRoutingDestination = CountyRoutingDestination.builder()
-        .dhsProviderId("someDhsProviderId")
-        .email("someEmail")
-        .phoneNumber("555-123-4567")
-        .build();
+    CountyRoutingDestination countyRoutingDestination = new CountyRoutingDestination(
+        Hennepin, "someDhsProviderId", "someEmail", "555-123-4567");
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
         any(Document.class)))
         .thenReturn(List.of(countyRoutingDestination));
@@ -112,7 +110,7 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE
         ));
   }
-  
+
   @Test
   void shouldIncludeTribalAffiliation() {
     new TestApplicationDataBuilder(applicationData)

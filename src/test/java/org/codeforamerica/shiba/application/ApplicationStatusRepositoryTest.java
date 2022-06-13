@@ -38,7 +38,6 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
   private ApplicationStatusRepository applicationStatusRepository;
 
   private final RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
-  private CountyMap<CountyRoutingDestination> countyMap;
   @MockBean
   private FilenameGenerator filenameGenerator;
   private CountyRoutingDestination routingDestination;
@@ -47,10 +46,8 @@ public class ApplicationStatusRepositoryTest extends AbstractRepositoryTest {
 
   @BeforeEach
   void setUp() {
-    countyMap = new CountyMap<>();
-    routingDestination = CountyRoutingDestination.builder()
-        .county(Olmsted)
-        .build();
+    CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
+    routingDestination = new CountyRoutingDestination(Olmsted, "dpi", "email", "phoneNumber");
     countyMap.setDefaultValue(routingDestination);
     SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
     filenameGenerator = new FilenameGenerator(countyMap, decider);
