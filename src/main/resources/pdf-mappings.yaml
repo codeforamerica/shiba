@@ -153,53 +153,70 @@ mappings:
     HEALTH_CARE_REIMBURSEMENT: HEALTH_CARE_REIMBURSEMENT
     INTEREST_DIVIDENDS: INTEREST_DIVIDENDS
     OTHER_PAYMENTS: OTHER_PAYMENTS
-  socialSecurityIncomeSource:
+  unearnedIncomeSource:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
+    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
+    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
+    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+    retirementAmount: RETIREMENT_BENEFITS_AMOUNT
+    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
+    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    benefitsAmount: BENEFITS_AMOUNT
+    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
+    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
+    trustMoneyAmount: TRUST_MONEY_AMOUNT
+    healthcareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
+    interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT
+    rentalIncomeAmount: RENTAL_INCOME_AMOUNT
+    otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT
+  socialSecurityIncomeSource:
+    socialSecurityAmount: SOCIAL_SECURITY_AMOUNT_HH
     socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
   supplementalSecurityIncomeSource:
-    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
+    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT_HH
     supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
   veteransBenefitsIncomeSource:
-    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
+    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT_HH
     veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
   unemploymentIncomeSource:
-    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
+    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT_HH
     unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
   workersCompIncomeSource:
-    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
+    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT_HH
     workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
   retirementIncomeSource:
-    retirementAmount: RETIREMENT_BENEFITS_AMOUNT
+    retirementAmount: RETIREMENT_BENEFITS_AMOUNT_HH
     retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
   childOrSpousalSupportIncomeSource:
-    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
+    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT_HH
     childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
   tribalPaymentIncomeSource:
-    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
+    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT_HH
     tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
   benefitsProgramsIncomeSource:
-    benefitsAmount: BENEFITS_AMOUNT
+    benefitsAmount: BENEFITS_AMOUNT_HH
     benefitsFrequency: BENEFITS_FREQUENCY
   insurancePaymentsIncomeSource:
-    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
+    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT_HH
     insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
   contractForDeedIncomeSource:
-    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
+    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT_HH
     contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
   trustMoneyIncomeSource:
-    trustMoneyAmount: TRUST_MONEY_AMOUNT
+    trustMoneyAmount: TRUST_MONEY_AMOUNT_HH
     trustMoneyFrequency: TRUST_MONEY_FREQUENCY
   healthcareReimbursementIncomeSource:
-    healthcareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
+    healthcareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT_HH
     healthcareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
   interestDividendsIncomeSource:
-    interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT
+    interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT_HH
     interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
   rentalIncomeSource:
-    rentalIncomeAmount: RENTAL_INCOME_AMOUNT
+    rentalIncomeAmount: RENTAL_INCOME_AMOUNT_HH
     rentalIncomeFrequency: RENTAL_INCOME_FREQUENCY
   otherPaymentsIncomeSource:
-    otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT
+    otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT_HH
     otherPaymentsFrequency: OTHER_PAYMENTS_FREQUENCY
   livingSituation:
     derivedLivingSituation: LIVING_SITUATION

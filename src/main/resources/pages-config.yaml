@@ -2433,6 +2433,11 @@ pageDefinitions:
               messageKey: unearned-income-other.money-from-a-trust
             - value: RENTAL_INCOME
               messageKey: unearned-income-other.rental-income
+              condition:
+                pageName: choosePrograms
+                input: programs
+                matcher: CONTAINS
+                value: CERTAIN_POPS
             - value: INTEREST_DIVIDENDS
               messageKey: unearned-income-other.interest-dividends
             - value: HEALTH_CARE_REIMBURSEMENT
@@ -2446,6 +2451,8 @@ pageDefinitions:
             - value: NO_OTHER_UNEARNED_INCOME_SELECTED
               messageKey: general.inputs.none-of-the-above
               isNone: true
+          datasources:
+            - pageName: choosePrograms
   - &otherUnearnedIncomeSources
     name: otherUnearnedIncomeSources
     pageTitle: unearned-income-sources.title
@@ -2486,7 +2493,7 @@ pageDefinitions:
           pageName: otherUnearnedIncome
           input: otherUnearnedIncome
           value: TRUST_MONEY
-      - name: rentalIncome
+      - name: rentalIncomeAmount
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-other.rental-income
@@ -2495,7 +2502,7 @@ pageDefinitions:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
-              input: rentalIncome
+              input: rentalIncomeAmount
               matcher: NOT_EMPTY
         condition:
           pageName: otherUnearnedIncome
@@ -2561,7 +2568,7 @@ pageDefinitions:
           pageName: otherUnearnedIncome
           input: otherUnearnedIncome
           value: BENEFITS
-      - name: otherPayments
+      - name: otherPaymentsAmount
         type: MONEY
         promptMessage:
           promptMessageKey: unearned-income-other.other-payments
@@ -2570,7 +2577,7 @@ pageDefinitions:
           - validation: MONEY
             errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
             condition:
-              input: otherPayments
+              input: otherPaymentsAmount
               matcher: NOT_EMPTY
         condition:
           pageName: otherUnearnedIncome
