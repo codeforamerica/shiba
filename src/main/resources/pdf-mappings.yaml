@@ -94,6 +94,8 @@ mappings:
     selectedCounty: APPLICANT_MAILING_COUNTY
   liquidAssets:
     liquidAssetsValue: EXPEDITED_QUESTION_2
+  liquidAssetsSingle:
+    liquidAssetsValue: EXPEDITED_QUESTION_2
   utilityPayments:
     HEATING: HEAT
     COOLING: AIR_CONDITIONING

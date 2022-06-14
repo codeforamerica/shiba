@@ -1107,8 +1107,8 @@ pageDefinitions:
               input: lastThirtyDaysJobIncome
               matcher: NOT_EMPTY
     contextFragment: jobContextFragment
-  - &liquidAssets
-    name: liquidAssets
+  - &liquidAssetsSingle
+    name: liquidAssetsSingle
     pageTitle:
       defaultValue: liquid-assets-prompt.title-household
       conditionalValues:
@@ -4648,7 +4648,7 @@ workflow:
   savings:
     pageConfiguration: *savings
     nextPages:
-      - pageName: savingsAmount
+      - pageName: liquidAssetsSingle
         condition: 
           pageName: savings
           input: haveSavings
@@ -4660,8 +4660,10 @@ workflow:
           value: "false"
     datasources:
       - pageName: addHouseholdMembers
-  savingsAmount:
-    pageConfiguration: *liquidAssets
+      # TODO emj this is named savingsAmount but the pageConfiguration is *liquidAssets which is different than how most others are done
+      # savingsAmount was the original single page with one MONEY input
+  liquidAssetsSingle:
+    pageConfiguration: *liquidAssetsSingle
     skipCondition:
       logicalOperator: AND
       conditions:
@@ -4673,6 +4675,7 @@ workflow:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
       - pageName: savings
+# liquidAssetSources is the new page for multiple people with followups, values are not pulled from database when going to the next page
   liquidAssetSources:
     pageConfiguration: *liquidAssetSources
     skipCondition:
@@ -4689,8 +4692,8 @@ workflow:
     pageConfiguration: *soldAssets
     nextPages:
       - pageName: submittingApplication
-    datasources:
-      - pageName: addHouseholdMembers
+ #   datasources:
+ #     - pageName: addHouseholdMembers
   submittingApplication:
     pageConfiguration: *submittingApplication
     nextPages:
@@ -4801,7 +4804,7 @@ workflow:
     datasources:
       - pageName: addHouseholdMembers
   liquidAssets:
-    pageConfiguration: *liquidAssets
+    pageConfiguration: *liquidAssetsSingle
     skipCondition:
       pageName: savings
       input: haveSavings

@@ -3,9 +3,7 @@ package org.codeforamerica.shiba.output.caf;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
