@@ -170,15 +170,6 @@ public class AbstractShibaMockMvcTest {
         .andExpect(redirectedUrl("/pages/" + expectedRedirectPageName));
   }
 
-  protected ResultActions getPageWithAuth(String pageName) throws Exception {
-    return mockMvc.perform(
-            get(String.format("http://localhost/%s", pageName))
-                .with(oauth2Login()
-                    .attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
-                .session(session))
-        .andExpect(status().isOk());
-  }
-
   protected void getNavigationPageWithQueryParamAndExpectRedirect(String pageName,
       String queryParam, String value,
       String expectedPageName) throws Exception {
@@ -198,21 +189,7 @@ public class AbstractShibaMockMvcTest {
         expectedNextPageName);
   }
 
-  protected void addHouseholdMembersWithCCAP() throws Exception {
-    addHouseholdMembersWithProgram("CCAP");
-  }
-
-  protected void addHouseholdMembersWithEA() throws Exception {
-    addHouseholdMembersWithProgram("EA");
-  }
-
   protected void addHouseholdMembersWithProgram(String program) throws Exception {
-    // TODO - should this personalInfo be in a separate method?
-    postExpectingSuccess("personalInfo", Map.of(
-        "firstName", List.of("Dwight"),
-        "lastName", List.of("Schrute"),
-        "dateOfBirth", List.of("01", "12", "1928")
-    ));
     postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "true");
     postExpectingSuccess("householdMemberInfo", Map.of(
         "firstName", List.of("Jim"),
@@ -844,10 +821,6 @@ public class AbstractShibaMockMvcTest {
         "state", List.of("IL"),
         "sameMailingAddress", List.of()
     ));
-  }
-
-  protected void fillInApplicantHealthcareCoverageQuestionAsTrue() throws Exception{
-    postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");;
   }
 
   protected FormPage nonExpeditedFlowToSuccessPage(boolean hasHousehold, boolean isWorking)

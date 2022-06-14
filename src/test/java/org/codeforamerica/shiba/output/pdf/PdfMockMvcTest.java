@@ -71,7 +71,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
     selectPrograms("CCAP");
-    addHouseholdMembersWithCCAP();
+    addHouseholdMembersWithProgram("CCAP");
 
     String jimHalpertId = getFirstHouseholdMemberId();
     postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare",
@@ -97,7 +97,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() throws Exception {
     selectPrograms("CCAP");
 
-    addHouseholdMembersWithCCAP();
+    addHouseholdMembersWithProgram("CCAP");
 
     postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare",
         List.of("Dwight Schrute applicant", getJimFullNameAndId()));
@@ -165,7 +165,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldMapAdultsInHouseholdRequestingChildcareAssistance() throws Exception {
     selectPrograms("CCAP");
 
-    addHouseholdMembersWithCCAP();
+    addHouseholdMembersWithProgram("CCAP");
 
     String jim = getJimFullNameAndId();
     postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare", jim);
@@ -206,7 +206,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() throws Exception {
     selectPrograms("CASH");
-    addHouseholdMembersWithCCAP();
+    addHouseholdMembersWithProgram("CCAP");
     fillInRequiredPages();
 
     // Add a job for Jim
@@ -347,7 +347,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapFullEmployeeNames() throws Exception {
-      addHouseholdMembersWithCCAP();
+      addHouseholdMembersWithProgram("CCAP");
       String jim = getJimFullNameAndId();
       addFirstJob(jim, "someEmployerName");
 
@@ -360,7 +360,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapJobLastThirtyDayIncomeSomeBlankIsDetermined() throws Exception {
-      addHouseholdMembersWithCCAP();
+      addHouseholdMembersWithProgram("CCAP");
 
       fillInRequiredPages();
 
@@ -944,7 +944,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInPersonalInfoAndContactInfoAndAddress();
       postExpectingSuccess("livingSituation", "livingSituation",
           "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
-      fillInApplicantHealthcareCoverageQuestionAsTrue();
+      postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
 
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
@@ -1063,7 +1063,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
        */
       postExpectingSuccess("livingSituation", "livingSituation",
           "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
-      fillInApplicantHealthcareCoverageQuestionAsTrue();
+      postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
       
       postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "REAL_ESTATE"));
       assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
