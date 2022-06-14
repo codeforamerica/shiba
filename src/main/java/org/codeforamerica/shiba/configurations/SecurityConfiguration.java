@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "john.bisek@state.mn.us",
       "eric.m.johnson@state.mn.us",
       "taylor.johnson@state.mn.us",
-      "touhid.khan@state.mn.us",
+      "Touhid.Khan@state.mn.us",
       "william.prew@state.mn.us",
       "ramesh.shakya@state.mn.us",
       "jeffrey.hendrix@state.mn.us",
