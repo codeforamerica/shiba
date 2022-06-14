@@ -57,7 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "john.bisek@state.mn.us",
       "eric.m.johnson@state.mn.us",
       "taylor.johnson@state.mn.us",
-      "Touhid.Khan@state.mn.us",
+      "touhid.khan@state.mn.us",
       "william.prew@state.mn.us",
       "ramesh.shakya@state.mn.us",
       "jeffrey.hendrix@state.mn.us",
@@ -101,9 +101,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static class EmailBasedAccessDecider {
 
     public boolean check(Authentication authentication) {
+      
       var principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
       var email = principal.getAttributes().get("email");
-      boolean isAuthorized = email != null && ADMIN_EMAILS.contains((String) email);
+      boolean isAuthorized = email != null && ADMIN_EMAILS.contains(email.toString().toLowerCase());
+      
       if (isAuthorized) {
         log.info(String.format("Admin login for %s is authorized", email));
       } else {
