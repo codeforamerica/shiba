@@ -2732,13 +2732,13 @@ pageDefinitions:
         followUpValues:
           - monthlyIncomeHealthcareReimbursement
         followUps:
-          - name: healthcareReimbursementAmount
+          - name: healthCareReimbursementAmount
             type: MONEY
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
                 condition:
-                  input: healthcareReimbursementAmount
+                  input: healthCareReimbursementAmount
                   matcher: NOT_EMPTY
             promptMessage:
               promptMessageKey: unearned-income-source.how-much-income-monthly

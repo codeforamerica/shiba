@@ -293,7 +293,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("interestDividendsAmount", "100.00");
     testPage.clickContinue();
     testPage.clickElementById("householdMember-me");
-    testPage.enter("healthcareReimbursementAmount", "100.00");
+    testPage.enter("healthCareReimbursementAmount", "100.00");
     testPage.clickContinue();
     testPage.clickElementById("householdMember-me");
     testPage.enter("benefitsAmount", "100.00");

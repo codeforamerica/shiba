@@ -190,7 +190,7 @@ public class ApplicationDataParser {
         new ParsingCoordinate("trustMoneyIncomeSource", "trustMoneyAmount"));
     coordinatesMap.put(Field.UNEARNED_HEALTHCARE_REIMBURSEMENT_AMOUNT,
         new ParsingCoordinate("healthcareReimbursementIncomeSource",
-            "healthcareReimbursementAmount"));
+            "healthCareReimbursementAmount"));
     coordinatesMap.put(Field.UNEARNED_INTEREST_DIVIDENDS_AMOUNT,
         new ParsingCoordinate("interestDividendsIncomeSource", "interestDividendsAmount"));
     coordinatesMap.put(Field.UNEARNED_RENTAL_AMOUNT,
@@ -206,7 +206,7 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.TRUST_MONEY_AMOUNT,
         new ParsingCoordinate("otherUnearnedIncomeSources", "trustMoneyAmount"));
     coordinatesMap.put(Field.HEALTHCARE_REIMBURSEMENT_AMOUNT,
-        new ParsingCoordinate("otherUnearnedIncomeSources", "healthcareReimbursementAmount"));
+        new ParsingCoordinate("otherUnearnedIncomeSources", "healthCareReimbursementAmount"));
     coordinatesMap.put(Field.INTEREST_DIVIDENDS_AMOUNT,
         new ParsingCoordinate("otherUnearnedIncomeSources", "interestDividendsAmount"));
     coordinatesMap.put(Field.RENTAL_AMOUNT,

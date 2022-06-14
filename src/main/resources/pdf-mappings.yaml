@@ -166,10 +166,26 @@ mappings:
     insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
     contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
     trustMoneyAmount: TRUST_MONEY_AMOUNT
-    healthcareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
+    healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
     interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT
     rentalIncomeAmount: RENTAL_INCOME_AMOUNT
     otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT
+    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
+    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
+    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
+    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
+    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
+    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
+    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
+    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+    benefitsFrequency: BENEFITS_FREQUENCY
+    insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
+    contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
+    trustMoneyFrequency: TRUST_MONEY_FREQUENCY
+    healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
+    interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
+    rentalIncomeFrequency: RENTAL_INCOME_FREQUENCY
+    otherPaymentsFrequency: OTHER_PAYMENTS_FREQUENCY
   socialSecurityIncomeSource:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT_HH
     socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
@@ -207,8 +223,8 @@ mappings:
     trustMoneyAmount: TRUST_MONEY_AMOUNT_HH
     trustMoneyFrequency: TRUST_MONEY_FREQUENCY
   healthcareReimbursementIncomeSource:
-    healthcareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT_HH
-    healthcareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
+    healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT_HH
+    healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
   interestDividendsIncomeSource:
     interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT_HH
     interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY

@@ -70,7 +70,7 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("contractForDeedIncomeSource", "contractForDeedAmount", "10")
         .withPageData("trustMoneyIncomeSource", "trustMoneyAmount", "80")
         .withPageData("healthcareReimbursementIncomeSource",
-            "healthcareReimbursementAmount", "30")
+            "healthCareReimbursementAmount", "30")
         .withPageData("interestDividendsIncomeSource", "interestDividendsAmount", "40")
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", "1")
         .withPageData("otherPaymentsIncomeSource", "otherPaymentsAmount", "20")
@@ -87,7 +87,7 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("contractForDeedIncomeSource", "contractForDeedAmount", List.of())
         .withPageData("trustMoneyIncomeSource", "trustMoneyAmount", List.of())
         .withPageData("healthcareReimbursementIncomeSource",
-            "healthcareReimbursementAmount", List.of())
+            "healthCareReimbursementAmount", List.of())
         .withPageData("interestDividendsIncomeSource", "interestDividendsAmount", List.of())
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", List.of())
         .withPageData("otherPaymentsIncomeSource", "otherPaymentsAmount", List.of())
@@ -104,7 +104,7 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("insurancePaymentsIncomeSource", "insurancePaymentsAmount", "100.90")
         .withPageData("contractForDeedIncomeSource", "contractForDeedAmount", "1,010")
         .withPageData("trustMoneyIncomeSource", "trustMoneyAmount", List.of())
-        .withPageData("healthcareReimbursementIncomeSource", "healthcareReimbursementAmount",
+        .withPageData("healthcareReimbursementIncomeSource", "healthCareReimbursementAmount",
             "30")
         .withPageData("interestDividendsIncomeSource", "interestDividendsAmount", "40")
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", List.of())

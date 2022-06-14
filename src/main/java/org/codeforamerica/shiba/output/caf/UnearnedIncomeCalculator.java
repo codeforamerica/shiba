@@ -16,6 +16,14 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEMPLOYMENT_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.VETERANS_BENEFITS_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WORKERS_COMPENSATION_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_BENEFITS_PROGRAMS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INSURANCE_PAYMENTS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_CONTRACT_FOR_DEED_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_TRUST_MONEY_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_HEALTHCARE_REIMBURSEMENT_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INTEREST_DIVIDENDS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_RENTAL_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_OTHER_PAYMENTS_AMOUNT;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,7 +44,7 @@ public class UnearnedIncomeCalculator {
       RETIREMENT_AMOUNT,
       CHILD_OR_SPOUSAL_SUPPORT_AMOUNT,
       TRIBAL_PAYMENTS_AMOUNT,
-      // Amounts below only used in CCAP and CERTAIN_POPS
+      // Individual Amounts below only used in CCAP and CERTAIN_POPS
       BENEFITS_PROGRAMS_AMOUNT,
       INSURANCE_PAYMENTS_AMOUNT,
       CONTRACT_FOR_DEED_AMOUNT,
@@ -44,7 +52,16 @@ public class UnearnedIncomeCalculator {
       HEALTHCARE_REIMBURSEMENT_AMOUNT,
       INTEREST_DIVIDENDS_AMOUNT,
       RENTAL_AMOUNT,
-      OTHER_PAYMENTS_AMOUNT
+      OTHER_PAYMENTS_AMOUNT,
+      //HH Amounts
+      UNEARNED_BENEFITS_PROGRAMS_AMOUNT,
+      UNEARNED_INSURANCE_PAYMENTS_AMOUNT,
+      UNEARNED_CONTRACT_FOR_DEED_AMOUNT,
+      UNEARNED_TRUST_MONEY_AMOUNT,
+      UNEARNED_HEALTHCARE_REIMBURSEMENT_AMOUNT,
+      UNEARNED_INTEREST_DIVIDENDS_AMOUNT,
+      UNEARNED_RENTAL_AMOUNT,
+      UNEARNED_OTHER_PAYMENTS_AMOUNT
   );
 
   public BigDecimal unearnedAmount(ApplicationData applicationData) {
