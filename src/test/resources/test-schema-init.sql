@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS applications
         CONSTRAINT applications_pkey
             PRIMARY KEY,
     completed_at                    timestamp,
-    county                          varchar DEFAULT 'OTHER':: CHARACTER varying NOT NULL,
+    county                          varchar DEFAULT 'OTHER',
     time_to_complete                integer DEFAULT 0,
     sentiment                       varchar,
     feedback                        text,
@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS  application_status
     status              VARCHAR,
     created_at          TIMESTAMP,
     updated_at          TIMESTAMP,
-    document_name       VARCHAR
+    document_name       VARCHAR,
+    filenet_id          VARCHAR
 );
 
 CREATE INDEX IF NOT EXISTS idx_application_id

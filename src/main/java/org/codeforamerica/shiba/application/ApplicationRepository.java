@@ -149,24 +149,6 @@ public class ApplicationRepository {
     );
   }
 
-  public List<Application> findApplicationsWithBlankStatuses(County county) {
-    return jdbcTemplate.query(
-        "WITH no_status_apps as ( "
-            + "select id, count(status) "
-            + "from applications left join application_status on applications.id = application_status.application_id "
-            + "where completed_at is not null and "
-            + "county = ?"
-            + "group by id "
-            + "having count(status) = 0 "
-            + ") "
-            + "select * from applications inner join no_status_apps on applications.id = no_status_apps.id "
-            + "order by completed_at "
-            + "LIMIT 30",
-        applicationRowMapper(),
-        county.toString()
-    );
-  }
-
   private ZonedDateTime convertToZonedDateTime(Timestamp timestamp) {
     return Optional.ofNullable(timestamp)
         .map(time -> ZonedDateTime.ofInstant(time.toInstant(), ZoneOffset.UTC))
@@ -207,7 +189,7 @@ public class ApplicationRepository {
             .completedAt(convertToZonedDateTime(resultSet.getTimestamp("completed_at")))
             .updatedAt(convertToZonedDateTime(resultSet.getTimestamp("updated_at")))
             .applicationData(encryptor.decrypt(resultSet.getString("application_data")))
-            .county(County.getCountyForName(resultSet.getString("county")))
+            .county(County.getForName(resultSet.getString("county")))
             .timeToComplete(Duration.ofSeconds(resultSet.getLong("time_to_complete")))
             .sentiment(Optional.ofNullable(resultSet.getString("sentiment"))
                 .map(Sentiment::valueOf)

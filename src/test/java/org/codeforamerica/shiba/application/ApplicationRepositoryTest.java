@@ -274,7 +274,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
   }
 
   @Test
-  void shouldReturnAppsWithNoStatusesInCountyToResubmitInChronologicalOrderByOldestFirst() {
+  void shouldReturnAppsWithNoStatusesInCountyToResubmitInAlphabeticalCountyAndOldestFirst() {
     Application newestApplication = Application.builder()
         .id("1")
         .completedAt(ZonedDateTime.now(UTC).truncatedTo(ChronoUnit.MILLIS))
@@ -297,9 +297,9 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     applicationRepository.save(middleApplication);
     applicationRepository.save(oldestApplication);
 
-    assertThat(applicationRepository.findApplicationsWithBlankStatuses(Anoka)
+    assertThat(applicationRepository.findApplicationsWithBlankStatuses()
         .stream().map(Application::getId))
-        .containsExactly("2", "1");
+        .containsExactly("2", "1", "3");
   }
 
   @Test

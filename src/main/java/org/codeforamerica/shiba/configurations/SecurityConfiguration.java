@@ -101,9 +101,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public static class EmailBasedAccessDecider {
 
     public boolean check(Authentication authentication) {
+      
       var principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
       var email = principal.getAttributes().get("email");
-      boolean isAuthorized = email != null && ADMIN_EMAILS.contains((String) email);
+      boolean isAuthorized = email != null && ADMIN_EMAILS.contains(email.toString().toLowerCase());
+      
       if (isAuthorized) {
         log.info(String.format("Admin login for %s is authorized", email));
       } else {

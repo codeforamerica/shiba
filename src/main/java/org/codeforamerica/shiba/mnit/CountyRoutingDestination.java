@@ -1,21 +1,17 @@
 package org.codeforamerica.shiba.mnit;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 public class CountyRoutingDestination extends RoutingDestination {
 
   private County county;
   private Address postOfficeAddress;
 
-  @Builder
   public CountyRoutingDestination(County county, String dhsProviderId,
       String email, String phoneNumber, Address postOfficeAddress) {
     super(dhsProviderId, email, phoneNumber);
@@ -23,8 +19,14 @@ public class CountyRoutingDestination extends RoutingDestination {
     this.postOfficeAddress = postOfficeAddress;
   }
 
+  public CountyRoutingDestination(County county, String dhsProviderId, String email,
+      String phoneNumber) {
+    super(dhsProviderId, email, phoneNumber);
+    this.county = county;
+  }
+
   @Override
   public String getName() {
-    return county.displayName();
+    return county.toString();
   }
 }

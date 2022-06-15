@@ -3,66 +3,53 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.*;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.RED_LAKE_NATION;
+import static org.codeforamerica.shiba.TribalNation.RedLakeNation;
+import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGIBLE;
-import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import java.math.BigDecimal;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
-import org.codeforamerica.shiba.Money;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.output.caf.Eligibility;
-import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
-import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
-import org.codeforamerica.shiba.output.caf.TotalIncomeCalculator;
-import org.codeforamerica.shiba.output.caf.UnearnedIncomeCalculator;
-import org.codeforamerica.shiba.output.caf.UtilityDeductionCalculator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
 class FilenameGeneratorTest {
 
-  private CountyMap<CountyRoutingDestination> countyMap;
+  private ServicingAgencyMap<CountyRoutingDestination> countyMap;
   private FilenameGenerator filenameGenerator;
   private Application.ApplicationBuilder defaultApplicationBuilder;
-  private Map<String, TribalNationRoutingDestination> tribalNations;
+  private ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
   private CountyRoutingDestination defaultCountyRoutingDestination;
-  
+
   SnapExpeditedEligibilityDecider decider = mock(SnapExpeditedEligibilityDecider.class);
-  
+
   @BeforeEach
   void setUp() {
-    countyMap = new CountyMap<>();
+    countyMap = new ServicingAgencyMap<>();
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(emptyList()).build();
-    defaultCountyRoutingDestination = CountyRoutingDestination.builder()
-        .dhsProviderId("defaultCountyDhsProviderId")
-        .email("defaultCountyEmail@example.com")
-        .build();
+    defaultCountyRoutingDestination = new CountyRoutingDestination(Hennepin,
+        "defaultCountyDhsProviderId", "defaultCountyEmail@example.com", "phoneNumber");
     countyMap.setDefaultValue(defaultCountyRoutingDestination);
     tribalNations = new TribalNationConfiguration().localTribalNations();
     defaultApplicationBuilder = Application.builder()
@@ -80,7 +67,7 @@ class FilenameGeneratorTest {
         Document.CAF, defaultCountyRoutingDestination);
     assertThat(countyFilename).contains(defaultCountyRoutingDestination.getDhsProviderId());
 
-    TribalNationRoutingDestination redLakeRoutingDestination = tribalNations.get(RED_LAKE_NATION);
+    TribalNationRoutingDestination redLakeRoutingDestination = tribalNations.get(RedLakeNation);
     String fileName = filenameGenerator.generatePdfFilename(application,
         Document.CAF,
         redLakeRoutingDestination);
@@ -116,8 +103,8 @@ class FilenameGeneratorTest {
   void shouldIncludeCorrectCountyNPI() {
     String countyNPI = "someNPI";
     County county = Hennepin;
-    countyMap.getCounties()
-        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+    countyMap.getAgencies()
+        .put(county, new CountyRoutingDestination(county, countyNPI, "email", "phoneNumber"));
     Application application = defaultApplicationBuilder.county(county).build();
 
     String fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
@@ -170,8 +157,8 @@ class FilenameGeneratorTest {
 
     String countyNPI = "someNPI";
     County county = Hennepin;
-    countyMap.getCounties()
-        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+    countyMap.getAgencies()
+        .put(county, new CountyRoutingDestination(county, countyNPI, "email", "phoneNumber"));
 
     String applicationId = "someId";
 
@@ -196,8 +183,8 @@ class FilenameGeneratorTest {
 
     String countyNPI = "someNPI";
     County county = Hennepin;
-    countyMap.getCounties()
-        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+    countyMap.getAgencies()
+        .put(county, new CountyRoutingDestination(county, countyNPI, "email", "phoneNumber"));
 
     String applicationId = "someId";
 
@@ -233,8 +220,8 @@ class FilenameGeneratorTest {
       applicationData.addUploadedDoc(pdf, "coolS3FilePath", "documentDataUrl", "application/pdf");
 
       County county = Olmsted;
-      countyMap.getCounties()
-          .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+      countyMap.getAgencies()
+          .put(county, new CountyRoutingDestination(county, countyNPI, "email", "phoneNumber"));
 
       application = defaultApplicationBuilder
           .id(applicationId)
@@ -259,7 +246,7 @@ class FilenameGeneratorTest {
     @Test
     void shouldIncludeCorrectDhsProviderIdWhenARoutingDestinationIsProvided() {
       String providerId = "someOtherProviderId";
-      RoutingDestination routingDestination = new TribalNationRoutingDestination("test",
+      RoutingDestination routingDestination = new TribalNationRoutingDestination(UpperSioux,
           providerId, "", "");
       String imageName = filenameGenerator.generateUploadedDocumentName(application, 0, "jpg",
           routingDestination);
@@ -282,10 +269,10 @@ class FilenameGeneratorTest {
     County hennepinCounty = Hennepin;
     String olmstedCountyNPI = "olmstedNPI";
     County olmstedCounty = County.Olmsted;
-    countyMap.getCounties().put(hennepinCounty,
-        CountyRoutingDestination.builder().dhsProviderId(hennepinCountyNPI).build());
-    countyMap.getCounties().put(olmstedCounty,
-        CountyRoutingDestination.builder().dhsProviderId(olmstedCountyNPI).build());
+    countyMap.getAgencies()
+        .put(hennepinCounty, new CountyRoutingDestination(hennepinCounty, hennepinCountyNPI, "email", "phoneNumber"));
+    countyMap.getAgencies()
+        .put(olmstedCounty, new CountyRoutingDestination(olmstedCounty, olmstedCountyNPI, "email", "phoneNumber"));
     String applicationId = "someId";
 
     Application hennepinApplication = defaultApplicationBuilder
@@ -317,43 +304,44 @@ class FilenameGeneratorTest {
   @Test
   void shouldBeDocInsteadOfMnbIfCountyIsOther() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
-            .withApplicantPrograms(List.of("SNAP")).build();
+        .withApplicantPrograms(List.of("SNAP")).build();
 
-    String OtherCountyNPI = "hennepinNPI";
-    County hennepinCounty = Other;
+    String otherCountyNpi = "hennepinNPI";
+    County hennepinCounty = Hennepin;
 
-    countyMap.getCounties().put(hennepinCounty,
-            CountyRoutingDestination.builder().dhsProviderId(OtherCountyNPI).build());
+    countyMap.getAgencies()
+        .put(hennepinCounty, new CountyRoutingDestination(hennepinCounty, otherCountyNpi, "email", "phoneNumber"));
     String applicationId = "someId";
 
     Application hennepinApplication = defaultApplicationBuilder
-            .id(applicationId)
-            .county(hennepinCounty)
-            .completedAt(
-                    ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
-            .applicationData(applicationData)
-            .build();
+        .id(applicationId)
+        .county(hennepinCounty)
+        .completedAt(
+            ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
+        .applicationData(applicationData)
+        .build();
 
     String fileName = filenameGenerator.generateUploadedDocumentName(hennepinApplication, 0, "pdf");
 
     assertThat(fileName).contains("hennepinNPI_DOC");
     assertThat(fileName).doesNotContain("hennepinNPI_MNB");
   }
+
   @Test
   void shouldAppendExpeditedFileNameCorrectlyForCAFPdf() {
     TestApplicationDataBuilder applicationDataBuilder = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("SNAP"));
-   
+
     ApplicationData applicationData = applicationDataBuilder
         .build();
     String countyNPI = "someNPI";
     County county = Hennepin;
-    countyMap.getCounties()
-        .put(county, CountyRoutingDestination.builder().dhsProviderId(countyNPI).build());
+    countyMap.getAgencies()
+        .put(county, new CountyRoutingDestination(county, countyNPI, "email", "phoneNumber"));
 
     String applicationId = "someId";
     when(decider.decide(applicationData)).thenReturn(ELIGIBLE);
-    
+
     Application application = defaultApplicationBuilder
         .id(applicationId)
         .county(county)
@@ -361,9 +349,8 @@ class FilenameGeneratorTest {
             ZonedDateTime.ofInstant(Instant.parse("2007-09-10T04:59:59.00Z"), ZoneOffset.UTC))
         .applicationData(applicationData)
         .build();
-    
-    String  fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
-   
+
+    String fileName = filenameGenerator.generatePdfFilename(application, Document.CAF);
     assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s_%s%s.pdf",
         countyNPI, "20070909", "235959", applicationId, "F", "CAF", "_EXPEDITED"));
   }
