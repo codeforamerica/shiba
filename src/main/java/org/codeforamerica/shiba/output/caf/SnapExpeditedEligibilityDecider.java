@@ -2,7 +2,8 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ARE_YOU_WORKING;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_ASSETS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_ASSETS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSING_COSTS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.INCOME;
@@ -74,7 +75,9 @@ public class SnapExpeditedEligibilityDecider {
     }
 
     // Assets and earned+unearned income below thresholds are eligible.
-    Money assets = parseMoney(pagesData, ASSETS);
+    Money applicantAssets = parseMoney(pagesData, APPLICANT_ASSETS);
+    Money householdAssets = parseMoney(pagesData, HOUSEHOLD_ASSETS);
+    Money assets = applicantAssets.add(householdAssets);
     Money last30DaysIncome = parseMoney(pagesData, INCOME);
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
         .parse(applicationData);

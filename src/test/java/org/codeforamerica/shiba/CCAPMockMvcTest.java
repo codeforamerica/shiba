@@ -42,8 +42,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "VEHICLE");
     assertNavigationRedirectsToCorrectNextPage("assets", "savings");
-    postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
-    postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
+    postExpectingRedirect("savings", "haveSavings", "true", "liquidAssetsSingle");
+    postExpectingNextPageTitle("liquidAssetsSingle", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
   }
 
@@ -64,8 +64,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "VEHICLE");
     assertNavigationRedirectsToCorrectNextPage("assets", "savings");
-    postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
-    postExpectingNextPageTitle("savingsAmount", "liquidAssets", "1234", "Sold assets");
+    postExpectingRedirect("savings", "haveSavings", "true", "liquidAssetsSingle");
+    postExpectingNextPageTitle("liquidAssetsSingle", "liquidAssets", "1234", "Sold assets");
     assertPageDoesNotHaveElementWithId("legalStuff", "ccap-legal");
   }
 
@@ -194,8 +194,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     assertNavigationRedirectsToCorrectNextPage("assets", "savings");
     postExpectingRedirect("savings", "haveSavings", "false", "soldAssets");
     // Go back and enter true for savings
-    postExpectingRedirect("savings", "haveSavings", "true", "savingsAmount");
-    postExpectingRedirect("savingsAmount", "liquidAssets", "1234", "soldAssets");
+    postExpectingRedirect("savings", "haveSavings", "true", "liquidAssetsSingle");
+    postExpectingRedirect("liquidAssetsSingle", "liquidAssets", "1234", "soldAssets");
     assertPageHasElementWithId("legalStuff", "ccap-legal");
   }
 }

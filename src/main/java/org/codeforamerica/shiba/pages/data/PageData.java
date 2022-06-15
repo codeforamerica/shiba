@@ -48,13 +48,7 @@ public class PageData extends HashMap<String, InputData> {
           return Map.entry(formInput.getName(), inputData);
         })
         .collect(toMap(Entry::getKey, Entry::getValue));
-    PageData returnValue = new PageData(inputDataMap);
-    //TODO emj revert
-    if(returnValue.containsKey("liquidAssets")){
-    	InputData value = returnValue.get("liquidAssets");
-    	System.out.println("====PageData fillout value : " + value.toString());
-    }
-    return returnValue;
+    return new PageData(inputDataMap);
   }
 
   public static PageData initialize(PageConfiguration pageConfiguration) {

@@ -358,13 +358,14 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.enter("haveSavings", YES.getDisplayValue());
 
     // How much money is available?  //TODO emj delete this
-    //testPage.enter("liquidAssets", "1234");
-    //testPage.clickContinue();
+   // testPage.enter("liquidAssets", "1234");
+   // testPage.clickContinue();
 
     // Who does the money belong to?
     driver.findElement(By.id("householdMember-me")).click();
+    //takeSnapShot("assetSnapshot2.png");//TODO emj delete
     testPage.enter("liquidAssets", "1234");
-    takeSnapShot("assetSnapshot.png");
+    
     testPage.clickContinue();
     
     // In the last 12 months, has anyone in the household given away or sold any assets?

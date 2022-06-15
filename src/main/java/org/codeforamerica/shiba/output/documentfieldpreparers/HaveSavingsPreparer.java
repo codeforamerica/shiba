@@ -1,11 +1,15 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_ASSETS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_ASSETS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAVINGS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
@@ -24,7 +28,11 @@ public class HaveSavingsPreparer implements DocumentFieldPreparer {
     List<String> hasSavingsValue = getValues(application.getApplicationData().getPagesData(), SAVINGS);
     if (!hasSavingsValue.isEmpty()) {
       String hasSavings = getValues(application.getApplicationData().getPagesData(), SAVINGS).get(0);
-      List<String> savingsAmountValue = getValues(application.getApplicationData().getPagesData(), ASSETS);
+      List<String> householdSavingsAmountValue = getValues(application.getApplicationData().getPagesData(), HOUSEHOLD_ASSETS);
+      List<String> applicantSavingsAmountValue = getValues(application.getApplicationData().getPagesData(), APPLICANT_ASSETS);
+      List<String> savingsAmountValue = Stream.concat(householdSavingsAmountValue.parallelStream(), applicantSavingsAmountValue.parallelStream())
+    		  .collect(Collectors.toList());
+      
       String savingsAmount = savingsAmountValue.isEmpty() ? "" : savingsAmountValue.get(0);
 
       boolean shouldBeNo = hasSavings.equals("true") && savingsAmount.equals("0");
