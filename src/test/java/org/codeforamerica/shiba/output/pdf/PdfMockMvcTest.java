@@ -954,6 +954,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
               "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
           "certainPopsConfirm");
+      fillInPersonalInfoAndContactInfoAndAddress();
       addHouseholdMembersWithProgram("CCAP");
       
       String me = getApplicantFullNameAndId();
