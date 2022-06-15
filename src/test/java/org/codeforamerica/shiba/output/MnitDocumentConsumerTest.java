@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Dakota;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.UPPER_SIOUX;
+import static org.codeforamerica.shiba.TribalNation.MilleLacsBandOfOjibwe;
+import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
@@ -40,10 +40,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -86,14 +85,14 @@ class MnitDocumentConsumerTest {
 
   public static final byte[] FILE_BYTES = new byte[10];
 
-  @MockBean
-  private FeatureFlagConfiguration featureFlagConfig;
   @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
-  private CountyMap<CountyRoutingDestination> countyMap;
+  private ServicingAgencyMap<CountyRoutingDestination> countyMap;
   @Autowired
-  private Map<String, TribalNationRoutingDestination> tribalNations;
+  private ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
 
+  @MockBean
+  private FeatureFlagConfiguration featureFlagConfig;
   @MockBean
   private FilenetWebServiceClient mnitClient;
   @MockBean
@@ -226,7 +225,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     TribalNationRoutingDestination routingDestination = tribalNations.get(
-        MILLE_LACS_BAND_OF_OJIBWE);
+        MilleLacsBandOfOjibwe);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
     verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
@@ -245,7 +244,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
-        .withPageData("selectTheTribe", "selectedTribe", List.of(UPPER_SIOUX))
+        .withPageData("selectTheTribe", "selectedTribe", List.of(UpperSioux.toString()))
         .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .withPageData("homeAddress", "enrichedCounty", List.of("Olmsted"))
@@ -274,7 +273,7 @@ class MnitDocumentConsumerTest {
 
     // set up tribal nation caf mock
     TribalNationRoutingDestination nationDestination = tribalNations.get(
-        MILLE_LACS_BAND_OF_OJIBWE);
+        MilleLacsBandOfOjibwe);
     ApplicationFile nationCaf = new ApplicationFile("mycaf".getBytes(), "tribalNationCaf.pdf");
     doReturn(nationCaf).when(pdfGenerator)
         .generate(anyString(), eq(CAF), any(), eq(nationDestination));
@@ -504,18 +503,13 @@ class MnitDocumentConsumerTest {
     when(fileNameGenerator.generateUploadedDocumentName(application, 0, "pdf")).thenReturn(
         "pdf1of1.pdf");
     when(fileNameGenerator.generateUploadedDocumentName(
-        eq(application), eq(0), eq("pdf"), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)), eq(1))
+        eq(application), eq(0), eq("pdf"), eq(tribalNations.get(MilleLacsBandOfOjibwe)), eq(1))
     ).thenReturn("MILLE_LACS_pdf1of1.pdf");
 
     documentConsumer.processUploadedDocuments(application);
 
-    // Assert that only email is sent for Hennepin and api for Mille Lacs
-//    verify(mnitClient, times(1)).send(any(), any(), any(), any(), any());
-//    verify(mnitClient, never()).send(any(), eq(countyMap.get(Hennepin)),
-//        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
-
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-    verify(mnitClient).send(captor.capture(), eq(tribalNations.get(MILLE_LACS_BAND_OF_OJIBWE)),
+    verify(mnitClient).send(captor.capture(), eq(tribalNations.get(MilleLacsBandOfOjibwe)),
         eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
     assertThat(captor.getValue().getFileName()).isEqualTo("MILLE_LACS_pdf1of1.pdf");
   }

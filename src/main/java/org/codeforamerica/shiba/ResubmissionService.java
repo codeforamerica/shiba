@@ -1,6 +1,5 @@
 package org.codeforamerica.shiba;
 
-import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED_BY_EMAIL;
 import static org.codeforamerica.shiba.application.Status.RESUBMISSION_FAILED;
@@ -16,7 +15,6 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -28,7 +26,6 @@ import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
@@ -47,7 +44,6 @@ public class ResubmissionService {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final PageEventPublisher pageEventPublisher;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
 
 
   public ResubmissionService(ApplicationRepository applicationRepository,
@@ -55,15 +51,13 @@ public class ResubmissionService {
       PdfGenerator pdfGenerator,
       RoutingDecisionService routingDecisionService,
       ApplicationStatusRepository applicationStatusRepository,
-      PageEventPublisher pageEventPublisher,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+      PageEventPublisher pageEventPublisher) {
     this.applicationRepository = applicationRepository;
     this.emailClient = emailClient;
     this.pdfGenerator = pdfGenerator;
     this.routingDecisionService = routingDecisionService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.pageEventPublisher = pageEventPublisher;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   @Scheduled(
@@ -146,15 +140,7 @@ public class ResubmissionService {
   @SchedulerLock(name = "noStatusEsbResubmissionTask", lockAtMostFor = "${no-status-applications-resubmission.lockAtMostFor}", lockAtLeastFor = "${no-status-applications-resubmission.lockAtLeastFor}")
   public void resubmitBlankStatusApplicationsViaEsb() {
     log.info("Checking for applications that have no statuses");
-
-    List<Application> applicationsWithBlankStatuses;
-
-    if (featureFlagConfiguration.get("only-submit-blank-status-apps-from-olmsted").isOn()) {
-      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses(
-          Olmsted);
-    } else {
-      applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
-    }
+    List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
 
     MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
     log.info(
@@ -190,12 +176,7 @@ public class ResubmissionService {
             List.of(CAF, CCAP, CERTAIN_POPS)
                 .contains(documentStatus.getDocumentType())).map(
             ApplicationStatus::getDocumentType
-        ).collect(Collectors.toList());
-
-    if (shouldDeleteDocumentStatuses) {
-      // Will be recreated on submit event
-      applicationStatusRepository.delete(id, documentTypesInSending);
-    }
+        ).toList();
 
     boolean shouldRefireAppSubmittedEvent = documentTypesInSending.stream()
         .anyMatch(document -> List.of(CAF, CCAP, CERTAIN_POPS).contains(document));
@@ -248,8 +229,7 @@ public class ResubmissionService {
     var coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     var failedDoc = uploadedDocs.stream()
-        .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName))
-        .collect(Collectors.toList());
+        .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName)).toList();
     ApplicationFile fileToSend =
         pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage, routingDestination);
     var esbFilename = fileToSend.getFileName();

@@ -1,6 +1,8 @@
 package org.codeforamerica.shiba;
 
-public enum County {
+import static org.codeforamerica.shiba.ServicingAgency.nameFromString;
+
+public enum County implements ServicingAgency {
   Aitkin("Aitkin"), Anoka("Anoka"), Becker("Becker"),
   Beltrami("Beltrami"), Benton("Benton"), BigStone("Big Stone"),
   BlueEarth("Blue Earth"), Brown("Brown"), Carlton("Carlton"),
@@ -38,18 +40,11 @@ public enum County {
     this.displayName = displayName;
   }
 
-  // Given a county name, return the corresponding County object
-  public static County getCountyForName(String countyName) {
-    if (countyName.equals("")) {
-      return Other;
+  public static County getForName(String name) {
+    if (name.equals("")) {
+      return County.Other;
     }
-
-    String formattedCountyName = countyName.replace(" ", "").replace(".", "");
-    return County.valueOf(formattedCountyName);
-  }
-
-  public String displayName() {
-    return displayName;
+    return County.valueOf(nameFromString(name));
   }
 
   @Override

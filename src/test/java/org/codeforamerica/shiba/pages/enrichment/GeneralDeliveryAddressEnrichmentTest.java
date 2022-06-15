@@ -1,11 +1,13 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.County.Hennepin;
+import static org.codeforamerica.shiba.County.OtterTail;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.County;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -17,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 class GeneralDeliveryAddressEnrichmentTest {
 
-  private final CountyMap<CountyRoutingDestination> countyZipCodeMap = new CountyMap<>();
+  private final ServicingAgencyMap<CountyRoutingDestination> countyZipCodeMap = new ServicingAgencyMap<>();
   private final CityInfoConfiguration cityInfoConfiguration = new CityInfoConfiguration();
 
   private final GeneralDeliveryAddressEnrichment generalDeliveryAddressEnrichment =
@@ -25,15 +27,15 @@ class GeneralDeliveryAddressEnrichmentTest {
 
   @BeforeEach
   void setup() {
-    countyZipCodeMap.getCounties()
+    countyZipCodeMap.getAgencies()
         .putAll(Map.of(
-            County.Hennepin,
-            new CountyRoutingDestination(County.Hennepin, null, null, "765-4321",
+            Hennepin,
+            new CountyRoutingDestination(Hennepin, null, null, "765-4321",
                 new Address("123 hennepin st", "Minneapolis", "MN", "55555", null, "Hennepin")),
-            County.OtterTail,
-            new CountyRoutingDestination(County.OtterTail, null, null, "123-4567", null),
-            County.Anoka,
-            new CountyRoutingDestination(County.Anoka, null, null, "555-5555", null)));
+            OtterTail,
+            new CountyRoutingDestination(OtterTail, null, null, "123-4567", null),
+            Anoka,
+            new CountyRoutingDestination(Anoka, null, null, "555-5555", null)));
 
     cityInfoConfiguration.getCityToZipAndCountyMapping().putAll(Map.of(
         "Battle Lake",
@@ -53,7 +55,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
-        new InputData(List.of(County.OtterTail.displayName() + " County")));
+        new InputData(List.of(OtterTail + " County")));
     assertThat(enrichmentResult)
         .containsEntry("enrichedZipcode", new InputData(List.of("56515-9999")));
     assertThat(enrichmentResult)
@@ -73,7 +75,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
-        new InputData(List.of(County.Hennepin.displayName() + " County")));
+        new InputData(List.of(Hennepin + " County")));
     assertThat(enrichmentResult)
         .containsEntry("enrichedZipcode", new InputData(List.of("55555")));
     assertThat(enrichmentResult)
@@ -94,7 +96,7 @@ class GeneralDeliveryAddressEnrichmentTest {
         .process(applicationData.getPagesData());
 
     assertThat(enrichmentResult).containsEntry("enrichedCounty",
-        new InputData(List.of(County.Anoka.displayName() + " County")));
+        new InputData(List.of(Anoka + " County")));
     assertThat(enrichmentResult)
         .containsEntry("enrichedZipcode", new InputData(List.of("56515-9999")));
     assertThat(enrichmentResult)

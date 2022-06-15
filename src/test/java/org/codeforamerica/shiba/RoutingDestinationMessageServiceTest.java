@@ -2,7 +2,7 @@ package org.codeforamerica.shiba;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Anoka;
-import static org.codeforamerica.shiba.TribalNationRoutingDestination.MILLE_LACS_BAND_OF_OJIBWE;
+import static org.codeforamerica.shiba.TribalNation.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +32,8 @@ class RoutingDestinationMessageServiceTest {
   void generatesMessageStringsWhenCountyAndTribalNation() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(
-        CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+        new CountyRoutingDestination(Anoka, "DPI", "email", "555-5555"));
+    routingDestinations.add(new TribalNationRoutingDestination(MilleLacsBandOfOjibwe,
         "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
         messageSource);
@@ -49,8 +49,8 @@ class RoutingDestinationMessageServiceTest {
   void generatesMessageStringsWithoutPhoneNumbers() {
     routingDestinations = new ArrayList<>();
     routingDestinations.add(
-        CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+        new CountyRoutingDestination(Anoka, "DPI", "email", "555-5555"));
+    routingDestinations.add(new TribalNationRoutingDestination(MilleLacsBandOfOjibwe,
         "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
         messageSource);
@@ -65,7 +65,7 @@ class RoutingDestinationMessageServiceTest {
   @Test
   void generatesMessageStringsWhenCountyOnly() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(CountyRoutingDestination.builder().county(Anoka).phoneNumber("555-5555").build());
+    routingDestinations.add(new CountyRoutingDestination(Anoka, "DPI", "email", "555-5555"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(messageSource);
     when(routingDecisionService.getRoutingDestinations(any(), any())).thenReturn(routingDestinations);
 
@@ -76,7 +76,7 @@ class RoutingDestinationMessageServiceTest {
   @Test
   void generatesMessageStringsWhenTribalNationOnly() {
     routingDestinations = new ArrayList<>();
-    routingDestinations.add(new TribalNationRoutingDestination(MILLE_LACS_BAND_OF_OJIBWE,
+    routingDestinations.add(new TribalNationRoutingDestination(MilleLacsBandOfOjibwe,
         "someProviderId", "someEmail", "222-2222"));
     RoutingDestinationMessageService routingDestinationMessageService = new RoutingDestinationMessageService(
         messageSource);

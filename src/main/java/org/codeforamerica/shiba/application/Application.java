@@ -64,17 +64,4 @@ public class Application {
     }
     return Collections.emptyList();
   }
-
-  public Status getApplicationStatus(Document document, String routingDestination) {
-    if (applicationStatuses != null) {
-      return applicationStatuses.stream()
-          .filter(appStatus -> appStatus.getDocumentType() == document
-              && (appStatus.getRoutingDestinationName() == null
-              || appStatus.getRoutingDestinationName()
-              .equals(routingDestination)))
-          .findFirst()
-          .map(ApplicationStatus::getStatus).orElse(null);
-    }
-    return null;
-  }
 }

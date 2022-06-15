@@ -11,12 +11,10 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import org.codeforamerica.shiba.CountyMap;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
-import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -48,7 +46,6 @@ class ApplicationSubmittedListenerTest {
   CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider = mock(
       CcapExpeditedEligibilityDecider.class);
   PdfGenerator pdfGenerator = mock(PdfGenerator.class);
-  CountyMap<CountyRoutingDestination> countyMap = new CountyMap<>();
   FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
   MonitoringService monitoringService = mock(MonitoringService.class);
   ApplicationSubmittedListener applicationSubmittedListener;

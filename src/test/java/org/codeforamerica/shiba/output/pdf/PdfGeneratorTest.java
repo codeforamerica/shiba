@@ -1,19 +1,29 @@
 package org.codeforamerica.shiba.output.pdf;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.County.Anoka;
+import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
-import org.codeforamerica.shiba.CountyMap;
+import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
-import org.codeforamerica.shiba.output.*;
+import org.codeforamerica.shiba.output.ApplicationFile;
+import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
@@ -30,35 +40,35 @@ class PdfGeneratorTest {
   private Application application;
   private PdfFieldMapper pdfFieldMapper;
   private PdfFieldFiller caseworkerFiller;
-  private PdfFieldFiller caseworkerCafWdHouseholdSuppFiller;
   private DocumentFieldPreparers preparers;
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
-  private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers;
-  private FeatureFlagConfiguration featureFlags;
-  private  CountyMap<CountyRoutingDestination> countyMap;
 
   @BeforeEach
   void setUp() {
     pdfFieldMapper = mock(PdfFieldMapper.class);
     caseworkerFiller = mock(PdfFieldFiller.class);
-    caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
+
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
     FileToPDFConverter pdfWordConverter = mock(FileToPDFConverter.class);
-    featureFlags = mock(FeatureFlagConfiguration.class);
-    
+    FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
+    ServicingAgencyMap<CountyRoutingDestination> countyMap = new ServicingAgencyMap<>();
+    countyMap.setDefaultValue(
+        new CountyRoutingDestination(Anoka, "dPId", "email", "555-5555")
+    );
 
     pdfFieldFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerFiller, Document.CCAP, ccapFiller),
         CLIENT, Map.of(Document.CAF, clientFiller, Document.CCAP, ccapFiller)
     );
-    
-    pdfFieldWithCAFHHSuppFillers = Map.of(
+
+    Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers = Map.of(
         CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
         CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
     );
@@ -87,7 +97,7 @@ class PdfGeneratorTest {
   @Test
   void generatesAPdfWithTheCorrectFilename() {
     TribalNationRoutingDestination routingDestination = new TribalNationRoutingDestination(
-        "nationName", "dhsProviderId", "email", "phoneNumber");
+        UpperSioux, "dhsProviderId", "email", "phoneNumber");
     doReturn("destinationSpecificDestination").when(fileNameGenerator)
         .generatePdfFilename(any(), any(), any());
 
