@@ -194,12 +194,14 @@ public class AbstractShibaMockMvcTest {
     postExpectingSuccess("householdMemberInfo", Map.of(
         "firstName", List.of("Jim"),
         "lastName", List.of("Halpert"),
-        "programs", List.of(program)
+        "programs", List.of(program),
+        "relationship", List.of("spouse")
     ));
     postExpectingSuccess("householdMemberInfo", Map.of(
         "firstName", List.of("Pam"),
         "lastName", List.of("Beesly"),
-        "programs", List.of(program)
+        "programs", List.of(program),
+        "relationship", List.of("child")
     ));
   }
 

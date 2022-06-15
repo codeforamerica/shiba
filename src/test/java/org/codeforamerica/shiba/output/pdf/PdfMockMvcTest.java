@@ -70,6 +70,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Test
   void shouldMapChildrenNeedingChildcareFullNames() throws Exception {
+    fillOutPersonalInfo();
     selectPrograms("CCAP");
     addHouseholdMembersWithProgram("CCAP");
 
@@ -95,8 +96,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Test
   void shouldNotMapParentsLivingOutsideOfHomeIfNoneSelected() throws Exception {
+    fillOutPersonalInfo();
     selectPrograms("CCAP");
-
     addHouseholdMembersWithProgram("CCAP");
 
     postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare",
@@ -139,7 +140,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("supportAndCare", "supportAndCare", "false");
     postExpectingSuccess("assets", "assets", List.of("STOCK_BOND", "ONE_MILLION_ASSETS"));
     postExpectingSuccess("savings", "haveSavings", "false");
-    
+
     var ccap = submitAndDownloadCcap();
     assertPdfFieldEquals("HAVE_MILLION_DOLLARS", "Yes", ccap);
   }
@@ -163,8 +164,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Test
   void shouldMapAdultsInHouseholdRequestingChildcareAssistance() throws Exception {
+    fillOutPersonalInfo();
     selectPrograms("CCAP");
-
     addHouseholdMembersWithProgram("CCAP");
 
     String jim = getJimFullNameAndId();
@@ -205,6 +206,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
   @Test
   void shouldMapJobLastThirtyDayIncomeAllBlankIsUndetermined() throws Exception {
+    fillOutPersonalInfo();
     selectPrograms("CASH");
     addHouseholdMembersWithProgram("CCAP");
     fillInRequiredPages();
@@ -347,6 +349,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapFullEmployeeNames() throws Exception {
+      fillOutPersonalInfo();
       addHouseholdMembersWithProgram("CCAP");
       String jim = getJimFullNameAndId();
       addFirstJob(jim, "someEmployerName");
@@ -360,6 +363,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
     @Test
     void shouldMapJobLastThirtyDayIncomeSomeBlankIsDetermined() throws Exception {
+      fillOutPersonalInfo();
       addHouseholdMembersWithProgram("CCAP");
 
       fillInRequiredPages();
@@ -504,7 +508,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("GRH", "Off", caf);
       assertPdfFieldEquals("PROGRAM_NONE", "Yes", caf);
     }
-    
+
     @Test
     void shouldMapHHMemberMoreThan5LessThan10() throws Exception {
       fillInRequiredPages();
@@ -515,15 +519,15 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("LAST_NAME_4", "householdMemberLastName4", caf);
       assertPdfFieldEquals("OTHER_NAME_4", "houseHoldyMcMemberson4", caf);
       assertPdfFieldEquals("FOOD_4", "Yes", caf);
-      assertPdfFieldEquals("RELATIONSHIP_4","housemate", caf);
+      assertPdfFieldEquals("RELATIONSHIP_4", "housemate", caf);
       assertPdfFieldEquals("DATE_OF_BIRTH_4", "09/14/1950", caf);
       assertPdfFieldEquals("SSN_4", "XXX-XX-XXXX", caf);
       assertPdfFieldEquals("MARITAL_STATUS_4", "NEVER_MARRIED", caf);
       assertPdfFieldEquals("SEX_4", "MALE", caf);
       assertPdfFieldEquals("PREVIOUS_STATE_4", "Illinois", caf);
-    
+
     }
-    
+
     @Test
     void shouldNotMapHHMemberLessThan5() throws Exception {
       fillInRequiredPages();
@@ -532,7 +536,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       var caf = submitAndDownloadCaf();
       assertNull(caf.getField("FIRST_NAME_4"));
     }
-    
+
     @Test
     void shouldNotMapHHMemberMoreThan10() throws Exception {
       fillInRequiredPages();
@@ -667,7 +671,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         testThatCorrectCountyInstructionsAreDisplayed("Dodge Center", "55927",
             "This application was submitted to Dodge County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\nFor more support, you can call Dodge County (507-923-2900).");
       }
-      
+
       @Test
       void shouldMapCoverPageSelfEmploymentField()
           throws Exception {
@@ -726,7 +730,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             Map.of("streetAddress", List.of(originalStreetAddress), "apartmentNumber",
                 List.of(originalApt), "city", List.of(originalCity), "zipCode", List.of("54321"),
                 "state", List.of(originalState), "sameMailingAddress", List.of("false") // THE KEY
-                                                                                        // DIFFERENCE
+                // DIFFERENCE
             ));
         postExpectingSuccess("verifyMailingAddress", "useEnrichedAddress", "false");
 
@@ -740,191 +744,203 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         });
 
         assertPdfFieldEquals("APPLICANT_MAILING_APT_NUMBER", originalApt, caf);
-      }      
+      }
     }
-    
-   @Nested
-   @Tag("pdf")
-   class RaceAndEthinicityCAF{
-     @Test
-     void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
-       selectPrograms("SNAP");
 
-       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+    @Nested
+    @Tag("pdf")
+    class RaceAndEthinicityCAF {
 
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("WHITE", "Yes", caf);
-       assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", caf);
-     }
-     
-     @Test
-     void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
-       selectPrograms("SNAP");
+      @Test
+      void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly()
+          throws Exception {
+        selectPrograms("SNAP");
 
-       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+        postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity",
+            "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
 
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", caf);
-     }
-     
-     @Test
-     void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
-       selectPrograms("SNAP");
-      
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("ASIAN","HISPANIC_LATINO_OR_SPANISH","WHITE")
-           ));
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("ASIAN", "Yes", caf);
-       assertPdfFieldEquals("WHITE", "Yes", caf);
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
-     }
-     
-     @Test
-     void shouldMarkWhiteWhenWhiteSelected() throws Exception {
-       selectPrograms("SNAP");
-      
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("ASIAN","WHITE","MIDDLE_EASTERN_OR_NORTH_AFRICAN")
-           ));
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("WHITE", "Yes", caf);
-       assertPdfFieldEquals("ASIAN", "Yes", caf);
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", caf);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
-       assertPdfFieldEquals("CLIENT_REPORTED", "", caf);
-     }
-     
-     @Test
-     void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
-       selectPrograms("SNAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","ASIAN"),
-               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
-           ));
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
-     }
-     
-     @Test
-     void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected() throws Exception {
-       selectPrograms("SNAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
-               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
-           ));
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("WHITE", "Off", caf);
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
-     }
-  
- 
-     @Test
-     void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
-         throws Exception {
-       selectPrograms("SNAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
-               "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
-       var caf = submitAndDownloadCaf();
-       assertPdfFieldEquals("WHITE", "Yes", caf);
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
-     }
-   }
-   
-   @Nested
-   @Tag("pdf")
-   class RaceAndEthinicityCCAP{
-     @Test
-     void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
-       selectPrograms("CCAP");
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("WHITE", "Yes", caf);
+        assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", caf);
+      }
 
-       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+      @Test
+      void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
+        selectPrograms("SNAP");
 
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("WHITE", "Yes", ccap);
-       assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", ccap);
-     }
-     
-     @Test
-     void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
-       selectPrograms("CCAP");
+        postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
 
-       postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", caf);
+      }
 
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", ccap);
-     }
-     
-     @Test
-     void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
-       selectPrograms("CCAP");
-      
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("ASIAN","HISPANIC_LATINO_OR_SPANISH","WHITE")
-           ));
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("ASIAN", "Yes", ccap);
-       assertPdfFieldEquals("WHITE", "Yes", ccap);
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
-     }
-     
-     @Test
-     void shouldMarkWhiteWhenWhiteSelected() throws Exception {
-       selectPrograms("CCAP");
-      
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("ASIAN","WHITE","MIDDLE_EASTERN_OR_NORTH_AFRICAN")
-           ));
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("WHITE", "Yes", ccap);
-       assertPdfFieldEquals("ASIAN", "Yes", ccap);
-       assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", ccap);
-       assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
-       assertPdfFieldEquals("CLIENT_REPORTED", "", ccap);
-     }
-     
-     @Test
-     void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
-       selectPrograms("CCAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","ASIAN"),
-               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
-           ));
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
-     }
-     
-     @Test
-     void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected() throws Exception {
-       selectPrograms("CCAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY","MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
-               "otherRaceOrEthnicity",List.of("SomeOtherRaceOrEthnicity")
-           ));
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("WHITE", "Off", ccap);
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
-     }
-  
- 
-     @Test
-     void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
-         throws Exception {
-       selectPrograms("CCAP");
-       postExpectingSuccess("raceAndEthnicity",
-           Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
-               "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
-       var ccap = submitAndDownloadCcap();
-       assertPdfFieldEquals("WHITE", "Yes", ccap);
-       assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
-     }
-   }
-   
+      @Test
+      void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected()
+          throws Exception {
+        selectPrograms("SNAP");
+
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("ASIAN", "HISPANIC_LATINO_OR_SPANISH", "WHITE")
+            ));
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("ASIAN", "Yes", caf);
+        assertPdfFieldEquals("WHITE", "Yes", caf);
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", caf);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
+      }
+
+      @Test
+      void shouldMarkWhiteWhenWhiteSelected() throws Exception {
+        selectPrograms("SNAP");
+
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("ASIAN", "WHITE", "MIDDLE_EASTERN_OR_NORTH_AFRICAN")
+            ));
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("WHITE", "Yes", caf);
+        assertPdfFieldEquals("ASIAN", "Yes", caf);
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", caf);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", caf);
+        assertPdfFieldEquals("CLIENT_REPORTED", "", caf);
+      }
+
+      @Test
+      void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
+        selectPrograms("SNAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "ASIAN"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")
+            ));
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+      }
+
+      @Test
+      void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected()
+          throws Exception {
+        selectPrograms("SNAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity",
+                List.of("SOME_OTHER_RACE_OR_ETHNICITY", "MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")
+            ));
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("WHITE", "Off", caf);
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+      }
+
+
+      @Test
+      void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
+          throws Exception {
+        selectPrograms("SNAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+        var caf = submitAndDownloadCaf();
+        assertPdfFieldEquals("WHITE", "Yes", caf);
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", caf);
+      }
+    }
+
+    @Nested
+    @Tag("pdf")
+    class RaceAndEthinicityCCAP {
+
+      @Test
+      void shouldMarkWhiteAndWriteToClientReportedFieldWithMiddleEasternOrNorthAfricanOnly()
+          throws Exception {
+        selectPrograms("CCAP");
+
+        postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity",
+            "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("WHITE", "Yes", ccap);
+        assertPdfFieldEquals("CLIENT_REPORTED", "Middle Eastern / N. African", ccap);
+      }
+
+      @Test
+      void shouldMarkUnableToDetermineWithHispanicLatinoOrSpanishOnly() throws Exception {
+        selectPrograms("CCAP");
+
+        postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Yes", ccap);
+      }
+
+      @Test
+      void shouldNotMarkUnableToDetermineWithHispanicLatinoOrSpanishAndAsianSelected()
+          throws Exception {
+        selectPrograms("CCAP");
+
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("ASIAN", "HISPANIC_LATINO_OR_SPANISH", "WHITE")
+            ));
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("ASIAN", "Yes", ccap);
+        assertPdfFieldEquals("WHITE", "Yes", ccap);
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Yes", ccap);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+      }
+
+      @Test
+      void shouldMarkWhiteWhenWhiteSelected() throws Exception {
+        selectPrograms("CCAP");
+
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("ASIAN", "WHITE", "MIDDLE_EASTERN_OR_NORTH_AFRICAN")
+            ));
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("WHITE", "Yes", ccap);
+        assertPdfFieldEquals("ASIAN", "Yes", ccap);
+        assertPdfFieldEquals("HISPANIC_LATINO_OR_SPANISH", "Off", ccap);
+        assertPdfFieldEquals("UNABLE_TO_DETERMINE", "Off", ccap);
+        assertPdfFieldEquals("CLIENT_REPORTED", "", ccap);
+      }
+
+      @Test
+      void shouldWriteClientReportedWhenOtherRaceOrEthnicitySelected() throws Exception {
+        selectPrograms("CCAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "ASIAN"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")
+            ));
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+      }
+
+      @Test
+      void shouldWriteClientReportedForOthersOnlyWhenOtherRaceOrEthnicityAndMENASelected()
+          throws Exception {
+        selectPrograms("CCAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity",
+                List.of("SOME_OTHER_RACE_OR_ETHNICITY", "MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")
+            ));
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("WHITE", "Off", ccap);
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+      }
+
+
+      @Test
+      void shouldWriteClientReportedForOthersWhenOtherRaceOrEthnicityAndWHITESelected()
+          throws Exception {
+        selectPrograms("CCAP");
+        postExpectingSuccess("raceAndEthnicity",
+            Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+                "otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+        var ccap = submitAndDownloadCcap();
+        assertPdfFieldEquals("WHITE", "Yes", ccap);
+        assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
+      }
+    }
+
   }
 
   @Nested
@@ -940,12 +956,11 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
               "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
           "certainPopsConfirm");
-
       fillInPersonalInfoAndContactInfoAndAddress();
       postExpectingSuccess("livingSituation", "livingSituation",
           "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
+      postExpectingSuccess("usCitizen", "isUsCitizen", "true");
       postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
-
       postExpectingSuccess("employmentStatus", "areYouWorking", "true");
       postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
       postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
@@ -953,11 +968,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
-      postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "LIFE_INSURANCE", "BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_ESTATE"));
+      postExpectingSuccess("assets", "assets",
+          List.of("VEHICLE", "STOCK_BOND", "LIFE_INSURANCE", "BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS",
+              "REAL_ESTATE"));
       assertNavigationRedirectsToCorrectNextPage("assets", "savings");
       completeHelperWorkflow(true);
-
       submitApplication();
+
       var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
       // Assert that cover page is present
@@ -965,7 +982,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("APPLICATION_ID", applicationData.getId(), pdf);
 
       // Basic Criteria Questions
-      assertPdfFieldEquals("BLIND", "Yes", pdf);;
+      assertPdfFieldEquals("BLIND", "Yes", pdf);
       assertPdfFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes", pdf);
       assertPdfFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes", pdf);
       assertPdfFieldEquals("NEED_LONG_TERM_CARE", "Yes", pdf);
@@ -1000,6 +1017,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("LIVING_SITUATION", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING", pdf);
       assertPdfFieldEquals("APPLICANT_PHONE_NUMBER", "7234567890", pdf);
 
+      // Section 6
+      assertPdfFieldEquals("IS_US_CITIZEN", "Yes", pdf);
+
       // Section 7 & appendix B: Authorized Rep
       assertPdfFieldEquals("WANT_AUTHORIZED_REP", "Yes", pdf);
       assertPdfFieldEquals("AUTHORIZED_REP_NAME", "My Helpful Friend", pdf);
@@ -1026,29 +1046,30 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       //CertainPops Healthcare Coverage Question
       assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
-      
+
       //Section 18
       assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      
+
       //Section 15
       assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      
+
       //Section 20
       assertPdfFieldEquals("LIFE_INSURANCE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      
+
       //Section 21
       assertPdfFieldEquals("BURIAL_ACCOUNT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      
+
       //Section 22
       assertPdfFieldEquals("BUSINESS_OWNERSHIP_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      
+
       //Section 16
       assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
     }
-    
+
     @Test
-    void shouldMapAssetsOwnersForHousehold() throws Exception {
+    void shouldMapFieldsForHouseholdRelatedSelections() throws Exception {
       fillInRequiredPages();
+      fillOutPersonalInfo();
       postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
       selectPrograms("CERTAIN_POPS");
       postExpectingRedirect("basicCriteria", "basicCriteria",
@@ -1057,37 +1078,44 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
           "certainPopsConfirm");
       addHouseholdMembersWithProgram("CCAP");
       String jimHalpertId = getFirstHouseholdMemberId();
-      /*
-       * fillInPersonalInfoAndContactInfoAndAddress(); postExpectingRedirect("addHouseholdMembers",
-       * "addHouseholdMembers", "true", "startHousehold"); fillOutHousemateInfo("SNAP");
-       */
+      postExpectingSuccess("usCitizen", "isUsCitizen", "false");
+      postExpectingSuccess("whoIsNonCitizen", "whoIsNonCitizen",
+          List.of("Dwight Schrute applicant", "Jim Halpert" + jimHalpertId));
       postExpectingSuccess("livingSituation", "livingSituation",
           "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
       postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
-      
+
       postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "REAL_ESTATE"));
       assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
-      postExpectingRedirect("vehicleAssetSource", "vehicleAssetSource", List.of("Dwight Schrute applicant","Jim Halpert " + jimHalpertId),
+      postExpectingRedirect("vehicleAssetSource", "vehicleAssetSource",
+          List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId),
           "stockAssetSource");
-      postExpectingRedirect("stockAssetSource", "stockAssetSource", List.of("Dwight Schrute applicant","Jim Halpert " + jimHalpertId),
+      postExpectingRedirect("stockAssetSource", "stockAssetSource",
+          List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId),
           "realEstateAssetSource");
-      postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource", List.of("Jim Halpert " + jimHalpertId),
+      postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource",
+          List.of("Jim Halpert " + jimHalpertId),
           "savings");
       completeHelperWorkflow(true);
 
       submitApplication();
       var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
-      //Section 18
-      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
-      
+      //Section 6
+      assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
+      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_1", "Dwight Schrute", pdf);
+      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_2", "Jim Halpert", pdf);
+
       //Section 15
       assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
       assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
-      
+
       //Section 16
       assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Jim Halpert", pdf);
+
+      //Section 18
+      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+      assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
     }
 
     @Test
@@ -1102,7 +1130,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       var zippedFiles = downloadAllClientPDFs();
       var caf = submitAndDownloadCaf();
 
-      assertThat(zippedFiles.stream().noneMatch(file -> getDocumentType(file).equals(CERTAIN_POPS))).isEqualTo(true);
+      assertThat(zippedFiles.stream()
+          .noneMatch(file -> getDocumentType(file).equals(CERTAIN_POPS))).isEqualTo(true);
       assertPdfFieldEquals("PROGRAMS", "SNAP", caf);
     }
 
@@ -1118,7 +1147,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
       assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0.00", caf);
     }
-    
+
     @Test
     void shouldMapZeroLiquidAssetsAmountAsYesSavingsWhenLeftBlank() throws Exception {
       fillInRequiredPages();
