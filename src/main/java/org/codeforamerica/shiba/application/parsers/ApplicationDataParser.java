@@ -159,20 +159,20 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.REGISTER_TO_VOTE,
         new ParsingCoordinate("registerToVote", "registerToVote"));
     coordinatesMap.put(Field.HAVE_HEALTHCARE_COVERAGE,
-            new ParsingCoordinate("healthcareCoverage", "healthcareCoverage"));
+        new ParsingCoordinate("healthcareCoverage", "healthcareCoverage"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_DOB, new ParsingCoordinate("personalInfo", "dateOfBirth"));
     coordinatesMap
-    	.put(Field.PERSONAL_INFO_SSN, new ParsingCoordinate("personalInfo", "ssn"));
+        .put(Field.PERSONAL_INFO_SSN, new ParsingCoordinate("personalInfo", "ssn"));
     coordinatesMap
-    	.put(Field.PERSONAL_INFO_NO_SSN, new ParsingCoordinate("personalInfo", "noSSNCheck"));
+        .put(Field.PERSONAL_INFO_NO_SSN, new ParsingCoordinate("personalInfo", "noSSNCheck"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_FIRST_NAME, new ParsingCoordinate("personalInfo", "firstName"));
     coordinatesMap
         .put(Field.PERSONAL_INFO_LAST_NAME, new ParsingCoordinate("personalInfo", "lastName"));
 
-    coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB,
-        new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+    coordinatesMap
+        .put(Field.HOUSEHOLD_INFO_DOB, new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_FIRST_NAME,
         new ParsingCoordinate("householdMemberInfo", "firstName"));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_LAST_NAME,
@@ -191,14 +191,18 @@ public class ApplicationDataParser {
         .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("matchInfo", "firstName"));
     coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("matchInfo", "lastName"));
 
+    coordinatesMap.put(Field.EVERYONE_US_CITIZENS,
+        new ParsingCoordinate("usCitizen", "isUsCitizen"));
+    coordinatesMap.put(Field.WHO_ARE_NON_US_CITIZENS,
+        new ParsingCoordinate("whoIsNonCitizen", "whoIsNonCitizen"));
+
     coordinatesMap.put(Field.RACE_AND_ETHNICITY,
         new ParsingCoordinate("raceAndEthnicity", "raceAndEthnicity"));
+
     coordinatesMap.put(Field.HAS_HOUSE_HOLD,
         new ParsingCoordinate("addHouseholdMembers", "addHouseholdMembers"));
     groupCoordinatesMap.put(Group.JOBS, "jobs");
     groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
-
-
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -345,6 +349,8 @@ public class ApplicationDataParser {
     MATCH_INFO_FIRST_NAME(""),
     MATCH_INFO_LAST_NAME(""),
 
+    EVERYONE_US_CITIZENS,
+    WHO_ARE_NON_US_CITIZENS,
     RACE_AND_ETHNICITY,
     HAS_HOUSE_HOLD;
     @Getter

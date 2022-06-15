@@ -150,20 +150,6 @@ public class TestApplicationDataBuilder {
     );
   }
 
-  public TestApplicationDataBuilder withHouseholdMember() {
-    return withSubworkflow("household", new PagesDataBuilder()
-        .withPageData("householdMemberInfo",
-            Map.of("firstName", "Daria",
-                "lastName", "Agàta",
-                "dateOfBirth", List.of("5", "6", "1978"),
-                "maritalStatus", "Never married",
-                "sex", "Female",
-                "livedInMnWholeLife", "Yes",
-                "relationship", "housemate",
-                "programs", "SNAP",
-                "ssn", "123121234")));
-  }
-
   /**
    * Gets the PageData for the given pageName - if it doesn't exist, add it and return the new
    * PageData object.
@@ -179,5 +165,43 @@ public class TestApplicationDataBuilder {
         new UploadedDocument("doc2", "", "", "", 2000)
     ));
     return applicationData;
+  }
+
+  public TestApplicationDataBuilder withHouseholdMember(String firstName, String lastName) {
+    return withSubworkflow("household", new PagesDataBuilder()
+        .withPageData("householdMemberInfo",
+            Map.of("firstName", firstName,
+                "lastName", lastName,
+                "dateOfBirth", List.of("5", "6", "1978"),
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "housemate",
+                "programs", "SNAP",
+                "ssn", "123121234")));
+  }
+
+  public TestApplicationDataBuilder withMultipleHouseholdMembers() {
+    return withSubworkflow("household",
+        new PagesDataBuilder().withPageData("householdMemberInfo",
+            Map.of("firstName", "Other",
+                "lastName", "Person",
+                "dateOfBirth", List.of("5", "6", "1978"),
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "housemate",
+                "programs", "SNAP",
+                "ssn", "123121234")),
+        new PagesDataBuilder().withPageData("householdMemberInfo",
+            Map.of("firstName", "Daria",
+                "lastName", "Agàta",
+                "dateOfBirth", List.of("5", "6", "1978"),
+                "maritalStatus", "Never married",
+                "sex", "Female",
+                "livedInMnWholeLife", "Yes",
+                "relationship", "spouse",
+                "programs", "SNAP",
+                "ssn", "123121235")));
   }
 }
