@@ -49,7 +49,7 @@ class HouseholdSpousePreparerTest {
         new DocumentField(
             "spouseInfo",
             "dateOfBirth",
-            List.of("5,6,1978"),
+            List.of("5", "6", "1978"),
             DocumentFieldType.DATE_VALUE
         ),
         new DocumentField(
