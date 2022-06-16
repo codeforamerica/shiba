@@ -70,7 +70,7 @@ public class PageData extends HashMap<String, InputData> {
 
     List<InputData> inputDataToValidate = values().stream().filter(
         inputData -> inputData.getValidators().stream().anyMatch(validatorForThisInputShouldRun)
-    ).collect(Collectors.toList());
+    ).toList();
 
     return inputDataToValidate.stream().allMatch(inputData -> inputData.valid(this));
   }

@@ -17,6 +17,7 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGL
 import static org.codeforamerica.shiba.output.DocumentFieldType.DATE_VALUE;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.output.Document;
@@ -28,26 +29,37 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HouseholdSpousePreparer implements DocumentFieldPreparer {
+  
+  
+  private final Map<String, String> personalDataMappings;
+
+  
+  public HouseholdSpousePreparer(Map<String, String> personalDataMappings) {
+    super();
+    this.personalDataMappings = personalDataMappings;
+  }
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     
-    var spouseInfo = getSpouseInfo(application);
+    
+    
+    var spouseInfo = getSpouseInfo(application, recipient);
     
     return spouseInfo;
 
   }
   
-  private List<DocumentField> getSpouseInfo(Application application) {
+  private List<DocumentField> getSpouseInfo(Application application, Recipient recipient) {
     var householdSubworkflow =
         ofNullable(getGroup(application.getApplicationData(), Group.HOUSEHOLD));
-    return householdSubworkflow.map(this::getApplicationInputsForSubworkflow).orElse(emptyList());
+    return householdSubworkflow.map(subworkflow -> getApplicationInputsForSubworkflow(subworkflow, recipient)).orElse(emptyList());
   }
 
 
 @NotNull
-private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subworkflow) {
+private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subworkflow, Recipient recipient) {
   List<DocumentField> inputsForSubworkflow = new ArrayList<>();
   for (int i = 0; i < subworkflow.size(); i++) {
     var pagesData = subworkflow.get(i).getPagesData();
@@ -78,9 +90,15 @@ private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subwo
       inputsForSubworkflow.add(new DocumentField("spouseInfo", "maritalStatus", pgMaritalStatus, ENUMERATED_SINGLE_VALUE));
       
       if (pgSSN.length() > 0)
-      {        
+      {
+        inputsForSubworkflow.add(new DocumentField("spouseInfo", "ssnYesNo", "Yes", SINGLE_VALUE));
+        
+        if (Recipient.CLIENT.equals(recipient) &&
+            personalDataMappings.get("ssn") != null ) {
+          pgSSN = personalDataMappings.get("ssn");
+        }
         inputsForSubworkflow.add(new DocumentField("spouseInfo", "ssn", pgSSN, SINGLE_VALUE));
-        inputsForSubworkflow.add(new DocumentField("spouseInfo", "ssnYesNo", "Yes", SINGLE_VALUE));       
+        
       }
 
     }
@@ -90,5 +108,4 @@ private List<DocumentField> getApplicationInputsForSubworkflow(Subworkflow subwo
 }
 
 }
-
 
