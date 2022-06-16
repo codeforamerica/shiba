@@ -145,15 +145,15 @@ mappings:
     RETIREMENT: RETIREMENT
     CHILD_OR_SPOUSAL_SUPPORT: CHILD_OR_SPOUSAL_SUPPORT
     TRIBAL_PAYMENTS: TRIBAL_PAYMENTS
-  unearnedIncomeCcap:
+  otherUnearnedIncome:
     BENEFITS: BENEFITS
     INSURANCE_PAYMENTS: INSURANCE_PAYMENTS
     CONTRACT_FOR_DEED: CONTRACT_FOR_DEED
     TRUST_MONEY: TRUST_MONEY
     HEALTH_CARE_REIMBURSEMENT: HEALTH_CARE_REIMBURSEMENT
     INTEREST_DIVIDENDS: INTEREST_DIVIDENDS
-    OTHER_SOURCES: OTHER_SOURCES
-  unearnedIncomeSources:
+    OTHER_PAYMENTS: OTHER_PAYMENTS
+  unearnedIncomeSource:
     socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
     supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
     veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
@@ -162,53 +162,78 @@ mappings:
     retirementAmount: RETIREMENT_BENEFITS_AMOUNT
     childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
     tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
-    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
-    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
-    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
-    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
-    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
-    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
-    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
-    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
-  socialSecurityIncomeSource:
-    socialSecurityAmount: SOCIAL_SECURITY_AMOUNT
-    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
-  supplementalSecurityIncomeSource:
-    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT
-    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
-  veteransBenefitsIncomeSource:
-    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT
-    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
-  unemploymentIncomeSource:
-    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT
-    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
-  workersCompIncomeSource:
-    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT
-    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
-  retirementIncomeSource:
-    retirementAmount: RETIREMENT_BENEFITS_AMOUNT
-    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
-  childOrSpousalSupportIncomeSource:
-    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT
-    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
-  tribalPaymentIncomeSource:
-    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT
-    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
-  unearnedIncomeSourcesCcap:
     benefitsAmount: BENEFITS_AMOUNT
     insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT
     contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT
     trustMoneyAmount: TRUST_MONEY_AMOUNT
     healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT
     interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT
-    otherSourcesAmount: OTHER_SOURCES_AMOUNT
+    rentalIncomeAmount: RENTAL_INCOME_AMOUNT
+    otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT
+    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
+    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
+    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
+    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
+    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
+    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
+    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
+    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
     benefitsFrequency: BENEFITS_FREQUENCY
     insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
     contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
     trustMoneyFrequency: TRUST_MONEY_FREQUENCY
     healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
     interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
-    otherSourcesFrequency: OTHER_SOURCES_FREQUENCY
+    rentalIncomeFrequency: RENTAL_INCOME_FREQUENCY
+    otherPaymentsFrequency: OTHER_PAYMENTS_FREQUENCY
+  socialSecurityIncomeSource:
+    socialSecurityAmount: SOCIAL_SECURITY_AMOUNT_HH
+    socialSecurityFrequency: SOCIAL_SECURITY_FREQUENCY
+  supplementalSecurityIncomeSource:
+    supplementalSecurityIncomeAmount: SUPPLEMENTAL_SECURITY_INCOME_AMOUNT_HH
+    supplementalSecurityIncomeFrequency: SUPPLEMENTAL_SECURITY_INCOME_FREQUENCY
+  veteransBenefitsIncomeSource:
+    veteransBenefitsAmount: VETERANS_BENEFITS_AMOUNT_HH
+    veteransBenefitsFrequency: VETERANS_BENEFITS_FREQUENCY
+  unemploymentIncomeSource:
+    unemploymentAmount: UNEMPLOYMENT_INSURANCE_AMOUNT_HH
+    unemploymentFrequency: UNEMPLOYMENT_INSURANCE_FREQUENCY
+  workersCompIncomeSource:
+    workersCompensationAmount: WORKERS_COMPENSATION_AMOUNT_HH
+    workersCompensationFrequency: WORKERS_COMPENSATION_FREQUENCY
+  retirementIncomeSource:
+    retirementAmount: RETIREMENT_BENEFITS_AMOUNT_HH
+    retirementFrequency: RETIREMENT_BENEFITS_FREQUENCY
+  childOrSpousalSupportIncomeSource:
+    childOrSpousalSupportAmount: CHILD_OR_SPOUSAL_SUPPORT_AMOUNT_HH
+    childOrSpousalSupportFrequency: CHILD_OR_SPOUSAL_SUPPORT_FREQUENCY
+  tribalPaymentIncomeSource:
+    tribalPaymentsAmount: TRIBAL_PAYMENTS_AMOUNT_HH
+    tribalPaymentsFrequency: TRIBAL_PAYMENTS_FREQUENCY
+  benefitsProgramsIncomeSource:
+    benefitsAmount: BENEFITS_AMOUNT_HH
+    benefitsFrequency: BENEFITS_FREQUENCY
+  insurancePaymentsIncomeSource:
+    insurancePaymentsAmount: INSURANCE_PAYMENTS_AMOUNT_HH
+    insurancePaymentsFrequency: INSURANCE_PAYMENTS_FREQUENCY
+  contractForDeedIncomeSource:
+    contractForDeedAmount: CONTRACT_FOR_DEED_AMOUNT_HH
+    contractForDeedFrequency: CONTRACT_FOR_DEED_FREQUENCY
+  trustMoneyIncomeSource:
+    trustMoneyAmount: TRUST_MONEY_AMOUNT_HH
+    trustMoneyFrequency: TRUST_MONEY_FREQUENCY
+  healthcareReimbursementIncomeSource:
+    healthCareReimbursementAmount: HEALTH_CARE_REIMBURSEMENT_AMOUNT_HH
+    healthCareReimbursementFrequency: HEALTH_CARE_REIMBURSEMENT_FREQUENCY
+  interestDividendsIncomeSource:
+    interestDividendsAmount: INTEREST_DIVIDENDS_AMOUNT_HH
+    interestDividendsFrequency: INTEREST_DIVIDENDS_FREQUENCY
+  rentalIncomeSource:
+    rentalIncomeAmount: RENTAL_INCOME_AMOUNT_HH
+    rentalIncomeFrequency: RENTAL_INCOME_FREQUENCY
+  otherPaymentsIncomeSource:
+    otherPaymentsAmount: OTHER_PAYMENTS_AMOUNT_HH
+    otherPaymentsFrequency: OTHER_PAYMENTS_FREQUENCY
   livingSituation:
     derivedLivingSituation: LIVING_SITUATION
     county: LIVING_SITUATION_COUNTY
@@ -216,8 +241,6 @@ mappings:
     livingWithFamilyOrFriendsYesNo: LIVING_WITH_FAMILY_OR_FRIENDS
   futureIncome:
     earnLessMoneyThisMonth: EARN_LESS_MONEY_THIS_MONTH
-    additionalIncomeInfo: ADDITIONAL_INCOME_INFO
-  additionalIncomeInfo:
     additionalIncomeInfo: ADDITIONAL_INCOME_INFO
   employersName:
     employersName: EMPLOYERS_NAME

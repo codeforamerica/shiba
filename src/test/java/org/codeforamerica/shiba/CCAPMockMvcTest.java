@@ -37,7 +37,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "additionalIncomeInfo");
+        "futureIncome");
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "VEHICLE");
@@ -59,7 +59,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Income Up Next");
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "additionalIncomeInfo");
+        "futureIncome");
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "VEHICLE");
@@ -183,11 +183,11 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
   private void fillUnearnedIncomeToLegalStuffCCAP() throws Exception {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-        "unearnedIncomeCcap");
-    postExpectingRedirect("unearnedIncomeCcap",
-        "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED",
-        "additionalIncomeInfo");
+        "otherUnearnedIncome");
+    postExpectingRedirect("otherUnearnedIncome",
+        "otherUnearnedIncome",
+        "NO_OTHER_UNEARNED_INCOME_SELECTED",
+        "futureIncome");
     fillAdditionalIncomeInfo();
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
     postExpectingSuccess("assets", "assets", "NONE");
