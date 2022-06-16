@@ -1132,6 +1132,11 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       submitApplication();
       var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+      
+      //Section 4
+      assertPdfFieldEquals("SPOUSE_FIRST_NAME", "Jim", pdf);
+      assertPdfFieldEquals("SPOUSE_LAST_NAME", "Halpert", pdf);
+      assertPdfFieldEquals("SPOUSE_RELATIONSHIP", "spouse", pdf);
 
       //Section 6
       assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
