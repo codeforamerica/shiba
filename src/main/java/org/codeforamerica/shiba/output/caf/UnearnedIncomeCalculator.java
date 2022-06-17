@@ -13,20 +13,20 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SSI_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.TRIBAL_PAYMENTS_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.TRUST_MONEY_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_BENEFITS_PROGRAMS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_CONTRACT_FOR_DEED_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_HEALTHCARE_REIMBURSEMENT_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INSURANCE_PAYMENTS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INTEREST_DIVIDENDS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_OTHER_PAYMENTS_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_RENTAL_AMOUNT;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_TRUST_MONEY_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEMPLOYMENT_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.VETERANS_BENEFITS_AMOUNT;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WORKERS_COMPENSATION_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_BENEFITS_PROGRAMS_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INSURANCE_PAYMENTS_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_CONTRACT_FOR_DEED_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_TRUST_MONEY_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_HEALTHCARE_REIMBURSEMENT_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INTEREST_DIVIDENDS_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_RENTAL_AMOUNT;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_OTHER_PAYMENTS_AMOUNT;
 
-import java.math.BigDecimal;
 import java.util.List;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -64,23 +64,25 @@ public class UnearnedIncomeCalculator {
       UNEARNED_OTHER_PAYMENTS_AMOUNT
   );
 
-  public BigDecimal unearnedAmount(ApplicationData applicationData) {
+  public Money unearnedAmount(ApplicationData applicationData) {
     return UNEARNED_INCOME_FIELDS.stream().reduce(
-        BigDecimal.ZERO,
+        Money.ZERO,
         (total, unearnedIncomeField) -> total.add(
             getUnearnedIncome(unearnedIncomeField, applicationData)),
-        BigDecimal::add
+        Money::add
     );
   }
 
-  private BigDecimal getUnearnedIncome(Field otherUnearnedIncomeField,
+  private Money getUnearnedIncome(Field otherUnearnedIncomeField,
       ApplicationData applicationData) {
-    String result = ApplicationDataParser.getFirstValue(applicationData.getPagesData(),
-        otherUnearnedIncomeField);
-    String sanitizedValue = result == null || result.isBlank() ?
-        "0" :
-        result.replaceAll("[^\\d.]", "");
-    return new BigDecimal(sanitizedValue);
+    List<String> householdAmounts = ApplicationDataParser.getValues(
+        applicationData.getPagesData(),
+        otherUnearnedIncomeField
+    );
+    return householdAmounts.stream().reduce(
+        Money.ZERO,
+        (total, individualAmount) -> total.add(Money.parse(individualAmount, "0.00")),
+        Money::add
+    );
   }
-
 }

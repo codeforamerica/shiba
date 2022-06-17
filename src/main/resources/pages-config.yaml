@@ -5087,10 +5087,13 @@ workflow:
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
+      
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:
       - pageName: submittingApplication
+    datasources:
+      - pageName: addHouseholdMembers
   submittingApplication:
     pageConfiguration: *submittingApplication
     nextPages:

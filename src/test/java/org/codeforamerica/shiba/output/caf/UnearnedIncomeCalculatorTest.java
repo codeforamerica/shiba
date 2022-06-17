@@ -2,30 +2,32 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import java.util.List;
+import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
 
 class UnearnedIncomeCalculatorTest {
+
   UnearnedIncomeCalculator unearnedIncomeCalculator = new UnearnedIncomeCalculator();
   private final TestApplicationDataBuilder applicationDataBuilder = new TestApplicationDataBuilder();
 
   @Test
   void unearnedIncomeCafShouldCalculateTo360() {
     ApplicationData applicationData = applicationDataBuilder
-        .withPageData("unearnedIncomeSources", "socialSecurityAmount", "139")
-        .withPageData("unearnedIncomeSources", "supplementalSecurityIncomeAmount", "100")
+        .withPageData("unearnedIncomeSources", "socialSecurityAmount", "140")
+        .withPageData("unearnedIncomeSources", "supplementalSecurityIncomeAmount",
+            List.of("49.50", "49.50"))
         .withPageData("unearnedIncomeSources", "veteransBenefitsAmount", "10")
         .withPageData("unearnedIncomeSources", "unemploymentAmount", List.of())
         .withPageData("unearnedIncomeSources", "workersCompensationAmount", "30")
-        .withPageData("unearnedIncomeSources", "retirementAmount", "40")
+        .withPageData("unearnedIncomeSources", "retirementAmount", List.of("40", "0"))
         .withPageData("unearnedIncomeSources", "childOrSpousalSupportAmount", List.of())
-        .withPageData("unearnedIncomeSources", "tribalPaymentsAmount", "41")
+        .withPageData("unearnedIncomeSources", "tribalPaymentsAmount", List.of("41", ""))
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("360"));
+    Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    assertThat(totalUnearnedIncome).isEqualTo(Money.parse("360.00"));
   }
 
   @Test
@@ -40,9 +42,9 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("unearnedIncomeSources", "childOrSpousalSupportAmount", List.of())
         .withPageData("unearnedIncomeSources", "tribalPaymentsAmount", List.of())
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
 
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("0"));
+    assertThat(totalUnearnedIncome).isEqualTo(Money.parse("0.00"));
   }
 
   @Test
@@ -57,9 +59,9 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("unearnedIncomeSources", "childOrSpousalSupportAmount", List.of())
         .withPageData("unearnedIncomeSources", "tribalPaymentsAmount", "41")
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+        Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
 
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("1360.00"));
+        assertThat(totalUnearnedIncome).isEqualTo(Money.parse("1360.00"));
   }
 
   @Test
@@ -75,8 +77,8 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", "1")
         .withPageData("otherPaymentsIncomeSource", "otherPaymentsAmount", "20")
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("420"));
+    Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    assertThat(totalUnearnedIncome).isEqualTo(Money.parse("420"));
   }
 
   @Test
@@ -92,9 +94,9 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", List.of())
         .withPageData("otherPaymentsIncomeSource", "otherPaymentsAmount", List.of())
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
 
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("0"));
+    assertThat(totalUnearnedIncome).isEqualTo(Money.parse("0"));
   }
 
   @Test
@@ -110,8 +112,8 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("rentalIncomeSource", "rentalIncomeAmount", List.of())
         .withPageData("otherPaymentsIncomeSource", "otherPaymentsAmount", List.of())
         .build();
-    BigDecimal totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
 
-    assertThat(totalUnearnedIncome).isEqualTo(new BigDecimal("1319.00"));
+    assertThat(totalUnearnedIncome).isEqualTo(Money.parse("1319.00"));
   }
 }
