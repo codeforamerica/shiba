@@ -2614,6 +2614,7 @@ pageDefinitions:
         followUps:
           - name: benefitsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2646,6 +2647,7 @@ pageDefinitions:
         followUps:
           - name: insurancePaymentsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2678,6 +2680,7 @@ pageDefinitions:
         followUps:
           - name: contractForDeedAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2710,6 +2713,7 @@ pageDefinitions:
         followUps:
           - name: trustMoneyAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2742,6 +2746,7 @@ pageDefinitions:
         followUps:
           - name: healthCareReimbursementAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2774,6 +2779,7 @@ pageDefinitions:
         followUps:
           - name: interestDividendsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2806,6 +2812,7 @@ pageDefinitions:
         followUps:
           - name: rentalIncomeAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
@@ -2838,6 +2845,7 @@ pageDefinitions:
         followUps:
           - name: otherPaymentsAmount
             type: MONEY
+            inputPostfix: general.input.postfix.per-month
             validators:
               - validation: MONEY
                 errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
