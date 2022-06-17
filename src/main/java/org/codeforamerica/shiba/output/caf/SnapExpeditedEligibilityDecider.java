@@ -20,7 +20,6 @@ import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.ELIGI
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.NOT_ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility.UNDETERMINED;
 
-import java.math.BigDecimal;
 import java.util.List;
 import org.codeforamerica.shiba.Money;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
@@ -81,7 +80,7 @@ public class SnapExpeditedEligibilityDecider {
     Money last30DaysIncome = parseMoney(pagesData, INCOME);
     List<JobIncomeInformation> jobIncomeInformation = grossMonthlyIncomeParser
         .parse(applicationData);
-    BigDecimal unearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
+    Money unearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
     Money earnedIncome = totalIncomeCalculator
         .calculate(new TotalIncome(last30DaysIncome, jobIncomeInformation));
     Money income = earnedIncome.add(unearnedIncome);

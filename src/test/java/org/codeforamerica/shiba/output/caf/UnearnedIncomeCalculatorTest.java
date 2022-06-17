@@ -60,7 +60,6 @@ class UnearnedIncomeCalculatorTest {
         .withPageData("unearnedIncomeSources", "tribalPaymentsAmount", "41")
         .build();
         Money totalUnearnedIncome = unearnedIncomeCalculator.unearnedAmount(applicationData);
-
         assertThat(totalUnearnedIncome).isEqualTo(Money.parse("1360.00"));
   }
 
