@@ -22,10 +22,15 @@ public class MonthlyFrequencyPreparer implements DocumentFieldPreparer {
       Recipient recipient) {
 
     List<DocumentField> fields = new ArrayList<>();
-    List<String> pageNames = List.of("unearnedIncomeSources", "unearnedIncomeSourcesCcap",
-        "medicalExpensesSources", "socialSecurityIncomeSource", "supplementalSecurityIncomeSource", 
+    List<String> pageNames = List.of("unearnedIncomeSources", "otherUnearnedIncome",
+        "medicalExpensesSources", "socialSecurityIncomeSource", "supplementalSecurityIncomeSource",
         "veteransBenefitsIncomeSource", "unemploymentIncomeSource", "workersCompIncomeSource",
-        "retirementIncomeSource", "childOrSpousalSupportIncomeSource", "tribalPaymentIncomeSource");
+        "retirementIncomeSource", "childOrSpousalSupportIncomeSource", "tribalPaymentIncomeSource",
+        "benefitsProgramsIncomeSource", "insurancePaymentsIncomeSource",
+        "contractForDeedIncomeSource", "trustMoneyIncomeSource",
+        "healthcareReimbursementIncomeSource", "interestDividendsIncomeSource",
+        "rentalIncomeSource", "otherPaymentsIncomeSource"
+    );
 
     for (String pageName : pageNames) {
       Optional<PageData> optionalPageData = Optional.ofNullable(

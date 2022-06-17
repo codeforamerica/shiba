@@ -110,7 +110,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickButton("Yes, remove them");
     // Check that My Spouse is now an option again after deleting the spouse
     testPage.clickLink("Add a person");
-    Select relationshipSelectWithSpouseOption = new Select(driver.findElement(By.id("relationship")));
+    Select relationshipSelectWithSpouseOption = new Select(
+        driver.findElement(By.id("relationship")));
     assertThat(relationshipSelectWithSpouseOption.getOptions().stream()
         .anyMatch(option -> option.getText().equals("My spouse (e.g. wife, husband)"))).isTrue();
     testPage.goBack();
@@ -263,25 +264,45 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Tell us how much money is received.
-    driver.findElement(By.id("householdMember-me")).click();  
+    testPage.clickElementById("householdMember-me");
     testPage.enter("socialSecurityAmount", "200.30");
     testPage.clickContinue();
 
     // Does anyone in your household get income from these other sources?
-    testPage.enter("unearnedIncomeCcap", "Benefits programs like MFIP, DWP, GA, or Tribal TANF");
-    testPage.enter("unearnedIncomeCcap", "Insurance Payments");
-    testPage.enter("unearnedIncomeCcap", "Contract for Deed");
-    testPage.enter("unearnedIncomeCcap", "Money from a Trust");
-    testPage.enter("unearnedIncomeCcap", "Health Care Reimbursement");
-    testPage.enter("unearnedIncomeCcap", "Interest/Dividends");
-    testPage.enter("unearnedIncomeCcap", "Income from Other Sources");
+    testPage.enter("otherUnearnedIncome", "Other Minnesota Benefits Programs (Benefits like GA, MFIP, Tribal TANF or others)");
+    testPage.enter("otherUnearnedIncome", "Insurance Payments");
+    testPage.enter("otherUnearnedIncome", "Contract for Deed");
+    testPage.enter("otherUnearnedIncome", "Money from a Trust");
+    testPage.enter("otherUnearnedIncome", "Rental Income"); // Only Certain Pops
+    testPage.enter("otherUnearnedIncome", "Health Care Reimbursement");
+    testPage.enter("otherUnearnedIncome", "Interest / Dividends");
+    testPage.enter("otherUnearnedIncome", "Other payments");
     testPage.clickContinue();
 
-    // Tell us how much money is received.
-    testPage.enter("benefitsAmount", "10");
-    testPage.enter("contractForDeedAmount", "20");
-    testPage.enter("interestDividendsAmount", "30");
-    testPage.enter("otherSourcesAmount", "40");
+    // Choose who receives that income (CCAP and CERTAIN_POPS only)
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("insurancePaymentsAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("trustMoneyAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("rentalIncomeAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("interestDividendsAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("healthCareReimbursementAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("benefitsAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("contractForDeedAmount", "100.00");
+    testPage.clickContinue();
+    testPage.clickElementById("householdMember-me");
+    testPage.enter("otherPaymentsAmount", "100.00");
     testPage.clickContinue();
 
     // Do you think the household will earn less money this month than last month?
@@ -338,7 +359,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Does anyone in the household pay for court-ordered child support, spousal support, child care support or medical care?
     testPage.enter("supportAndCare", YES.getDisplayValue());
-   // takeSnapShot("image.png");
+
     // Does anyone in your household have any of these?
     testPage.enter("assets", "A vehicle");
     testPage.enter("assets", "Real estate (not including your own home)");
@@ -357,13 +378,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Does anyone in the household have money in a bank account or debit card?
     testPage.enter("haveSavings", YES.getDisplayValue());
 
-    // How much money is available?  //TODO emj delete this
-   // testPage.enter("liquidAssets", "1234");
-   // testPage.clickContinue();
-
     // Who does the money belong to?
     driver.findElement(By.id("householdMember-me")).click();
-    //takeSnapShot("assetSnapshot2.png");//TODO emj delete
     testPage.enter("liquidAssets", "1234");
     
     testPage.clickContinue();
@@ -504,16 +520,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("RETIREMENT", "No");
     assertCcapFieldEquals("CHILD_OR_SPOUSAL_SUPPORT", "No");
     assertCcapFieldEquals("TRIBAL_PAYMENTS", "No");
-    assertCcapFieldEquals("BENEFITS", "Yes");
-    assertCcapFieldEquals("INSURANCE_PAYMENTS", "Yes");
-    assertCcapFieldEquals("CONTRACT_FOR_DEED", "Yes");
-    assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "Yes");
-    assertCcapFieldEquals("INTEREST_DIVIDENDS", "Yes");
-    assertCcapFieldEquals("OTHER_SOURCES", "Yes");
     assertCcapFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_FULL_NAME_0", householdMemberFullName);
     assertCcapFieldEquals("IS_US_CITIZEN_0", "Yes");
     assertCcapFieldEquals("SOCIAL_SECURITY_FREQUENCY", "Monthly");
-    assertCcapFieldEquals("TRUST_MONEY_FREQUENCY", "Monthly");
     assertCcapFieldEquals("MEDICAL_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
     assertCcapFieldEquals("VISION_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
     assertCcapFieldEquals("DENTAL_INSURANCE_PREMIUM_FREQUENCY", "Monthly");
@@ -522,30 +531,29 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("VISION_INSURANCE_PREMIUM_AMOUNT", "56.35");
     assertCcapFieldEquals("IS_WORKING", "Yes");
     assertCcapFieldEquals("SOCIAL_SECURITY", "Yes");
-    assertCcapFieldEquals("SOCIAL_SECURITY_AMOUNT", "200.30");
     assertCcapFieldEquals("TRUST_MONEY", "Yes");
-    assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "");
     assertCcapFieldEquals("BENEFITS", "Yes");
     assertCcapFieldEquals("INSURANCE_PAYMENTS", "Yes");
     assertCcapFieldEquals("CONTRACT_FOR_DEED", "Yes");
-    assertCcapFieldEquals("TRUST_MONEY", "Yes");
     assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT", "Yes");
     assertCcapFieldEquals("INTEREST_DIVIDENDS", "Yes");
-    assertCcapFieldEquals("OTHER_SOURCES", "Yes");
-    assertCcapFieldEquals("BENEFITS_AMOUNT", "10");
-    assertCcapFieldEquals("INSURANCE_PAYMENTS_AMOUNT", "");
-    assertCcapFieldEquals("CONTRACT_FOR_DEED_AMOUNT", "20");
-    assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "");
-    assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT_AMOUNT", "");
-    assertCcapFieldEquals("INTEREST_DIVIDENDS_AMOUNT", "30");
-    assertCcapFieldEquals("OTHER_SOURCES_AMOUNT", "40");
+    assertCcapFieldEquals("OTHER_PAYMENTS", "Yes");
+    assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "100.00");
+    assertCcapFieldEquals("SOCIAL_SECURITY_AMOUNT", "200.30");
+    assertCcapFieldEquals("BENEFITS_AMOUNT", "100.00");
+    assertCcapFieldEquals("INSURANCE_PAYMENTS_AMOUNT", "100.00");
+    assertCcapFieldEquals("CONTRACT_FOR_DEED_AMOUNT", "100.00");
+    assertCcapFieldEquals("TRUST_MONEY_AMOUNT", "100.00");
+    assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT_AMOUNT", "100.00");
+    assertCcapFieldEquals("INTEREST_DIVIDENDS_AMOUNT", "100.00");
+    assertCcapFieldEquals("OTHER_PAYMENTS_AMOUNT", "100.00");
     assertCcapFieldEquals("BENEFITS_FREQUENCY", "Monthly");
     assertCcapFieldEquals("INSURANCE_PAYMENTS_FREQUENCY", "Monthly");
     assertCcapFieldEquals("CONTRACT_FOR_DEED_FREQUENCY", "Monthly");
     assertCcapFieldEquals("TRUST_MONEY_FREQUENCY", "Monthly");
     assertCcapFieldEquals("HEALTH_CARE_REIMBURSEMENT_FREQUENCY", "Monthly");
     assertCcapFieldEquals("INTEREST_DIVIDENDS_FREQUENCY", "Monthly");
-    assertCcapFieldEquals("OTHER_SOURCES_FREQUENCY", "Monthly");
+    assertCcapFieldEquals("OTHER_PAYMENTS_FREQUENCY", "Monthly");
     assertCcapFieldEquals("EARN_LESS_MONEY_THIS_MONTH", "Yes");
     assertCcapFieldEquals("ADDITIONAL_INCOME_INFO",
         "I also make a small amount of money from my lemonade stand.");
@@ -584,8 +592,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
-        "This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.\n\n"
-            + "For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).");
+        """
+            This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
+
+            For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).""");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
@@ -722,7 +732,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(1);
     deleteAFile();
 
-    assertThat(testPage.getTitle()).isEqualTo("Submit any recommended documents you have available.");
+    assertThat(testPage.getTitle()).isEqualTo(
+        "Submit any recommended documents you have available.");
     assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(0);
 
     assertStylingOfEmptyDocumentUploadPage();
@@ -797,6 +808,7 @@ public class FullFlowJourneyTest extends JourneyTest {
         .contains("hidden");
     assertThat(driver.findElement(By.id("horizontal-header-mobile")).getAttribute("class"))
         .contains("hidden");
-    assertThat(driver.findElement(By.id("upload-doc-div")).getAttribute("class")).contains("hidden");
+    assertThat(driver.findElement(By.id("upload-doc-div")).getAttribute("class")).contains(
+        "hidden");
   }
 }

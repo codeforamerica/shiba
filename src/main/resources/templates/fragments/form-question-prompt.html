@@ -10,7 +10,7 @@
                     && input.promptMessage != null
                     && input.promptMessage.promptMessageKey != null }"
           th:id="${input.name + '-legend'}"
-          th:text="#{${input.promptMessage.promptMessageKey}}">
+          th:utext="#{${input.promptMessage.promptMessageKey}}">
   </legend>
   <label class="form-question"
          th:for="${input.name}"
@@ -20,7 +20,7 @@
                     && !input.type.toString().equals('RADIO')
                     && !input.type.toString().equals('CHECKBOX')
                     && !input.type.toString().equals('DATE')}"
-         th:text="#{${input.promptMessage.promptMessageKey}}">
+         th:utext="#{${input.promptMessage.promptMessageKey}}">
   </label>
   <th:block
       th:if="${input.promptMessage != null && input.promptMessage.promptMessageFragmentName != null}">

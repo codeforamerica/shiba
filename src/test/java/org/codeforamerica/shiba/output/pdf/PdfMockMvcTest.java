@@ -149,8 +149,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
   void shouldNotMapUnearnedIncomeCcapWhenNoneOfTheAboveIsSelected() throws Exception {
     selectPrograms("CCAP");
     fillInRequiredPages();
-    postExpectingSuccess("unearnedIncomeCcap", "unearnedIncomeCcap",
-        "NO_UNEARNED_INCOME_CCAP_SELECTED");
+    postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome",
+        "NO_OTHER_UNEARNED_INCOME_SELECTED");
 
     var ccap = submitAndDownloadCcap();
     assertPdfFieldEquals("BENEFITS", "No", ccap);
@@ -159,7 +159,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
     assertPdfFieldEquals("TRUST_MONEY", "No", ccap);
     assertPdfFieldEquals("HEALTH_CARE_REIMBURSEMENT", "No", ccap);
     assertPdfFieldEquals("INTEREST_DIVIDENDS", "No", ccap);
-    assertPdfFieldEquals("OTHER_SOURCES", "No", ccap);
+    assertPdfFieldEquals("OTHER_PAYMENTS", "No", ccap);
   }
 
   @Test
@@ -618,12 +618,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
         postExpectingSuccess("addHouseholdMembers", "addHouseholdMembers", "false");
         postExpectingSuccess("employmentStatus", "areYouWorking", "false");
         postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
-            "unearnedIncomeCcap");
-        postExpectingRedirect("unearnedIncomeCcap", "unearnedIncomeCcap",
-            "NO_UNEARNED_INCOME_CCAP_SELECTED", "additionalIncomeInfo");
+            "otherUnearnedIncome");
+        postExpectingRedirect("otherUnearnedIncome", "otherUnearnedIncome",
+            "NO_OTHER_UNEARNED_INCOME_SELECTED", "futureIncome");
 
         var additionalIncomeInfo = "Here's something else about my situation";
-        postExpectingRedirect("additionalIncomeInfo", "additionalIncomeInfo", additionalIncomeInfo,
+        postExpectingRedirect("futureIncome", "additionalIncomeInfo", additionalIncomeInfo,
             "startExpenses");
 
         var caf = submitAndDownloadCaf();
@@ -941,6 +941,38 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       }
     }
 
+  }
+  @Nested
+  @Tag("pdf")
+  class UnearnedIncomeCCAP{
+ 
+
+    @Test
+    void shouldAddtotalUnearnedIncomeWhenCCAPAndCERTAINPOPS() throws Exception{
+      selectPrograms("CCAP","CERTAIN_POPS");
+      postExpectingRedirect("basicCriteria", "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "certainPopsConfirm");
+      fillInPersonalInfoAndContactInfoAndAddress();
+      addHouseholdMembersWithProgram("CCAP");
+      
+      String me = getApplicantFullNameAndId();
+      String pam = getPamFullNameAndId();
+      postExpectingSuccess("childrenInNeedOfCare", "whoNeedsChildCare", pam);
+
+      postExpectingSuccess("jobSearch", "currentlyLookingForJob", "false");
+      postExpectingSuccess("unearnedIncome", "unearnedIncome",List.of("SOCIAL_SECURITY"));
+      postToUrlExpectingSuccess("/pages/socialSecurityIncomeSource","/pages/socialSecurityIncomeSource",Map.of("monthlyIncomeSSorRSDI",List.of(me,pam),
+          "socialSecurityAmount",List.of("100.00","100.00")));
+      postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome",List.of("BENEFITS"));
+      postToUrlExpectingSuccess("/pages/benefitsProgramsIncomeSource","/pages/benefitsProgramsIncomeSource",Map.of("monthlyIncomeBenefitsPrograms",List.of(me,pam),
+          "benefitsAmount",List.of("50.00","51.00")));
+      var ccap = submitAndDownloadCcap();
+      assertPdfFieldEquals("SOCIAL_SECURITY_AMOUNT", "200.00", ccap);
+      assertPdfFieldEquals("BENEFITS_AMOUNT", "101.00", ccap);
+    }
+    
   }
 
   @Nested

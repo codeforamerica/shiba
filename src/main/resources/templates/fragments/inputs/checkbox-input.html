@@ -34,7 +34,7 @@
                             <div th:replace="|fragments/icons/${option.getHelpIcon()}| :: ${option.getHelpIcon()}"></div>
                         </div>
                         <div>
-                            <span th:text="#{${option.messageKey}}"></span>
+                            <span th:utext="#{${option.messageKey}}"></span>
                             <p th:if="${option.helpMessageKey != null}" th:text="#{${option.helpMessageKey}}"
                                class="text--help with-no-padding"></p>
                         </div>
