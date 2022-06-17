@@ -378,10 +378,12 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Does anyone in the household have money in a bank account or debit card?
     testPage.enter("haveSavings", YES.getDisplayValue());
 
-    // How much money is available?
+    // Who does the money belong to?
+    driver.findElement(By.id("householdMember-me")).click();
     testPage.enter("liquidAssets", "1234");
+    
     testPage.clickContinue();
-
+    
     // In the last 12 months, has anyone in the household given away or sold any assets?
     testPage.enter("haveSoldAssets", NO.getDisplayValue());
 

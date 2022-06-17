@@ -11,6 +11,7 @@ import static org.codeforamerica.shiba.TribalNation.MilleLacsBandOfOjibwe;
 import static org.codeforamerica.shiba.TribalNation.OtherFederallyRecognizedTribe;
 import static org.codeforamerica.shiba.TribalNation.RedLakeNation;
 import static org.codeforamerica.shiba.TribalNation.WhiteEarth;
+
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.mockito.ArgumentMatchers.any;
@@ -260,13 +261,14 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void clientsFromOtherFederallyRecognizedNationsShouldBeAbleToApplyForTribalTanfAndRouteToRedLake()
       throws Exception {
+
     addHouseholdMembersWithProgram("EA");
     goThroughShortTribalTanfFlow(OtherFederallyRecognizedTribe.toString(), Beltrami.toString(),
         "true", EA);
-
     assertRoutingDestinationIsCorrectForDocument(CAF, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, RedLakeNation.toString());
+
   }
 
   @Test
@@ -275,10 +277,10 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram("EA");
     goThroughShortTribalTanfFlow(OtherFederallyRecognizedTribe.toString(), Beltrami.toString(),
         "false", EA);
-
     assertRoutingDestinationIsCorrectForDocument(CAF, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, RedLakeNation.toString());
+
   }
 
   @Test
@@ -290,7 +292,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     addHouseholdMembersWithProgram("EA");
     goThroughShortTribalTanfFlow(OtherFederallyRecognizedTribe.toString(), Beltrami.toString(),
         "true", EA);
-
     assertRoutingDestinationIsCorrectForDocument(CAF, Beltrami.toString());
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, Beltrami.toString());
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, Beltrami.toString());
@@ -375,7 +376,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     String county = "Olmsted";
     goThroughLongTribalTanfFlow(RedLakeNation.toString(), county, "true", GRH);
-
     assertRoutingDestinationIsCorrectForDocument(CAF, county, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, county,
         RedLakeNation.toString());
@@ -389,7 +389,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     String county = "Olmsted";
     goThroughLongTribalTanfFlow(RedLakeNation.toString(), county, "true", GRH);
-
     assertRoutingDestinationIsCorrectForDocument(CAF, county, RedLakeNation.toString());
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, county,
         RedLakeNation.toString());
@@ -421,6 +420,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
         "isTribalNationMember",
         "true",
         "selectTheTribe");
+
     postExpectingRedirect("selectTheTribe", "selectedTribe", RedLakeNation.toString(),
         "nationsBoundary");
     postExpectingRedirect("nationsBoundary",
@@ -461,6 +461,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertRoutingDestinationIsCorrectForDocument(CAF, MilleLacsBandOfOjibwe.toString(),
         county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
+
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC,
         MilleLacsBandOfOjibwe.toString(),
         county);

@@ -44,7 +44,8 @@
 			                            aria-labelledby=${needsAriaLabel ? youFollowUp.name+'-label' : ''},
 			                            aria-invalid=${hasError}" th:id="|${youFollowUp.name}|" th:name="${inputFollowupsName}"
 									th:value="${(!inputFollowupData.value.isEmpty()) ? inputFollowupData.value[0] : ''}">
-									<div class="text-input-group__postfix" style="width:35%; background-color:#FFFFFF">/per month</div>
+									<div class="text-input-group__postfix" style="width:35%; background-color:#FFFFFF" 
+									 th:if="${input.followUps[0].inputPostfix != null}" th:text="#{${input.followUps[0].inputPostfix}}"></div>
 							</div>
 						</div>
 					</th:block>
@@ -85,7 +86,8 @@
                                         aria-invalid=${hasError}" th:id="|${followUp.name}${iterationStat.index}|"
 										th:name="${inputFollowupsName}"
 										th:value="${(iterationStat.count < inputFollowupData.value.size() && !inputFollowupData.value[iterationStat.count].isEmpty() ) ?inputFollowupData.value[iterationStat.count]:''}">
-										<div class="text-input-group__postfix" style="width:35%;background-color: #FFFFFF">/per month</div>
+										<div class="text-input-group__postfix" style="width:35%;background-color: #FFFFFF" 
+											th:if="${input.followUps[0].inputPostfix != null}" th:text="#{${input.followUps[0].inputPostfix}}"></div>
 								</div>
 							</th:block>
 						</div>

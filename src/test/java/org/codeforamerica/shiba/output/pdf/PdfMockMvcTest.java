@@ -1177,7 +1177,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInRequiredPages();
       selectPrograms("SNAP");
       postExpectingSuccess("savings", "haveSavings", "true");
-      postExpectingSuccess("savingsAmount", "liquidAssets", "0");
+      postExpectingSuccess("liquidAssets", "liquidAssets", "0");
 
       var caf = submitAndDownloadCaf();
 
@@ -1190,7 +1190,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       fillInRequiredPages();
       selectPrograms("SNAP");
       postExpectingSuccess("savings", "haveSavings", "true");
-      postExpectingSuccess("savingsAmount", "liquidAssets", "");
+      postExpectingSuccess("liquidAssets", "liquidAssets", "");
 
       var caf = submitAndDownloadCaf();
 
