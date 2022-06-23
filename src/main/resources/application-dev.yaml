@@ -5,5 +5,6 @@ spring:
 
 feature-flag:
   submit-via-api: on
+  certain-pops: on
 
 demo: true
