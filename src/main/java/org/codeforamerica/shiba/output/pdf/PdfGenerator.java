@@ -3,14 +3,11 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
-import com.itextpdf.pdfoffice.exceptions.PdfOfficeException;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -35,6 +32,8 @@ import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
 @Slf4j
 public class PdfGenerator implements FileGenerator {
@@ -50,7 +49,6 @@ public class PdfGenerator implements FileGenerator {
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
-  private final FileToPDFConverter pdfWordConverter;
   private final FeatureFlagConfiguration featureFlags;
   private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
 
@@ -61,7 +59,6 @@ public class PdfGenerator implements FileGenerator {
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator,
-      FileToPDFConverter pdfWordConverter,
       FeatureFlagConfiguration featureFlagConfiguration,
       ServicingAgencyMap<CountyRoutingDestination> countyMap
   ) {
@@ -71,7 +68,6 @@ public class PdfGenerator implements FileGenerator {
     this.documentRepository = documentRepository;
     this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
-    this.pdfWordConverter = pdfWordConverter;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
     this.countyMap = countyMap;
@@ -130,20 +126,8 @@ public class PdfGenerator implements FileGenerator {
     var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
     if (fileBytes != null) {
       var extension = Utils.getFileType(uploadedDocument.getFilename());
-      boolean flagIsNotNull =
-          featureFlags != null && featureFlags.get("word-to-pdf") != null; //need this for tests
-      if (flagIsNotNull && featureFlags.get("word-to-pdf").isOn()
-          && DOC_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-        try {
-          InputStream inputStream = new ByteArrayInputStream(fileBytes);
-          fileBytes = pdfWordConverter.convertWordDocToPDFwithStreams(inputStream);
-          extension = "pdf";
-        } catch (PdfOfficeException | IOException e) {
-          log.warn("failed to convert document " + uploadedDocument.getFilename()
-              + " to pdf. Maintaining original type. " + e.getMessage());
-        }
 
-      } else if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+      if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
         try {
           fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
           extension = "pdf";

@@ -23,7 +23,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.itextsupport.com/list/releases" }
     maven { url "https://repo.spring.io/milestone" }
 }
 
@@ -106,8 +105,6 @@ dependencies {
     }
 
     implementation("com.azure:azure-storage-blob:12.17.1")
-    implementation("com.itextpdf:pdfoffice:2.0.1")
-    implementation("com.itextpdf:itext7-core:7.2.2")
     implementation("com.azure:azure-storage-blob:12.17.1")
     implementation("org.postgresql:postgresql")
     implementation("org.glassfish.jaxb:jaxb-runtime")

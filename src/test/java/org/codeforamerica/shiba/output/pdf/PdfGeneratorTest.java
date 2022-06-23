@@ -56,7 +56,6 @@ class PdfGeneratorTest {
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
-    FileToPDFConverter pdfWordConverter = mock(FileToPDFConverter.class);
     FeatureFlagConfiguration featureFlags = mock(FeatureFlagConfiguration.class);
     ServicingAgencyMap<CountyRoutingDestination> countyMap = new ServicingAgencyMap<>();
     countyMap.setDefaultValue(
@@ -88,7 +87,6 @@ class PdfGeneratorTest {
         null,
         preparers,
         fileNameGenerator,
-        pdfWordConverter,
         featureFlags,
         countyMap);
     when(applicationRepository.find(applicationId)).thenReturn(application);
