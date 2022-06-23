@@ -3241,10 +3241,13 @@ pageDefinitions:
       conditionalValues:
         - value: savings.do-you-have-money-in-a-bank-account-or-debit-card
           condition: *livesAlone?
+    contextFragment: savingsContextFragment
     hasPrimaryButton: false
     inputs:
       - name: haveSavings
         type: YES_NO
+        promptMessage:
+          promptMessageFragmentName: savingsPrompt
   - &liquidAssetSources
     name: liquidAssets
     pageTitle: liquid-assets-source.title

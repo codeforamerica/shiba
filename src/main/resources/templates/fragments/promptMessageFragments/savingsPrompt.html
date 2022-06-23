@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="savingsPrompt">
+    <p th:text="#{savings.please-include}" class="spacing-below-35"></p>
+    <ul class="list--bulleted">
+        <li th:text="#{savings.cash}"></li>
+        <li th:text="#{savings.bank}"></li>
+        <li th:text="#{savings.debit}"></li>
+    </ul>
+</div>
+</body>
+</html>
