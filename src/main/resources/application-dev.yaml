@@ -4,7 +4,5 @@ spring:
     driverClassName: org.postgresql.Driver
 
 feature-flag:
-  submit-via-api: on
-  certain-pops: on
 
 demo: true

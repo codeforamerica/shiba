@@ -82,7 +82,7 @@ mail-gun:
   max-attachment-size: 20000000 #20MB
 
 feature-flag:
-  certain-pops: off
+  certain-pops: on
   submit-via-api: on
   white-earth-and-red-lake-routing: on
   show-delayed-processing-time-notice: on
