@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.output.caf;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.ELIGIBLE;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,7 +31,7 @@ class CcapExpeditedEligibilityDeciderTest {
                 "firstName", "Jane",
                 "lastName", "Testerson",
                 "dateOfBirth", List.of("01", "09", "2020"))).build())
-        ;
+    ;
   }
 
   @ParameterizedTest
@@ -51,7 +53,7 @@ class CcapExpeditedEligibilityDeciderTest {
       CcapExpeditedEligibility expectedDecision
   ) {
     ApplicationData applicationData = applicationDataBuilder
-        .withPageData("livingSituation","livingSituation", livingSituation)
+        .withPageData("livingSituation", "livingSituation", livingSituation)
         .withPageData("assets", "assets", List.of(""))
         .build();
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData)).isEqualTo(expectedDecision);
@@ -73,7 +75,7 @@ class CcapExpeditedEligibilityDeciderTest {
   }
 
   @Test
-  void ShouldNotQualifyIfThereAreNoHouseholdMembersUnder12() {
+  void shouldNotQualifyIfThereAreNoHouseholdMembersUnder12() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
@@ -93,6 +95,38 @@ class CcapExpeditedEligibilityDeciderTest {
   }
 
   @Test
+  void blankDobShouldNotAffectEligibility() {
+    ApplicationData ineligibleApplication = new TestApplicationDataBuilder()
+        .withApplicantPrograms(List.of("CCAP"))
+        .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
+        .withPageData("assets", "assets", List.of(""))
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "firstName", "Jane",
+                "lastName", "Testerson",
+                "dateOfBirth", List.of("", "", "")))).build();
+
+    assertThat(ccapExpeditedEligibilityDecider.decide(ineligibleApplication))
+        .isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
+
+    LocalDate today = LocalDate.now();
+    ApplicationData eligibleApplication = applicationDataBuilder
+        .withPageData("livingSituation", "livingSituation", "HOTEL_OR_MOTEL")
+        .withPageData("assets", "assets", List.of(""))
+        .withSubworkflow("household",
+            new PagesDataBuilder().withPageData("householdMemberInfo", Map.of(
+                "firstName", "Jane",
+                "lastName", "Testerson",
+                "dateOfBirth", List.of(
+                    String.valueOf(today.getMonthValue()),
+                    String.valueOf(today.getDayOfMonth()),
+                    String.valueOf(today.getYear()))
+            ))).build();
+    assertThat(ccapExpeditedEligibilityDecider.decide(eligibleApplication))
+        .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+  }
+
+  @Test
   void shouldOnlyQualifyIfAtLeastOneHouseholdMemberIsAge12OrUnder() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
@@ -109,12 +143,13 @@ class CcapExpeditedEligibilityDeciderTest {
                 "dateOfBirth", List.of("01", "09", "1999")))).build();
 
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+        .isEqualTo(ELIGIBLE);
   }
 
   @Test
   void shouldQualifyIfHouseholdMemberIsOver12YearsButUnder13Years() {
-    LocalDateTime twelveYearsAndElevenMonthsAgo = LocalDateTime.now().minusYears(12).minusMonths(11);
+    LocalDateTime twelveYearsAndElevenMonthsAgo = LocalDateTime.now().minusYears(12)
+        .minusMonths(11);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     String date = formatter.format(twelveYearsAndElevenMonthsAgo);
     String[] monthDayYear = date.split("/");
@@ -137,34 +172,34 @@ class CcapExpeditedEligibilityDeciderTest {
                 "dateOfBirth", List.of("01", "09", "1999")))).build();
 
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-        .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+        .isEqualTo(ELIGIBLE);
   }
-  
+
   @Test
   void hasMillionDollarAssetAnsweredYes() {
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
         .withPageData("assets", "assets", List.of("ONE_MILLION_ASSETS")).build();
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-    .isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
+        .isEqualTo(CcapExpeditedEligibility.NOT_ELIGIBLE);
   }
-  
+
   @Test
   void hasMillionDollarAssetAnsweredNo() {
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
         .withPageData("assets", "assets", List.of("VEHICLE")).build();
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-    .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+        .isEqualTo(ELIGIBLE);
   }
-  
+
   @Test
   void hasMillionDollarAssetNotAnswered() {
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("livingSituation", "livingSituation", "EMERGENCY_SHELTER")
         .withPageData("assets", "assets", List.of()).build();
     assertThat(ccapExpeditedEligibilityDecider.decide(applicationData))
-    .isEqualTo(CcapExpeditedEligibility.ELIGIBLE);
+        .isEqualTo(ELIGIBLE);
   }
 
   private ApplicationData createApplicationData(List<String> livingSituation, String program) {
