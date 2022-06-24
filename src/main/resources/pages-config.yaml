@@ -1997,6 +1997,8 @@ pageDefinitions:
             errorMessageKey: general.validation.make-sure-you-choose-none-of-the-above-or-another-option
         options:
           selectableOptions:
+            - value: RSDI
+              messageKey: unearned-income.rsdi
             - value: SOCIAL_SECURITY
               messageKey: unearned-income.social-security
             - value: SSI
@@ -2026,6 +2028,21 @@ pageDefinitions:
           condition: *livesAlone?
     headerHelpMessageKey: unearned-income-sources.if-you-dont-have-all-this-information-on-hand-skip
     inputs:
+      - name: rsdiAmount
+        type: MONEY
+        promptMessage:
+          promptMessageKey: unearned-income.rsdi
+        helpMessageKey: general.monthly-amount
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            condition:
+              input: rsdiAmount
+              matcher: NOT_EMPTY
+        condition:
+          pageName: unearnedIncome
+          input: unearnedIncome
+          value: RSDI
       - name: socialSecurityAmount
         type: MONEY
         promptMessage:
@@ -2146,15 +2163,15 @@ pageDefinitions:
           pageName: unearnedIncome
           input: unearnedIncome
           value: TRIBAL_PAYMENTS
-  - &socialSecurityIncomeSource
-    name: socialSecurityIncomeSource
+  - &rsdiIncomeSource
+    name: rsdiIncomeSource
     pageTitle: unearned-income-source.title
-    headerKey: social-security-income-source.who-receives
+    headerKey: rsdi-income-source.who-receives
     headerHelpMessageKey: unearned-income-source.you-can-select-more
     contextFragment: personIncomeContextFragment
     inputs:
       - type: CUSTOM
-        name: monthlyIncomeSSorRSDI
+        name: monthlyIncomeRSDI
         helpMessageKey: general.if-you-dont-have
         customInputFragment: householdOptionsCheckboxesWithFollowup
         customFollowUps: 'true'
@@ -2166,7 +2183,41 @@ pageDefinitions:
             - pageName: personalInfo
             - groupName: household
         followUpValues:
-          - monthlyIncomeSSorRSDI
+          - monthlyIncomeSSRSDI
+        followUps:
+          - name: rsdiAmount
+            type: MONEY
+            inputPostfix: general.input.postfix.per-month
+            validators:
+              - validation: MONEY
+                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+                condition:
+                  input: rsdiAmount
+                  matcher: NOT_EMPTY
+            promptMessage:
+              promptMessageKey: unearned-income-source.how-much-income-monthly
+            helpMessageKey: general.if-you-dont-have
+  - &socialSecurityIncomeSource
+    name: socialSecurityIncomeSource
+    pageTitle: unearned-income-source.title
+    headerKey: social-security-income-source.who-receives
+    headerHelpMessageKey: unearned-income-source.you-can-select-more
+    contextFragment: personIncomeContextFragment
+    inputs:
+      - type: CUSTOM
+        name: monthlyIncomeSS
+        helpMessageKey: general.if-you-dont-have
+        customInputFragment: householdOptionsCheckboxesWithFollowup
+        customFollowUps: 'true'
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-select-a-person
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+        followUpValues:
+          - monthlyIncomeSS
         followUps:
           - name: socialSecurityAmount
             type: MONEY
@@ -4444,6 +4495,15 @@ workflow:
           conditions:
             - *doesNotLiveAlone?
             - *noUnearnedIncomeSelected?
+      - pageName: rsdiIncomeSource
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: unearnedIncome
+              input: unearnedIncome
+              value: RSDI
+            - *doesNotLiveAlone?
+            - *applicantChoseCERTAINPOPS?
       - pageName: socialSecurityIncomeSource
         condition:
           logicalOperator: AND
@@ -4538,6 +4598,24 @@ workflow:
     datasources:
       - pageName: otherUnearnedIncome
       - pageName: addHouseholdMembers
+  rsdiIncomeSource:
+    pageConfiguration: *rsdiIncomeSource
+    nextPages:
+      - pageName: rsdiIncomeSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - *noUnearnedIncomeSelected?
+        - *applicantDidNotChooseCERTAINPOPS?
+        - pageName: unearnedIncome
+          input: unearnedIncome
+          matcher: DOES_NOT_CONTAIN
+          value: RSDI
+    datasources:
+      - pageName: unearnedIncome
+        groupName: unearnedIncomeGroup
+      - pageName: addHouseholdMembers
+      - pageName: choosePrograms
   socialSecurityIncomeSource:
     pageConfiguration: *socialSecurityIncomeSource
     nextPages:
@@ -5446,6 +5524,7 @@ pageGroups:
   unearnedIncomeGroup:
     startPages:
       - unearnedIncome
+      - rsdiIncomeSource
       - socialSecurityIncomeSource
       - supplementalSecurityIncomeSource
       - veteransBenefitsIncomeSource
@@ -5456,6 +5535,7 @@ pageGroups:
       - tribalPaymentIncomeSource
     completePages:
       - unearnedIncome
+      - rsdiIncomeSource
       - socialSecurityIncomeSource
       - supplementalSecurityIncomeSource
       - veteransBenefitsIncomeSource
