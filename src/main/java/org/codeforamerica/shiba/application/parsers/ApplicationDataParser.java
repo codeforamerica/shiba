@@ -17,6 +17,7 @@ public class ApplicationDataParser {
    */
   private static final Map<Field, ParsingCoordinate> coordinatesMap = new HashMap<>();
   private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
+  public static final String DOB_AS_DATE_FIELD_NAME = "dobAsDate";
 
   static {
     coordinatesMap.put(Field.WRITTEN_LANGUAGE_PREFERENCES,
@@ -243,6 +244,8 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB,
         new ParsingCoordinate("householdMemberInfo", "dateOfBirth"));
+    coordinatesMap.put(Field.HOUSEHOLD_INFO_DOB_AS_DATE,
+        new ParsingCoordinate("householdMemberInfo", DOB_AS_DATE_FIELD_NAME));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_FIRST_NAME,
         new ParsingCoordinate("householdMemberInfo", "firstName"));
     coordinatesMap.put(Field.HOUSEHOLD_INFO_LAST_NAME,
@@ -436,6 +439,7 @@ public class ApplicationDataParser {
     PERSONAL_INFO_LAST_NAME(""),
 
     HOUSEHOLD_INFO_DOB,
+    HOUSEHOLD_INFO_DOB_AS_DATE,
     HOUSEHOLD_INFO_FIRST_NAME(""),
     HOUSEHOLD_INFO_LAST_NAME(""),
     HOUSEHOLD_INFO_RELATIONSHIP(""),

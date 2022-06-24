@@ -1,5 +1,7 @@
 package org.codeforamerica.shiba.pages.enrichment;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.DOB_AS_DATE_FIELD_NAME;
+
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +19,7 @@ public abstract class DateOfBirthEnrichment implements Enrichment {
    * @return formatted date of birth as String
    */
   private static String formatDateOfBirth(List<String> dateOfBirth) {
-    if (dateOfBirth.isEmpty()) {
+    if (dateOfBirth.isEmpty() || dateOfBirth.stream().allMatch(dobField -> dobField.equals(""))) {
       return "";
     }
     return StringUtils.leftPad(dateOfBirth.get(0), 2, '0') + '/' +
@@ -28,7 +30,7 @@ public abstract class DateOfBirthEnrichment implements Enrichment {
   @Override
   public PageData process(PagesData pagesData) {
     String dobString = formatDateOfBirth(parseDateOfBirth(pagesData));
-    return new PageData(Map.of("dobAsDate", new InputData(List.of(dobString))));
+    return new PageData(Map.of(DOB_AS_DATE_FIELD_NAME, new InputData(List.of(dobString))));
   }
 
   protected abstract List<String> parseDateOfBirth(PagesData pagesData);
