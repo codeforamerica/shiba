@@ -1,8 +1,13 @@
 package org.codeforamerica.shiba.output.caf;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
+import static java.util.Objects.requireNonNull;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.DOB_AS_DATE_FIELD_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ASSETS_TYPE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_SITUATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.ELIGIBLE;
 import static org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility.NOT_ELIGIBLE;
@@ -25,25 +30,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class CcapExpeditedEligibilityDecider {
 
+  public static final int CHILD_AGE_MAXIMUM = 12;
   private final DateOfBirthEnrichment dateOfBirthEnrichment = new HouseholdMemberDateOfBirthEnrichment();
 
   private static final Set<String> EXPEDITED_LIVING_SITUATIONS
       = Set.of("HOTEL_OR_MOTEL", "TEMPORARILY_WITH_FRIENDS_OR_FAMILY_DUE_TO_ECONOMIC_HARDSHIP",
       "EMERGENCY_SHELTER", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
-  
 
   public CcapExpeditedEligibility decide(ApplicationData applicationData) {
-    boolean hasMillionDollarAsset = getMillionDollarAsset(applicationData);
-    String livingSituation = getLivingSituation(applicationData);
+    String livingSituation = getFirstValue(applicationData.getPagesData(),
+        LIVING_SITUATION);
     if (null == livingSituation || !applicationData.isCCAPApplication()
         || !applicationData.getSubworkflows().containsKey("household")
         || hasNotEnteredHouseholdMemberBirthDates(applicationData)) {
       return UNDETERMINED;
     }
 
-    if (EXPEDITED_LIVING_SITUATIONS.contains(livingSituation) 
-        && hasHouseholdMemberUnder12(applicationData) 
-        && !hasMillionDollarAsset) {
+    if (EXPEDITED_LIVING_SITUATIONS.contains(livingSituation)
+        && hasHouseholdMemberUnder12(applicationData)
+        && hasLessThanAMillionDollars(applicationData)) {
       return ELIGIBLE;
     } else {
       return NOT_ELIGIBLE;
@@ -52,36 +57,31 @@ public class CcapExpeditedEligibilityDecider {
 
   private boolean hasNotEnteredHouseholdMemberBirthDates(ApplicationData applicationData) {
     return getValues(applicationData, HOUSEHOLD,
-        HOUSEHOLD_INFO_DOB) == (null) || getValues(applicationData, HOUSEHOLD,
-        HOUSEHOLD_INFO_DOB).isEmpty();
+        HOUSEHOLD_INFO_DOB) == (null) || requireNonNull(
+        getValues(applicationData, HOUSEHOLD, HOUSEHOLD_INFO_DOB)).isEmpty();
   }
 
   private boolean hasHouseholdMemberUnder12(ApplicationData applicationData) {
-    List<PagesData> householdMemberIterations = applicationData.getSubworkflows().get("household")
+    List<PagesData> householdMemberIterations = getGroup(applicationData, HOUSEHOLD)
         .stream().map(Iteration::getPagesData).toList();
-    List<PageData> householdMemberIterationEnrichedDobPagesDatas = householdMemberIterations.stream()
+    List<PageData> householdMemberIterationEnrichedDobPagesData = householdMemberIterations.stream()
         .map(dateOfBirthEnrichment::process).toList();
-    List<String> householdMemberBirthDatesAsStrings = householdMemberIterationEnrichedDobPagesDatas
-        .stream().map(pagesData -> pagesData.get("dobAsDate").getValue().get(0)).toList();
+    List<String> householdMemberBirthDatesAsStrings = householdMemberIterationEnrichedDobPagesData
+        .stream().map(pagesData -> pagesData.get(DOB_AS_DATE_FIELD_NAME).getValue().get(0))
+        .toList();
     List<LocalDate> householdMemberBirthDatesAsLocalDates =
-        getHouseHoldMemberBirthdatesAsDates(householdMemberBirthDatesAsStrings);
+        getHouseHoldMemberDatesOfBirthAsDates(householdMemberBirthDatesAsStrings);
     return householdMemberBirthDatesAsLocalDates.stream()
-        .anyMatch(date -> Period.between(date, LocalDate.now()).getYears() <= 12);
+        .anyMatch(date -> Period.between(date, LocalDate.now()).getYears() <= CHILD_AGE_MAXIMUM);
   }
 
-  private String getLivingSituation(ApplicationData applicationData) {
-    return applicationData.getPagesData()
-        .getPageInputFirstValue("livingSituation", "livingSituation");
-  }
-  
-  private boolean getMillionDollarAsset(ApplicationData applicationData) {
-    return getValues(applicationData.getPagesData(),ASSETS_TYPE).contains("ONE_MILLION_ASSETS");
+  private boolean hasLessThanAMillionDollars(ApplicationData applicationData) {
+    return !getValues(applicationData.getPagesData(), ASSETS_TYPE).contains("ONE_MILLION_ASSETS");
   }
 
-  private List<LocalDate> getHouseHoldMemberBirthdatesAsDates(List<String> birthDatesAsStrings) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    return birthDatesAsStrings.stream().map(stringDob -> {
-      return LocalDate.parse(stringDob, formatter);
-    }).collect(Collectors.toList());
+  private List<LocalDate> getHouseHoldMemberDatesOfBirthAsDates(List<String> birthDatesAsStrings) {
+    return birthDatesAsStrings.stream().filter(s -> !s.isBlank())
+        .map(stringDob -> LocalDate.parse(stringDob, DateTimeFormatter.ofPattern("MM/dd/yyyy")))
+        .collect(Collectors.toList());
   }
 }
