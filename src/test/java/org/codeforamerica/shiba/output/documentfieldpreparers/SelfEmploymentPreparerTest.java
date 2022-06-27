@@ -33,7 +33,8 @@ public class SelfEmploymentPreparerTest {
         new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
         new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "see question 9",
             SINGLE_VALUE),
-
+        new DocumentField("selfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_WEEK", "12",
+            SINGLE_VALUE, 0),
         new DocumentField("selfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
             SINGLE_VALUE, 0),
         new DocumentField("selfEmployment_payPeriod", "payPeriod", "EVERY_WEEK", SINGLE_VALUE, 0),

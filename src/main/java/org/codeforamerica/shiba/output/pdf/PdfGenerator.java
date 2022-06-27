@@ -18,6 +18,7 @@ import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -29,6 +30,7 @@ import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
+import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
@@ -111,9 +113,13 @@ public class PdfGenerator implements FileGenerator {
     var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
 
-      if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
-        pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
-
+    if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+    }
+    if (document.equals(Document.CERTAIN_POPS) && documentFields.stream().anyMatch(
+        field -> (field.getGroupName().contains("nonSelfEmployment_householdSelectionForIncome")
+            && field.getIteration() > 1))) {
+      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
     }
 
     List<PdfField> fields = pdfFieldMapper.map(documentFields);

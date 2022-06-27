@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
 
   @Override
-  protected ScopedParams getParams(Document _document) {
+  protected ScopedParams getParams(Document _document, Application application) {
     return new ScopedParams(
         pagesData -> getBooleanValue(pagesData, IS_SELF_EMPLOYMENT),
         JOBS,

@@ -38,6 +38,8 @@ class NonSelfEmploymentPreparerTest {
     assertThat(actual).containsExactlyInAnyOrder(
         new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
             SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_WEEK", "12",
+            SINGLE_VALUE, 0),
         new DocumentField("nonSelfEmployment_payPeriod", "payPeriod", "EVERY_WEEK",
             SINGLE_VALUE, 0),
         new DocumentField("nonSelfEmployment_paidByTheHour", "paidByTheHour", "false",
@@ -50,6 +52,8 @@ class NonSelfEmploymentPreparerTest {
   @Test
   public void shouldMapApplicantValuesIfNonSelfEmployedJobExistsForCertainPops() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withMultipleHouseholdMembers()
+        .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
         .withSubworkflow("jobs",
             // Don't add fields because this is a self-employed job
             new PagesDataBuilder()
@@ -78,18 +82,100 @@ class NonSelfEmploymentPreparerTest {
             SINGLE_VALUE, 0),
         new DocumentField("nonSelfEmployment_selfEmployment", "selfEmployment", "false",
             SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_MONTH", "12",
+            SINGLE_VALUE, 0),
         new DocumentField("nonSelfEmployment_householdSelectionForIncome", "whoseJobIsIt",
             "me the applicant", SINGLE_VALUE, 0)
+    );
+  }
+  
+  @Test
+  public void shouldMapSpouseValuesIfNonSelfEmployedJobExistsForCertainPops() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+          .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
+        .withMultipleHouseholdMembers()
+        .withSubworkflow("jobs",
+            // Don't add fields because this is a self-employed job
+            new PagesDataBuilder()
+                .withHourlyJob("true", "10", "10")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "me the applicant"),
+            // Don't add fields because this is not the applicant
+            new PagesDataBuilder()
+                .withNonHourlyJob("false", "11", "EVERY_WEEK")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "someone else 12356"),
+            // Add this
+            new PagesDataBuilder()
+                .withNonHourlyJob("false", "21", "EVERY_MONTH")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "Daria Agàta someGuid"))
+        .build();
+    Application application = Application.builder().applicationData(applicationData).build();
+
+    List<DocumentField> actual =
+        preparer.prepareDocumentFields(application, Document.CERTAIN_POPS, Recipient.CLIENT);
+
+    assertThat(actual).containsExactlyInAnyOrder(
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "21",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_MONTH", "21",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_payPeriod", "payPeriod", "EVERY_MONTH",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_paidByTheHour", "paidByTheHour", "false",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_selfEmployment", "selfEmployment", "false",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_householdSelectionForIncome", "whoseJobIsIt",
+            "Daria Agàta someGuid", SINGLE_VALUE, 0)
+    );
+  }
+  
+  @Test
+  public void shouldMapPayAmountWithPayFrequencyNonSelfEmployedJobExists() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
+        .withMultipleHouseholdMembers()
+        .withSubworkflow("jobs",
+            // Don't add fields because this is a self-employed job
+            new PagesDataBuilder()
+                .withHourlyJob("true", "10", "10")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "me the applicant"),
+            // Don't add fields because this is not the applicant
+            new PagesDataBuilder()
+                .withNonHourlyJob("false", "11", "EVERY_WEEK")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "someone else 12356"),
+            // Add this
+            new PagesDataBuilder()
+                .withNonHourlyJob("false", "1500", "EVERY_MONTH")
+                .withPageData("householdSelectionForIncome", "whoseJobIsIt", "Daria Agàta someGuid"))
+        .build();
+    Application application = Application.builder().applicationData(applicationData).build();
+
+    List<DocumentField> actual =
+        preparer.prepareDocumentFields(application, Document.CERTAIN_POPS, Recipient.CLIENT);
+
+    assertThat(actual).containsExactlyInAnyOrder(
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "1500",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_payPeriod", "payPeriod", "EVERY_MONTH",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_paidByTheHour", "paidByTheHour", "false",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_selfEmployment", "selfEmployment", "false",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_MONTH", "1500",
+            SINGLE_VALUE, 0),
+        new DocumentField("nonSelfEmployment_householdSelectionForIncome", "whoseJobIsIt",
+            "Daria Agàta someGuid", SINGLE_VALUE, 0)
     );
   }
 
   @Test
   void shouldMapEmptyIfNoJobs() {
-    ApplicationData applicationData = new ApplicationData();
+    ApplicationData applicationData =
+        new TestApplicationDataBuilder().withPersonalInfo().withMultipleHouseholdMembers().build();
     Application application = Application.builder().applicationData(applicationData).build();
 
-    assertThat(preparer.prepareDocumentFields(application, null, Recipient.CLIENT))
-        .isEmpty();
+    assertThat(preparer.prepareDocumentFields(application, null, Recipient.CLIENT)).isEmpty();
   }
 
 }
