@@ -340,6 +340,12 @@ mappings:
     tribal: TRIBAL_NATION
   incomePerPayPeriod:
     incomePerPayPeriod: INCOME_PER_PAY_PERIOD
+  nonSelfEmployment_incomePerPayPeriod:
+    incomePerPayPeriod_EVERY_WEEK: INCOME_PER_PAY_PERIOD_EVERY_WEEK
+    incomePerPayPeriod_EVERY_TWO_WEEKS: INCOME_PER_PAY_PERIOD_EVERY_TWO_WEEKS
+    incomePerPayPeriod_TWICE_A_MONTH: INCOME_PER_PAY_PERIOD_TWICE_A_MONTH
+    incomePerPayPeriod_EVERY_MONTH: INCOME_PER_PAY_PERIOD_EVERY_MONTH
+    incomePerPayPeriod_IT_VARIES: INCOME_PER_PAY_PERIOD_IT_VARIES
   totalIncome:
     thirtyDayIncome: MONEY_MADE_LAST_MONTH
   householdPregnancy:

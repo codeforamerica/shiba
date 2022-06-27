@@ -99,6 +99,15 @@ public class PdfFieldFillersConfiguration {
   ) {
     return new PDFBoxFieldFiller(List.of(coverPages, certainPops));
   }
+  
+  @Bean
+  public PdfFieldFiller caseworkerCertainPopsWdAddtlIncomeFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:certain-pops.pdf") Resource certainPops,
+      @Value("classpath:certain-pops-additional-income.pdf") Resource certainPopsAddIncome
+  ) {
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops,certainPopsAddIncome));
+  }
 
   @Bean
   public PdfFieldFiller clientCertainPopsFiller(
@@ -106,6 +115,15 @@ public class PdfFieldFillersConfiguration {
       @Value("classpath:certain-pops.pdf") Resource certainPops
   ) {
     return new PDFBoxFieldFiller(List.of(coverPages, certainPops));
+  }
+  
+  @Bean
+  public PdfFieldFiller clientCertainPopsWdAddtlIncomeFiller(
+      @Value("classpath:cover-pages.pdf") Resource coverPages,
+      @Value("classpath:certain-pops.pdf") Resource certainPops,
+      @Value("classpath:certain-pops-additional-income.pdf") Resource certainPopsAddIncome
+  ) {
+    return new PDFBoxFieldFiller(List.of(coverPages, certainPops,certainPopsAddIncome));
   }
 
   @Bean
@@ -123,9 +141,7 @@ public class PdfFieldFillersConfiguration {
       PdfFieldFiller clientCcapFiller,
       PdfFieldFiller caseworkerCertainPopsFiller,
       PdfFieldFiller clientCertainPopsFiller,
-      PdfFieldFiller uploadedDocCoverPageFilter,
-      PdfFieldFiller clientCafWdHouseholdSuppFiller,
-      PdfFieldFiller caseworkerCafWdHouseholdSuppFiller) {
+      PdfFieldFiller uploadedDocCoverPageFilter) {
     return Map.of(
         CASEWORKER, Map.of(
             CAF, caseworkerCafFiller,
@@ -136,20 +152,24 @@ public class PdfFieldFillersConfiguration {
         CLIENT, Map.of(
             CAF, clientCafFiller,
             CCAP, clientCcapFiller,
-            CERTAIN_POPS, clientCertainPopsFiller )
+            CERTAIN_POPS, clientCertainPopsFiller)
     );
   }
   
   @Bean
   public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers(
       PdfFieldFiller caseworkerCafWdHouseholdSuppFiller,
-      PdfFieldFiller clientCafWdHouseholdSuppFiller) {
+      PdfFieldFiller clientCafWdHouseholdSuppFiller,
+      PdfFieldFiller caseworkerCertainPopsWdAddtlIncomeFiller,
+      PdfFieldFiller clientCertainPopsWdAddtlIncomeFiller) {
     return Map.of(
         CASEWORKER, Map.of(
-            CAF, caseworkerCafWdHouseholdSuppFiller
+            CAF, caseworkerCafWdHouseholdSuppFiller,
+            CERTAIN_POPS, caseworkerCertainPopsWdAddtlIncomeFiller
         ),
         CLIENT, Map.of(
-            CAF, clientCafWdHouseholdSuppFiller )
+            CAF, clientCafWdHouseholdSuppFiller,
+            CERTAIN_POPS, clientCertainPopsWdAddtlIncomeFiller )
     );
   }
 }

@@ -6,8 +6,11 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.output.Document;
@@ -24,7 +27,7 @@ import org.codeforamerica.shiba.pages.data.Subworkflow;
  */
 public abstract class SubworkflowScopePreparer implements DocumentFieldPreparer {
 
-  protected abstract ScopedParams getParams(Document document);
+  protected abstract ScopedParams getParams(Document document, Application application);
 
   @Override
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
@@ -33,7 +36,7 @@ public abstract class SubworkflowScopePreparer implements DocumentFieldPreparer 
   }
 
   protected List<DocumentField> prepareDocumentFields(Application application, Document document) {
-    ScopedParams params = getParams(document);
+    ScopedParams params = getParams(document, application);
 
     Subworkflow subworkflow = getGroup(application.getApplicationData(), params.group());
     if (subworkflow == null || subworkflow.isEmpty()) {
@@ -45,6 +48,12 @@ public abstract class SubworkflowScopePreparer implements DocumentFieldPreparer 
     int index = 0;
     for (Iteration iteration : subworkflow) {
       if (params.scope().test(iteration.getPagesData())) {
+        String key = "";
+        Optional<Entry<String, PageData>> y = iteration.getPagesData().entrySet().stream()
+            .filter(x -> x.getKey().equals("payPeriod")).findFirst() ;
+        if(y.isPresent()) {
+          key = "incomePerPayPeriod_" + y.get().getValue().get("payPeriod").getValue(0);
+        }
         for (Entry<String, PageData> pageDataEntry : iteration.getPagesData().entrySet()) {
           String groupName = params.prefix() + pageDataEntry.getKey();
           for (Entry<String, InputData> inputDataEntry : pageDataEntry.getValue().entrySet()) {
@@ -54,6 +63,14 @@ public abstract class SubworkflowScopePreparer implements DocumentFieldPreparer 
                 inputDataEntry.getValue().getValue(),
                 SINGLE_VALUE,
                 index));
+            if(inputDataEntry.getKey().equals("incomePerPayPeriod") && !key.isEmpty()) {
+              results.add(new DocumentField(
+                  groupName,
+                  key,
+                  inputDataEntry.getValue().getValue(),
+                  SINGLE_VALUE,
+                  index));
+            }
           }
         }
         index++;
