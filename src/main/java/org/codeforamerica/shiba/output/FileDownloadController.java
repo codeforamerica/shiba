@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.output;
 
+import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
@@ -9,6 +10,7 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -39,6 +41,7 @@ public class FileDownloadController {
   private static final String UNSUBMITTED_APPLICATION_MESSAGE = "Submitted time was not set for this application. It is either still in progress or the submitted time was cleared for some reason.";
   private static final String DOWNLOAD_DOCUMENT_ZIP = "Download zip file for application ID %s";
   private static final String NO_DOWNLOAD_DOCUMENT_ZIP = "No documents to download in zip file for application ID %s";
+  private static final String OLD_LATER_DOCS = "Later Docs application %s is older than 60 days, supporting documents have been deleted.";
   private final XmlGenerator xmlGenerator;
   private final PdfGenerator pdfGenerator;
   private final ApplicationData applicationData;
@@ -65,13 +68,21 @@ public class FileDownloadController {
           "Application is empty or the applicationId is null when client attempts to download pdfs.");
       return createRootPageResponse();
     }
-    MDC.put("applicationId", applicationData.getId());
+    String applicationId = applicationData.getId();
+
+    MDC.put("applicationId", applicationId);
     MDC.put("sessionId", httpSession.getId());
     log.info("Client with session: " + httpSession.getId() + " Downloading application with id: "
-        + applicationData.getId());
+        + applicationId);
 
-    String applicationId = applicationData.getId();
     Application application = applicationRepository.find(applicationId);
+
+    if (application.getCompletedAt() != null && application.getCompletedAt()
+        .isBefore(ZonedDateTime.now().minusDays(60))
+        && application.getFlow() == LATER_DOCS) {
+      return ResponseEntity.ok().body(String.format(OLD_LATER_DOCS, applicationId).getBytes());
+    }
+
     List<ApplicationFile> applicationFiles = getApplicationDocuments(applicationId, application,
         CLIENT);
 
