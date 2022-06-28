@@ -351,8 +351,7 @@ mappings:
   householdPregnancy:
     householdPregnancy: WHO_IS_PREGNANT
   whoIsNonUsCitizen:
-    nameOfApplicantOrSpouse1: NAME_OF_NON_US_CITIZEN_1
-    nameOfApplicantOrSpouse2: NAME_OF_NON_US_CITIZEN_2
+    nameOfApplicantOrSpouse: NAME_OF_NON_US_CITIZEN
   householdSelectionForIncome:
     whoseJobIsItFormatted: EMPLOYEE_FULL_NAME
   nonSelfEmployment_householdSelectionForIncome:
