@@ -76,7 +76,7 @@ security-email: security@mnbenefits.org
 audit-email: help+audit@mnbenefits.org
 
 mail-gun:
-  url: "https://api.mailgun.net/v3/mail.mnbenefits.org/messages"
+  url: "https://api.mailgun.net/v3/mail.mnbenefits.mn.gov/messages"
   api-key: ${MAILGUN_API_KEY}
   shouldCC: false
   max-attachment-size: 20000000 #20MB
