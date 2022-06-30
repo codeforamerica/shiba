@@ -21,6 +21,7 @@ import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -48,8 +49,10 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
         applicantAndSpouse.add(String.join(" ", nameList));
       });
 
-      Optional<Iteration> spouseHouseholdMemberInfo = getGroup(application.getApplicationData(),
-          HOUSEHOLD).stream().filter(householdData -> getValues(householdData.getPagesData(),
+      Subworkflow household = getGroup(application.getApplicationData(),
+          HOUSEHOLD) == null ?new Subworkflow():getGroup(application.getApplicationData(),
+              HOUSEHOLD);
+      Optional<Iteration> spouseHouseholdMemberInfo = household.stream().filter(householdData -> getValues(householdData.getPagesData(),
                   Field.HOUSEHOLD_INFO_RELATIONSHIP)
                   .equals(List.of("spouse")))
           .findFirst();
