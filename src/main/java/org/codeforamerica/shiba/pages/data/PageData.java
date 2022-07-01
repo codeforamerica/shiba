@@ -88,4 +88,36 @@ public class PageData extends HashMap<String, InputData> {
       });
     }
   }
+
+  public String invalidPageDataLogText() {
+
+    if (isValid()) {
+      return "";
+    }
+
+    Predicate<Validator> validatorForThisInputShouldRun = validator -> ofNullable(
+            validator.getCondition()).map(
+            condition -> condition.satisfies(this)
+    ).orElse(true);
+
+    List<InputData> inputDataToValidate = values().stream().filter(
+            inputData -> inputData.getValidators().stream().anyMatch(validatorForThisInputShouldRun)
+    ).collect(Collectors.toList());
+
+    List<InputData> validInput = inputDataToValidate.stream()
+            .filter(inputData -> inputData.valid(this))
+            .collect(Collectors.toList());
+
+    // Use a copy of the page data and remove all valid entries so the invalid ones remain
+    HashMap<String, InputData> invalidStore = new HashMap<>(this);
+    invalidStore.values().removeAll(validInput);
+
+    StringBuffer buffer = new StringBuffer();
+    for( Map.Entry<String, InputData> entry : invalidStore.entrySet() ) {
+      buffer.append(String.format("%s : %s", entry.getKey(), entry.getValue().toString()));
+      buffer.append(", ");
+    }
+
+    return buffer.toString();
+  }
 }
