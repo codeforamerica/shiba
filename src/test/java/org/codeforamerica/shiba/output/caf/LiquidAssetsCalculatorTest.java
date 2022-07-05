@@ -14,7 +14,7 @@ public class LiquidAssetsCalculatorTest {
 	private TestApplicationDataBuilder applicationDataBuilder;
 
 	@Test
-	void liquidAssetsHouseholdShouldCalculateto500() {
+	void liquidAssetsHouseholdShouldCalculateTo500() {
 		applicationDataBuilder = new TestApplicationDataBuilder()
 				.withPageData("liquidAssets", "liquidAssets", List.of("200", "300"))
 				.withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
@@ -24,13 +24,23 @@ public class LiquidAssetsCalculatorTest {
 	}
 
 	@Test
-	void liquidAssetsApplicantShouldCalculateto300() {
+	void liquidAssetsApplicantShouldCalculateTo300() {
 		applicationDataBuilder = new TestApplicationDataBuilder()
 				.withPageData("liquidAssetsSingle", "liquidAssets", List.of("300"))
 				.withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
 		ApplicationData applicationData = applicationDataBuilder.build();
 		String totalLiquidAssetsString = liquidAssetsCalculator.findTotalLiquidAssets(applicationData);
 		assertThat(totalLiquidAssetsString).isEqualTo("300");
+	}
+	
+	@Test
+	void liquidAssetsApplicantShouldCalculateTo3000WithComma() {
+		applicationDataBuilder = new TestApplicationDataBuilder()
+				.withPageData("liquidAssetsSingle", "liquidAssets", List.of("3,000"))
+				.withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
+		ApplicationData applicationData = applicationDataBuilder.build();
+		String totalLiquidAssetsString = liquidAssetsCalculator.findTotalLiquidAssets(applicationData);
+		assertThat(totalLiquidAssetsString).isEqualTo("3000");
 	}
 
 }
