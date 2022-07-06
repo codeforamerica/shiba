@@ -1,6 +1,6 @@
 plugins {
     id("org.springframework.boot") version "2.7.1"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("io.spring.dependency-management") version "1.0.12.RELEASE"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.1"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
@@ -97,8 +97,8 @@ dependencies {
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("io.sentry:sentry-spring-boot-starter:6.1.4")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.apache.logging.log4j:log4j-api:2.17.2")
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.17.2")
+    implementation("org.apache.logging.log4j:log4j-api:2.18.0")
+    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.18.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services") {
         exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
@@ -130,11 +130,11 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
-    implementation("ch.qos.logback:logback-core:1.2.0")
+    implementation("ch.qos.logback:logback-core:1.2.11")
     implementation("ch.qos.logback:logback-classic:1.2.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
-    implementation("net.javacrumbs.shedlock:shedlock-spring:4.37.0")
-    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.37.0")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:4.38.0")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.38.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
     implementation("net.coobird:thumbnailator:0.4.17")
@@ -158,12 +158,12 @@ dependencies {
     testImplementation("org.awaitility:awaitility")
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
     testImplementation("org.mockito:mockito-inline")
-    testImplementation("io.github.bonigarcia:webdrivermanager:5.2.0")
+    testImplementation("io.github.bonigarcia:webdrivermanager:5.2.1")
     testImplementation("org.springframework.ws:spring-ws-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.percy:percy-java-selenium:1.0.0")
     testImplementation("com.deque.html.axe-core:selenium:4.4.1")
-    testImplementation("org.jsoup:jsoup:1.15.1")
+    testImplementation("org.jsoup:jsoup:1.15.2")
 }
 
 compileJava {

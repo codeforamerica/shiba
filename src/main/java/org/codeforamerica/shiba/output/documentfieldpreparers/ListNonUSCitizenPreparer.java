@@ -21,6 +21,7 @@ import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -37,6 +38,7 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
       return List.of();
     } else {
       List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
+      List<String> applicantAndSpouse = new ArrayList<>();
       Optional<String> applicant = nonCitizens.stream()
           .filter(nonCitizen -> nonCitizen.endsWith("applicant")).findFirst();
 
@@ -44,30 +46,36 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
         List<String> nameList = Arrays.stream(applicantName.split(" "))
             .collect(Collectors.toList());
         nameList.remove("applicant");
-        nonUSCitizens.add(new DocumentField(
-            "whoIsNonUsCitizen",
-            "nameOfApplicantOrSpouse1",
-            String.join(" ", nameList),
-            DocumentFieldType.SINGLE_VALUE)
-        );
+        applicantAndSpouse.add(String.join(" ", nameList));
       });
 
-      Optional<Iteration> spouseHouseholdMemberInfo = getGroup(application.getApplicationData(),
-          HOUSEHOLD).stream().filter(householdData -> getValues(householdData.getPagesData(),
+      Subworkflow household = getGroup(application.getApplicationData(),
+          HOUSEHOLD) == null ?new Subworkflow():getGroup(application.getApplicationData(),
+              HOUSEHOLD);
+      Optional<Iteration> spouseHouseholdMemberInfo = household.stream().filter(householdData -> getValues(householdData.getPagesData(),
                   Field.HOUSEHOLD_INFO_RELATIONSHIP)
                   .equals(List.of("spouse")))
           .findFirst();
 
-      spouseHouseholdMemberInfo.ifPresent(iteration -> nonUSCitizens.add(
-          new DocumentField(
-              "whoIsNonUsCitizen",
-              "nameOfApplicantOrSpouse2",
-              String.join(" ", List.of(
-                  getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_FIRST_NAME),
-                  getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_LAST_NAME)
-              )),
-              DocumentFieldType.SINGLE_VALUE)
-      ));
+      spouseHouseholdMemberInfo.ifPresent(iteration -> {
+        String spouseFullName =
+            getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_FIRST_NAME) + " "
+                + getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_LAST_NAME);
+        if (nonCitizens.stream().anyMatch(nonCitizen -> nonCitizen.contains(spouseFullName))) {
+          applicantAndSpouse.add(spouseFullName);
+        }
+
+      });
+      int index = 0;
+      for(String name: applicantAndSpouse) {
+        nonUSCitizens.add(new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            String.join(" ", name),
+            DocumentFieldType.SINGLE_VALUE, index ));
+        index++;
+      }
+      
     }
 
     return nonUSCitizens;

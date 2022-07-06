@@ -26,7 +26,7 @@ jobs:
       uses: getsentry/action-release@v1.1.6
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_ORG: codeforamerica
+        SENTRY_ORG: mnbenefits
         SENTRY_PROJECT: shiba
       with:
         environment: production

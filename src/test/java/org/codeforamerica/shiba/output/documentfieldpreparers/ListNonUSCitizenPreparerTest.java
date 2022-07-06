@@ -36,15 +36,43 @@ class ListNonUSCitizenPreparerTest {
     assertThat(result).isEqualTo(List.of(
         new DocumentField(
             "whoIsNonUsCitizen",
-            "nameOfApplicantOrSpouse1",
+            "nameOfApplicantOrSpouse",
             List.of("Jane Doe"),
-            DocumentFieldType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE,
+            0
         ),
         new DocumentField(
             "whoIsNonUsCitizen",
-            "nameOfApplicantOrSpouse2",
+            "nameOfApplicantOrSpouse",
             List.of("Daria Agàta"),
-            DocumentFieldType.SINGLE_VALUE
+            DocumentFieldType.SINGLE_VALUE,
+            1
+        )));
+  }
+  
+  @Test
+  void preparesFieldsForApplicantOnlyNotUSCitizen() {
+    ApplicationData applicationData = applicationDataTest
+        .withPersonalInfo()
+        .withMultipleHouseholdMembers()
+        .withPageData("usCitizen", "isUsCitizen", "false")
+        .withPageData("whoIsNonCitizen", "whoIsNonCitizen", List.of(
+            "Jane Doe applicant",
+            "Other Person notSpouse"
+        ))
+        .build();
+
+    List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, Recipient.CASEWORKER);
+
+    assertThat(result).isEqualTo(List.of(
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            List.of("Jane Doe"),
+            DocumentFieldType.SINGLE_VALUE,
+            0
         )));
   }
 

@@ -33,27 +33,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private ShibaInvalidSessionStrategy shibaInvalidSessionStrategy;
 
   public static final List<String> ADMIN_EMAILS = List.of(
-      "ashukla@codeforamerica.org",
-      "agonzalez@codeforamerica.org",
-      "axie@codeforamerica.org",
-      "bcalegari@codeforamerica.org",
-      "bgarcia@codeforamerica.org",
-      "bepps@codeforamerica.org",
-      "cguilfoile@codeforamerica.org",
-      "cparedes@codeforamerica.org",
-      "cenyia@codeforamerica.org",
-      "deirdre@codeforamerica.org",
-      "dustin@codeforamerica.org",
-      "edavis@codeforamerica.org",
-      "eric@codeforamerica.org",
-      "jazmyn@codeforamerica.org",
-      "kerry@codeforamerica.org",
-      "lhaynes@codeforamerica.org",
-      "lmoore@codeforamerica.org",
-      "mloew@codeforamerica.org",
-      "nmartinez@codeforamerica.org",
-      "sgole@codeforamerica.org",
-      "tpatterson@codeforamerica.org",
       "john.bisek@state.mn.us",
       "eric.m.johnson@state.mn.us",
       "taylor.johnson@state.mn.us",
@@ -61,7 +40,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "william.prew@state.mn.us",
       "ramesh.shakya@state.mn.us",
       "jeffrey.hendrix@state.mn.us",
-      "jenna.penfieldlaw@state.mn.us"
+      "jenna.penfieldlaw@state.mn.us",
+      "allison.wehlage@state.mn.us"
   );
 
   @Override

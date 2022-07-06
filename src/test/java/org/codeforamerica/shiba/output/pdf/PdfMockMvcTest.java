@@ -1075,6 +1075,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_PAY_FREQUENCY_0", "Every week", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURLY_WAGE_0", "", pdf);
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
+      assertPdfFieldEquals("INCOME_PER_PAY_PERIOD_EVERY_WEEK_0", "1", pdf);
 
       //CertainPops Healthcare Coverage Question
       assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
@@ -1140,8 +1141,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
       //Section 6
       assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
-      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_1", "Dwight Schrute", pdf);
-      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_2", "Jim Halpert", pdf);
+      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_0", "Dwight Schrute", pdf);
+      assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_1", "Jim Halpert", pdf);
 
       //Section 15
       assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);

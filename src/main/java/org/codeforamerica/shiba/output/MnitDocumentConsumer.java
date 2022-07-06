@@ -102,8 +102,7 @@ public class MnitDocumentConsumer {
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      Thread thread = new Thread(() -> mnitClient.send(xml, rd, application.getId(), XML,
-          application.getFlow()));
+      Thread thread = new Thread(() -> sendOrSetToFailed(application, rd, xml, XML));
       thread.start();
       threads.add(thread);
     });

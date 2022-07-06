@@ -8,7 +8,6 @@ import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
-
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,7 +44,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 class FileDownloadControllerTest {
 
   MockMvc mockMvc;
-
   XmlGenerator xmlGenerator = mock(XmlGenerator.class);
   ApplicationData applicationData;
   Application application;
@@ -175,5 +173,39 @@ class FileDownloadControllerTest {
 
     byte[] actualBytes = result.getResponse().getContentAsByteArray();
     assertThat(actualBytes).hasSizeGreaterThan(22);
+  }
+
+  @Test
+  void shouldReturnNotFoundMessageWhenAttemptingToDownloadOldLaterDocsApp() throws Exception {
+    var applicationId = "9870000123";
+
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId(applicationId);
+    applicationData.setUploadedDocs(List.of(
+        new UploadedDocument("shiba+file.jpg", "", "", "",
+            getFileContentsAsByteArray("shiba+file.jpg").length)));
+    applicationData.setFlow(FlowType.LATER_DOCS);
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .completedAt(ZonedDateTime.now().minusDays(60).minusSeconds(1)) // One second too old
+        .flow(FlowType.LATER_DOCS)
+        .build();
+    mockMvc = MockMvcBuilders.standaloneSetup(
+            new FileDownloadController(
+                xmlGenerator,
+                pdfGenerator,
+                applicationData,
+                applicationRepository,
+                uploadedDocsPreparer))
+        .setViewResolvers(new InternalResourceViewResolver("", "suffix"))
+        .build();
+
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+    mockMvc.perform(
+            get("/download"))
+        .andExpect(content().string("Later Docs application " + applicationId
+            + " is older than 60 days, supporting documents have been deleted."))
+        .andExpect(status().is2xxSuccessful())
+        .andReturn();
   }
 }
