@@ -99,9 +99,9 @@ public class UnearnedIncomeCalculationPreparer implements DocumentFieldPreparer 
         getFirstValue(application.getApplicationData().getPagesData(), unearnedIncomeField.get(0));
     var hhAmt =
         getValues(application.getApplicationData().getPagesData(), unearnedIncomeField.get(1));
-    BigDecimal totHHAmt = hhAmt.stream().filter(amt -> !amt.isEmpty()).map(BigDecimal::new)
+    BigDecimal totHHAmt = hhAmt.stream().filter(amt -> !amt.isEmpty()).map(amount -> amount.replace(",", "")).map(BigDecimal::new)
         .reduce(BigDecimal.ZERO,BigDecimal::add);
-    BigDecimal totAmt = totHHAmt.add(new BigDecimal((individualAmt==null) || (individualAmt.isBlank())?"0":individualAmt));
+    BigDecimal totAmt = totHHAmt.add(new BigDecimal((individualAmt==null) || (individualAmt.isBlank())?"0":individualAmt.replace(",", "")));
     availableUnearnedList.add( new DocumentField("unearnedIncomeSource", inputName,
         totAmt.toString().equals("0")?"":totAmt.toString() ,
         DocumentFieldType.SINGLE_VALUE));

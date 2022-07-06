@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.testutilities;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.configurations.SecurityConfiguration.ADMIN_EMAILS;
 import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,5 +70,11 @@ public class TestUtils {
   public static DocumentField createApplicationInput(String groupName, String name,
       String value) {
     return new DocumentField(groupName, name, List.of(value), ENUMERATED_SINGLE_VALUE);
+  }
+  
+  @NotNull
+  public static DocumentField createApplicationInputSingleValue(String groupName, String name,
+      String value) {
+    return new DocumentField(groupName, name, List.of(value), SINGLE_VALUE);
   }
 }
