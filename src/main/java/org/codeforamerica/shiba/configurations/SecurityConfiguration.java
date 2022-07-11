@@ -41,7 +41,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "ramesh.shakya@state.mn.us",
       "jeffrey.hendrix@state.mn.us",
       "jenna.penfieldlaw@state.mn.us",
-      "allison.wehlage@state.mn.us"
+      "allison.wehlage@state.mn.us",
+      "michael.hauck@state.mn.us",
+      "lisa.l.blacker@state.mn.us"
   );
 
   @Override
