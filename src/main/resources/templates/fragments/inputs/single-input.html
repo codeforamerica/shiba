@@ -23,6 +23,8 @@
                    th:name="${formInputName}"
                    th:value="${(!inputData.value.isEmpty()) ? inputData.value[0] : ''}"
             >
+            <div class="text-input-group__postfix" style="width:35%;" 
+									 th:if="${input.inputPostfix != null}" th:text="#{${input.inputPostfix}}"></div>
         </div>
         <div class="text-input-group max-width--hourly-wage" th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).HOURLY_WAGE}">
             <div class="text-input-group__prefix">$</div>

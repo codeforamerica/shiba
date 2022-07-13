@@ -2028,6 +2028,7 @@ pageDefinitions:
     inputs:
       - name: socialSecurityAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.social-security
         helpMessageKey: general.monthly-amount
@@ -2043,6 +2044,7 @@ pageDefinitions:
           value: SOCIAL_SECURITY
       - name: supplementalSecurityIncomeAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.ssi
         helpMessageKey: general.monthly-amount
@@ -2058,6 +2060,7 @@ pageDefinitions:
           value: SSI
       - name: veteransBenefitsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.veterans-benefits
         helpMessageKey: general.monthly-amount
@@ -2073,6 +2076,7 @@ pageDefinitions:
           value: VETERANS_BENEFITS
       - name: unemploymentAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.unemployment
         helpMessageKey: general.monthly-amount
@@ -2088,6 +2092,7 @@ pageDefinitions:
           value: UNEMPLOYMENT
       - name: workersCompensationAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.workers-compensation
         helpMessageKey: general.monthly-amount
@@ -2103,6 +2108,7 @@ pageDefinitions:
           value: WORKERS_COMPENSATION
       - name: retirementAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.retirement
         helpMessageKey: general.monthly-amount
@@ -2118,6 +2124,7 @@ pageDefinitions:
           value: RETIREMENT
       - name: childOrSpousalSupportAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.child-or-spousal-support
         helpMessageKey: general.monthly-amount
@@ -2133,6 +2140,7 @@ pageDefinitions:
           value: CHILD_OR_SPOUSAL_SUPPORT
       - name: tribalPaymentsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income.tribal-payments
         helpMessageKey: general.monthly-amount
@@ -2473,6 +2481,7 @@ pageDefinitions:
     inputs:
       - name: insurancePaymentsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.insurance-payments
         helpMessageKey: general.monthly-amount
@@ -2488,6 +2497,7 @@ pageDefinitions:
           value: INSURANCE_PAYMENTS
       - name: trustMoneyAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.money-from-a-trust
         helpMessageKey: general.monthly-amount
@@ -2503,6 +2513,7 @@ pageDefinitions:
           value: TRUST_MONEY
       - name: rentalIncomeAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.rental-income
         helpMessageKey: general.monthly-amount
@@ -2518,6 +2529,7 @@ pageDefinitions:
           value: RENTAL_INCOME
       - name: interestDividendsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.interest-dividends
         helpMessageKey: general.monthly-amount
@@ -2533,6 +2545,7 @@ pageDefinitions:
           value: INTEREST_DIVIDENDS
       - name: healthCareReimbursementAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.health-care-reimbursement
         helpMessageKey: general.monthly-amount
@@ -2548,6 +2561,7 @@ pageDefinitions:
           value: HEALTH_CARE_REIMBURSEMENT
       - name: contractForDeedAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.contract-for-deed
         helpMessageKey: general.monthly-amount
@@ -2563,6 +2577,7 @@ pageDefinitions:
           value: CONTRACT_FOR_DEED
       - name: benefitsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.benefits-programs
         helpMessageKey: general.monthly-amount
@@ -2578,6 +2593,7 @@ pageDefinitions:
           value: BENEFITS
       - name: otherPaymentsAmount
         type: MONEY
+        inputPostfix: general.input.postfix.per-month
         promptMessage:
           promptMessageKey: unearned-income-other.other-payments
         helpMessageKey: general.monthly-amount
