@@ -1003,6 +1003,7 @@ pageDefinitions:
       conditionalValues:
         - value: going-to-school.header
           condition: *livesAlone?
+    headerHelpMessageKey: going-to-school.helper
     hasPrimaryButton: false
     contextFragment: schoolContextFragment
     inputs:
