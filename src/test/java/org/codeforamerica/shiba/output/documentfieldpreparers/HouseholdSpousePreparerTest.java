@@ -29,6 +29,63 @@ class HouseholdSpousePreparerTest {
 
     assertThat(result).isEqualTo(List.of(
         new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "firstName",
+            List.of("Other"),
+            DocumentFieldType.SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "lastName",
+            List.of("Person"),
+            DocumentFieldType.SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "relationship",
+            List.of("housemate"),
+            DocumentFieldType.SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "dateOfBirth",
+            List.of("5", "6", "1978"),
+            DocumentFieldType.DATE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "sex",
+            List.of("Female"),
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "maritalStatus",
+            List.of("Never married"),
+            DocumentFieldType.ENUMERATED_SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "ssnYesNo",
+            List.of("Yes"),
+            DocumentFieldType.SINGLE_VALUE
+            ,0
+        ),
+        new DocumentField(
+            "householdMemberWithoutSpouseInfo",
+            "ssn",
+            List.of("123121234"),
+            DocumentFieldType.SINGLE_VALUE
+            ,0
+        ),
+        //Spouse
+        new DocumentField(
             "spouseInfo",
             "firstName",
             List.of("Daria"),

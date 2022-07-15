@@ -307,6 +307,12 @@ public class AbstractShibaMockMvcTest {
     File ccapFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CCAP)).toList().get(0);
     return PDDocument.load(FileUtils.readFileToByteArray(ccapFile)).getDocumentCatalog().getAcroForm();
   }
+  
+  protected PDAcroForm downloadCertainPopsClientPDF() throws Exception {
+    List<File> zippedFiles = getZippedFiles();
+    File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CERTAIN_POPS)).toList().get(0);
+    return PDDocument.load(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
+  }
 
   private List<File> getZippedFiles() throws Exception {
     var zipBytes = mockMvc.perform(get("/download")

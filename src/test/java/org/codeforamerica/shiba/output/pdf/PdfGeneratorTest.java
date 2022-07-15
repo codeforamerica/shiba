@@ -49,6 +49,8 @@ class PdfGeneratorTest {
     pdfFieldMapper = mock(PdfFieldMapper.class);
     caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller caseworkerCertainPopsWithAdditionHHFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller clientCertainPopsWithAdditionHHFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
@@ -71,6 +73,11 @@ class PdfGeneratorTest {
         CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
         CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
     );
+    
+    Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers = Map.of(
+            CASEWORKER, Map.of(Document.CAF, Map.of("1", caseworkerCertainPopsWithAdditionHHFiller)),
+            CLIENT, Map.of(Document.CAF, Map.of("1", clientCertainPopsWithAdditionHHFiller))
+        );
 
     application = Application.builder()
         .id(applicationId)
@@ -83,6 +90,7 @@ class PdfGeneratorTest {
         pdfFieldMapper,
         pdfFieldFillers,
         pdfFieldWithCAFHHSuppFillers,
+        pdfFieldWithCertainPopsAdditionalHHFillers,
         applicationRepository,
         null,
         preparers,

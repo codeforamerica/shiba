@@ -9,6 +9,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_RELATIONSHIP;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 
@@ -196,6 +197,15 @@ public class ApplicationData implements Serializable {
       applicantAndHouseholdMemberNames.addAll(householdNames);
     }
     return applicantAndHouseholdMemberNames;
+  }
+  @NotNull
+  public long getHouseholdMemberWithoutSpouse() {
+   
+    List<String> householdRelation = getValues(this, HOUSEHOLD, HOUSEHOLD_INFO_RELATIONSHIP);
+    if (householdRelation != null) {
+      return householdRelation.stream().filter(relation->!relation.contains("spouse")).count();
+    }
+    return 0;
   }
 
   // method that takes the set given in the method above it, and uses that to build the string we want to show on the success page

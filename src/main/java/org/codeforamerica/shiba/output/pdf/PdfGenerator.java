@@ -7,7 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -47,6 +47,7 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
+  private final Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
@@ -57,6 +58,7 @@ public class PdfGenerator implements FileGenerator {
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
+      Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers,//TODO emj new
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
@@ -72,6 +74,7 @@ public class PdfGenerator implements FileGenerator {
     this.fileNameGenerator = fileNameGenerator;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
+    this.pdfFieldWithCertainPopsAdditionalHHFillers = pdfFieldWithCertainPopsAdditionalHHFillers;
     this.countyMap = countyMap;
   }
 
@@ -121,6 +124,11 @@ public class PdfGenerator implements FileGenerator {
             && field.getIteration() > 1))) {
       pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
     }
+    
+    var houseHoldWithoutSpouse = application.getApplicationData().getHouseholdMemberWithoutSpouse();
+    if (document.equals(Document.CERTAIN_POPS)  && houseHoldWithoutSpouse > 1 && houseHoldWithoutSpouse <= 14) {
+          pdfFiller = pdfFieldWithCertainPopsAdditionalHHFillers.get(recipient).get(document).get(String.valueOf(Math.ceil(houseHoldWithoutSpouse/2)));
+        }
 
     List<PdfField> fields = pdfFieldMapper.map(documentFields);
     return pdfFiller.fill(fields, application.getId(), filename);

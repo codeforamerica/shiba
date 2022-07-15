@@ -1210,5 +1210,26 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("HAVE_SAVINGS", "No", caf);
       assertPdfFieldEquals("EXPEDITED_QUESTION_2", "0.00", caf);
     }
+    
+    @Test
+    void shouldMapHHMemberMoreThan2() throws Exception {
+      fillInRequiredPages();
+      selectPrograms("CERTAIN_POPS");
+      postExpectingRedirect("basicCriteria", "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "certainPopsConfirm");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(8);
+      submitApplication();
+      //var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+      var pdf = downloadCertainPopsClientPDF();
+      assertPdfFieldEquals("HH_FIRST_NAME_4", "householdMemberFirstName4", pdf);
+      assertPdfFieldEquals("HH_LAST_NAME_4", "householdMemberLastName4", pdf);
+      assertPdfFieldEquals("HH_RELATIONSHIP_4", "housemate", pdf);
+      assertPdfFieldEquals("HH_DATE_OF_BIRTH_4", "09/14/1950", pdf);
+      assertPdfFieldEquals("HH_SSN_4", "XXX-XX-XXXX", pdf);
+      assertPdfFieldEquals("HH_MARITAL_STATUS_4", "NEVER_MARRIED", pdf);
+      assertPdfFieldEquals("HH_SEX_4", "MALE", pdf);
+    }
   }
 }
