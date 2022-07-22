@@ -1921,7 +1921,7 @@ pageDefinitions:
     headerKey:
       defaultValue: employment-status.is-anyone-in-your-household-making-money-from-a-job
       conditionalValues:
-        - value: employment-status.are-you-currently-working-or-making-an-income
+        - value: employment-status.are-you-making-money-from-a-job-self-employment
           condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
