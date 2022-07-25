@@ -23,7 +23,7 @@ jobs:
       with:
         ref: ${{ steps.fetch-latest-release.outputs.tag_name }}
     - name: Create Sentry release
-      uses: getsentry/action-release@v1.1.6
+      uses: getsentry/action-release@v1.2.0
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         SENTRY_ORG: mnbenefits
