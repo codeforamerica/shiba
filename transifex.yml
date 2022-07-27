@@ -1,7 +1,7 @@
 git:
   filters:
     - filter_type: file
-      file_format: PROPERTIES
-      source_language: en
+      file_format: UNICODEPROPERTIES
+      source_language: en_US
       source_file: src/main/resources/messages.properties
       translation_files_expression: 'src/main/resources/messages_<lang>.properties'
