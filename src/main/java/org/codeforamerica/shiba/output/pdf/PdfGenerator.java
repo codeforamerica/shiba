@@ -2,12 +2,11 @@ package org.codeforamerica.shiba.output.pdf;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -18,7 +17,6 @@ import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -30,10 +28,10 @@ import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
-import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -47,18 +45,19 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
-  private final Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers;
+  private final Map<Recipient, Map<String, List<Resource>>> pdfResourcesCertainPops;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
   private final FeatureFlagConfiguration featureFlags;
   private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
+  
 
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
-      Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers,//TODO emj new
+      Map<Recipient, Map<String, List<Resource>>> pdfResourcesCertainPops,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
@@ -74,7 +73,7 @@ public class PdfGenerator implements FileGenerator {
     this.fileNameGenerator = fileNameGenerator;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
-    this.pdfFieldWithCertainPopsAdditionalHHFillers = pdfFieldWithCertainPopsAdditionalHHFillers;
+    this.pdfResourcesCertainPops = pdfResourcesCertainPops;
     this.countyMap = countyMap;
   }
 
@@ -119,16 +118,29 @@ public class PdfGenerator implements FileGenerator {
     if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
       pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
     }
-    if (document.equals(Document.CERTAIN_POPS) && documentFields.stream().anyMatch(
+    if(document.equals(Document.CERTAIN_POPS)) {
+    List<Resource> pdfResource = new ArrayList<Resource>(); 
+    pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("default"));
+    //For non-self employment more than two
+    if (documentFields.stream().anyMatch(
         field -> (field.getGroupName().contains("nonSelfEmployment_householdSelectionForIncome")
             && field.getIteration() > 1))) {
-      pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
+      pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addIncome"));
     }
-    
+    //For household more than two
     var houseHoldWithoutSpouse = application.getApplicationData().getHouseholdMemberWithoutSpouse();
-    if (document.equals(Document.CERTAIN_POPS)  && houseHoldWithoutSpouse > 1 && houseHoldWithoutSpouse <= 14) {
-          pdfFiller = pdfFieldWithCertainPopsAdditionalHHFillers.get(recipient).get(document).get(String.valueOf(Math.ceil(houseHoldWithoutSpouse/2)));
+    if (houseHoldWithoutSpouse > 1 && houseHoldWithoutSpouse <= 14) {
+      String name = "addHousehold"+String.valueOf(Math.ceil(houseHoldWithoutSpouse/2));
+      pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get(name));
         }
+    //for Disability more than two
+    if (documentFields.stream().anyMatch(
+        field -> (field.getGroupName().contains("whoHasDisability")
+            && (field.getIteration()!=null?field.getIteration():0) > 1))) {
+      pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addDisabilitySupp"));
+    }
+      pdfFiller = new PDFBoxFieldFiller(pdfResource);
+    }
 
     List<PdfField> fields = pdfFieldMapper.map(documentFields);
     return pdfFiller.fill(fields, application.getId(), filename);

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1230,6 +1229,31 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("HH_SSN_4", "XXX-XX-XXXX", pdf);
       assertPdfFieldEquals("HH_MARITAL_STATUS_4", "NEVER_MARRIED", pdf);
       assertPdfFieldEquals("HH_SEX_4", "MALE", pdf);
+    }
+    
+    @Test
+    void shouldMapHHMemberMoreThan2HasDisability() throws Exception {
+      fillInRequiredPages();
+      postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+      selectPrograms("CERTAIN_POPS");
+      postExpectingRedirect("basicCriteria", "basicCriteria",
+          List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA", "HAVE_DISABILITY_SMRT",
+              "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+          "certainPopsConfirm");
+      fillOutHousemateInfoMoreThanFiveLessThanTen(8);
+      postExpectingSuccess("disability", "disability", "true");
+      postExpectingRedirect("whoHasDisability", "whoHasDisability",
+          List.of("householdMemberFirstName0 householdMemberLastName0",
+              "householdMemberFirstName1 householdMemberLastName1",
+              "householdMemberFirstName2 householdMemberLastName2"),
+          "workSituation");
+      submitApplication();
+      //var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+      var pdf = downloadCertainPopsClientPDF();
+      assertPdfFieldEquals("WHO_HAS_DISABILITY_0", "householdMemberFirstName0", pdf);
+      assertPdfFieldEquals("WHO_HAS_DISABILITY_1", "householdMemberFirstName1", pdf);
+      assertPdfFieldEquals("WHO_HAS_DISABILITY_2", "householdMemberFirstName2", pdf);
+      
     }
   }
 }

@@ -1807,6 +1807,24 @@ pageDefinitions:
     inputs:
       - name: hasDisability
         type: YES_NO
+  - &whoHasDisability
+    name: whoHasDisability
+    pageTitle: who-has-disability.title
+    contextFragment: disabilityContextFragment
+    headerKey:
+      defaultValue: who-has-disability.who-has-a-physical-or-mental-disability-that-limits
+    hasPrimaryButton: true
+    inputs:
+      - type: CUSTOM
+        name: whoHasDisability
+        customInputFragment: householdOptionsCheckboxes
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &workSituation
     name: workSituation
     pageTitle: work-situation.title
@@ -4179,7 +4197,22 @@ workflow:
     datasources:
       - pageName: addHouseholdMembers
     nextPages:
+      - pageName: whoHasDisability
+        condition:
+          logicalOperator: AND
+          conditions:
+            - pageName: disability
+              input: hasDisability
+              value: "true"
+            - *doesNotLiveAlone? 
       - pageName: workSituation
+  whoHasDisability:
+    pageConfiguration: *whoHasDisability
+    nextPages:
+      - pageName: workSituation
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: choosePrograms
   workSituation:
     pageConfiguration: *workSituation
     datasources:

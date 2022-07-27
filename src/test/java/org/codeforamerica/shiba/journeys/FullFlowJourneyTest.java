@@ -165,8 +165,12 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Does anyone in your household have a physical or mental disability that prevents them from working?
-    testPage.enter("hasDisability", NO.getDisplayValue());
-
+    testPage.enter("hasDisability", YES.getDisplayValue());
+    
+    //Who has Disability?
+    testPage.enter("whoHasDisability", "me");
+    testPage.clickContinue();
+    
     // In the last 2 months, did anyone in your household do any of these things?
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
 
@@ -675,7 +679,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("MIGRANT_SEASONAL_FARM_WORKER", "No");
     assertCafFieldEquals("DRUG_FELONY", "No");
     assertCafFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
-    assertCafFieldEquals("HAS_DISABILITY", "No");
+    assertCafFieldEquals("HAS_DISABILITY", "Yes");
     assertCafFieldEquals("HAS_WORK_SITUATION", "No");
     assertCafFieldEquals("IS_WORKING", "Yes");
     assertCafFieldEquals("SOCIAL_SECURITY", "Yes");

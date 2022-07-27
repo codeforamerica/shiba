@@ -140,6 +140,8 @@ mappings:
     isUsCitizen: IS_US_CITIZEN
   disability:
     hasDisability: HAS_DISABILITY
+  whoHasDisability:
+    whoHasDisability: WHO_HAS_DISABILITY
   workSituation:
     hasWorkSituation: HAS_WORK_SITUATION
   nationsBoundary:

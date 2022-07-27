@@ -5,13 +5,13 @@ import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.codeforamerica.shiba.ServicingAgencyMap;
@@ -32,6 +32,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 class PdfGeneratorTest {
 
@@ -44,17 +48,19 @@ class PdfGeneratorTest {
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
 
+  @Autowired
+  ResourceLoader resourceLoader;
+  
   @BeforeEach
   void setUp() {
     pdfFieldMapper = mock(PdfFieldMapper.class);
     caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
-    PdfFieldFiller caseworkerCertainPopsWithAdditionHHFiller = mock(PdfFieldFiller.class);
-    PdfFieldFiller clientCertainPopsWithAdditionHHFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
-
+    resourceLoader = mock(ResourceLoader.class);
+    
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
@@ -73,11 +79,17 @@ class PdfGeneratorTest {
         CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
         CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
     );
-    
-    Map<Recipient, Map<Document, Map<String, PdfFieldFiller>>> pdfFieldWithCertainPopsAdditionalHHFillers = Map.of(
-            CASEWORKER, Map.of(Document.CAF, Map.of("1", caseworkerCertainPopsWithAdditionHHFiller)),
-            CLIENT, Map.of(Document.CAF, Map.of("1", clientCertainPopsWithAdditionHHFiller))
-        );
+    resourceLoader = new DefaultResourceLoader(getClass().getClassLoader());
+    Resource coverPages = resourceLoader.getResource("cover-pages.pdf");
+    Resource certainPops = resourceLoader.getResource("certain-pops.pdf");
+    List<Resource> pdfResource = new ArrayList<Resource>();
+    pdfResource.add(coverPages);
+    pdfResource.add(certainPops);
+    Map<Recipient, Map<String, List<Resource>>> pdfResourcesCertainPops = Map.of(
+        CASEWORKER, Map.of("default", pdfResource),
+        CLIENT, Map.of("default", pdfResource)
+    );
+  
 
     application = Application.builder()
         .id(applicationId)
@@ -90,7 +102,7 @@ class PdfGeneratorTest {
         pdfFieldMapper,
         pdfFieldFillers,
         pdfFieldWithCAFHHSuppFillers,
-        pdfFieldWithCertainPopsAdditionalHHFillers,
+        pdfResourcesCertainPops,
         applicationRepository,
         null,
         preparers,
@@ -134,7 +146,30 @@ class PdfGeneratorTest {
     ApplicationFile actualApplicationFile = pdfGenerator
         .generate(applicationId, Document.CAF, recipient);
 
-    assertThat(actualApplicationFile).isEqualTo(expectedApplicationFile);
+    assertThat(actualApplicationFile.getFileName()).isEqualTo(expectedApplicationFile.getFileName());
+  }
+  
+  @Test
+  void shouldUseFillerForCertainPops() {
+    List<DocumentField> documentFields = List
+        .of(new DocumentField("someGroupName", "someName", List.of("someValue"),
+            DocumentFieldType.SINGLE_VALUE));
+    List<PdfField> pdfFields = List.of(new SimplePdfField("someName", "someValue"));
+    String fileName = "someFileName";
+    when(fileNameGenerator.generatePdfFilename(application, Document.CERTAIN_POPS)).thenReturn(fileName);
+    Recipient recipient = CASEWORKER;
+    when(preparers.prepareDocumentFields(application, Document.CERTAIN_POPS, recipient)).thenReturn(
+        documentFields);
+    when(pdfFieldMapper.map(documentFields)).thenReturn(pdfFields);
+    ApplicationFile expectedApplicationFile = new ApplicationFile("someContent".getBytes(),
+        "someFileName");
+    
+
+    ApplicationFile actualApplicationFile = pdfGenerator
+        .generate(applicationId, Document.CERTAIN_POPS, recipient);
+
+    assertThat(actualApplicationFile.getFileName()).isEqualTo(expectedApplicationFile.getFileName());
+   
   }
 
   @ParameterizedTest
@@ -143,4 +178,6 @@ class PdfGeneratorTest {
     pdfGenerator.generate(applicationId, Document.CAF, recipient);
     verify(pdfFieldFillers.get(recipient).get(Document.CAF)).fill(any(), any(), any());
   }
+  
+ 
 }
