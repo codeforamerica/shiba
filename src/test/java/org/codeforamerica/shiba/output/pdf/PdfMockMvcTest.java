@@ -10,9 +10,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
@@ -998,6 +1001,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
       postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
       postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
+      postExpectingSuccess("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED");
+      postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED");
       addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
       addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
       postExpectingSuccess("assets", "assets",
@@ -1077,6 +1082,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       assertPdfFieldEquals("NON_SELF_EMPLOYMENT_HOURS_A_WEEK_0", "", pdf);
       assertPdfFieldEquals("INCOME_PER_PAY_PERIOD_EVERY_WEEK_0", "1", pdf);
 
+      // Section 11
+      assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
+      
       //CertainPops Healthcare Coverage Question
       assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
 
@@ -1098,6 +1106,85 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
       //Section 16
       assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
     }
+
+    // This test just verifies that the Yes/No radio button is set
+	@Test
+	void shouldMapNoCpUnearnedIncomeToFalseWhenAnyUnearnedIncomeSelected() throws Exception {
+		fillInRequiredPages();
+		postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+		selectPrograms("CERTAIN_POPS");
+		postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"), "certainPopsConfirm");
+		fillInPersonalInfoAndContactInfoAndAddress();
+		postExpectingSuccess("unearnedIncome", "unearnedIncome", "SOCIAL_SECURITY");
+		postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED");
+		submitApplication();
+
+		var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+		// Section 11
+		assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+	}
+
+	// The applicant has unearned income, there are no additional household members
+	@Test
+	void shouldMapFieldsForApplicantOnlyUnearnedIncomeSelections() throws Exception {
+		fillInRequiredPages();
+		postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+		selectPrograms("CERTAIN_POPS");
+		postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"), "certainPopsConfirm");
+		fillInPersonalInfoAndContactInfoAndAddress();
+		postExpectingSuccess("unearnedIncome", "unearnedIncome", "SOCIAL_SECURITY");
+		postExpectingSuccess("unearnedIncomeSources", "socialSecurityAmount", "100");
+		postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED");
+		submitApplication();
+
+		var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+		// Section 11
+		assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_PERSON_1", "Dwight Schrute", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Social Security", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_1", "100", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_1", "Monthly", pdf);
+	}
+
+	// The applicant has no unearned income, the two additional household members have unearned income.
+	@Test
+	void shouldMapFieldsForHouseholdMemberUnearnedIncomeSelections() throws Exception {
+		fillInRequiredPages();
+		postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+		selectPrograms("CERTAIN_POPS");
+		postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"), "certainPopsConfirm");
+		fillInPersonalInfoAndContactInfoAndAddress(); // applicant
+		fillOutHousemateInfoMoreThanFiveLessThanTen(1); // + 2 household members
+		applicationData.getSubworkflows().get("household").get(0).setId(UUID.fromString("00000000-1234-1234-1234-123456789012"));
+		applicationData.getSubworkflows().get("household").get(1).setId(UUID.fromString("11111111-1234-1234-1234-123456789012"));
+		postExpectingSuccess("unearnedIncome", "unearnedIncome", "UNEMPLOYMENT");
+		HashMap<String, List<String>> params = new HashMap<String, List<String>>();
+		params.put("monthlyIncomeUnemployment", List.of("householdMemberFirstName0 householdMemberLastName0 00000000-1234-1234-1234-123456789012"));
+		params.put("unemploymentAmount", List.of("", "100", ""));
+		postExpectingSuccess("unemploymentIncomeSource", params );
+		
+		postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "INTEREST_DIVIDENDS");
+		params = new HashMap<String, List<String>>();
+		params.put("monthlyIncomeInterestDividends", List.of("householdMemberFirstName1 householdMemberLastName1 11111111-1234-1234-1234-123456789012"));
+		params.put("interestDividendsAmount", List.of("", "", "200"));
+		postExpectingSuccess("interestDividendsIncomeSource", params);
+		submitApplication();
+
+		var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+		// Section 11
+		assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_PERSON_1", "householdMemberFirstName0 householdMemberLastName0", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Unemployment", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_1", "100", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_1", "Monthly", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_PERSON_2", "householdMemberFirstName1 householdMemberLastName1", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_2_1", "Interest or dividends", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_AMOUNT_2_1", "200", pdf);
+		assertPdfFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_2_1", "Monthly", pdf);
+	}
 
     @Test
     void shouldMapFieldsForHouseholdRelatedSelections() throws Exception {
