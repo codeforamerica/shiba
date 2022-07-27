@@ -1,0 +1,43 @@
+<!--/* Custom input copied from parentNotAtHomeNameInput.html for displaying formatted data as well as storing additional hidden data which will be needed later for writing to the PDF */-->
+<th:block th:fragment="alienIdInput (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                    inputData=${data.get(input.name)},
+                    alienIdMapData=${data.get('alienIdMap')},
+                    testAlien=${input.options.datasources.get('whoIsNonCitizen').get('whoIsNonCitizen') == null},
+                    hasHelpMessage=${input.helpMessageKey != null},
+                    needsAriaLabel=${input.needsAriaLabel()}">
+  <div class="spacing-below-60" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+ <th:block th:if="${input.options.datasources.get('whoIsNonCitizen').get('whoIsNonCitizen') != null}">
+    <th:block 
+        th:each="fullNameAndId, iterationStat: ${input.options.datasources.get('whoIsNonCitizen').get('whoIsNonCitizen').value}"
+        th:with="alienIdArray=${#strings.arraySplit(fullNameAndId, ' ')},
+                         alienId=${alienIdArray[#arrays.length(alienIdArray)-1]},
+                         personName=${#strings.substringBefore(fullNameAndId, ' ' + alienId)},
+                         you=#{general.you},
+                         indexInInputData=${alienIdMapData.value.indexOf(alienId)},
+                         personAlienId=${indexInInputData < 0 ? '' : inputData.value.get(indexInInputData)},
+                         fieldIsBlank=${!inputData.valid(data) && personAlienId.isBlank()}">
+      <div class="form-group" th:classappend="${fieldIsBlank} ? 'form-group--error' : ''">
+        <label class="form-question spacing-below-5" th:for="|${alienId}-personAlienId|"
+               th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, you)}"
+               th:id="${alienId + '-label'}">
+        </label>
+        <input type="text"
+               class="text-input form-width--medium"
+               th:readonly="${input.readOnly}"
+               th:id="|${alienId}-personAlienId|"
+               th:value="${personAlienId}"
+               th:name="${formInputName}"
+               th:placeholder="${input.placeholder == null} ? '' : #{${input.placeholder}}"
+               th:attr="aria-describedby=${hasHelpMessage ? childId + '-help-message' : ''},
+               aria-invalid=${hasError},
+               aria-labelledby=${alienId + '-label'}">
+        <input type="hidden"
+               th:id="|${alienId}-id|"
+               th:value="${alienId}"
+               th:name="alienIdMap[]">
+      </div>
+    </th:block>
+ </th:block>
+  </div>
+</th:block>

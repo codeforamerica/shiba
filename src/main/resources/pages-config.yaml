@@ -1073,10 +1073,45 @@ pageDefinitions:
       - type: CUSTOM
         name: whoIsNonCitizen
         customInputFragment: householdOptionsCheckboxes
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
+  - &alienIdNumber
+    name: alienIdNumber
+    pageTitle: alien-id-number.title
+    headerKey: what-is-your-alien-id-number.header
+    headerHelpMessageKey: what-is-alien-id-number.this-will-help-caseworker
+    contextFragment: passportContextFragment
+    inputs:
+      - type: TEXT
+        name: alienIdNumber
+        placeholder: general.optional
+        options:
+          datasources:
+            - pageName: whoIsNonCitizen
+      - type: HIDDEN
+        name: alienIdMap # This input is controlled by whoIsNonCitizen
+  - &alienIdNumbers
+   name: alienIdNumbers
+   pageTitle: alien-id-number.title
+   headerKey: what-is-their-alien-id-number.header
+   headerHelpMessageKey: what-is-alien-id-number.this-will-help-caseworker
+   contextFragment: passportContextFragment
+   inputs:
+     - type: CUSTOM
+       name: alienIdNumber
+       customInputFragment: alienIdInput
+       helpMessageKey: general.inputs.optional
+       placeholder: general.optional
+       options:
+         datasources:
+           - pageName: whoIsNonCitizen
+     - type: HIDDEN
+       name: alienIdMap # This input is controlled by whoIsNonCitizen
   - &doYouNeedHelpImmediately
     name: doYouNeedHelpImmediately
     pageTitle: do-you-need-help-immediately.title
@@ -4086,32 +4121,59 @@ workflow:
         - pageName: pregnant
           input: isPregnant
           value: "false"
-  usCitizen:
-    pageConfiguration: *usCitizen
-    nextPages:
-      - pageName: whoIsNonCitizen
-    datasources:
-      - pageName: addHouseholdMembers
-  whoIsNonCitizen:
-    pageConfiguration: *whoIsNonCitizen
-    nextPages:
-      - pageName: disability
-    datasources:
-      - pageName: addHouseholdMembers
-      - pageName: usCitizen
-    skipCondition:
-      logicalOperator: OR
-      conditions:
-        - *livesAlone?
-        - pageName: usCitizen
-          input: isUsCitizen
-          value: "true"
   migrantFarmWorker:
     pageConfiguration: *migrantFarmWorker
     nextPages:
       - pageName: usCitizen
     datasources:
       - pageName: addHouseholdMembers
+  usCitizen:
+    pageConfiguration: *usCitizen
+    nextPages:
+      - pageName: disability
+        condition: 
+          pageName: usCitizen
+          input: isUsCitizen
+          value: "true"
+      - pageName: whoIsNonCitizen
+        condition:
+          pageName: usCitizen
+          input: isUsCitizen
+          value: "false"
+    datasources:
+      - pageName: addHouseholdMembers
+  whoIsNonCitizen:
+    pageConfiguration: *whoIsNonCitizen
+    nextPages:
+      - pageName: alienIdNumber
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: usCitizen
+    skipCondition: *livesAlone?
+  alienIdNumber:
+    pageConfiguration: *alienIdNumber
+    nextPages:
+      - pageName: alienIdNumbers
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+       - *applicantDidNotChooseCERTAINPOPS?
+       - *doesNotLiveAlone?  
+  alienIdNumbers:
+    pageConfiguration: *alienIdNumbers
+    nextPages:
+      - pageName: disability
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+       - *applicantDidNotChooseCERTAINPOPS?
+       - *livesAlone?     
   disability:
     pageConfiguration: *disability
     datasources:

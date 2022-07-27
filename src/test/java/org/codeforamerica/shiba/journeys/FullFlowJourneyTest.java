@@ -160,6 +160,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Who is not a U.S Citizen?
     testPage.enter("whoIsNonCitizen", "me");
     testPage.clickContinue();
+    
+    testPage.enter("alienIdNumber", "A12345678");
+    testPage.clickContinue();
 
     // Does anyone in your household have a physical or mental disability that prevents them from working?
     testPage.enter("hasDisability", NO.getDisplayValue());
