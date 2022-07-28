@@ -97,11 +97,6 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     // Is everyone in your household a U.S. Citizen?
     testPage.enter("isUsCitizen", YES.getDisplayValue());
 
-    // Page is skipped because applicant and household is only applying for CCAP
-    // Does anyone in your household have a physical or mental disability that
-    // prevents them from working?
-    // testPage.enter("hasDisability", NO.getDisplayValue());
-
     // In the last 2 months, did anyone in your household do any of these things?
     testPage.enter("hasWorkSituation", NO.getDisplayValue());
 
@@ -134,19 +129,6 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
 
     // Expenses & Deductions
     testPage.clickContinue();
-
-    // Pages are skipped because applicant and household is only applying for CCAP
-    // Does anyone in your household pay for room and board?
-    // testPage.enter("homeExpenses", "None of the above");
-    // testPage.clickContinue();
-
-    // Does anyone in your household pay for utilities?
-    // testPage.enter("payForUtilities", "None of the above");
-    // testPage.clickContinue();
-
-    // Has your household received money for energy assistance (LIHEAP) in the last
-    // 12 months?
-    // testPage.enter("energyAssistance", NO.getDisplayValue());
 
     testPage.enter("medicalExpenses", "None of the above");
     testPage.clickContinue();
