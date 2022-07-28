@@ -751,13 +751,20 @@ public class AbstractShibaMockMvcTest {
     assertThat(new FormPage(getPage(pageName)).getTitle()).isEqualTo(pageTitle);
   }
 
-  protected void fillAdditionalIncomeInfo() throws Exception {
+  protected void fillAdditionalIncomeInfo(String... programs) throws Exception {
     postExpectingRedirect("futureIncome", "additionalIncomeInfo",
         "one more thing you need to know is...", "startExpenses");
-    assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
-    postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
-    postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");
-    postExpectingRedirect("energyAssistance", "energyAssistance", "false", "medicalExpenses");
+    
+    if (Arrays.stream(programs).allMatch(onlyCCAP -> onlyCCAP.contains("CCAP"))) {
+    	assertNavigationRedirectsToCorrectNextPage("startExpenses", "medicalExpenses");
+    }
+    else {
+    	assertNavigationRedirectsToCorrectNextPage("startExpenses", "homeExpenses");
+	    postExpectingRedirect("homeExpenses", "homeExpenses", "NONE_OF_THE_ABOVE", "utilities");
+	    postExpectingRedirect("utilities", "payForUtilities", "NONE_OF_THE_ABOVE", "energyAssistance");
+	    postExpectingRedirect("energyAssistance", "energyAssistance", "false", "medicalExpenses");
+    }
+    
     postExpectingRedirect("medicalExpenses", "medicalExpenses", "NONE_OF_THE_ABOVE",
         "supportAndCare");
   }
@@ -787,12 +794,19 @@ public class AbstractShibaMockMvcTest {
     
   }
 
-  protected void completeFlowFromIsPregnantThroughTribalNations(boolean hasHousehold)
+  protected void completeFlowFromIsPregnantThroughTribalNations(boolean hasHousehold, String... programs)
       throws Exception {
     postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
-    postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
-    postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+    
+    if (Arrays.stream(programs).allMatch(onlyCCAP -> onlyCCAP.contains("CCAP"))) {
+    	postExpectingRedirect("usCitizen", "isUsCitizen", "true", "workSituation");
+    }
+    else {
+    	postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+    	postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+    }
+    
     if (hasHousehold) {
       postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
       postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false",

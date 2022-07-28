@@ -86,15 +86,15 @@ public class AssetsTypeTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
    /* postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");*/
     postExpectingRedirect("whoIsGoingToSchool", "pregnant"); // no one is going to school
-    completeFlowFromIsPregnantThroughTribalNations(true);
+    completeFlowFromIsPregnantThroughTribalNations(true, programs);
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingNextPageTitle("employmentStatus", "areYouWorking", "false", "Job Search");
     postExpectingNextPageTitle("jobSearch", "currentlyLookingForJob", "true",
         "Who is looking for a job");
-    fillSupportAndCare();
+    fillSupportAndCare(programs);
   }
 
-  private void fillSupportAndCare() throws Exception {
+  private void fillSupportAndCare(String... programs) throws Exception {
     assertNavigationRedirectsToCorrectNextPage("incomeUpNext", "unearnedIncome");
     postExpectingRedirect("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED",
         "otherUnearnedIncome");
@@ -102,7 +102,7 @@ public class AssetsTypeTest extends AbstractShibaMockMvcTest {
         "otherUnearnedIncome",
         "NO_OTHER_UNEARNED_INCOME_SELECTED",
         "futureIncome");
-    fillAdditionalIncomeInfo();
+    fillAdditionalIncomeInfo(programs);
     postExpectingRedirect("supportAndCare", "supportAndCare", "false", "assets");
   }
 }
