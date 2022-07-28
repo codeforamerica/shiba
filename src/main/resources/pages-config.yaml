@@ -108,6 +108,16 @@ conditionDefinitions:
       - pageName: householdMemberInfo
         input: programs
         value: CCAP
+  - &applicantOnlyChoseCCAP?
+    pageName: choosePrograms
+    value: CCAP
+    input: programs
+    matcher: CONTAINS_ONLY
+  - &householdOnlyChoseCCAP?
+    pageName: householdMemberInfo
+    input: programs
+    value: CCAP
+    matcher: CONTAINS_ONLY
   - &applicantDidNotChooseProgram?
     pageName: choosePrograms
     input: programs
@@ -4194,8 +4204,16 @@ workflow:
        - *livesAlone?     
   disability:
     pageConfiguration: *disability
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *applicantOnlyChoseCCAP?
+        - *householdOnlyChoseCCAP?
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
     nextPages:
       - pageName: whoHasDisability
         condition:
@@ -4935,6 +4953,11 @@ workflow:
       - pageName: homeExpenses
   homeExpenses:
     pageConfiguration: *homeExpenses
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *applicantOnlyChoseCCAP?
+        - *householdOnlyChoseCCAP?
     nextPages:
       - pageName: homeExpensesAmount
         condition:
@@ -4952,6 +4975,9 @@ workflow:
       - pageName: utilities
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
   homeExpensesAmount:
     pageConfiguration: *homeExpensesAmount
     nextPages:
@@ -4962,25 +4988,37 @@ workflow:
       - pageName: choosePrograms
   utilities:
     pageConfiguration: *utilityPayments
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *applicantOnlyChoseCCAP?
+        - *householdOnlyChoseCCAP?
     nextPages:
       - pageName: energyAssistance
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
   energyAssistance:
     pageConfiguration: *energyAssistance
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *applicantOnlyChoseCCAP?
+        - *householdOnlyChoseCCAP?
     nextPages:
-      - pageName: medicalExpenses
-        condition:
-          pageName: energyAssistance
-          input: energyAssistance
-          value: "false"
       - pageName: energyAssistanceMoreThan20
         condition:
           pageName: energyAssistance
           input: energyAssistance
           value: "true"
+      - pageName: medicalExpenses
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+      - pageName: choosePrograms
   energyAssistanceMoreThan20:
     pageConfiguration: *energyAssistanceMoreThan20
     skipCondition:

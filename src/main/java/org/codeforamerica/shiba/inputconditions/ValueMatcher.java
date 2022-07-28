@@ -15,6 +15,9 @@ public enum ValueMatcher {
   NONE_SELECTED((testValue, ignore) -> testValue.isEmpty()),
 
   CONTAINS(List::contains),
+  
+  CONTAINS_ONLY((testValue, targetValue) ->
+  	testValue.stream().allMatch(string -> string.contains(targetValue))),
 
   DOES_NOT_EQUAL(
       (testValue, targetValue) -> testValue.size() != 1 || !testValue.get(0).equals(targetValue)),
