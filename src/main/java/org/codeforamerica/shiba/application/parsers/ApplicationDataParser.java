@@ -215,6 +215,62 @@ public class ApplicationDataParser {
         new ParsingCoordinate("otherUnearnedIncomeSources", "rentalIncomeAmount"));
     coordinatesMap.put(Field.OTHER_PAYMENTS_AMOUNT,
         new ParsingCoordinate("otherUnearnedIncomeSources", "otherPaymentsAmount"));
+    
+    coordinatesMap.put(Field.NO_CP_UNEARNED_INCOME,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_PERSON_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_PERSON_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_1_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_1_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_1_3,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_1_4,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_4"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_2_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_2_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_2_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_2_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_2_3,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_2_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_TYPE_2_4,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_2_4"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_1_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_1_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_1_3,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_1_4,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_4"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_2_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_2_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_2_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_2_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_2_3,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_2_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_AMOUNT_2_4,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_2_4"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_1_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_1_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_1_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_1_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_4"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_1,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_1"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_2,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_2"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_3,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_3"));
+    coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_4,
+            new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_4"));
+    
     coordinatesMap.put(Field.HOME_EXPENSES,
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
     coordinatesMap.put(Field.UTILITY_PAYMENTS,
@@ -410,6 +466,35 @@ public class ApplicationDataParser {
     INTEREST_DIVIDENDS_AMOUNT,
     RENTAL_AMOUNT,
     OTHER_PAYMENTS_AMOUNT,
+    
+    // Certain Pops section 11 fields
+    NO_CP_UNEARNED_INCOME,
+    CP_UNEARNED_INCOME_PERSON_1,
+    CP_UNEARNED_INCOME_PERSON_2,
+    CP_UNEARNED_INCOME_TYPE_1_1,
+    CP_UNEARNED_INCOME_TYPE_1_2,
+    CP_UNEARNED_INCOME_TYPE_1_3,
+    CP_UNEARNED_INCOME_TYPE_1_4,
+    CP_UNEARNED_INCOME_AMOUNT_1_1,
+    CP_UNEARNED_INCOME_AMOUNT_1_2,
+    CP_UNEARNED_INCOME_AMOUNT_1_3,
+    CP_UNEARNED_INCOME_AMOUNT_1_4,
+    CP_UNEARNED_INCOME_FREQUENCY_1_1,
+    CP_UNEARNED_INCOME_FREQUENCY_1_2,
+    CP_UNEARNED_INCOME_FREQUENCY_1_3,
+    CP_UNEARNED_INCOME_FREQUENCY_1_4,
+    CP_UNEARNED_INCOME_TYPE_2_1,
+    CP_UNEARNED_INCOME_TYPE_2_2,
+    CP_UNEARNED_INCOME_TYPE_2_3,
+    CP_UNEARNED_INCOME_TYPE_2_4,
+    CP_UNEARNED_INCOME_AMOUNT_2_1,
+    CP_UNEARNED_INCOME_AMOUNT_2_2,
+    CP_UNEARNED_INCOME_AMOUNT_2_3,
+    CP_UNEARNED_INCOME_AMOUNT_2_4,
+    CP_UNEARNED_INCOME_FREQUENCY_2_1,
+    CP_UNEARNED_INCOME_FREQUENCY_2_2,
+    CP_UNEARNED_INCOME_FREQUENCY_2_3,
+    CP_UNEARNED_INCOME_FREQUENCY_2_4,
     
     UNEARNED_BENEFITS_PROGRAMS_AMOUNT,
     UNEARNED_INSURANCE_PAYMENTS_AMOUNT,

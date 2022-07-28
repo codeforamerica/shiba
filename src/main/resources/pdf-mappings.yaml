@@ -160,6 +160,35 @@ mappings:
     retroactiveCoverageQuestion: RETROACTIVE_COVERAGE_HELP
   medicalInOtherState:
     medicalInOtherState: MEDICAL_IN_OTHER_STATE
+  certainPopsUnearnedIncome:
+    noCertainPopsUnearnedIncome: NO_CP_UNEARNED_INCOME
+    certainPopsUnearnedIncomePerson1: CP_UNEARNED_INCOME_PERSON_1
+    certainPopsUnearnedIncomePerson2: CP_UNEARNED_INCOME_PERSON_2
+    certainPopsUnearnedIncomeType_1_1: CP_UNEARNED_INCOME_TYPE_1_1
+    certainPopsUnearnedIncomeType_1_2: CP_UNEARNED_INCOME_TYPE_1_2
+    certainPopsUnearnedIncomeType_1_3: CP_UNEARNED_INCOME_TYPE_1_3
+    certainPopsUnearnedIncomeType_1_4: CP_UNEARNED_INCOME_TYPE_1_4
+    certainPopsUnearnedIncomeAmount_1_1: CP_UNEARNED_INCOME_AMOUNT_1_1
+    certainPopsUnearnedIncomeAmount_1_2: CP_UNEARNED_INCOME_AMOUNT_1_2
+    certainPopsUnearnedIncomeAmount_1_3: CP_UNEARNED_INCOME_AMOUNT_1_3
+    certainPopsUnearnedIncomeAmount_1_4: CP_UNEARNED_INCOME_AMOUNT_1_4
+    certainPopsUnearnedIncomeFrequency_1_1: CP_UNEARNED_INCOME_FREQUENCY_1_1
+    certainPopsUnearnedIncomeFrequency_1_2: CP_UNEARNED_INCOME_FREQUENCY_1_2
+    certainPopsUnearnedIncomeFrequency_1_3: CP_UNEARNED_INCOME_FREQUENCY_1_3
+    certainPopsUnearnedIncomeFrequency_1_4: CP_UNEARNED_INCOME_FREQUENCY_1_4
+    certainPopsUnearnedIncomeType_2_1: CP_UNEARNED_INCOME_TYPE_2_1
+    certainPopsUnearnedIncomeType_2_2: CP_UNEARNED_INCOME_TYPE_2_2
+    certainPopsUnearnedIncomeType_2_3: CP_UNEARNED_INCOME_TYPE_2_3
+    certainPopsUnearnedIncomeType_2_4: CP_UNEARNED_INCOME_TYPE_2_4
+    certainPopsUnearnedIncomeAmount_2_1: CP_UNEARNED_INCOME_AMOUNT_2_1
+    certainPopsUnearnedIncomeAmount_2_2: CP_UNEARNED_INCOME_AMOUNT_2_2
+    certainPopsUnearnedIncomeAmount_2_3: CP_UNEARNED_INCOME_AMOUNT_2_3
+    certainPopsUnearnedIncomeAmount_2_4: CP_UNEARNED_INCOME_AMOUNT_2_4
+    certainPopsUnearnedIncomeFrequency_2_1: CP_UNEARNED_INCOME_FREQUENCY_2_1
+    certainPopsUnearnedIncomeFrequency_2_2: CP_UNEARNED_INCOME_FREQUENCY_2_2
+    certainPopsUnearnedIncomeFrequency_2_3: CP_UNEARNED_INCOME_FREQUENCY_2_3
+    certainPopsUnearnedIncomeFrequency_2_4: CP_UNEARNED_INCOME_FREQUENCY_2_4
+    
   unearnedIncome:
     SOCIAL_SECURITY: SOCIAL_SECURITY
     SSI: SSI
