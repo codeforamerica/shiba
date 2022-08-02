@@ -16,8 +16,7 @@ public enum ValueMatcher {
 
   CONTAINS(List::contains),
   
-  CONTAINS_ONLY((testValue, targetValue) ->
-  	testValue.stream().allMatch(string -> string.contains(targetValue))),
+  CONTAINS_ONLY((testValue, targetValue) -> containsOnly(testValue, targetValue)),
 
   DOES_NOT_EQUAL(
       (testValue, targetValue) -> testValue.size() != 1 || !testValue.get(0).equals(targetValue)),
@@ -57,5 +56,11 @@ public enum ValueMatcher {
 
   public Boolean matches(List<String> testValue, String targetValue) {
     return this.matcher.apply(testValue, targetValue);
+  }
+  
+  private static Boolean containsOnly(List<String> testValue, String targetValue) {
+	List<String> programNoneOnly = testValue.stream().filter(program -> !program.equals(targetValue)).toList();
+	List<String> programOnly = testValue.stream().filter(program -> program.equals(targetValue)).toList();
+	return (programNoneOnly.stream().allMatch(string -> string.contains("NONE")) && programOnly.stream().allMatch(string -> string.contains(targetValue)));
   }
 }

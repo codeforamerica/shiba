@@ -755,7 +755,7 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("futureIncome", "additionalIncomeInfo",
         "one more thing you need to know is...", "startExpenses");
     
-    if (Arrays.stream(programs).allMatch(onlyCCAP -> onlyCCAP.contains("CCAP"))) {
+    if (containsOnly(Arrays.asList(programs), "CCAP")) {
     	assertNavigationRedirectsToCorrectNextPage("startExpenses", "medicalExpenses");
     }
     else {
@@ -799,7 +799,7 @@ public class AbstractShibaMockMvcTest {
     postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
     
-    if (Arrays.stream(programs).allMatch(onlyCCAP -> onlyCCAP.contains("CCAP"))) {
+    if (containsOnly(Arrays.asList(programs), "CCAP")) {
     	postExpectingRedirect("usCitizen", "isUsCitizen", "true", "workSituation");
     }
     else {
@@ -1045,5 +1045,11 @@ public class AbstractShibaMockMvcTest {
           .getRedirectedUrl();
     }
     return nextPage;
+  }
+  
+  private static Boolean containsOnly(List<String> testValue, String targetValue) {
+		List<String> programNoneOnly = testValue.stream().filter(program -> !program.equals(targetValue)).toList();
+		List<String> programOnly = testValue.stream().filter(program -> program.equals(targetValue)).toList();
+		return (programNoneOnly.stream().allMatch(string -> string.contains("NONE")) && programOnly.stream().allMatch(string -> string.contains(targetValue)));
   }
 }

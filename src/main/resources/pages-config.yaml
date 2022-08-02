@@ -4205,10 +4205,16 @@ workflow:
   disability:
     pageConfiguration: *disability
     skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantOnlyChoseCCAP?
-        - *householdOnlyChoseCCAP?
+        logicalOperator: OR
+        conditions:
+          - logicalOperator: AND
+            conditions:
+              - *applicantOnlyChoseCCAP?
+              - *householdOnlyChoseCCAP?
+          - logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantOnlyChoseCCAP?
     datasources:
       - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
@@ -4954,10 +4960,16 @@ workflow:
   homeExpenses:
     pageConfiguration: *homeExpenses
     skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantOnlyChoseCCAP?
-        - *householdOnlyChoseCCAP?
+        logicalOperator: OR
+        conditions:
+          - logicalOperator: AND
+            conditions:
+              - *applicantOnlyChoseCCAP?
+              - *householdOnlyChoseCCAP?
+          - logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantOnlyChoseCCAP?
     nextPages:
       - pageName: homeExpensesAmount
         condition:
@@ -4989,10 +5001,16 @@ workflow:
   utilities:
     pageConfiguration: *utilityPayments
     skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantOnlyChoseCCAP?
-        - *householdOnlyChoseCCAP?
+        logicalOperator: OR
+        conditions:
+          - logicalOperator: AND
+            conditions:
+              - *applicantOnlyChoseCCAP?
+              - *householdOnlyChoseCCAP?
+          - logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantOnlyChoseCCAP?
     nextPages:
       - pageName: energyAssistance
     datasources:
@@ -5003,10 +5021,16 @@ workflow:
   energyAssistance:
     pageConfiguration: *energyAssistance
     skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantOnlyChoseCCAP?
-        - *householdOnlyChoseCCAP?
+        logicalOperator: OR
+        conditions:
+          - logicalOperator: AND
+            conditions:
+              - *applicantOnlyChoseCCAP?
+              - *householdOnlyChoseCCAP?
+          - logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantOnlyChoseCCAP?
     nextPages:
       - pageName: energyAssistanceMoreThan20
         condition:
