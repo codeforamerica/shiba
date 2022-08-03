@@ -671,14 +671,15 @@ public class PageController {
       Application application = applicationFactory.newApplication(applicationData);
       application.setCompletedAtTime(clock); // how we mark that the application is complete
       recordDeviceType(device, application);
-      applicationRepository.save(application);
-      applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
-      log.info("Invoking pageEventPublisher for application submission: " + application.getId());
-      pageEventPublisher.publish(
-          new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
-              application.getFlow(), LocaleContextHolder.getLocale())
-      );
-
+      if(!applicationData.isSubmitted()) {
+        applicationRepository.save(application);
+        applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
+        log.info("Invoking pageEventPublisher for application submission: " + application.getId());
+        pageEventPublisher.publish(
+            new ApplicationSubmittedEvent(httpSession.getId(), application.getId(),
+                application.getFlow(), LocaleContextHolder.getLocale())
+        );
+      }
       // Temporary cookie indicating user submitted an application
       Cookie submitCookie = new Cookie("application_id", application.getId());
       submitCookie.setPath("/");
