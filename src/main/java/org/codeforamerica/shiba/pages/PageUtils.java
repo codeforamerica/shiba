@@ -51,18 +51,18 @@ public class PageUtils {
     return Stream.concat(applicant, nonApplicantHouseholdMembers).collect(Collectors.toList());
   }
 
-  public static Boolean isCCAPEligible(DatasourcePages datasourcePages) {
+  public static Boolean isProgramEligible(DatasourcePages datasourcePages, String program) {
     List<String> applicantPrograms = datasourcePages.get("choosePrograms").get("programs")
         .getValue();
-    boolean applicantHasCCAP = applicantPrograms.contains("CCAP");
+    boolean applicantHasProgram = applicantPrograms.contains(program);
     boolean hasHousehold = !datasourcePages.get("householdMemberInfo").isEmpty();
-    boolean householdHasCCAP = false;
+    boolean householdHasProgram = false;
     if (hasHousehold) {
-      householdHasCCAP = datasourcePages.get("householdMemberInfo").get("programs").getValue()
+      householdHasProgram = datasourcePages.get("householdMemberInfo").get("programs").getValue()
           .stream().anyMatch(iteration ->
-              iteration.contains("CCAP"));
+              iteration.contains(program));
     }
-    return applicantHasCCAP || householdHasCCAP;
+    return applicantHasProgram || householdHasProgram;
   }
 
   /**

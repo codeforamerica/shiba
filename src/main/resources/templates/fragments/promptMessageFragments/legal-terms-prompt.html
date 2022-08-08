@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="legal-terms-prompt">
-    <div class="textarea-readonly legal-stuff-window spacing-below-35">
+<div class="accordion legal-stuff-accordion" id="prepare-to-apply-accordion">
+        <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a1" >
+            <span th:text="#{legal-stuff.application-terms}"></span>
+        </button>
+    <div id="a1" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
         <h2 class="h3" th:text="#{legal-stuff.summary}"></h2>
         <div th:text="|• #{legal-stuff.you-have-been-honest-on-this-application}|"></div>
         <div th:text="|• #{legal-stuff.you-agree-to-the-benefit-rules}|"></div>
@@ -93,72 +97,12 @@
                 <span th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-social-security-numbers-section}|"></span>
                 <a th:text="#{legal-stuff.combined-application-form}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5223-ENG-pform" target="_blank" rel="noopener noreferrer"></a>
             </div>
-            <div th:text="|• #{legal-stuff.i-understand-that-if-someone}|" />
-            <div th:text="|• #{legal-stuff.i-have-received-and-reviewed}|" />
-            <ul class="list--bulleted">
-                <li th:utext="#{legal-stuff.authorization-of-sharing}"></li>
-                <li th:utext="#{legal-stuff.notice-about-ies}"></li>
-                <li th:utext="#{legal-stuff.important-information}"></li>
-                <li th:utext="#{legal-stuff.additional-important-information}"></li>
-                <li th:utext="#{legal-stuff.penalty-warnings}"></li>
-                <li th:utext="#{legal-stuff.civil-rights-notice}"></li>
-            </ul>
         </div>
-        <div id="ccap-legal" th:if="${T(org.codeforamerica.shiba.pages.PageUtils).isCCAPEligible(pageDatasources)}">
-            <h2 class="h3" th:text="#{legal-stuff.child-care-application}"></h2>
-            <b th:text="#{legal-stuff.if-i-get-child-care-assistance}"></b>
-            <div th:text="|• #{legal-stuff.i-may-be-required-to-pay-a-co-payment-fee}|"></div>
-            <div th:text="|• #{legal-stuff.if-my-child-care-provider-charges-more-than-the-maximum-rate-paid-in-my-county}|"></div>
-            <div>
-                <span th:text="|• #{legal-stuff.i-must-report-changes-to-the-information-I-have-given}|"></span>
-                <a th:text="#{legal-stuff.reporting-responsibilties-for-ccap-families}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-6953-ENG" target="_blank" rel="noopener noreferrer"></a>
-                <span th:text="#{legal-stuff.for-specific-requirements}"></span>
-            </div>
-            <div th:text="|• #{legal-stuff.i-must-give-the-county-agency-and-my-child-care-provider-15-calendar-days}|"></div>
-            <div th:text="|• #{legal-stuff.a-providers-Minnesota-child-care-license-has-been-temporarily-immediately-suspended-or}|"></div>
-            <div th:text="|• #{legal-stuff.there-is-an-imminent-risk-of-harm-to-the-health-safety-or-rights-of-a-child}|"></div>
-            <div th:text="|• #{legal-stuff.my-eligibility-for-child-care-assistance-will-be-redetermined-every-12-months}|"></div>
-            <div th:text="|• #{legal-stuff.i-have-the-right-to-choose-any-legal-child-care-provider}|"></div>
-            <div th:text="|• #{legal-stuff.if-i-choose-a-provider-to-provide-child-care-in-my-home-I-am-considered-the-employer-of-the-provider}|"></div>
-            <div th:text="|• #{legal-stuff.i-must-cooperate-with-child-support-enforcement-and-assign-my-child-care-support-portion}|"></div>
-            <div th:text="|• #{legal-stuff.i-agree-that-authorized-investigators-may-share-information-about-me-during-investigations}|"></div>
-            <div>
-                <h3 th:text="#{legal-stuff.provider-release}" class="h4"></h3>
-                <div th:text="#{legal-stuff.state-and-federal-privacy-laws-protect-my-information}"></div>
-                <div th:text="|• #{legal-stuff.this-information-must-be-shared-so-that-my-child-care-provider}|"></div>
-                <div th:text="|• #{legal-stuff.this-information-can-be-shared-only-if-I-give-my-written-permission}|"></div>
-                <div th:text="|• #{legal-stuff.i-can-refuse-to-sign-or-cancel-this-release}|"></div>
-                <div th:text="|• #{legal-stuff.i-may-cancel-this-authorization-with-written-notice-anytime}|"></div>
-                <div th:text="|• #{legal-stuff.the-person-or-agency-who-gets-my-information-may-be-able-to-pass-it-on-to-others}|"></div>
-                <div th:text="|• #{legal-stuff.if-my-information-is-passed-on-to-others-by-dhs}|"></div>
-            </div>
-            <div>
-                <h3 th:text="#{legal-stuff.penalty-warning}" class="h4"></h3>
-                <div th:text="#{legal-stuff.if-you-get-child-care-assistance-benefits}"></div>
-                <div th:text="|• #{legal-stuff.to-get-or-continue-to-get-child-care-assistance-benefits}|"></div>
-                <div th:text="|• #{legal-stuff.to-help-someone-else-to-get-or-to-continue-to-get-child-care-assistance-payments}|"></div>
-                <div th:text="#{legal-stuff.the-state-may-bar-a-family-with-a-member-who-breaks-either-of-these-rules}"></div>
-            </div>
-            <div>
-                <h3 th:text="#{legal-stuff.perjury-and-general-declarations}" class="h4"></h3>
-                <div th:text="#{legal-stuff.i-declare-under-the-penalties-of-perjury}"></div>
-            </div>
-            <div>
-                <h3 th:text="#{legal-stuff.by-signing}" class="h4"></h3>
-                <div>
-                    <span th:text="|• #{legal-stuff.i-have-received-a-copy-of-the}|"></span>
-                    <a th:text="#{legal-stuff.notices-of-privacy-practices-no-quotes}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-3979-ENG" target="_blank" rel="noopener noreferrer"></a>
-                    <span th:text="#{legal-stuff.comma}"></span>
-                    <a th:text="#{legal-stuff.client-responsibilties-and-rights-no-quotes}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-4163-ENG" target="_blank" rel="noopener noreferrer"></a>
-                    <span th:text="#{legal-stuff.comma}"></span>
-                    <span th:text="#{legal-stuff.and}"></span>
-                    <a th:text="#{legal-stuff.the-child-care-assistance-program-and-fraud}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-3943B-ENG" target="_blank" rel="noopener noreferrer"></a>
-                    <span th:text="#{legal-stuff.i-have-read-and-understand-this-information}" />
-                </div>
-                <div th:text="|• #{legal-stuff.i-agree-to-continue-to-assign-my-child-care-support-to-the-state-of-minnesota}|" />
-                <div th:text="|• #{legal-stuff.i-agree-to-the-sharing-of-information-as-stated-in-the-provider-release-and-fraud-investigation-authorization-information-above}|" />
-            </div>
         </div>
-    </div>
+</div>
+<div th:replace="fragments/promptMessageFragments/legal-terms-prompt-notice-privacy :: legal-terms-prompt-notice-privacy"></div>
+ <div th:replace="fragments/promptMessageFragments/legal-terms-prompt-client-resp-rights :: legal-terms-prompt-client-resp-rights"></div>
+ <div th:replace="fragments/promptMessageFragments/legal-terms-prompt-health-care-seniors :: legal-terms-prompt-health-care-seniors"></div>
+ <div th:replace="fragments/promptMessageFragments/legal-terms-prompt-ccap :: legal-terms-prompt-ccap"></div>
 </div>
 </html>

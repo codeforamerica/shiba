@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="legal-terms-prompt-client-resp-rights">
+<div class="accordion legal-stuff-accordion" id="resp-rights-accordion">
+        <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a3" >
+            <span th:text="#{legal-stuff.client-responsibilities-and-rights}"></span>
+        </button>
+         <div id="a3" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
+            <div>
+	            <h2 class="h3" th:text="#{legal-stuff.changes}"></h2>
+	            <p>
+	                <span th:text="#{legal-stuff.if-you-have-ma-you-must-report}"></span>
+	            </p>
+	            <div>
+	               <h3 class="h4" th:text="#{legal-stuff.income-changes-when-you}"></h3>
+	               <div th:text="|• #{legal-stuff.start-a-new-job-change-jobs-or-stop-a-job}|"></div>
+	               <div th:text="|• #{legal-stuff.start-to-get-or-receive-changes}|"></div>
+	            </div>
+	            <div>
+                   <h3 class="h4" th:text="#{legal-stuff.residence-changes-when-you}"></h3>
+                   <div th:text="|• #{legal-stuff.move-to-a-new-address}|"></div>
+                </div>
+                <div>
+                   <h3 class="h4" th:text="#{legal-stuff.life-changes-in-your-household-when-someone}"></h3>
+                   <div th:text="|• #{legal-stuff.starts-or-stops-other-health-insurance-or-medicare}|"></div>
+                   <div th:text="|• #{legal-stuff.becomes-pregnant-or-has-a-baby}|"></div>
+                   <div th:text="|• #{legal-stuff.moves-in-or-out-of-your-home}|"></div>
+                   <div th:text="|• #{legal-stuff.changes-tax-filing-status}|"></div>
+                   <div th:text="|• #{legal-stuff.loses-minnesota-residency}|"></div>
+                   <div th:text="|• #{legal-stuff.changes-citizenship-or-lawful-presence-status}|"></div>
+                   <div th:text="|• #{legal-stuff.changes-incarceration-status}|"></div>
+                   <div th:text="|• #{legal-stuff.dies-gets-married-or-gets-a-divorce}|"></div>
+                   <div th:text="|• #{legal-stuff.becomes-disabled}|"></div>
+                </div>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.reviews}" class="h3"></h2>
+                <div th:text="#{legal-stuff.the-state-or-federal-agencys-health-care}"></div>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.consent-for-sharing-of-medical-information}" class="h3"></h2>
+                <div th:text="#{legal-stuff.in-your-application-for-minnesota-health-care-program}"></div>
+                <div th:text="|• #{legal-stuff.health-providers-including-health-plans}|"></div>
+                <div th:text="|• #{legal-stuff.to-determine-who-should-pay-for-your-health-care}|"></div>
+                <div th:text="|• #{legal-stuff.to-provide,-manage-and-coordinate-health-care-services}|"></div>
+                <div th:text="|• #{legal-stuff.all-other-agencies-or-people-listed-on-this-notice-of-privacy}|"></div>
+                <div th:text="|• #{legal-stuff.to-administer-minnesota-health-care-programs}|"></div>
+                <p>
+                   <span th:text="#{legal-stuff.this-consent-applies-to-medical-information}"></span> 
+                </p>
+                <p>
+                    <span th:text="#{legal-stuff.however-it-does-not-end-after-one-year}"></span>
+                </p>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.other-health-care}" class="h3"></h2>
+                <p>
+                   <span th:text="#{legal-stuff.you-and-your-household-members-enrolled-in-ma-must}"></span> 
+                </p>
+                <p>
+                    <span th:text="#{legal-stuff.you-and-your-household-members-enrolled-in-ma-may}"></span>
+                </p>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.ma-medical-support}" class="h3"></h2>
+                <p>
+                   <span th:text="#{legal-stuff.if-you-are-applying-for-yourself-and-your-children}"></span> 
+                </p>
+                <p>
+                    <span th:text="#{legal-stuff.you-have-the-right-to-speak-with-a-legal-aid}"></span>
+                    <a th:text="#{legal-stuff.http-mn.gov-dhs-ma-estate-recovery}" href="http://mn.gov/dhs/ma-estate-recovery/" target="_blank" rel="noopener noreferrer"></a>
+                </p>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.you-have-the-right-to-ask-for-a-hearing}" class="h3"></h2>
+                <p>
+                   <span th:text="#{legal-stuff.if-you-feel-your-health-care-eligibility-or-benefits}"></span>
+                   <a th:text="#{legal-stuff.www-dhs-state-mn-us-appeals-faqs}" href="http://www.dhs.state.mn.us/appeals/faqs" target="_blank" rel="noopener noreferrer"></a> 
+                   <span th:text="#{legal-stuff.you-can-complete-and-submit-an-appeal-request}"></span>
+                   <a th:text="#{legal-stuff.https-edocs-dhs-state-mn-us-lfserver-Public-DHS-0033-ENG}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-0033-ENG" target="_blank" rel="noopener noreferrer"></a>
+                   <span th:text="#{legal-stuff.you-can-also-print-the-form-that}"></span>
+                </p>
+                <div th:text="#{legal-stuff.minnesota-department-of-human-services}"></div>
+                <div th:text="#{legal-stuff.appeals-division}"></div>
+                <div th:text="#{legal-stuff.po-box-64941}"></div>
+                <div th:text="#{legal-stuff.st-paul-mn-55164-0941}"></div>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.immigration}" class="h3"></h2>
+                <p>
+                   <span th:text="#{legal-stuff.immigration-information-you-give-to-us-is-private}"></span> 
+                </p>
+                <div th:text="|• #{legal-stuff.applying-for-emergency-medical-care-only}|"></div>
+                <div th:text="|• #{legal-stuff.helping-someone-else-apply}|"></div>
+                <div th:text="|• #{legal-stuff.not-applying-for-yourself}|"></div>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.genetic-information}" class="h3"></h2>
+                <div th:text="#{legal-stuff.dhs-does-not-collect-maintain-or-use-genetic}"></div>
+            </div>
+            <div>
+                <h2 th:text="#{legal-stuff.record-retention}" class="h3"></h2>
+                <div th:text="#{legal-stuff.information-provided-in-an-application-for-coverage}"></div>
+            </div>
+        </div>
+        </div>
+</div>
+</html>

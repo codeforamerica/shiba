@@ -199,6 +199,7 @@ html {
   height: 35rem;
   overflow-y: scroll;
   padding-right: calc(1.5rem + 12px);
+  border-style: none;
 }
 
 .legal-stuff-window div {
@@ -216,6 +217,11 @@ html {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 8px;
+}
+
+.legal-stuff-accordion{
+	background-color: white; 
+	border-color: black;
 }
 
 .textarea-readonly::-webkit-scrollbar {

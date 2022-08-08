@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="legal-terms-prompt-health-care-seniors">
+<div id="certain-pops-legal" th:if="${T(org.codeforamerica.shiba.pages.PageUtils).isProgramEligible(pageDatasources,'CERTAIN_POPS')}">
+<div class="accordion legal-stuff-accordion" id="certain-pops-accordion">
+        <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a5" >
+            <span th:text="#{legal-stuff.health-care-for-Seniors-disabilities}"></span>
+        </button>
+         <div id="a5" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
+            <div th:text="#{legal-stuff.if-you-have-medical-assistance}"></div>
+            <div>
+	            <h3 th:text="#{legal-stuff.income-changes-when-you}" class="h4"></h3>
+	            <div th:text="|• #{legal-stuff.start-a-new-job-change-jobs-or-stop-a-job}|"></div>
+	            <div th:text="|• #{legal-stuff.Start-to-get-new-income-or-receive-changes}|"></div>
+            </div>
+            <div>
+                <h3 th:text="#{legal-stuff.residence-changes-when-you}" class="h4"></h3>
+                <div th:text="|• #{legal-stuff.move-to-a-new-address}|"></div>
+            </div>
+            <div>
+                <h3 th:text="#{legal-stuff.life-changes-in-your-household-when-someone}" class="h4"></h3>
+                <div th:text="|• #{legal-stuff.starts-or-stops-other-health-insurance-or-medicare}|"></div>
+                <div th:text="|• #{legal-stuff.becomes-pregnant-or-has-a-baby}|"></div>
+                <div th:text="|• #{legal-stuff.moves-in-or-out-of-your-home}|"></div>
+                <div th:text="|• #{legal-stuff.changes-tax-filing-status}|"></div>
+                <div th:text="|• #{legal-stuff.loses-minnesota-residency}|"></div>
+                <div th:text="|• #{legal-stuff.changes-citizenship-or-lawful-presence-status}|"></div>
+                <div th:text="|• #{legal-stuff.changes-incarceration-status}|"></div>
+                <div th:text="|• #{legal-stuff.dies-gets-married-or-gets-a-divorce}|"></div>
+                <div th:text="|• #{legal-stuff.becomes-disabled}|"></div>
+            </div>
+            <div>
+                <h3 th:text="#{legal-stuff.agreements-for-medical-assistance}" class="h4"></h3>
+                <div th:text="#{legal-stuff.i-consent-to-the-release-of-my-minnesota-health-care}"></div>
+                <div th:text="|• #{legal-stuff.i-give-the-medical-assistance-agency}|"></div>
+                <div th:text="|• #{legal-stuff.i-have-read-and-understand-that-the-state-may-claim}|"></div>
+                <div th:text="|• #{legal-stuff.i-understand-that-my-information-third-parties}|"></div>
+                <div th:text="|• #{legal-stuff.if-i-am-a-parent-that-is-eligible-for-medical-assistance}|"></div>
+                <div th:text="|• #{legal-stuff.i-understand-that-the-assets-owned-by-me}|"></div>
+            </div>
+            <div>
+                <h3 th:text="#{legal-stuff.by-signing-the-certain-populations-application}" class="h4"></h3>
+                <div th:utext="|• #{legal-stuff.i-have-received-and-reviewed-the-notice-of-privacy}|"></div>
+                <div th:text="|• #{legal-stuff.i-know-that-i-must-report-changes}|"></div>
+                <div>
+                    <span th:text="|• #{legal-stuff.i-have-reviewed-the-civil-rights-notice}|"></span>
+                    <a th:text="#{legal-stuff.civil-rights-notice}" href="https://edocs.dhs.state.mn.us/lfserver/public/DHS-3787A-ENG" target="_blank" rel="noopener noreferrer"></a>
+                </div>
+                <div>
+                    <p>
+                        <span th:text="#{legal-stuff.i-declare-under-the-penalties-of-perjury}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+</div>
+</html>
