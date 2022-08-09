@@ -24,6 +24,7 @@ public class FormInputTemplate {
   List<PageDatasource> datasources;
   String customFollowUps;
   String inputPostfix;
+  String helpMessageKeyBelow;
 
   public String fragment() {
     return switch (type) {

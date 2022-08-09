@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="legal-terms-prompt-client-resp-rights">
-<div class="accordion legal-stuff-accordion" id="resp-rights-accordion">
+<div class="accordion legal-stuff-accordion  spacing-below-15" id="resp-rights-accordion">
         <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a3" >
             <span th:text="#{legal-stuff.client-responsibilities-and-rights}"></span>
         </button>
          <div id="a3" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
-            <div>
+            <div class="spacing-below-35">
 	            <h2 class="h3" th:text="#{legal-stuff.changes}"></h2>
 	            <p>
 	                <span th:text="#{legal-stuff.if-you-have-ma-you-must-report}"></span>
 	            </p>
-	            <div>
+	            <div class="spacing-below-25">
 	               <h3 class="h4" th:text="#{legal-stuff.income-changes-when-you}"></h3>
 	               <div th:text="|• #{legal-stuff.start-a-new-job-change-jobs-or-stop-a-job}|"></div>
 	               <div th:text="|• #{legal-stuff.start-to-get-or-receive-changes}|"></div>
 	            </div>
-	            <div>
+	            <div class="spacing-below-25">
                    <h3 class="h4" th:text="#{legal-stuff.residence-changes-when-you}"></h3>
                    <div th:text="|• #{legal-stuff.move-to-a-new-address}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                    <h3 class="h4" th:text="#{legal-stuff.life-changes-in-your-household-when-someone}"></h3>
                    <div th:text="|• #{legal-stuff.starts-or-stops-other-health-insurance-or-medicare}|"></div>
                    <div th:text="|• #{legal-stuff.becomes-pregnant-or-has-a-baby}|"></div>
@@ -33,11 +33,11 @@
                    <div th:text="|• #{legal-stuff.becomes-disabled}|"></div>
                 </div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.reviews}" class="h3"></h2>
                 <div th:text="#{legal-stuff.the-state-or-federal-agencys-health-care}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.consent-for-sharing-of-medical-information}" class="h3"></h2>
                 <div th:text="#{legal-stuff.in-your-application-for-minnesota-health-care-program}"></div>
                 <div th:text="|• #{legal-stuff.health-providers-including-health-plans}|"></div>
@@ -52,7 +52,7 @@
                     <span th:text="#{legal-stuff.however-it-does-not-end-after-one-year}"></span>
                 </p>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.other-health-care}" class="h3"></h2>
                 <p>
                    <span th:text="#{legal-stuff.you-and-your-household-members-enrolled-in-ma-must}"></span> 
@@ -61,7 +61,7 @@
                     <span th:text="#{legal-stuff.you-and-your-household-members-enrolled-in-ma-may}"></span>
                 </p>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.ma-medical-support}" class="h3"></h2>
                 <p>
                    <span th:text="#{legal-stuff.if-you-are-applying-for-yourself-and-your-children}"></span> 
@@ -71,7 +71,7 @@
                     <a th:text="#{legal-stuff.http-mn.gov-dhs-ma-estate-recovery}" href="http://mn.gov/dhs/ma-estate-recovery/" target="_blank" rel="noopener noreferrer"></a>
                 </p>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.you-have-the-right-to-ask-for-a-hearing}" class="h3"></h2>
                 <p>
                    <span th:text="#{legal-stuff.if-you-feel-your-health-care-eligibility-or-benefits}"></span>
@@ -85,7 +85,7 @@
                 <div th:text="#{legal-stuff.po-box-64941}"></div>
                 <div th:text="#{legal-stuff.st-paul-mn-55164-0941}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.immigration}" class="h3"></h2>
                 <p>
                    <span th:text="#{legal-stuff.immigration-information-you-give-to-us-is-private}"></span> 
@@ -94,11 +94,11 @@
                 <div th:text="|• #{legal-stuff.helping-someone-else-apply}|"></div>
                 <div th:text="|• #{legal-stuff.not-applying-for-yourself}|"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.genetic-information}" class="h3"></h2>
                 <div th:text="#{legal-stuff.dhs-does-not-collect-maintain-or-use-genetic}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.record-retention}" class="h3"></h2>
                 <div th:text="#{legal-stuff.information-provided-in-an-application-for-coverage}"></div>
             </div>

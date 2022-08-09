@@ -1429,6 +1429,7 @@ pageDefinitions:
           selectableOptions:
             - value: "true"
               messageKey: legal-stuff.i-agree
+        helpMessageKeyBelow: legal-stuff.copies-of-the-full-agreements
       - name: drugFelony
         type: RADIO
         promptMessage:

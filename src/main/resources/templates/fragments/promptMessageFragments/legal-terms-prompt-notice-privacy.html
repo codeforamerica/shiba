@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="legal-terms-prompt-notice-privacy">
-<div class="accordion legal-stuff-accordion" id="notice-privacy-accordion">
+<div class="accordion legal-stuff-accordion  spacing-below-15" id="notice-privacy-accordion">
         <button href="#" class="accordion__button" aria-expanded="false" aria-controls="a2" >
             <span th:text="#{legal-stuff.notice-of-privacy-practices}"></span>
             <div style="font-weight: normal; font-size: 16px" th:text="#{legal-stuff.effective-date}"></div>
         </button>
-         <div id="a2" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
+         <div id="a2" class="accordion__content textarea-readonly legal-stuff-window">
             <div>
             <p>
                 <span th:text="#{legal-stuff.this-part-of-the-notice-describes-how-private}"></span>
             </p>
             </div>
             <div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.why-do-we-ask-for-this-information}" class="h3"></h2>
                 <div th:text="|• #{legal-stuff.to-tell-you-apart-from-other-people}|"></div>
                 <div th:text="|• #{legal-stuff.to-decide-what-you-are-eligible-for}|"></div>
@@ -25,7 +25,7 @@
                 <div th:text="|• #{legal-stuff.to-collect-money-from-other-agencies}|"></div>
                 <div th:text="|• #{legal-stuff.to-collect-money-from-the-state-or-federal-government}|"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.why-do-we-ask-you-for-your-social-security-number}" class="h3"></h2>
                 <div>
 	                <p>
@@ -43,15 +43,15 @@
                 <div th:text="|• #{legal-stuff.if-you-are-from-another-country-are-in-the-U-S}|"></div>
                 <div th:text="|• #{legal-stuff.if-you-are-living-in-the-U-S-without-the-knowledge-or-approval-of-the-USCIS}|"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.why-do-we-ask-you-for-your-financial-information}" class="h3"></h2>
                 <div th:text="#{legal-stuff.we-use-this-information-only-for-the-purposes-authorized-by-law}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.do-you-have-to-answer-the-questions-we-ask}" class="h3"></h2>
                 <div th:text="#{legal-stuff.you-do-not-have-to-give-us-your-personal-information}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.with-whom-may-we-share-information}" class="h3"></h2>
                 <div th:text="#{legal-stuff.we-will-share-information-about-you-only-as-needed}"></div>
                 <div th:text="|• #{legal-stuff.employees-or-volunteers-with-other-state}|"></div>
@@ -61,12 +61,12 @@
                 <div th:text="|• #{legal-stuff.governmental-agencies-in-other-states-administering}|"></div>
                 <div th:text="|• #{legal-stuff.health-care-providers-including-mental-health-agencies}|"></div>
                 <div th:text="|• #{legal-stuff.health-care-insurers-health-care-agencies-managed-care-organizations}|"></div>
-                <div th:text="|• #{legal-stuff.guardians-conservators-or-people-with-power}|" /></div>
+                <div th:text="|• #{legal-stuff.guardians-conservators-or-people-with-power}|"></div>
                 <div th:text="|• #{legal-stuff.coroners-and-medical-investigators}|"></div>
                 <div th:text="|• #{legal-stuff.credit-bureaus-creditors-or-collection-agencies}|"></div>
                 <div th:text="|• #{legal-stuff.certified-application-counselors-in-person-assisters}|"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-are-our-responsibilities}" class="h3"></h2>
                 <div th:text="|• #{legal-stuff.we-must-protect-the-privacy-of-your-personal-health-care}|"></div>
                 <div th:text="|• #{legal-stuff.we-may-not-use-your-information-for-reasons-other}|"></div>
@@ -78,15 +78,15 @@
                 <div th:text="|• #{legal-stuff.the-law-requires-us-to-keep-your-private}|"></div>
                 <div th:text="|• #{legal-stuff.if-something-happens-that-causes-your-private-information}|"></div>
             </div>
-            <b th:text="#{legal-stuff.this-part-of-the-notice-describes-how-medical-information}"></b><div></div>
-            <div>
+            <b th:text="#{legal-stuff.this-part-of-the-notice-describes-how-medical-information}"></b><div class="spacing-below-35"></div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.we-can-use-and-share-your-health-care-information-to}" class="h3"></h2>
-                <div>
+                <div class="spacing-below-25">
                     <h3 th:text="#{legal-stuff.help-manage-the-health-care-treatment-you-receive}" class="h4"></h3>
                     <div th:text="|• #{legal-stuff.we-can-use-your-health-information-and-share}|"></div>
                     <div th:text="|• #{legal-stuff.we-can-also-share-your-information-with-guardians-conservators}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.run-our-organization}" class="h4"></h3>
                   <div th:text="|• #{legal-stuff.we-can-use-and-share-your-information-to-run}|"></div>
                   <div th:text="|• #{legal-stuff.we-can-share-your-information-with-these-people-and-groups}|">
@@ -96,11 +96,11 @@
                   </div>
                   <div th:text="|• #{legal-stuff.we-are-not-allowed-to-use-genetic-information-to-decide}|"></div>
                  </div>
-                  <div>
+                  <div class="spacing-below-25">
 	                  <h3 th:text="#{legal-stuff.pay-for-your-health-services}" class="h4"></h3>
 	                  <div th:text="|• #{legal-stuff.we-can-use-and-share-your-health-information-as-we-pay}|"></div>
                   </div>
-                  <div>
+                  <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.help-with-public-health-and-safety-issues}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.we-can-share-health-information-about}|">
 	                    <div th:text="|• #{legal-stuff.preventing-disease}|"></div>
@@ -110,20 +110,20 @@
                         <div th:text="|• #{legal-stuff.preventing-or-reducing-a-serious-threat-to-anyones-health-or-safety}|"></div>
 	                  </div>
                  </div>
-                 <div>
+                 <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.do-research}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.we-can-use-or-share-your-information-for-health-research}|"></div>
                  </div>
-                 <div>
+                 <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.comply-with-the-law}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.we-will-share-information-about-you-if-state-or-federal-laws}|"></div>
                  </div>
-                 <div>
+                 <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.respond-to-organ-and-tissue-donation-requests}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.we-can-share-health-information-about-you-with-organ}|"></div>
                      <div th:text="|• #{legal-stuff.we-can-share-health-information-with-a-coroner}|"></div>
                  </div>
-                 <div>
+                 <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.address-workers-compensation-law-enforcement}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.for-workers-compensation-claims}|"></div>
                      <div th:text="|• #{legal-stuff.for-law-enforcement-purposes-or-with-a-law-enforcement-official}|"></div>
@@ -131,43 +131,43 @@
                      <div th:text="|• #{legal-stuff.with-governmental-agencies-in-other-states}|"></div>
                      <div th:text="|• #{legal-stuff.for-special-government-functions-such-as-military}|"></div>
                   </div>
-                  <div>
+                  <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.respond-to-lawsuits-and-legal-actions}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.we-can-share-health-information-about-you-in-response-to-a-court-order}|"></div>
                   </div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-are-your-rights-regarding-the-information-we-have-about-you}" class="h3"></h2>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.get-a-copy-of-health-and-claims-records}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.you-and-people-you-have-given-permission-to-may-see}|"></div>
                      <div th:text="|• #{legal-stuff.you-can-choose-someone-to-act-for-you-with-a-medical-power}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.ask-us-to-correct-health-and-claims-records}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.you-may-question-whether-the-information-we-have-about}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.request-confidential-communications}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.you-have-the-right-to-ask-us-in-writing-to-share}|"></div>
                      <div th:text="|• #{legal-stuff.we-will-consider-all-reasonable-requests}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.ask-us-to-limit-what-we-use-or-share}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.you-can-ask-us-not-to-use-or-share-certain-health}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.get-a-list-of-those-with-whom-weve-shared-information}" class="h4"></h3>
                      <div th:text="|• #{legal-stuff.this-list-will-not-include-disclosures-for-treatment}|"></div>
                      <div th:text="|• #{legal-stuff.we-ll-provide-one-list-a-year-for-free}|"></div>
                 </div>
-                <div>
+                <div class="spacing-below-25">
                   <h3 th:text="#{legal-stuff.get-a-copy-of-this-privacy-notice}" class="h4"></h3>
                      <div th:text="#{legal-stuff.you-can-ask-for-a-paper-copy-of-this-notice-at-any-time}"></div>
                      <div th:text="#{legal-stuff.if-you-do-not-understand-the-information-ask-your-worker}"></div>
                 </div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-are-your-choices}" class="h3"></h2>
                 <div th:text="#{legal-stuff.for-certain-health-information-you-can-tell}"></div>
                 <div th:text="#{legal-stuff.you-have-both-the-right-and-choice-to-tell-us-to}"></div>
@@ -175,11 +175,11 @@
                 <div th:text="|• #{legal-stuff.share-information-in-a-disaster-relief-situation}|"></div>
                 <div th:text="#{legal-stuff.tell-us-what-you-want-us-to-do-and-we-will-follow}"></div>
             </div>
-             <div>
+             <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-privacy-rights-do-children-have}" class="h3"></h2>
                 <div th:text="#{legal-stuff.if-you-are-under-18-when-parental-consent}"></div>
             </div>
-             <div>
+             <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-if-you-believe-your-privacy-rights-have-been-violated}" class="h3"></h2>
                 <div th:text="#{legal-stuff.you-may-complain-if-you-believe-your-privacy-rights}"></div>
                 <div th:text="#{legal-stuff.u-s-department-of-health-and-human-services}"></div>
@@ -191,7 +191,7 @@
                 <div th:text="#{legal-stuff.po-box-64998}"></div>
                 <div th:text="#{legal-stuff.st-paul-mn-55164-0998}"></div>
             </div>
-            <div>
+            <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.whom-do-you-contact-if-you-need}" class="h3"></h2>
                 <div th:text="#{legal-stuff.if-you-need-more-information-about-privacy-practices}"></div>
             </div>

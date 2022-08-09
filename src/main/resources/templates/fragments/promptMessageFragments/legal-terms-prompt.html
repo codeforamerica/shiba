@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="legal-terms-prompt">
+<div th:fragment="legal-terms-prompt" class="spacing-below-60">
 <div class="accordion legal-stuff-accordion" id="prepare-to-apply-accordion">
         <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a1" >
             <span th:text="#{legal-stuff.application-terms}"></span>
@@ -18,15 +18,15 @@
             </p>
         </div>
         <h2 class="h3" th:text="#{legal-stuff.details}"></h2>
-        <div>
+        <div class="spacing-below-25">
             <h3 class="h4" th:text="#{legal-stuff.employment-services-registration}"></h3>
             <div th:text="#{legal-stuff.i-understand-that-signing-this-application-registers-me-for-employment-services}"></div>
         </div>
-        <div>
+        <div class="spacing-below-25">
             <h3 class="h4" th:text="#{legal-stuff.assignments}"></h3>
             <div th:text="#{legal-stuff.i-understand-that-when-I-get-MFIP}"></div>
         </div>
-        <div>
+        <div class="spacing-below-25">
             <h3 class="h4" th:text="#{legal-stuff.snap-penalty-warnings}"></h3>
             <div th:text="#{legal-stuff.if-you-get-cash-or-SNAP-benefits}"></div>
             <div>
@@ -63,11 +63,11 @@
                 <span th:text="#{legal-stuff.the-agency-may-ask-you-to-take-random-drug-tests}"></span>
             </div>
         </div>
-        <div>
+        <div class="spacing-below-25">
             <h3 class="h4" th:text="#{legal-stuff.perjury-and-general-declarations}"></h3>
             <div th:text="#{legal-stuff.i-declare-under-the-penalties-of-perjury}"></div>
         </div>
-        <div>
+        <div class="spacing-below-25">
             <div>
                 <b th:text="#{legal-stuff.authorization-to-share-information-for-fraud-investigation-and-audits}"></b>
                 <span th:text="#{legal-stuff.i-agree-that-third-parties-may-share-information}"></span>
@@ -78,7 +78,6 @@
             <div th:text="|• #{legal-stuff.financial-and-insurance-agencies}|"></div>
             <div th:text="|• #{legal-stuff.other-government-offices}|"></div>
             <div th:text="#{legal-stuff.i-understand-this-consent-is-good-for-six-months-after-my-benefits-stop}"></div>
-
             <h3 class="h4" th:text="#{legal-stuff.by-signing}"></h3>
             <div th:text="|• #{legal-stuff.i-understand-cash-assistance-is-provided-to-help-eligible-families-meet-their-basic-needs}|"></div>
             <div th:text="|• #{legal-stuff.i-understand-if-i-give-incorrect-information-or-misuse-an-electronic-benefit}|"></div>
