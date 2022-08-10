@@ -819,6 +819,14 @@ public class PageController {
           lms.getMessage("upload-documents.this-file-appears-to-be-empty"),
           HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    if (type.contains("officedocument") || type.contains("msword"))
+    {
+      // officedocument = docx
+      // msword = doc
+      return new ResponseEntity<>(
+          lms.getMessage("upload-documents.MS-word-files-not-accepted"),
+          HttpStatus.UNPROCESSABLE_ENTITY);
+    }
     if (type.contains("pdf")) {
       // Return an error response if this is an pdf we can't work with
       try (var pdfFile = PDDocument.load(file.getBytes())) {
