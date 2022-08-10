@@ -73,7 +73,11 @@
                 <div th:text="|• #{legal-stuff.we-will-not-sell-any-data-collected-created}|"></div>
                 <div>
                     <span th:text="|• #{legal-stuff.we-must-follow-the-terms-of-this-notice-and-give}|"></span>
-                    <a th:text="#{legal-stuff.https-edocs-dhs-state-mn-us-lfserver-Public-DHS-4839E-ENG}" href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-4839E-ENG" target="_blank" rel="noopener noreferrer"></a>
+                    <a  
+                    href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-4839E-ENG" target="_blank" rel="noopener noreferrer">
+	                     <span th:text="#{legal-stuff.https-edocs-dhs-state-mn-us}"></span>
+	                     <span th:text="#{legal-stuff.DHS-4839E-ENG}"></span>
+                    </a>
                 </div>
                 <div th:text="|• #{legal-stuff.the-law-requires-us-to-keep-your-private}|"></div>
                 <div th:text="|• #{legal-stuff.if-something-happens-that-causes-your-private-information}|"></div>
@@ -182,14 +186,16 @@
              <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.what-if-you-believe-your-privacy-rights-have-been-violated}" class="h3"></h2>
                 <div th:text="#{legal-stuff.you-may-complain-if-you-believe-your-privacy-rights}"></div>
-                <div th:text="#{legal-stuff.u-s-department-of-health-and-human-services}"></div>
-                <div th:text="#{legal-stuff.233-n-michigan-avenue-suite-240}"></div>
+                <div th:text="#{legal-stuff.u-s-department-of-health-and-human-services}" class="spacing-below-0"></div>
+                <div th:text="#{legal-stuff.office-for-civil-rights-region-v}" class="spacing-below-0"></div>
+                <div th:text="#{legal-stuff.233-n-michigan-avenue-suite-240}" class="spacing-below-0"></div>
                 <div th:text="#{legal-stuff.chicago-il-60601}"></div>
                 <div th:text="#{legal-stuff.312-886-2359-voice-800-368-1019}"></div>
                 <div th:text="#{legal-stuff.if-you-believe-the-minnesota-department-of-human-services}"></div>
-                <div th:text="#{legal-stuff.minnesota-department-of-human-services-attn}"></div>
-                <div th:text="#{legal-stuff.po-box-64998}"></div>
-                <div th:text="#{legal-stuff.st-paul-mn-55164-0998}"></div>
+                <div th:text="#{legal-stuff.minnesota-department-of-human-services-attn}" class="spacing-below-0"></div>
+                <div th:text="#{legal-stuff.attn-data-complaint}" class="spacing-below-0"></div>
+                <div th:text="#{legal-stuff.po-box-64998}" class="spacing-below-0"></div>
+                <div th:text="#{legal-stuff.st-paul-mn-55164-0998}" class="spacing-below-0"></div>
             </div>
             <div class="spacing-below-35">
                 <h2 th:text="#{legal-stuff.whom-do-you-contact-if-you-need}" class="h3"></h2>
