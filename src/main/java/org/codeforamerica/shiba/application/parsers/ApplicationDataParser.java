@@ -13,7 +13,9 @@ import org.codeforamerica.shiba.pages.data.Subworkflow;
 public class ApplicationDataParser {
 
   /**
-   * Mapping configurations
+   * The HashMap <i>coordinatesMap</i> is used to extract the input values from the JSON data.
+   * The {@link Field} key will be used in the Preparer classes to find the {@link ParsingCoordinate} that holds the 
+   * String pageName and String inputName as configured in pages-config.yaml.
    */
   private static final Map<Field, ParsingCoordinate> coordinatesMap = new HashMap<>();
   private static final Map<Group, String> groupCoordinatesMap = new HashMap<>();
@@ -368,7 +370,8 @@ public class ApplicationDataParser {
   }
 
   /**
-   * Retrievable fields
+   * Enum Field is used as a HashMap key for the ApplicationDataParser's 
+   * internal HashMap <i>coordinatesMap</i>.
    */
   public enum Field {
     WRITTEN_LANGUAGE_PREFERENCES,
@@ -385,8 +388,8 @@ public class ApplicationDataParser {
     PAY_PERIOD,
     INCOME_PER_PAY_PERIOD,
     LAST_THIRTY_DAYS_JOB_INCOME,
-    IS_SELF_EMPLOYMENT,
-    WHOSE_JOB_IS_IT,
+    IS_SELF_EMPLOYMENT(""),
+    WHOSE_JOB_IS_IT(""),
     EMPLOYERS_NAME,
     ARE_YOU_WORKING,
 
@@ -565,6 +568,10 @@ public class ApplicationDataParser {
     HOUSEHOLD
   }
 
+  /**
+   * Java POJO record ParsingCoordinate(String pageName, String inputName) 
+   * corresponds to pages-config.yaml pageDefinitions for pageName and inputName.
+   **/
   private record ParsingCoordinate(String pageName, String inputName) {
 
   }

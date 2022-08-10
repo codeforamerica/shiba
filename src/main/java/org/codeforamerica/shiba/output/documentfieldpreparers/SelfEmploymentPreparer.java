@@ -48,16 +48,25 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
     }
 
     if (document == Document.CERTAIN_POPS) {
-      // Is applicant self-employed?
+      // We only want to find if applicant self-employed. HH members aren't included on PDF.
       Subworkflow jobs = getGroup(application.getApplicationData(), JOBS);
-      boolean hasSelfEmployedJob = Optional.ofNullable(jobs.stream())
-          .orElse(Stream.empty())
-          .map(Iteration::getPagesData)
-          .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
-              && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
+      int numberOfJobsSubmitted = jobs.size();
+      boolean applicantHasSelfEmployedJob = false;
+      if(numberOfJobsSubmitted > 1) {
+    	  applicantHasSelfEmployedJob = Optional.ofNullable(jobs.stream())
+                  .orElse(Stream.empty())
+                  .map(Iteration::getPagesData)
+                  .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
+                      && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
+      }else {
+    	  applicantHasSelfEmployedJob = Optional.ofNullable(jobs.stream())
+                  .orElse(Stream.empty())
+                  .map(Iteration::getPagesData)
+                  .anyMatch(pagesData -> getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
+      }
 
       List<DocumentField> results = new ArrayList<>();
-      if (hasSelfEmployedJob) {
+      if (applicantHasSelfEmployedJob) {
         results.add(createApplicationInput("selfEmployed", "true"));
         results.add(createApplicationInput("selfEmployedApplicantName", getFullName(application)));
       } else {
