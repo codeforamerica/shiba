@@ -39,34 +39,24 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient _recipient) {
 
-    List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS,
-        IS_SELF_EMPLOYMENT
-    );
+    List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS, IS_SELF_EMPLOYMENT);
 
     if (selfEmploymentInputs == null) {
       return Collections.emptyList();
     }
 
     if (document == Document.CERTAIN_POPS) {
-      // We only want to find if applicant self-employed. HH members aren't included on PDF.
+      // Is applicant self-employed?
       Subworkflow jobs = getGroup(application.getApplicationData(), JOBS);
-      int numberOfJobsSubmitted = jobs.size();
-      boolean applicantHasSelfEmployedJob = false;
-      if(numberOfJobsSubmitted > 1) {
-    	  applicantHasSelfEmployedJob = Optional.ofNullable(jobs.stream())
-                  .orElse(Stream.empty())
-                  .map(Iteration::getPagesData)
-                  .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
-                      && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
-      }else {
-    	  applicantHasSelfEmployedJob = Optional.ofNullable(jobs.stream())
-                  .orElse(Stream.empty())
-                  .map(Iteration::getPagesData)
-                  .anyMatch(pagesData -> getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
-      }
+      boolean hasSelfEmployedJob = Optional.ofNullable(jobs.stream())
+          .orElse(Stream.empty())
+          .map(Iteration::getPagesData)
+          .anyMatch(pagesData -> (getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant") 
+        		  || getFirstValue(pagesData, WHOSE_JOB_IS_IT).isEmpty())
+              && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
 
       List<DocumentField> results = new ArrayList<>();
-      if (applicantHasSelfEmployedJob) {
+      if (hasSelfEmployedJob) {
         results.add(createApplicationInput("selfEmployed", "true"));
         results.add(createApplicationInput("selfEmployedApplicantName", getFullName(application)));
       } else {

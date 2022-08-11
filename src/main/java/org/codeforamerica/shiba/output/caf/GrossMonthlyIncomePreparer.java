@@ -26,9 +26,16 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
     this.grossMonthlyIncomeParser = grossMonthlyIncomeParser;
   }
 
-  private static boolean isApplicantIncomeInfo(JobIncomeInformation jobIncomeInformation) {
+  /**
+   * WHOSE_JOB_IS_IT will find all household jobs. If there is a single applicant,
+   * there will be no household jobs and WHOSE_JOB_IS_IT will return nothing.
+   * @param jobIncomeInformation
+   * @return
+   */
+  private static boolean doesApplicantHaveIncomeFromAJob(JobIncomeInformation jobIncomeInformation) {
     PagesData pagesData = jobIncomeInformation.getIteration().getPagesData();
-    return getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant");
+    return (getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")  
+    		|| getFirstValue(pagesData, WHOSE_JOB_IS_IT).isEmpty());//will be empty for individual flow
   }
 
   @Override
@@ -79,7 +86,7 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
     if (document == Document.CERTAIN_POPS) {
       // Only include income info for jobs held by the applicant
       grossIncomeInfoToIncludeInThisDocument = grossIncomeInfoForAllHouseholdMembers.stream()
-          .filter(GrossMonthlyIncomePreparer::isApplicantIncomeInfo)
+          .filter(GrossMonthlyIncomePreparer::doesApplicantHaveIncomeFromAJob)
           .toList();
     }
     return grossIncomeInfoToIncludeInThisDocument;
