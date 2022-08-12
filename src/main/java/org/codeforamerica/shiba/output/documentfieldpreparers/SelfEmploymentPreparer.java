@@ -55,7 +55,7 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
         		  || getFirstValue(pagesData, WHOSE_JOB_IS_IT).isEmpty())
               && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
 
-      List<DocumentField> results = new ArrayList<>();
+      List<DocumentField> results = super.prepareDocumentFields(application, document);
       if (hasSelfEmployedJob) {
         results.add(createApplicationInput("selfEmployed", "true"));
         results.add(createApplicationInput("selfEmployedApplicantName", getFullName(application)));
