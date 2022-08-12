@@ -39,9 +39,7 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient _recipient) {
 
-    List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS,
-        IS_SELF_EMPLOYMENT
-    );
+    List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS, IS_SELF_EMPLOYMENT);
 
     if (selfEmploymentInputs == null) {
       return Collections.emptyList();
@@ -53,10 +51,11 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
       boolean hasSelfEmployedJob = Optional.ofNullable(jobs.stream())
           .orElse(Stream.empty())
           .map(Iteration::getPagesData)
-          .anyMatch(pagesData -> getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")
+          .anyMatch(pagesData -> (getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant") 
+        		  || getFirstValue(pagesData, WHOSE_JOB_IS_IT).isEmpty())
               && getFirstValue(pagesData, IS_SELF_EMPLOYMENT).equals("true"));
 
-      List<DocumentField> results = new ArrayList<>();
+      List<DocumentField> results = super.prepareDocumentFields(application, document);
       if (hasSelfEmployedJob) {
         results.add(createApplicationInput("selfEmployed", "true"));
         results.add(createApplicationInput("selfEmployedApplicantName", getFullName(application)));

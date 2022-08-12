@@ -20,7 +20,7 @@ public class FullNameEnrichment implements Enrichment {
   @Override
   public PageData process(PagesData pagesData) {
     String nameWithId = getFirstValue(pagesData, WHOSE_JOB_IS_IT);
-    if (nameWithId == null) {
+    if (nameWithId == null || nameWithId.isBlank()) {
       return new PageData();
     }
 
