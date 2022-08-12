@@ -5,7 +5,6 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.util.List;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
@@ -28,8 +27,8 @@ public class SelfEmploymentPreparerTest {
     Application application = Application.builder().applicationData(applicationData).build();
 
     List<DocumentField> actual =
-        selfEmploymentPreparer.prepareDocumentFields(application, null, Recipient.CLIENT);
-    
+        selfEmploymentPreparer.prepareDocumentFields(application, null, Recipient.CLIENT
+        );
     assertThat(actual).containsExactlyInAnyOrder(
         new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
         new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "see question 9",
@@ -74,59 +73,6 @@ public class SelfEmploymentPreparerTest {
         .prepareDocumentFields(application, null, Recipient.CLIENT
         ))
         .isEmpty();
-  }
-  
-//TODO emj test1
-  @Test
-  void certainPopsApplicantOnlyHasSelfEmployment() {
-    ApplicationData applicationData = new TestApplicationDataBuilder()
-        .withSubworkflow("jobs",
-            new PagesDataBuilder().withNonHourlyJob("true", "12", "EVERY_WEEK"),//true for selfEmployed
-            new PagesDataBuilder().withPageData("householdSelectionForIncome", "whoseJobIsIt", "Inga Walsh applicant"))
-        .build();
-
-    Application application = Application.builder().applicationData(applicationData).build();
-    
-    Document cpDoc = Document.CERTAIN_POPS;
-
-    List<DocumentField> actual =
-        selfEmploymentPreparer.prepareDocumentFields(application, cpDoc, Recipient.CLIENT);
-    
-    assertThat(actual).containsExactlyInAnyOrder(
-        new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
-//        new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "see question 9",
-//            SINGLE_VALUE),
-        new DocumentField("selfEmployment_incomePerPayPeriod", "incomePerPayPeriod_EVERY_WEEK", "12",
-            SINGLE_VALUE, 0),
-        new DocumentField("selfEmployment_incomePerPayPeriod", "incomePerPayPeriod", "12",
-            SINGLE_VALUE, 0),
-        new DocumentField("selfEmployment_payPeriod", "payPeriod", "EVERY_WEEK", SINGLE_VALUE, 0),
-//        new DocumentField("selfEmployment_paidByTheHour", "paidByTheHour", "false", SINGLE_VALUE,
-//            0),
-        new DocumentField("selfEmployment_selfEmployment", "selfEmployment", "true", SINGLE_VALUE,
-            0)
-    );
-  }
-  
-
-//TODO emj test2
-  @Test
-  void certainPopsApplicantHasSelfEmployment() {
-    ApplicationData applicationData = new TestApplicationDataBuilder()
-        .withSubworkflow("jobs",
-            new PagesDataBuilder().withNonHourlyJob("true", "12", "EVERY_WEEK") //true for selfEmployed
-            .withPageData("householdSelectionForIncome", "whoseJobIsIt", "Tom Smith applicant"))
-        .build();
-
-    Application application = Application.builder().applicationData(applicationData).build();
-    
-    Document cpDoc = Document.CERTAIN_POPS;
-    List<DocumentField> actual =
-        selfEmploymentPreparer.prepareDocumentFields(application, cpDoc, Recipient.CLIENT);
-    
-    assertThat(actual).containsExactlyInAnyOrder(
-        new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
-        new DocumentField("employee","selfEmployedApplicantName","", SINGLE_VALUE));
   }
 
 }

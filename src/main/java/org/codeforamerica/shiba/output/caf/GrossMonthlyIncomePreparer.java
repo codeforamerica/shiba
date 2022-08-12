@@ -34,8 +34,9 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
    */
   private static boolean doesApplicantHaveIncomeFromAJob(JobIncomeInformation jobIncomeInformation) {
     PagesData pagesData = jobIncomeInformation.getIteration().getPagesData();
-    return (getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")  
+    boolean hasAJob =  (getFirstValue(pagesData, WHOSE_JOB_IS_IT).contains("applicant")  
     		|| getFirstValue(pagesData, WHOSE_JOB_IS_IT).isEmpty());//will be empty for individual flow
+    return hasAJob;
   }
 
   @Override
@@ -57,8 +58,7 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
 
       String prefix;
       int index;
-      boolean isSelfEmployment = getBooleanValue(job.getIteration().getPagesData(),
-          IS_SELF_EMPLOYMENT);
+      boolean isSelfEmployment = getBooleanValue(job.getIteration().getPagesData(), IS_SELF_EMPLOYMENT);
       if (isSelfEmployment) {
         prefix = "selfEmployment_";
         index = selfEmploymentIndex++;
@@ -66,6 +66,7 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
         prefix = "nonSelfEmployment_";
         index = nonSelfEmploymentIndex++;
       }
+      
       fields.add(new DocumentField(
           prefix + pageName,
           inputName,
