@@ -133,7 +133,7 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.2.11")
     implementation("ch.qos.logback:logback-classic:1.2.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
-    implementation("net.javacrumbs.shedlock:shedlock-spring:4.39.0")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:4.40.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.40.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
