@@ -50,9 +50,21 @@ public class TestUtils {
     assertThat(pdfFieldText).isEqualTo(expectedVal);
   }
 
+  public static void assertPdfFieldContains(String fieldName, String expectedVal, PDAcroForm pdf) {
+    PDField field = pdf.getField(fieldName);
+    assertThat(field).isNotNull();
+    String pdfFieldText = field.getValueAsString();
+    assertThat(pdfFieldText).contains(expectedVal);
+  }
+
   public static void assertPdfFieldIsEmpty(String fieldName, PDAcroForm pdf) {
     var pdfFieldText = pdf.getField(fieldName).getValueAsString();
     assertThat(pdfFieldText).isEmpty();
+  }
+
+  public static void assertPdfFieldIsNull(String fieldName, PDAcroForm pdf) {
+    PDField pdfField = pdf.getField(fieldName);
+    assertThat(pdfField).isNull();
   }
 
   public static void resetApplicationData(ApplicationData applicationData) {

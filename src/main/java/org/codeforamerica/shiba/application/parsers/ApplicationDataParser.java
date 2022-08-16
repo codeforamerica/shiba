@@ -217,7 +217,7 @@ public class ApplicationDataParser {
         new ParsingCoordinate("otherUnearnedIncomeSources", "rentalIncomeAmount"));
     coordinatesMap.put(Field.OTHER_PAYMENTS_AMOUNT,
         new ParsingCoordinate("otherUnearnedIncomeSources", "otherPaymentsAmount"));
-    
+
     coordinatesMap.put(Field.NO_CP_UNEARNED_INCOME,
             new ParsingCoordinate("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome"));
     coordinatesMap.put(Field.CP_UNEARNED_INCOME_PERSON_1,
@@ -272,6 +272,9 @@ public class ApplicationDataParser {
             new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_3"));
     coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_4,
             new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_4"));
+
+    coordinatesMap.put(Field.CP_SUPPLEMENT,
+            new ParsingCoordinate("certainPops", "certainPopsSupplement"));
     
     coordinatesMap.put(Field.HOME_EXPENSES,
         new ParsingCoordinate("homeExpenses", "homeExpenses"));
@@ -469,7 +472,9 @@ public class ApplicationDataParser {
     INTEREST_DIVIDENDS_AMOUNT,
     RENTAL_AMOUNT,
     OTHER_PAYMENTS_AMOUNT,
-    
+
+    CP_SUPPLEMENT,
+
     // Certain Pops section 11 fields
     NO_CP_UNEARNED_INCOME,
     CP_UNEARNED_INCOME_PERSON_1,

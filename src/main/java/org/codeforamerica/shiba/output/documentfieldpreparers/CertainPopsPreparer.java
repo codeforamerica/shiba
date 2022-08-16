@@ -28,7 +28,11 @@ import org.springframework.stereotype.Component;
 public class CertainPopsPreparer implements DocumentFieldPreparer {
 	ApplicationData applicationData = null;
 	PagesData pagesData = null;
-	List<DocumentField> unearnedIncomeDocumentFields = null;
+	List<DocumentField> certainPopsDocumentFields = null;
+	String supplementPageText = "";
+	boolean needsSupplementPage = false;
+
+	// Question 11, unearned income
 	ArrayList<Person> persons = null;
 	HashMap<String, Integer> lookup = null;
 
@@ -36,13 +40,30 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	public List<DocumentField> prepareDocumentFields(Application application, Document document, Recipient recipient) {
 		applicationData = application.getApplicationData();
 		pagesData = applicationData.getPagesData();
-		unearnedIncomeDocumentFields = new ArrayList<DocumentField>();
+		certainPopsDocumentFields = new ArrayList<DocumentField>();
+		supplementPageText = "";
+		needsSupplementPage = false;
+		persons = null;
+		lookup = null;
 
 		return map();
 	}
 
-	// Controls the mapping logic
+	// This method controls the mapping logic for each of the Certain Pops
+	// questions.
 	private List<DocumentField> map() {
+		// Question 11, unearned income
+		mapUnearnedIncomeFields();
+
+		if (needsSupplementPage) {
+			certainPopsDocumentFields.add(new DocumentField("certainPops", "certainPopsSupplement", supplementPageText,
+					ENUMERATED_SINGLE_VALUE));
+		}
+		return certainPopsDocumentFields;
+	}
+
+	// Question 11, unearned income
+	private void mapUnearnedIncomeFields() {
 		boolean hasUnearnedIncome = !mapNoUnearnedIncome();
 		if (hasUnearnedIncome) {
 			identifyAllPersons();
@@ -52,30 +73,34 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 			identifyUnearnedIncomeItemsFromCombinedSourcesPages();
 			mapUnearnedIncomeItems();
 		}
-
-		return unearnedIncomeDocumentFields;
 	}
 
 	// Iterate all Persons and generate DocumentFields for each of their unearned
 	// income items. Section 11 allows for a maximum of 2 persons and 4 unearned
 	// income types per person.
 	private void mapUnearnedIncomeItems() {
+		supplementPageText = String.format("%sQUESTION 11 continued:", supplementPageText);
 		int personCount = 1;
 		for (Person p : persons) {
 			if (p.unearnedIncomeItems.size() > 0) {
 				String fieldName = String.format("certainPopsUnearnedIncomePerson%d", personCount);
-				unearnedIncomeDocumentFields.add(
+				certainPopsDocumentFields.add(
 						new DocumentField("certainPopsUnearnedIncome", fieldName, p.fullName, ENUMERATED_SINGLE_VALUE));
+				if (personCount > 2 || p.unearnedIncomeItems.size() > 4) {
+					needsSupplementPage = true;
+					supplementPageText = String.format("%s\nPerson %d, %s:", supplementPageText, personCount,
+							p.fullName);
+				}
 				int itemCount = 1;
 				for (UnearnedIncomeItem item : p.unearnedIncomeItems) {
 					createDocumentFields(item.type, item.amount, personCount, itemCount);
+					if (personCount > 2 || itemCount > 4) {
+						supplementPageText = String.format("%s\n  %d) %s, %s, %s", supplementPageText, itemCount,
+								item.type, item.amount, item.frequency);
+					}
 					itemCount++;
-					if (itemCount > 4)
-						break;
 				}
 				personCount++;
-				if (personCount > 2)
-					break;
 			}
 		}
 	}
@@ -83,15 +108,15 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	// A method to create the document fields for a single unearned income item.
 	private void createDocumentFields(String incomeType, String amount, int person, int item) {
 		String typeName = String.format("certainPopsUnearnedIncomeType_%d_%d", person, item);
-		unearnedIncomeDocumentFields
+		certainPopsDocumentFields
 				.add(new DocumentField("certainPopsUnearnedIncome", typeName, incomeType, ENUMERATED_SINGLE_VALUE));
 
 		String amountName = String.format("certainPopsUnearnedIncomeAmount_%d_%d", person, item);
-		unearnedIncomeDocumentFields
+		certainPopsDocumentFields
 				.add(new DocumentField("certainPopsUnearnedIncome", amountName, amount, ENUMERATED_SINGLE_VALUE));
 
 		String frequency = String.format("certainPopsUnearnedIncomeFrequency_%d_%d", person, item);
-		unearnedIncomeDocumentFields
+		certainPopsDocumentFields
 				.add(new DocumentField("certainPopsUnearnedIncome", frequency, "Monthly", ENUMERATED_SINGLE_VALUE));
 
 	}
@@ -129,7 +154,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 				"Social Security");
 		processIncomeSource("supplementalSecurityIncomeSource", "monthlyIncomeSSI", "supplementalSecurityIncomeAmount",
 				"SSI");
-		processIncomeSource("veternsBenefitsIncomeSource", "monthlyIncomeVeteransBenefits", "veteransBenefitsAmount",
+		processIncomeSource("veteransBenefitsIncomeSource", "monthlyIncomeVeteransBenefits", "veteransBenefitsAmount",
 				"Veterans Benefits");
 		processIncomeSource("unemploymentIncomeSource", "monthlyIncomeUnemployment", "unemploymentAmount",
 				"Unemployment");
@@ -227,7 +252,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 				hasNoOtherUnearnedIncome = false;
 			}
 		}
-		unearnedIncomeDocumentFields.add(new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
+		certainPopsDocumentFields.add(new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
 				String.valueOf(hasNoUnearnedIncome && hasNoOtherUnearnedIncome), ENUMERATED_SINGLE_VALUE));
 
 		return hasNoUnearnedIncome && hasNoOtherUnearnedIncome;

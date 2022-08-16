@@ -19,6 +19,12 @@ public class PdfResourcesComponents {
 
     return (List.of(coverPages, certainPops));
   }
+  
+  @Bean
+  public List<Resource> getCertainPopsSupplement(
+      @Value("classpath:certain-pops-supplement.pdf") Resource certainPopsSupplement) {
+    return List.of(certainPopsSupplement);
+  }
 
   @Bean
   public List<Resource> getAdditionalIncome(
@@ -111,30 +117,30 @@ public class PdfResourcesComponents {
       List<Resource> getAdditionalHousehold5,
       List<Resource> getAdditionalHousehold6,
       List<Resource> getAdditionalHousehold7,
+      List<Resource> getCertainPopsSupplement,
       List<Resource> getWhohasDisabilitySupp) {
-    return Map.of(
-        CASEWORKER,
-        Map.of("default", getDefaultResources, 
-            "addIncome", getAdditionalIncome,
-            "addHousehold1.0", getAdditionalHousehold1,
-            "addHousehold2.0", getAdditionalHousehold2,
-            "addHousehold3.0", getAdditionalHousehold3,
-            "addHousehold4.0", getAdditionalHousehold4,
-            "addHousehold5.0", getAdditionalHousehold5,
-            "addHousehold6.0", getAdditionalHousehold6,
-            "addHousehold7.0", getAdditionalHousehold7,
-            "addDisabilitySupp", getWhohasDisabilitySupp), 
-        CLIENT,
-        Map.of("default", getDefaultResources, 
-            "addIncome", getAdditionalIncome,
-            "addHousehold1.0", getAdditionalHousehold1,
-            "addHousehold2.0", getAdditionalHousehold2,
-            "addHousehold3.0", getAdditionalHousehold3,
-            "addHousehold4.0", getAdditionalHousehold4,
-            "addHousehold5.0", getAdditionalHousehold5,
-            "addHousehold6.0", getAdditionalHousehold6,
-            "addHousehold7.0", getAdditionalHousehold7,
-            "addDisabilitySupp", getWhohasDisabilitySupp));
-  }
+		return Map.of(CASEWORKER,
+				Map.ofEntries(Map.entry("default", getDefaultResources), Map.entry("addIncome", getAdditionalIncome),
+						Map.entry("addHousehold1.0", getAdditionalHousehold1),
+						Map.entry("addHousehold2.0", getAdditionalHousehold2),
+						Map.entry("addHousehold3.0", getAdditionalHousehold3),
+						Map.entry("addHousehold4.0", getAdditionalHousehold4),
+						Map.entry("addHousehold5.0", getAdditionalHousehold5),
+						Map.entry("addHousehold6.0", getAdditionalHousehold6),
+						Map.entry("addHousehold7.0", getAdditionalHousehold7),
+						Map.entry("addCertainPopsSupplement", getCertainPopsSupplement),
+						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp)),
+				CLIENT,
+				Map.ofEntries(Map.entry("default", getDefaultResources), Map.entry("addIncome", getAdditionalIncome),
+						Map.entry("addHousehold1.0", getAdditionalHousehold1),
+						Map.entry("addHousehold2.0", getAdditionalHousehold2),
+						Map.entry("addHousehold3.0", getAdditionalHousehold3),
+						Map.entry("addHousehold4.0", getAdditionalHousehold4),
+						Map.entry("addHousehold5.0", getAdditionalHousehold5),
+						Map.entry("addHousehold6.0", getAdditionalHousehold6),
+						Map.entry("addHousehold7.0", getAdditionalHousehold7),
+						Map.entry("addCertainPopsSupplement", getCertainPopsSupplement),
+						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp)));
+      }
 
 }

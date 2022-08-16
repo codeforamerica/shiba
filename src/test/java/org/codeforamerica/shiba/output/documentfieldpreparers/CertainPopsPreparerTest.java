@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.createApplicationInput;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,10 @@ import java.util.UUID;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
+import org.codeforamerica.shiba.pages.data.PagesData;
+import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.junit.jupiter.api.Test;
@@ -82,7 +87,8 @@ public class CertainPopsPreparerTest {
 		assertThat(result).contains(documentField);
 	}
 
-	// Applicant has unearned incomes, is person 1. There are no household members
+	// The applicant has unearned incomes, he is person 1. There are no household
+	// members
 	@Test
 	public void shouldMapApplicantUnearndIncomeFields() {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
@@ -90,7 +96,7 @@ public class CertainPopsPreparerTest {
 				.withPageData("personalInfo", "lastName", List.of("Smith"))
 				.withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
 				.withPageData("otherUnearnedIncome", "otherUnearnedIncome", List.of("TRUST_MONEY"))
-				
+
 				.withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of("100"))
 				.withPageData("unearnedIncomeSources", "retirementAmount", List.of())
 				.withPageData("unearnedIncomeSources", "unemploymentAmount", List.of())
@@ -99,7 +105,7 @@ public class CertainPopsPreparerTest {
 				.withPageData("unearnedIncomeSources", "workersCompensationAmount", List.of())
 				.withPageData("unearnedIncomeSources", "childOrSpousalSupportAmount", List.of())
 				.withPageData("unearnedIncomeSources", "supplementalSecurityIncomeAmount", List.of())
-				
+
 				.withPageData("otherUnearnedIncomeSources", "trustMoneyAmount", List.of("200"))
 				.withPageData("otherUnearnedIncomeSources", "benefitsAmount", List.of())
 				.withPageData("otherUnearnedIncomeSources", "rentalIncomeAmount", List.of())
@@ -108,7 +114,7 @@ public class CertainPopsPreparerTest {
 				.withPageData("otherUnearnedIncomeSources", "insurancePaymentsAmount", List.of())
 				.withPageData("otherUnearnedIncomeSources", "interestDividendsAmount", List.of())
 				.withPageData("otherUnearnedIncomeSources", "healthCareReimbursementAmount", List.of())
-				
+
 				.build();
 
 		List<DocumentField> result = preparer
@@ -139,8 +145,8 @@ public class CertainPopsPreparerTest {
 		assertThat(result).contains(documentField);
 	}
 
-	// Applicant has no unearned income. A single household member has unearned
-	// income, is person 1.
+	// The applicant has no unearned income. A single household member has unearned
+	// income, he is person 1.
 	@Test
 	public void shouldMapHouseholdMemberUnearndIncomeFields() {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
@@ -186,6 +192,281 @@ public class CertainPopsPreparerTest {
 		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_2",
 				"Monthly");
 		assertThat(result).contains(documentField);
+	}
+
+	// Applicant has all unearned income types. Verify that DocumentFields are
+	// generated for all income types.
+	@Test
+	public void shouldMapAllUnearndIncomeTypes() {
+		List<String> unearnedIncomeTypes = List.of("SOCIAL_SECURITY", "SSI", "VETERANS_BENEFITS", "UNEMPLOYMENT",
+				"WORKERS_COMPENSATION", "RETIREMENT", "CHILD_OR_SPOUSAL_SUPPORT", "TRIBAL_PAYMENTS");
+		List<String> otherUnearnedIncomeTypes = List.of("INSURANCE_PAYMENTS", "TRUST_MONEY", "RENTAL_INCOME",
+				"INTEREST_DIVIDENDS", "HEALTH_CARE_REIMBURSEMENT", "CONTRACT_FOR_DEED", "BENEFITS", "OTHER_PAYMENTS");
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withPageData("unearnedIncome", "unearnedIncome", unearnedIncomeTypes)
+				.withPageData("otherUnearnedIncome", "otherUnearnedIncome", otherUnearnedIncomeTypes)
+
+				.withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of("100"))
+				.withPageData("unearnedIncomeSources", "supplementalSecurityIncomeAmount", List.of("101"))
+				.withPageData("unearnedIncomeSources", "veteransBenefitsAmount", List.of("102"))
+				.withPageData("unearnedIncomeSources", "unemploymentAmount", List.of("103"))
+				.withPageData("unearnedIncomeSources", "workersCompensationAmount", List.of("104"))
+				.withPageData("unearnedIncomeSources", "retirementAmount", List.of("105"))
+				.withPageData("unearnedIncomeSources", "childOrSpousalSupportAmount", List.of("106"))
+				.withPageData("unearnedIncomeSources", "tribalPaymentsAmount", List.of("107"))
+
+				.withPageData("otherUnearnedIncomeSources", "insurancePaymentsAmount", List.of("200"))
+				.withPageData("otherUnearnedIncomeSources", "trustMoneyAmount", List.of("201"))
+				.withPageData("otherUnearnedIncomeSources", "rentalIncomeAmount", List.of("202"))
+				.withPageData("otherUnearnedIncomeSources", "interestDividendsAmount", List.of("203"))
+				.withPageData("otherUnearnedIncomeSources", "healthCareReimbursementAmount", List.of("204"))
+				.withPageData("otherUnearnedIncomeSources", "contractForDeedAmount", List.of("205"))
+				.withPageData("otherUnearnedIncomeSources", "benefitsAmount", List.of("206"))
+				.withPageData("otherUnearnedIncomeSources", "otherPaymentsAmount", List.of("207"))
+
+				.build();
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
+				"false");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson1",
+				"David Smith");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_1",
+				"Social Security");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_1",
+				"100");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_1",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_2", "SSI");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_2",
+				"101");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_2",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_3",
+				"Veterans Benefits");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_3",
+				"102");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_3",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_4",
+				"Unemployment");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_4",
+				"103");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_4",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_5",
+				"Workers Compensation");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_5",
+				"104");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_5",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_6",
+				"Retirement");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_6",
+				"105");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_6",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_7",
+				"Child or spousal support");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_7",
+				"106");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_7",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_8",
+				"Tribal payments");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_8",
+				"107");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_8",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_9",
+				"Insurance payments");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_9",
+				"200");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_9",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_10",
+				"Trust money");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_10",
+				"201");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_10",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_11",
+				"Rental income");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_11",
+				"202");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_11",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_12",
+				"Interest or dividends");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_12",
+				"203");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_12",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_13",
+				"Healthcare reimbursement");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_13",
+				"204");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_13",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_14",
+				"Contract for Deed");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_14",
+				"205");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_14",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_15",
+				"Benefits programs");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_15",
+				"206");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_15",
+				"Monthly");
+		assertThat(result).contains(documentField);
+
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeType_1_16",
+				"Other payments");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeAmount_1_16",
+				"207");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_1_16",
+				"Monthly");
+		assertThat(result).contains(documentField);
+	}
+
+	// Supplement text is generated when more than 2 people have unearned income or
+	// when a person has more than 4 unearned income types.
+	// This test has 3 persons with unearned income. Person 3 has 5 unearned income
+	// types.
+	// Expected text:
+	//
+	// Question 11 continued:
+	// Person 3, John Smith:
+	// 1) Social Security, 102, Monthly
+	// 2) Insurance payments, 200, Monthly
+	// 3) Trust money, 201, Monthly
+	// 4) Rental income, 202, Monthly
+	// 5) Interest or dividends, 203, Monthly
+	@Test
+	public void shouldMapQuestion11SupplementText() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
+				.withPageData("otherUnearnedIncome", "otherUnearnedIncome",
+						List.of("INSURANCE_PAYMENTS", "TRUST_MONEY", "RENTAL_INCOME", "INTEREST_DIVIDENDS"))
+
+				.withPageData("socialSecurityIncomeSource", "socialSecurityAmount", List.of("100", "101", "102"))
+				.withPageData("socialSecurityIncomeSource", "monthlyIncomeSSorRSDI",
+						List.of("David Smith applicant", "Jane Smith 12345678-1234-1234-1234-123456789012",
+								"John Smith 22345678-1234-1234-1234-223456789012"))
+
+				.withPageData("insurancePaymentsIncomeSource", "insurancePaymentsAmount", List.of("", "", "200"))
+				.withPageData("insurancePaymentsIncomeSource", "monthlyIncomeInsurancePayments",
+						List.of("John Smith 22345678-1234-1234-1234-223456789012"))
+
+				.withPageData("trustMoneyIncomeSource", "trustMoneyAmount", List.of("", "", "201"))
+				.withPageData("trustMoneyIncomeSource", "monthlyIncomeTrustMoney",
+						List.of("John Smith 22345678-1234-1234-1234-223456789012"))
+
+				.withPageData("rentalIncomeSource", "rentalIncomeAmount", List.of("", "", "202"))
+				.withPageData("rentalIncomeSource", "monthlyIncomeRental",
+						List.of("John Smith 22345678-1234-1234-1234-223456789012"))
+
+				.withPageData("interestDividendsIncomeSource", "interestDividendsAmount", List.of("", "", "203"))
+				.withPageData("interestDividendsIncomeSource", "monthlyIncomeInterestDividends",
+						List.of("John Smith 22345678-1234-1234-1234-223456789012"))
+
+				.withSubworkflow("household",
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+										new InputData(List.of("Smith")))))),
+						new PagesData(Map.of("householdMemberInfo", new PageData(Map.of("firstName",
+								new InputData(List.of("John")), "lastName", new InputData(List.of("Smith")))))))
+				.build();
+
+		// fix the iteration IDs
+		Subworkflow subworkflow = applicationData.getSubworkflows().get("household");
+		subworkflow.get(0).setId(UUID.fromString("12345678-1234-1234-1234-123456789012"));
+		subworkflow.get(1).setId(UUID.fromString("22345678-1234-1234-1234-223456789012"));
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+
+		DocumentField supplementDocumentField = null;
+		for (DocumentField documentField : result) {
+			if (documentField.getName().compareTo("certainPopsSupplement") == 0) {
+				supplementDocumentField = documentField;
+				break;
+			}
+		}
+		assertThat(supplementDocumentField).isNotNull();
+		String supplementText = supplementDocumentField.getValue(0);
+		assertThat(supplementText).contains(
+				"QUESTION 11 continued:\nPerson 3, John Smith:\n  1) Social Security, 102, Monthly\n  2) Insurance payments, 200, Monthly\n  3) Trust money, 201, Monthly\n  4) Rental income, 202, Monthly\n  5) Interest or dividends, 203, Monthly");
 	}
 
 }
