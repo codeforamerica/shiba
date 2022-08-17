@@ -17,7 +17,7 @@ class ListNonUSCitizenPreparerTest {
   TestApplicationDataBuilder applicationDataTest = new TestApplicationDataBuilder();
 
   @Test
-  void preparesFieldsForApplicantAndLiveInSpouseNamesWhenEveryoneInHouseNotUSCitizen() {
+  void preparesFieldsForEveryoneInHouseNotUSCitizen() {
     ApplicationData applicationData = applicationDataTest
         .withPersonalInfo()
         .withMultipleHouseholdMembers()
@@ -34,19 +34,48 @@ class ListNonUSCitizenPreparerTest {
         .build(), null, Recipient.CASEWORKER);
 
     assertThat(result).isEqualTo(List.of(
+        
         new DocumentField(
             "whoIsNonUsCitizen",
             "nameOfApplicantOrSpouse",
-            List.of("Jane Doe"),
+            List.of("Daria Agàta"),
+            DocumentFieldType.SINGLE_VALUE,
+            0
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of(""),
             DocumentFieldType.SINGLE_VALUE,
             0
         ),
         new DocumentField(
             "whoIsNonUsCitizen",
             "nameOfApplicantOrSpouse",
-            List.of("Daria Agàta"),
+            List.of("Jane Doe"),
             DocumentFieldType.SINGLE_VALUE,
             1
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of(""),
+            DocumentFieldType.SINGLE_VALUE,
+            1
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            List.of("Other Person"),
+            DocumentFieldType.SINGLE_VALUE,
+            2
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of(""),
+            DocumentFieldType.SINGLE_VALUE,
+            2
         )));
   }
   
@@ -54,12 +83,7 @@ class ListNonUSCitizenPreparerTest {
   void preparesFieldsForApplicantOnlyNotUSCitizen() {
     ApplicationData applicationData = applicationDataTest
         .withPersonalInfo()
-        .withMultipleHouseholdMembers()
         .withPageData("usCitizen", "isUsCitizen", "false")
-        .withPageData("whoIsNonCitizen", "whoIsNonCitizen", List.of(
-            "Jane Doe applicant",
-            "Other Person notSpouse"
-        ))
         .build();
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
@@ -71,6 +95,13 @@ class ListNonUSCitizenPreparerTest {
             "whoIsNonUsCitizen",
             "nameOfApplicantOrSpouse",
             List.of("Jane Doe"),
+            DocumentFieldType.SINGLE_VALUE,
+            0
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of(""),
             DocumentFieldType.SINGLE_VALUE,
             0
         )));
@@ -89,5 +120,77 @@ class ListNonUSCitizenPreparerTest {
         .build(), null, Recipient.CASEWORKER);
 
     assertThat(result).isEqualTo(List.of());
+  }
+  
+  @Test
+  void preparesFieldsForAlienId() {
+    ApplicationData applicationData = applicationDataTest
+        .withPersonalInfo()
+        .withMultipleHouseholdMembers()
+        .withPageData("usCitizen", "isUsCitizen", "false")
+        .withPageData("whoIsNonCitizen", "whoIsNonCitizen", List.of(
+            "Daria Agàta someGuid",
+            "Jane Doe applicant",
+            "Other Person notSpouse"
+        ))
+        .withPageData("alienIdNumbers", "alienIdMap", List.of(
+            "someGuid",
+            "applicant",
+            "notSpouse"
+            ))
+        .withPageData("alienIdNumbers", "alienIdNumber", List.of(
+            "SpouseAlienId",
+            "AppAlienId",
+            ""
+            ))
+        .build();
+
+    List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, Recipient.CASEWORKER);
+
+    assertThat(result).isEqualTo(List.of(
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            List.of("Daria Agàta"),
+            DocumentFieldType.SINGLE_VALUE,
+            0
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of("SpouseAlienId"),
+            DocumentFieldType.SINGLE_VALUE,
+            0
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            List.of("Jane Doe"),
+            DocumentFieldType.SINGLE_VALUE,
+            1
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of("AppAlienId"),
+            DocumentFieldType.SINGLE_VALUE,
+            1
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "nameOfApplicantOrSpouse",
+            List.of("Other Person"),
+            DocumentFieldType.SINGLE_VALUE,
+            2
+        ),
+        new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            List.of(""),
+            DocumentFieldType.SINGLE_VALUE,
+            2
+        )));
   }
 }

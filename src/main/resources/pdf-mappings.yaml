@@ -407,6 +407,7 @@ mappings:
     householdPregnancy: WHO_IS_PREGNANT
   whoIsNonUsCitizen:
     nameOfApplicantOrSpouse: NAME_OF_NON_US_CITIZEN
+    alienId: ALIEN_ID
   householdSelectionForIncome:
     whoseJobIsItFormatted: EMPLOYEE_FULL_NAME
   nonSelfEmployment_householdSelectionForIncome:

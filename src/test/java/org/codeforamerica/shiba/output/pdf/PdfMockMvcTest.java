@@ -1199,7 +1199,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			String jimHalpertId = getFirstHouseholdMemberId();
 			postExpectingSuccess("usCitizen", "isUsCitizen", "false");
 			postExpectingSuccess("whoIsNonCitizen", "whoIsNonCitizen",
-					List.of("Dwight Schrute applicant", "Jim Halpert" + jimHalpertId));
+					List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId));
 			postExpectingSuccess("livingSituation", "livingSituation", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
 			postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
 

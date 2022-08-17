@@ -1,27 +1,24 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.EVERYONE_US_CITIZENS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHO_ARE_NON_US_CITIZENS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
-
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_ID;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_IDS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_ID_MAP;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.EVERYONE_US_CITIZENS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHO_ARE_NON_US_CITIZENS;
+import static org.codeforamerica.shiba.output.FullNameFormatter.getFullName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.application.Application;
-import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
-import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PagesData;
-import org.codeforamerica.shiba.pages.data.Subworkflow;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,40 +35,31 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
       return List.of();
     } else {
       List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
-      List<String> applicantAndSpouse = new ArrayList<>();
-      Optional<String> applicant = nonCitizens.stream()
-          .filter(nonCitizen -> nonCitizen.endsWith("applicant")).findFirst();
-
-      applicant.ifPresent(applicantName -> {
-        List<String> nameList = Arrays.stream(applicantName.split(" "))
-            .collect(Collectors.toList());
-        nameList.remove("applicant");
-        applicantAndSpouse.add(String.join(" ", nameList));
-      });
-
-      Subworkflow household = getGroup(application.getApplicationData(),
-          HOUSEHOLD) == null ?new Subworkflow():getGroup(application.getApplicationData(),
-              HOUSEHOLD);
-      Optional<Iteration> spouseHouseholdMemberInfo = household.stream().filter(householdData -> getValues(householdData.getPagesData(),
-                  Field.HOUSEHOLD_INFO_RELATIONSHIP)
-                  .equals(List.of("spouse")))
-          .findFirst();
-
-      spouseHouseholdMemberInfo.ifPresent(iteration -> {
-        String spouseFullName =
-            getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_FIRST_NAME) + " "
-                + getFirstValue(iteration.getPagesData(), Field.HOUSEHOLD_INFO_LAST_NAME);
-        if (nonCitizens.stream().anyMatch(nonCitizen -> nonCitizen.contains(spouseFullName))) {
-          applicantAndSpouse.add(spouseFullName);
-        }
-
-      });
+      List<NonUSCitizen> allApplicantsNonCitizen = new ArrayList<NonUSCitizen>();
+      if(nonCitizens.size() == 0) {//For Individual flow
+        String alienId = getFirstValue(pagesData, ALIEN_ID);
+        allApplicantsNonCitizen.add(new NonUSCitizen(getFullName(application),alienId==null?"":alienId));
+      } else {
+        nonCitizens.stream().forEach(name ->{
+          List<String> nameList = Arrays.stream(name.split(" ")).collect(Collectors.toList());
+          String id = nameList.get(nameList.size()-1);
+          String alienNumber = getAlienNumber(pagesData, id);
+          nameList.remove(id);
+          String fullName =  String.join(" ", nameList);
+          allApplicantsNonCitizen.add(new NonUSCitizen(fullName,alienNumber));
+        });
+      }
       int index = 0;
-      for(String name: applicantAndSpouse) {
+      for(NonUSCitizen person: allApplicantsNonCitizen) {
         nonUSCitizens.add(new DocumentField(
             "whoIsNonUsCitizen",
             "nameOfApplicantOrSpouse",
-            String.join(" ", name),
+            String.join(" ", person.fullName),
+            DocumentFieldType.SINGLE_VALUE, index ));
+        nonUSCitizens.add(new DocumentField(
+            "whoIsNonUsCitizen",
+            "alienId",
+            String.join(" ", person.alienId),
             DocumentFieldType.SINGLE_VALUE, index ));
         index++;
       }
@@ -80,4 +68,25 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
 
     return nonUSCitizens;
   }
+  private String getAlienNumber(PagesData pagesData, String condition) {
+    String result = "";
+    List<String> alienIdMap = getValues(pagesData, ALIEN_ID_MAP);
+    int index = alienIdMap.stream().collect(Collectors.toList()).indexOf(condition);
+    List<String> alienNumbers = getValues(pagesData, ALIEN_IDS);
+    result = alienNumbers.size()!=0?alienNumbers.get(index):result; 
+    return result;
+  }
+ 
+  public class NonUSCitizen{
+    String fullName = "";
+    String alienId = "";
+    
+    public NonUSCitizen(String fullName, String alienId) {
+      this.fullName = fullName;
+      this.alienId = alienId;
+    }
+    
+   
+  }
+  
 }

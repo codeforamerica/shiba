@@ -337,6 +337,12 @@ public class ApplicationDataParser {
         new ParsingCoordinate("addHouseholdMembers", "addHouseholdMembers"));
     groupCoordinatesMap.put(Group.JOBS, "jobs");
     groupCoordinatesMap.put(Group.HOUSEHOLD, "household");
+    coordinatesMap.put(Field.ALIEN_ID,
+        new ParsingCoordinate("alienIdNumber", "alienIdNumber"));
+    coordinatesMap.put(Field.ALIEN_IDS,
+        new ParsingCoordinate("alienIdNumbers", "alienIdNumber"));
+    coordinatesMap.put(Field.ALIEN_ID_MAP,
+        new ParsingCoordinate("alienIdNumbers", "alienIdMap"));
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -555,7 +561,10 @@ public class ApplicationDataParser {
     UNEARNED_WORKERS_COMPENSATION_AMOUNT,
     UNEARNED_RETIREMENT_AMOUNT,
     UNEARNED_CHILD_OR_SPOUSAL_SUPPORT_AMOUNT,
-    UNEARNED_TRIBAL_PAYMENTS_AMOUNT;
+    UNEARNED_TRIBAL_PAYMENTS_AMOUNT,
+    ALIEN_ID,
+    ALIEN_IDS,
+    ALIEN_ID_MAP;
     @Getter
     private final String defaultValue;
 
