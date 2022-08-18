@@ -110,6 +110,8 @@ class AppsWithBlankStatusResubmissionTest {
         moreThan60DaysAgo).getId();
     String laterDocsSubmissionOlderThan60Days = makeBlankStatusLaterDocApplication("5", Anoka,
         moreThan60DaysAgo, true).getId();
+    String appWithOnlyProgramsNone = makeBlankStatusApplication("6", Anoka, List.of("NONE"),
+            tenHoursAgo).getId();
 
     // actually try to resubmit it
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
@@ -136,6 +138,10 @@ class AppsWithBlankStatusResubmissionTest {
 
     verify(pageEventPublisher, never()).publish(
         new UploadedDocumentsSubmittedEvent("resubmission", laterDocsSubmissionOlderThan60Days,
+            LocaleContextHolder.getLocale()));
+
+    verify(pageEventPublisher, never()).publish(
+        new UploadedDocumentsSubmittedEvent("resubmission", appWithOnlyProgramsNone,
             LocaleContextHolder.getLocale()));
   }
 
@@ -241,7 +247,12 @@ class AppsWithBlankStatusResubmissionTest {
   }
 
   private Application makeBlankStatusApplication(String id, County county,
-      ZonedDateTime createdAt) {
+	      ZonedDateTime createdAt) {
+	  return makeBlankStatusApplication(id, county, List.of(SNAP, CASH), createdAt);
+  }
+
+  private Application makeBlankStatusApplication(String id, County county,
+      List<String> programs, ZonedDateTime createdAt) {
 
     ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
     applicationData.setPagesData(new PagesDataBuilder()
@@ -249,7 +260,7 @@ class AppsWithBlankStatusResubmissionTest {
             "email", List.of("test@example.com"),
             "phoneOrEmail", List.of("EMAIL")))
         .withPageData("employmentStatus", "areYouWorking", "true")
-        .withPageData("choosePrograms", "programs", List.of(SNAP, CASH))
+        .withPageData("choosePrograms", "programs", programs)
         .build());
     applicationData.setId(id);
 

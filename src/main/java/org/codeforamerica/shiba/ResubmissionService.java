@@ -13,8 +13,11 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.codeforamerica.shiba.application.Application;
@@ -140,7 +143,16 @@ public class ResubmissionService {
   @SchedulerLock(name = "noStatusEsbResubmissionTask", lockAtMostFor = "${no-status-applications-resubmission.lockAtMostFor}", lockAtLeastFor = "${no-status-applications-resubmission.lockAtLeastFor}")
   public void resubmitBlankStatusApplicationsViaEsb() {
     log.info("Checking for applications that have no statuses");
-    List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
+    List<Application> applicationsWithBlankStatusRows = applicationRepository.findApplicationsWithBlankStatuses();
+    
+    // Filter out applications where no programs were selected. This shouldn't be possible but it has occurred.
+    ArrayList<Application> applicationsWithBlankStatuses = new ArrayList<Application>();
+    for (Application application : applicationsWithBlankStatusRows) {
+    	Set<String> programs = application.getApplicationData().getApplicantAndHouseholdMemberPrograms();
+    	if (!(programs.size() == 1 && programs.contains("NONE"))) {
+    		applicationsWithBlankStatuses.add(application);
+    	}
+    }
 
     MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
     log.info(
