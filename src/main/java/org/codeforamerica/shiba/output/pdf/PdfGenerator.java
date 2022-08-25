@@ -149,57 +149,109 @@ public class PdfGenerator implements FileGenerator {
     return pdfFiller.fill(fields, application.getId(), filename);
   }
 
-  public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
-      int documentIndex, Application application, byte[] coverPage,
-      RoutingDestination routingDest) {
-    var fileBytes = documentRepository.get(uploadedDocument.getS3Filepath());
-    if (fileBytes != null) {
-      var extension = Utils.getFileType(uploadedDocument.getFilename());
-
-      if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
-        try {
-          fileBytes = convertImageToPdf(fileBytes, uploadedDocument.getFilename());
-          extension = "pdf";
-        } catch (Exception e) {
-          log.warn("failed to convert document " + uploadedDocument.getFilename()
-              + " to pdf. Maintaining original type");
-        }
-      } else if (!extension.equals("pdf")) {
-        log.warn("Unsupported file-type: " + extension);
-      }
-
-      if (extension.equals("pdf") && coverPage != null) {
-        fileBytes = addCoverPageToPdf(coverPage, fileBytes);
-      }
-      String filename = uploadedDocument.getSysFileName();
-      filename = (filename == null || (filename!=null && !filename.contains(routingDest.getDhsProviderId())))
-          ? fileNameGenerator.generateUploadedDocumentName(application, documentIndex, extension,
-          routingDest)
-          : uploadedDocument.getSysFileName();
-      return new ApplicationFile(fileBytes, filename);
-    }
-    return null;
+  public List<ApplicationFile> generateCombinedUploadedDocument(List<UploadedDocument> uploadedDocument, Application application,
+		  byte[] coverPage) {
+    return generateCombinedUploadedDocument(uploadedDocument, application, coverPage,
+        countyMap.get(application.getCounty()));
   }
+  
+ /**
+  * This method converts list of uploaded documents into pdf then combines it to form single pdf upload file with coverpage.
+  * It lists out the combined pdf files and the ones that can't be combined.
+  * @param uploadedDocuments
+  * @param application
+  * @param coverPage
+  * @param routingDest
+  * @return
+  */
+  public List<ApplicationFile> generateCombinedUploadedDocument(List<UploadedDocument> uploadedDocuments, Application application,
+		  byte[] coverPage, RoutingDestination routingDest) {
+    if (uploadedDocuments.size() == 0 || (uploadedDocuments.stream()
+        .allMatch(uDoc -> documentRepository.get(uDoc.getS3Filepath()) == null)
+        || uploadedDocuments.stream()
+            .allMatch(uDoc -> documentRepository.get(uDoc.getS3Filepath()).length <= 0)))
+      return null;
 
-  public ApplicationFile generateForUploadedDocument(UploadedDocument uploadedDocument,
-      int documentIndex, Application application, byte[] coverPage) {
-    return generateForUploadedDocument(uploadedDocument, documentIndex, application, coverPage,
+    List<ApplicationFile> applicationFiles = new ArrayList<>();
+    byte[] combinedPDF = coverPage;
+   
+    List<byte[]> combinedDocList = new ArrayList<>();
+    for (UploadedDocument uDoc : uploadedDocuments) {
+
+      var fileBytes = documentRepository.get(uDoc.getS3Filepath());
+
+      if (fileBytes != null) {
+        var extension = Utils.getFileType(uDoc.getFilename());
+
+        if (IMAGE_TYPES_TO_CONVERT_TO_PDF.contains(extension)) {
+          try {
+            fileBytes = convertImageToPdf(fileBytes, uDoc.getFilename());
+            extension = "pdf";
+          } catch (Exception e) {
+            log.warn("failed to convert document " + uDoc.getFilename()
+            + " to pdf. Maintaining original type");
+            combinedDocList.add(fileBytes);
+          }
+        } else if (!extension.equals("pdf")) {
+          log.warn("Unsupported file-type: " + extension);
+        }
+        if (extension.equals("pdf")) {
+          try {
+          combinedPDF = addPageToPdf(combinedPDF, fileBytes);
+          }catch(NullPointerException er) {
+            log.error("File not able to combine to pdf "+uDoc.getFilename());
+            combinedDocList.add(fileBytes);
+          }
+        }
+      }
+     
+    }
+    //This makes sure duplicate files are not added twice in case of merger issue
+    if(!combinedPDF.equals(coverPage)) {
+      combinedDocList.add(combinedPDF);
+    }
+    int i = 0;
+    for(byte[] combineDoc: combinedDocList) {
+      String filename =
+          fileNameGenerator.generateUploadedDocumentName(application, i, "pdf", routingDest, combinedDocList.size());
+          applicationFiles.add(new ApplicationFile(combineDoc, filename));
+          i++;
+    }
+    return applicationFiles;
+  }
+  
+  
+  public List<ApplicationFile> generateForUploadedDocument(List<UploadedDocument> uploadedDocumentList, Application application, byte[] coverPage) {
+    return generateCombinedUploadedDocument(uploadedDocumentList, application, coverPage,
         countyMap.get(application.getCounty()));
   }
 
-  private byte[] addCoverPageToPdf(byte[] coverPage, byte[] fileBytes) {
+  /**
+   * This method combines converted pdf to single pdf file with system generated coverpage.
+   * flatten() is used to flatten acroforms only so there won't be any duplicate issues while merging acroforms
+   * @param mainPage
+   * @param addPage
+   * @return
+   */
+  public byte[] addPageToPdf(byte[] mainPage, byte[] addPage) {
     PDFMergerUtility merger = new PDFMergerUtility();
-    try (PDDocument coverPageDoc = PDDocument.load(coverPage);
-        PDDocument uploadedDoc = PDDocument.load(fileBytes);
+    try (PDDocument mainPageDoc = PDDocument.load(mainPage);
+        PDDocument addedPageDoc = PDDocument.load(addPage);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-      merger.appendDocument(coverPageDoc, uploadedDoc);
-      coverPageDoc.save(outputStream);
-      fileBytes = outputStream.toByteArray();
+      
+      /*
+       * if (addedPageDoc.getDocumentCatalog().getAcroForm() != null)
+       * addedPageDoc.getDocumentCatalog().getAcroForm().flatten();
+       */
+      
+      merger.appendDocument(mainPageDoc, addedPageDoc);
+      mainPageDoc.save(outputStream);
+      addPage = outputStream.toByteArray();
     } catch (IOException e) {
+
       throw new RuntimeException(e);
     }
-    return fileBytes;
+    return addPage;
   }
 
   private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception {

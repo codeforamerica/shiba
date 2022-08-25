@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.List;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.documents.DocumentRepository;
@@ -90,7 +91,7 @@ class ApplicationDataSerializationTest {
       pdfGenerator.generate(application, CCAP, CLIENT);
 
       var uploadedDocument = application.getApplicationData().getUploadedDocs().get(0);
-      pdfGenerator.generateForUploadedDocument(uploadedDocument, 0, application, coverPage);
+      pdfGenerator.generateForUploadedDocument(List.of(uploadedDocument), application, coverPage);
     }).doesNotThrowAnyException();
   }
 

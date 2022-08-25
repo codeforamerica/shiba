@@ -51,6 +51,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -223,8 +224,8 @@ class MailGunEmailClientTest {
     when(emailContentCreator.createResubmitEmailContent(UPLOADED_DOC, ENGLISH))
         .thenReturn(emailContent);
     when(pdfGenerator
-        .generateForUploadedDocument(any(UploadedDocument.class), anyInt(), any(Application.class),
-            any())).thenReturn(testFile);
+        .generateForUploadedDocument(Mockito.<UploadedDocument>anyList(), any(Application.class),
+            any())).thenReturn(List.of(testFile));
 
     mailGunEmailClient.resubmitFailedEmail(hennepinEmail, UPLOADED_DOC, testFile, application);
 

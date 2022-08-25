@@ -242,13 +242,13 @@ public class ResubmissionService {
     var uploadedDocs = application.getApplicationData().getUploadedDocs();
     var failedDoc = uploadedDocs.stream()
         .filter(uploadedDoc -> uploadedDoc.getSysFileName().equals(documentName)).toList();
-    ApplicationFile fileToSend =
-        pdfGenerator.generateForUploadedDocument(failedDoc.get(0), 0, application, coverPage, routingDestination);
-    var esbFilename = fileToSend.getFileName();
+    List<ApplicationFile> fileToSend =
+        pdfGenerator.generateCombinedUploadedDocument(List.of(failedDoc.get(0)), application, coverPage, routingDestination);
+    var esbFilename = fileToSend.get(0).getFileName();
     var originalFilename = failedDoc.get(0).getFilename();
     log.info("Resubmitting uploaded doc: %s original filename: %s".formatted(esbFilename,
         originalFilename));
-    emailClient.resubmitFailedEmail(recipientEmail, document, fileToSend, application);
+    emailClient.resubmitFailedEmail(recipientEmail, document, fileToSend.get(0), application);
     log.info("Finished resubmitting document %s".formatted(esbFilename));
   }
 }

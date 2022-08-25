@@ -190,10 +190,10 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generateCoverPageForUploadedDocs(any()))
         .thenReturn(coverPage);
     var uploadedDocs = applicationData.getUploadedDocs();
-    when(pdfGenerator.generateForUploadedDocument(eq(uploadedDocs.get(0)), eq(0), eq(application), eq(coverPage), any()))
-        .thenReturn(applicationFile1);
-    when(pdfGenerator.generateForUploadedDocument(eq(uploadedDocs.get(1)), eq(0), eq(application), eq(coverPage), any()))
-        .thenReturn(applicationFile2);
+    when(pdfGenerator.generateCombinedUploadedDocument(eq(List.of(uploadedDocs.get(0))), eq(application), eq(coverPage), any()))
+        .thenReturn(List.of(applicationFile1));
+    when(pdfGenerator.generateCombinedUploadedDocument(eq(List.of(uploadedDocs.get(1))), eq(application), eq(coverPage), any()))
+        .thenReturn(List.of(applicationFile2));
 
     resubmissionService.resubmitFailedApplications();
 
@@ -227,9 +227,9 @@ class ResubmissionServiceTest {
     var uploadedDocWithCoverPageFile = new ApplicationFile("test".getBytes(), "fileName.txt");
     var coverPage = "someCoverPageText".getBytes();
     when(pdfGenerator.generateCoverPageForUploadedDocs(application)).thenReturn(coverPage);
-    UploadedDocument firstUploadedDoc = applicationData.getUploadedDocs().get(0);
-    when(pdfGenerator.generateForUploadedDocument(eq(firstUploadedDoc), eq(0), eq(application),
-        eq(coverPage), any())).thenReturn(uploadedDocWithCoverPageFile);
+    List<UploadedDocument> uploadedDoc = applicationData.getUploadedDocs();
+    when(pdfGenerator.generateCombinedUploadedDocument(eq(uploadedDoc), eq(application),
+        eq(coverPage), any())).thenReturn(List.of(uploadedDocWithCoverPageFile));
 
     var ccapFile = new ApplicationFile("fileContent".getBytes(), "");
     when(pdfGenerator.generate(eq(application), eq(CCAP), eq(Recipient.CASEWORKER), any())).thenReturn(ccapFile);
@@ -273,7 +273,7 @@ class ResubmissionServiceTest {
     when(pdfGenerator.generateCoverPageForUploadedDocs(any()))
     .thenReturn(coverPage);
     when(pdfGenerator
-        .generateForUploadedDocument(eq(applicationData.getUploadedDocs().get(0)), eq(0), eq(application),
+        .generateCombinedUploadedDocument(eq(applicationData.getUploadedDocs()), eq(application),
             eq(coverPage), any())).thenThrow(RuntimeException.class);
 
     resubmissionService.resubmitFailedApplications();

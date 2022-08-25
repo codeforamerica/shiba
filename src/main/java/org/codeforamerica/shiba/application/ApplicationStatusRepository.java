@@ -87,20 +87,25 @@ public class ApplicationStatusRepository {
       if (uploadedDocs.size() == 0) {
         fileNames.add("");
       }
-      for (int i = 0; i < uploadedDocs.size(); i++) {
-        String fileName = uploadedDocs.get(i).getSysFileName();
-        if (fileName == null || !fileName.contains(routingDest.getDhsProviderId())) {
-          String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
-          fileName =
-              filenameGenerator.generateUploadedDocumentName(application, i, extension, routingDest);
-          ApplicationFile preparedDocument =
-              pdfGenerator.generateForUploadedDocument(uploadedDocs.get(i), i, application, null, routingDest);
-          if (preparedDocument != null && preparedDocument.getFileBytes().length > 0) {
-            fileName = preparedDocument.getFileName();
-          }
-          uploadedDocs.get(i).setSysFileName(fileName);
+      byte[] coverPage = pdfGenerator.generateCoverPageForUploadedDocs(application);
+      
+      List<ApplicationFile> preparedDocumentList =
+          pdfGenerator.generateCombinedUploadedDocument(uploadedDocs, application, coverPage, routingDest);
+     
+      if(preparedDocumentList!=null && !preparedDocumentList.isEmpty()) {
+        for(ApplicationFile file:preparedDocumentList) {
+          fileNames.add(file.getFileName());
         }
-        fileNames.add(fileName);
+      } else {
+        for (int i = 0; i < uploadedDocs.size(); i++) {
+          String fileName = uploadedDocs.get(i).getSysFileName();
+          if (fileName == null || !fileName.contains(routingDest.getDhsProviderId())) {
+            String extension = Utils.getFileType(uploadedDocs.get(i).getFilename());
+            fileName = filenameGenerator.generateUploadedDocumentName(application, i, extension,
+                routingDest);
+          }
+          fileNames.add(fileName);
+        }
       }
     } else {
       String fileName = filenameGenerator.generatePdfFilename(application, document, routingDest);
@@ -108,6 +113,7 @@ public class ApplicationStatusRepository {
     }
     return fileNames;
   }
+  
 public List<String> getAndSetFileNames(Application application, Document document){
     List<RoutingDestination> routingDestinations =
         routingDecisionService.getRoutingDestinations(application.getApplicationData(), document);

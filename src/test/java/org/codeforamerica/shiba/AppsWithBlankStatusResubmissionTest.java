@@ -11,9 +11,11 @@ import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-
+import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
 import org.codeforamerica.shiba.documents.DocumentRepository;
+import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
@@ -213,19 +216,33 @@ class AppsWithBlankStatusResubmissionTest {
   void shouldSetLaterDocsAppsWithAllFilesOfSize0BytesToUndeliverableAndNotPublishSubmissionEvents() {
     Application laterDocsWithDocsOfSize0Bytes = makeBlankStatusLaterDocApplication("71", Hennepin,
         now().minusMinutes(5), true);
+    
     laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs()
         .forEach(doc -> doc.setSize(0));
+    /*
+     * ApplicationFile applicationFile1 = new ApplicationFile("doc1.pdf".getBytes(),
+     * "fileName.txt"); ApplicationFile applicationFile2 = new
+     * ApplicationFile("doc2.pdf".getBytes(), "fileName1.txt"); var coverPage =
+     * "someCoverPageText".getBytes();
+     * when(pdfGenerator.generateCoverPageForUploadedDocs(eq(laterDocsWithDocsOfSize0Bytes)))
+     * .thenReturn(coverPage); var uploadedDocs =
+     * laterDocsWithDocsOfSize0Bytes.getApplicationData().getUploadedDocs();
+     * when(pdfGenerator.generateCombinedUploadedDocument(eq(uploadedDocs),
+     * eq(laterDocsWithDocsOfSize0Bytes), eq(coverPage), any()))
+     * .thenReturn(List.of(applicationFile1, applicationFile2));
+     */
+    
     applicationRepository.save(laterDocsWithDocsOfSize0Bytes);
     resubmissionService.resubmitBlankStatusApplicationsViaEsb();
-    List<String> laterDocsWithDocsOfSize0BytesFileNames = applicationStatusRepository.getAndSetFileNames(
-        laterDocsWithDocsOfSize0Bytes, UPLOADED_DOC);
-    assertThat(applicationStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId())).contains(
-        new ApplicationStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC, "Hennepin",
-            UNDELIVERABLE, laterDocsWithDocsOfSize0BytesFileNames.get(0))
-    );
-    verify(pageEventPublisher, never()).publish(
-        new UploadedDocumentsSubmittedEvent("resubmission", laterDocsWithDocsOfSize0Bytes.getId(),
-            LocaleContextHolder.getLocale()));
+    
+    List<String> laterDocsWithDocsOfSize0BytesFileNames =
+        applicationStatusRepository.getAndSetFileNames(laterDocsWithDocsOfSize0Bytes, UPLOADED_DOC);
+    assertThat(applicationStatusRepository.findAll(laterDocsWithDocsOfSize0Bytes.getId()))
+        .contains(new ApplicationStatus(laterDocsWithDocsOfSize0Bytes.getId(), UPLOADED_DOC,
+            "Hennepin", UNDELIVERABLE, laterDocsWithDocsOfSize0BytesFileNames.get(0)));
+    verify(pageEventPublisher, never()).publish(new UploadedDocumentsSubmittedEvent("resubmission",
+        laterDocsWithDocsOfSize0Bytes.getId(), LocaleContextHolder.getLocale()));
+
   }
 
   private Application makeBlankStatusLaterDocApplication(String id, County county,

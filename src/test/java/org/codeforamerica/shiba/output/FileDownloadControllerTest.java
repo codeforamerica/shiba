@@ -158,11 +158,9 @@ class FileDownloadControllerTest {
     when(pdfGenerator.generateCoverPageForUploadedDocs(any(Application.class)))
         .thenReturn(coverPageFile.getFileBytes());
     when(pdfGenerator
-        .generateForUploadedDocument(eq(uploadedDoc), eq(0), any(Application.class), any()))
-        .thenReturn(imageFile);
-    when(pdfGenerator
-        .generateForUploadedDocument(eq(uploadedWordDoc), eq(0), any(Application.class), any()))
-        .thenReturn(wordDocFile);
+        .generateForUploadedDocument(eq(List.of(uploadedDoc,uploadedWordDoc)), any(Application.class), any()))
+        .thenReturn(List.of(imageFile,wordDocFile));
+
     when(uploadedDocsPreparer.prepare(any(), any())).thenReturn(List.of(imageFile, wordDocFile));
     MvcResult result = mockMvc.perform(
             get("/download"))

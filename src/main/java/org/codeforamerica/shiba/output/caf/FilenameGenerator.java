@@ -77,6 +77,14 @@ public class FilenameGenerator {
         dhsProviderId);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
+  
+  /*public String generateCombinedUploadedDocsName(Application application, String extension,
+      RoutingDestination routingDestination, int index, int size) {
+    String dhsProviderId = routingDestination.getDhsProviderId();
+    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
+        dhsProviderId);
+    return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
+  }*/
 
   public String generateXmlFilename(Application application) {
     String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
