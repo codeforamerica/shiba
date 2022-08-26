@@ -2022,11 +2022,11 @@ pageDefinitions:
             - value: ''
               messageKey: retroactive-coverage-time-period.number-of-months
             - value: 1
-              messageKey: retroactive-coverage-time-period.one-month
+              messageKey: retroactive-coverage-time-period.1
             - value: 2
-              messageKey: retroactive-coverage-time-period.two-months
+              messageKey: retroactive-coverage-time-period.2
             - value: 3
-              messageKey: retroactive-coverage-time-period.three-months
+              messageKey: retroactive-coverage-time-period.3
       - type: HIDDEN
         name: retroactiveCoverageMap
   - &medicalInOtherState
