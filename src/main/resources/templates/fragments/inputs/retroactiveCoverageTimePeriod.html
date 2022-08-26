@@ -1,0 +1,49 @@
+<!--/* Custom input copied from parentNotAtHomeNameInput.html for displaying formatted data as well as storing additional hidden data which will be needed later for writing to the PDF */-->
+<th:block th:fragment="retroactiveCoverageTimePeriod (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                    inputData=${data.get(input.name)},
+                    retroactiveCoverageMapData=${data.get('retroactiveCoverageMap')},
+                    hasHelpMessage=${input.helpMessageKey != null},
+                    hasError=${!data.isValid() && !inputData.valid(data)},
+                    needsAriaLabel=${input.needsAriaLabel()}">
+  <div class="spacing-below-60" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+ <th:block th:if="${input.options.datasources.get('retroactiveCoverageSource').get('retroactiveCoverageSourceQuestion') != null}">
+    <th:block 
+        th:each="fullNameAndId, iterationStat: ${input.options.datasources.get('retroactiveCoverageSource').get('retroactiveCoverageSourceQuestion').value}"
+        th:with="retroactiveCoverageArray=${#strings.arraySplit(fullNameAndId, ' ')},
+                         retroactiveCoverage=${retroactiveCoverageArray[#arrays.length(retroactiveCoverageArray)-1]},
+                         personName=${#strings.substringBefore(fullNameAndId, ' ' + retroactiveCoverage)},
+                         you=#{general.you},
+                         indexInInputData=${retroactiveCoverageMapData.value.indexOf(retroactiveCoverage)},
+                         personRetroactiveCoverage=${indexInInputData < 0 ? '' : inputData.value.get(indexInInputData)},
+                         fieldIsBlank=${!inputData.valid(data) && personRetroactiveCoverage.isBlank()}">
+      <div class="form-group" th:classappend="${fieldIsBlank} ? 'form-group--error' : ''">
+        <label class="form-question spacing-below-5" th:for="|${retroactiveCoverage}-personRetroactiveCoverage|"
+               th:text="${T(org.codeforamerica.shiba.pages.PageUtils).householdMemberName(fullNameAndId, you)}"
+               th:id="${retroactiveCoverage + '-label'}">
+        </label>
+        <div class="select">
+	        <select th:id="|${retroactiveCoverage}-personRetroactiveCoverage|" 
+	        class="select__element" 
+	        th:name="${formInputName}">
+       	   	<option th:value="''" th:text="#{retroactive-coverage-time-period.number-of-months}"></option>
+            <th:block th:each="option: ${#numbers.sequence(1,3)}">
+				<option th:value="${option}"
+					th:text="#{${'retroactive-coverage-time-period.'+option}}"
+					th:selected="${option}==${!inputData.value.isEmpty()?inputData.value.get(indexInInputData):''}"></option>
+			</th:block>
+	        </select>
+        </div>
+
+        <input type="hidden"
+               th:id="|${retroactiveCoverage}-id|"
+               th:value="${retroactiveCoverage}"
+               th:name="retroactiveCoverageMap[]">
+      </div>
+      <div th:if=${fieldIsBlank}>
+      	<div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+      </div>
+    </th:block>
+ </th:block>
+  </div>
+</th:block>

@@ -214,6 +214,14 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     //Retroactive Coverage
     testPage.enter("retroactiveCoverageQuestion", YES.getDisplayValue());
+    
+    //Retroactive Coverage Source
+    testPage.enter("retroactiveCoverageSourceQuestion", "me");
+    testPage.clickContinue();
+    
+    //Retroactive Coverage Time Period
+    testPage.selectFromDropdown("retroactiveCoverageNumberMonths[]", "1 month");
+    testPage.clickContinue();
 
     //Medical Benefits in another state
     testPage.enter("medicalInOtherState", YES.getDisplayValue());

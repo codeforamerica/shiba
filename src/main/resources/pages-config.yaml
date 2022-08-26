@@ -1970,6 +1970,65 @@ pageDefinitions:
     inputs:
       - name: retroactiveCoverageQuestion
         type: YES_NO
+  - &retroactiveCoverageSource
+    name: retroactiveCoverageSource
+    pageTitle: retroactive-coverage-source.title
+    headerKey: retroactive-coverage-source.who-wants-help
+    headerHelpMessageKey: retroactive-coverage-source.check-all
+    contextFragment: retroactiveCoverageFragment
+    inputs:
+      - type: CUSTOM
+        name: retroactiveCoverageSourceQuestion
+        customInputFragment: householdOptionsCheckboxes
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &retroactiveCoverageTimePeriod
+    name: retroactiveCoverageTimePeriod
+    pageTitle: retroactive-coverage-time-period.title
+    headerKey: retroactive-coverage-time-period.how-many-months-do-they
+    headerHelpMessageKey: retroactive-coverage-time-period.you-might-be
+    contextFragment: retroactiveCoverageFragment
+    inputs:
+      - type: CUSTOM
+        name: retroactiveCoverageNumberMonths
+        customInputFragment: retroactiveCoverageTimePeriod
+        validators:
+          - validation: NONE_BLANK
+            errorMessageKey: general.validation.make-sure-to-answer-this-question
+        options:
+          datasources:
+            - pageName: retroactiveCoverageSource
+      - type: HIDDEN
+        name: retroactiveCoverageMap
+  - &retroactiveCoverageTimePeriodIndividual
+    name: retroactiveCoverageTimePeriodIndividual
+    pageTitle: retroactive-coverage-time-period.title
+    headerKey: retroactive-coverage-time-period.how-many-months-do-you
+    headerHelpMessageKey: retroactive-coverage-time-period.you-might-be
+    contextFragment: retroactiveCoverageFragment
+    inputs:
+      - type: SELECT
+        name: retroactiveCoverageNumberMonths
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-answer-this-question
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: retroactive-coverage-time-period.number-of-months
+            - value: 1
+              messageKey: retroactive-coverage-time-period.one-month
+            - value: 2
+              messageKey: retroactive-coverage-time-period.two-months
+            - value: 3
+              messageKey: retroactive-coverage-time-period.three-months
+      - type: HIDDEN
+        name: retroactiveCoverageMap
   - &medicalInOtherState
     name: medicalInOtherState
     pageTitle: medical-in-other-state.title
@@ -4409,10 +4468,41 @@ workflow:
   retroactiveCoverage:
     pageConfiguration: *retroactiveCoverage
     nextPages:
+      - pageName: retroactiveCoverageSource
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - pageName: retroactiveCoverage
+              input: retroactiveCoverageQuestion
+              value: "true"
+            - *doesNotLiveAlone?
+      - pageName: retroactiveCoverageTimePeriodIndividual
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - pageName: retroactiveCoverage
+              input: retroactiveCoverageQuestion
+              value: "true"
+            - *livesAlone?
       - pageName: medicalInOtherState
     skipCondition: *applicantDidNotChooseCERTAINPOPS?
     datasources:
       - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+  retroactiveCoverageSource:
+    pageConfiguration: *retroactiveCoverageSource
+    nextPages:
+      - pageName: retroactiveCoverageTimePeriod
+  retroactiveCoverageTimePeriodIndividual:
+    pageConfiguration: *retroactiveCoverageTimePeriodIndividual
+    nextPages:
+      - pageName: medicalInOtherState
+  retroactiveCoverageTimePeriod:
+    pageConfiguration: *retroactiveCoverageTimePeriod
+    nextPages:
+      - pageName: medicalInOtherState
   medicalInOtherState:
     pageConfiguration: *medicalInOtherState
     nextPages:
