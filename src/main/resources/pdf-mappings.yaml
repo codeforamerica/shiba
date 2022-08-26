@@ -158,6 +158,9 @@ mappings:
     didYouHaveAPastInjury: HAD_A_PAST_ACCIDENT_OR_INJURY
   retroactiveCoverage:
     retroactiveCoverageQuestion: RETROACTIVE_COVERAGE_HELP
+    applicantName: RETROACTIVE_APPLICANT_FULLNAME
+    month: RETROACTIVE_COVERAGE_MONTH
+    
   medicalInOtherState:
     medicalInOtherState: MEDICAL_IN_OTHER_STATE
 

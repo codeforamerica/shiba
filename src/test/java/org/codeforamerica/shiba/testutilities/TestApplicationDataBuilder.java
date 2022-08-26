@@ -204,4 +204,12 @@ public class TestApplicationDataBuilder {
                 "programs", "SNAP",
                 "ssn", "123121235")));
   }
+  
+  public TestApplicationDataBuilder withRetroCoverageForHouseHold() {
+    PageData pageData = getPageData("retroactiveCoverageTimePeriod");
+    pageData.put("retroactiveCoverageNumberMonths", new InputData(List.of("1","2","3")));
+    pageData.put("retroactiveCoverageMap", new InputData(List.of("someGuid","applicant","notSpouse")));
+    return this;
+  }
+  
 }

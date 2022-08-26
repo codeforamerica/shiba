@@ -968,6 +968,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			postExpectingSuccess("longTermCare", "doYouNeedLongTermCare", "true");
 			postExpectingSuccess("pastInjury", "didYouHaveAPastInjury", "true");
 			postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
+			postExpectingSuccess("retroactiveCoverageTimePeriodIndividual", "retroactiveCoverageNumberMonths", "2");
 			postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
 			postExpectingSuccess("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED");
 			postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED");
@@ -1033,6 +1034,10 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("AUTHORIZED_REP_PHONE_NUMBER", "7234561111", pdf);
 			assertPdfFieldEquals("APPLICANT_SIGNATURE", "Human McPerson", pdf);
 			assertPdfFieldEquals("CREATED_DATE", "2020-01-01", pdf);
+			
+			//Section 8
+			assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_0", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "2", pdf);
 
 			// Section 9
 			assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
@@ -1202,7 +1207,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 					List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId));
 			postExpectingSuccess("livingSituation", "livingSituation", "LIVING_IN_A_PLACE_NOT_MEANT_FOR_HOUSING");
 			postExpectingSuccess("healthcareCoverage", "healthcareCoverage", "true");
-
+			postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
+			postExpectingSuccess("retroactiveCoverageSource", "retroactiveCoverageSourceQuestion", 
+			    List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId ));
+			postExpectingSuccess("retroactiveCoverageTimePeriod", Map.of(
+			    "retroactiveCoverageNumberMonths",List.of("1", "2" ),
+			    "retroactiveCoverageMap",List.of("applicant",jimHalpertId)));
 			postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "REAL_ESTATE"));
 			assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
 			postExpectingRedirect("vehicleAssetSource", "vehicleAssetSource",
@@ -1225,6 +1235,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
 			assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_0", "Dwight Schrute", pdf);
 			assertPdfFieldEquals("NAME_OF_NON_US_CITIZEN_1", "Jim Halpert", pdf);
+			
+			//Section 8
+			assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_0", "Dwight Schrute", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "1", pdf);
+            assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_1", "Jim Halpert", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_1", "2", pdf);
 
 			// Section 15
 			assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);

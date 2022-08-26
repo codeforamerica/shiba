@@ -343,6 +343,16 @@ public class ApplicationDataParser {
         new ParsingCoordinate("alienIdNumbers", "alienIdNumber"));
     coordinatesMap.put(Field.ALIEN_ID_MAP,
         new ParsingCoordinate("alienIdNumbers", "alienIdMap"));
+    coordinatesMap.put(Field.RETROACTIVE_COVERAGE,
+        new ParsingCoordinate("retroactiveCoverage", "retroactiveCoverageQuestion"));
+    coordinatesMap.put(Field.RETROACTIVE_COVERAGE_SOURCE,
+        new ParsingCoordinate("retroactiveCoverageSource", "retroactiveCoverageSourceQuestion"));
+    coordinatesMap.put(Field.RETROACTIVE_TIME_INDIVIDUAL,
+        new ParsingCoordinate("retroactiveCoverageTimePeriodIndividual", "retroactiveCoverageNumberMonths"));
+    coordinatesMap.put(Field.RETROACTIVE_COVERAGE_MAP,
+        new ParsingCoordinate("retroactiveCoverageTimePeriod", "retroactiveCoverageMap"));
+    coordinatesMap.put(Field.RETROACTIVE_COVERAGE_MONTH,
+        new ParsingCoordinate("retroactiveCoverageTimePeriod", "retroactiveCoverageNumberMonths"));
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -564,7 +574,13 @@ public class ApplicationDataParser {
     UNEARNED_TRIBAL_PAYMENTS_AMOUNT,
     ALIEN_ID,
     ALIEN_IDS,
-    ALIEN_ID_MAP;
+    ALIEN_ID_MAP,
+    RETROACTIVE_COVERAGE,
+    RETROACTIVE_COVERAGE_SOURCE,
+    RETROACTIVE_TIME_INDIVIDUAL,
+    RETROACTIVE_COVERAGE_MAP,
+    RETROACTIVE_COVERAGE_MONTH;
+    
     @Getter
     private final String defaultValue;
 
