@@ -239,10 +239,10 @@ public class PdfGenerator implements FileGenerator {
         PDDocument addedPageDoc = PDDocument.load(addPage);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       
-      /*
-       * if (addedPageDoc.getDocumentCatalog().getAcroForm() != null)
-       * addedPageDoc.getDocumentCatalog().getAcroForm().flatten();
-       */
+      
+      if (addedPageDoc.getDocumentCatalog().getAcroForm() != null)
+        addedPageDoc.getDocumentCatalog().getAcroForm().flatten();
+       
       
       merger.appendDocument(mainPageDoc, addedPageDoc);
       mainPageDoc.save(outputStream);
