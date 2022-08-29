@@ -198,7 +198,7 @@ public class PdfGenerator implements FileGenerator {
         if (extension.equals("pdf")) {
           try {
           combinedPDF = addPageToPdf(combinedPDF, fileBytes);
-          }catch(NullPointerException er) {
+          }catch(Exception er) {
             log.error("File not able to combine to pdf "+uDoc.getFilename());
             combinedDocList.add(fileBytes);
           }
