@@ -1,16 +1,23 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME_OTHER;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHO_ARE_NON_US_CITIZENS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_IDS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_ID_MAP;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.EVERYONE_US_CITIZENS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.Document;
@@ -52,6 +59,9 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	// This method controls the mapping logic for each of the Certain Pops
 	// questions.
 	private List<DocumentField> map() {
+		// Question 6, non-US citizens, generate the supplement if needed
+		createNonUsCitizensSupplementPage();
+		
 		// Question 11, unearned income
 		mapUnearnedIncomeFields();
 
@@ -60,6 +70,36 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 					ENUMERATED_SINGLE_VALUE));
 		}
 		return certainPopsDocumentFields;
+	}
+
+	// Question 6, non-US citizens
+	private void createNonUsCitizensSupplementPage() {
+		boolean allApplicantsAreCitizens = getBooleanValue(pagesData, EVERYONE_US_CITIZENS);
+		if (!allApplicantsAreCitizens) {
+			List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
+			if (nonCitizens.size() > 2) {
+				needsSupplementPage = true;
+				supplementPageText = String.format("%sQUESTION 6 continued:", supplementPageText);
+				for (int i = 2; i < nonCitizens.size(); i++) {
+					String nonCitizen = nonCitizens.get(i);
+					String personName = nonCitizen.substring(0, nonCitizen.lastIndexOf(" "));
+					String personId = nonCitizen.substring(nonCitizen.lastIndexOf(" ") + 1);
+					String alienNumber = getAlienNumber(pagesData, personId);
+					supplementPageText = String.format("%s\nPerson %d: %s, Alien ID: %s", supplementPageText, i + 1,
+							personName, alienNumber);
+				}
+				supplementPageText = String.format("%s\n\n", supplementPageText);
+			}
+		}
+	}
+
+	private String getAlienNumber(PagesData pagesData, String condition) {
+		String result = "";
+		List<String> alienIdMap = getValues(pagesData, ALIEN_ID_MAP);
+		int index = alienIdMap.stream().collect(Collectors.toList()).indexOf(condition);
+		List<String> alienNumbers = getValues(pagesData, ALIEN_IDS);
+		result = alienNumbers.size() != 0 ? alienNumbers.get(index) : result;
+		return result;
 	}
 
 	// Question 11, unearned income

@@ -2,8 +2,6 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.createApplicationInput;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -397,13 +395,13 @@ public class CertainPopsPreparerTest {
 		assertThat(result).contains(documentField);
 	}
 
-	// Supplement text is generated when more than 2 people have unearned income or
+	// Question 11 supplement text is generated when more than 2 people have unearned income or
 	// when a person has more than 4 unearned income types.
 	// This test has 3 persons with unearned income. Person 3 has 5 unearned income
 	// types.
 	// Expected text:
 	//
-	// Question 11 continued:
+	// QUESTION 11 continued:
 	// Person 3, John Smith:
 	// 1) Social Security, 102, Monthly
 	// 2) Insurance payments, 200, Monthly
@@ -467,6 +465,58 @@ public class CertainPopsPreparerTest {
 		String supplementText = supplementDocumentField.getValue(0);
 		assertThat(supplementText).contains(
 				"QUESTION 11 continued:\nPerson 3, John Smith:\n  1) Social Security, 102, Monthly\n  2) Insurance payments, 200, Monthly\n  3) Trust money, 201, Monthly\n  4) Rental income, 202, Monthly\n  5) Interest or dividends, 203, Monthly");
+	}
+
+	// Question 6 supplement text is generated when more than 2 people are non-US citizens.
+	// This test has 4 persons that are non-US citizens. The alien ID for person 3 was specified as "C33333333C" but
+	// the alien ID for person 4 is not provided so displayed as blank.
+	// Expected text:
+	//
+	// QUESTION 6 continued:
+	// Person 3: John Smith, Alien ID: C33333333C
+	// Person 4: Jill Smith, Alien ID:
+	@Test
+	public void shouldMapQuestion6SupplementText() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withPageData("whoIsNonCitizen", "whoIsNonCitizen", List.of("David Smith applicant", "Jane Smith 22345678-1234-1234-1234-123456789012",
+						"John Smith 32345678-1234-1234-1234-223456789013", "Jill Smith 42345678-1234-1234-1234-223456789014"))
+				.withPageData("alienIdNumbers", "alienIdNumber", List.of("A11111111A", "B22222222B", "C33333333C", ""))
+				.withPageData("alienIdNumbers", "alienIdMap", List.of("applicant", "22345678-1234-1234-1234-123456789012",
+						"32345678-1234-1234-1234-223456789013", "42345678-1234-1234-1234-223456789014"))
+
+				.withSubworkflow("household",
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+										new InputData(List.of("Smith")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+										new InputData(List.of("Smith")))))),
+						new PagesData(Map.of("householdMemberInfo", new PageData(Map.of("firstName",
+								new InputData(List.of("Jill")), "lastName", new InputData(List.of("Smith")))))))
+				.build();
+
+		// fix the iteration IDs
+		Subworkflow subworkflow = applicationData.getSubworkflows().get("household");
+		subworkflow.get(0).setId(UUID.fromString("22345678-1234-1234-1234-123456789012"));
+		subworkflow.get(1).setId(UUID.fromString("32345678-1234-1234-1234-223456789013"));
+		subworkflow.get(2).setId(UUID.fromString("42345678-1234-1234-1234-223456789014"));
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+
+		DocumentField supplementDocumentField = null;
+		for (DocumentField documentField : result) {
+			if (documentField.getName().compareTo("certainPopsSupplement") == 0) {
+				supplementDocumentField = documentField;
+				break;
+			}
+		}
+		assertThat(supplementDocumentField).isNotNull();
+		String supplementText = supplementDocumentField.getValue(0);
+		assertThat(supplementText).contains(
+				"QUESTION 6 continued:\nPerson 3: John Smith, Alien ID: C33333333C\nPerson 4: Jill Smith, Alien ID:");
 	}
 
 }

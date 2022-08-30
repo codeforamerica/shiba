@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
@@ -1077,6 +1078,63 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// Section 16
 			assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+		}
+
+		// This test just verifies that the Question 6 Yes/No radio button is set when
+		// the applicant is a non-US citizen.
+		@Test
+		void shouldMapIsEveryoneUsCitizenFalseWhenApplicantIsNonUsCitizen() throws Exception {
+			fillInRequiredPages();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"),
+					"certainPopsConfirm");
+			fillInPersonalInfoAndContactInfoAndAddress();
+			postExpectingSuccess("usCitizen", "isUsCitizen", "false");
+			submitApplication();
+
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+			// Section 6
+			assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
+		}
+
+		// The applicant and two additional household members are non-US citizens.
+		// The 3rd person is written to the supplement.
+		@Test
+		void shouldMapFieldsForNonUsCitizens() throws Exception {
+			fillInRequiredPages();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"),
+					"certainPopsConfirm");
+			fillInPersonalInfoAndContactInfoAndAddress(); // applicant
+			fillOutHousemateInfoMoreThanFiveLessThanTen(1); // + 2 household members
+			applicationData.getSubworkflows().get("household").get(0)
+					.setId(UUID.fromString("00000000-1234-1234-1234-123456789012"));
+			applicationData.getSubworkflows().get("household").get(1)
+					.setId(UUID.fromString("11111111-1234-1234-1234-123456789012"));
+
+			postExpectingSuccess("usCitizen", "isUsCitizen", "false");
+			postExpectingSuccess("whoIsNonCitizen", "whoIsNonCitizen",
+					List.of("Dwight Schrute applicant",
+							"householdMemberFirstName0 householdMemberLastName0 00000000-1234-1234-1234-123456789012",
+							"householdMemberFirstName1 householdMemberLastName1 11111111-1234-1234-1234-123456789012"));
+			postExpectingSuccess("alienIdNumbers",
+					Map.of("alienIdMap",
+							List.of("applicant", "00000000-1234-1234-1234-123456789012",
+									"11111111-1234-1234-1234-123456789012"),
+							"alienIdNumber", List.of("A111A", "B222B", "C333C")));
+			submitApplication();
+
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+			// Section 6
+			assertPdfFieldEquals("IS_US_CITIZEN", "No", pdf);
+			assertPdfFieldContains("CP_SUPPLEMENT",
+					"QUESTION 6 continued:\nPerson 3: householdMemberFirstName1 householdMemberLastName1, Alien ID: C333C",
+					pdf);
+
 		}
 
 		// This test just verifies that the Yes/No radio button is set
