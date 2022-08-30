@@ -1411,5 +1411,37 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("WHO_HAS_DISABILITY_2", "householdMemberFirstName2", pdf);
 
 		}
+		
+		@Test
+        void shouldMapHHMemberMoreThan2HasRetroactiveCoverage() throws Exception {
+            fillInRequiredPages();
+            postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+            selectPrograms("CERTAIN_POPS");
+            postExpectingRedirect(
+                    "basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA",
+                            "HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+                    "certainPopsConfirm");
+            fillOutHousemateInfoMoreThanFiveLessThanTen(8);
+            postExpectingSuccess("retroactiveCoverage", "retroactiveCoverageQuestion", "true");
+            postExpectingSuccess("retroactiveCoverageSource", "retroactiveCoverageSourceQuestion",
+                List.of("householdMemberFirstName0 householdMemberLastName0 0",
+                    "householdMemberFirstName1 householdMemberLastName1 1",
+                    "householdMemberFirstName2 householdMemberLastName2 2",
+                    "householdMemberFirstName5 householdMemberLastName5 5"));
+            postExpectingSuccess("retroactiveCoverageTimePeriod", Map.of(
+                "retroactiveCoverageNumberMonths",List.of("1", "2", "3", "2" ),
+                "retroactiveCoverageMap",List.of("0", "1", "2", "5")));
+            submitApplication();
+            var pdf = downloadCertainPopsClientPDF();
+            assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_0", "householdMemberFirstName0 householdMemberLastName0", pdf);
+            assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_1", "householdMemberFirstName1 householdMemberLastName1", pdf);
+            assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_2", "householdMemberFirstName2 householdMemberLastName2", pdf);
+            assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_3", "householdMemberFirstName5 householdMemberLastName5", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "1", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_1", "2", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_2", "3", pdf);
+            assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_3", "2", pdf);
+
+        }
 	}
 }

@@ -105,6 +105,12 @@ public class PdfResourcesComponents {
       @Value("classpath:certain-pops-add-disability.pdf") Resource whoHasDisability) {
     return List.of(whoHasDisability);
   }
+  
+  @Bean
+  public List<Resource> getRetroactiveCoverageSupp(
+      @Value("classpath:certain-pops-retroactive-supp.pdf") Resource whoHasRetroactiveCoverage) {
+    return List.of(whoHasRetroactiveCoverage);
+  }
 
   @Bean
   public Map<Recipient, Map<String, List<Resource>>> pdfResourceFillers(
@@ -118,7 +124,8 @@ public class PdfResourcesComponents {
       List<Resource> getAdditionalHousehold6,
       List<Resource> getAdditionalHousehold7,
       List<Resource> getCertainPopsSupplement,
-      List<Resource> getWhohasDisabilitySupp) {
+      List<Resource> getWhohasDisabilitySupp,
+      List<Resource> getRetroactiveCoverageSupp) {
 		return Map.of(CASEWORKER,
 				Map.ofEntries(Map.entry("default", getDefaultResources), Map.entry("addIncome", getAdditionalIncome),
 						Map.entry("addHousehold1.0", getAdditionalHousehold1),
@@ -129,7 +136,8 @@ public class PdfResourcesComponents {
 						Map.entry("addHousehold6.0", getAdditionalHousehold6),
 						Map.entry("addHousehold7.0", getAdditionalHousehold7),
 						Map.entry("addCertainPopsSupplement", getCertainPopsSupplement),
-						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp)),
+						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp),
+						Map.entry("addRetroactiveCoverageSupp", getRetroactiveCoverageSupp)),
 				CLIENT,
 				Map.ofEntries(Map.entry("default", getDefaultResources), Map.entry("addIncome", getAdditionalIncome),
 						Map.entry("addHousehold1.0", getAdditionalHousehold1),
@@ -140,7 +148,8 @@ public class PdfResourcesComponents {
 						Map.entry("addHousehold6.0", getAdditionalHousehold6),
 						Map.entry("addHousehold7.0", getAdditionalHousehold7),
 						Map.entry("addCertainPopsSupplement", getCertainPopsSupplement),
-						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp)));
+						Map.entry("addDisabilitySupp", getWhohasDisabilitySupp),
+						Map.entry("addRetroactiveCoverageSupp", getRetroactiveCoverageSupp)));
       }
 
 }
