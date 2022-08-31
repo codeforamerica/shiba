@@ -3721,14 +3721,88 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-  - &stockAssetSource
-    name: stockAssetSource
-    pageTitle: stock-asset-source.title
-    headerKey: stock-asset-source.who-has
-    headerHelpMessageKey: stock-asset-source.choose-whoever-is-listed
+  - &investmentTypesIndividual
+    name: investmentTypesIndividual
+    pageTitle: investments.title
+    headerKey: investments.tell-us-which-you-have
+    headerHelpMessageKey: investments.select-all-that-apply
+    inputs:
+      - type: CHECKBOX
+        name: investmentTypes
+        options:
+          selectableOptions:
+          - value: STOCKS
+            messageKey: investments.stocks
+          - value: BONDS
+            messageKey: investments.bonds
+          - value: RETIREMENT_SAVINGS_ACCOUNTS
+            messageKey: investments.rsa
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &investmentAssetType
+    name: investmentAssetType
+    pageTitle: investmentAssetType.title
+    headerKey: investmentAssetType.which-types-of-investment
+    headerHelpMessageKey: investmentAssetType.select-all-that-apply
+    contextFragment: cashAccountsContextFragment
+    inputs:
+    - name: investmentAssetType
+      type: CHECKBOX
+      validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
+      options:
+        selectableOptions:
+          - value: STOCKS
+            messageKey: investmentAssetType.stocks
+          - value: BONDS
+            messageKey: investmentAssetType.bonds
+          - value: RETIREMENT_ACCOUNTS
+            messageKey: investmentAssetType.rsa
+  - &stocksHouseHoldSource
+    name: stocksHouseHoldSource
+    pageTitle: stocks-household-source.title
+    headerKey: stocks-household-source.who-has
+    headerHelpMessageKey: stocks-household-source.choose-whoever-is-listed
+    contextFragment: liquidAssetsContextFragment
     inputs:
       - type: CUSTOM
-        name: stockAssetSource
+        name: stocksHouseHoldSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &bondsHouseHoldSource
+    name: bondsHouseHoldSource
+    pageTitle: bonds-household-source.title
+    headerKey: bonds-household-source.who-has
+    headerHelpMessageKey: bonds-household-source.choose-whoever-is-listed
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - type: CUSTOM
+        name: bondsHouseHoldSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &retirementAccountsHouseHoldSource
+    name: retirementAccountsHouseHoldSource
+    pageTitle: retirement-accounts-household-source.title
+    headerKey: retirement-accounts-household-source.who-has
+    headerHelpMessageKey: retirement-accounts-household-source.choose-whoever-is-listed
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - type: CUSTOM
+        name: retirementAccountsHouseHoldSource
         validators:
          - validation: NOT_BLANK
            errorMessageKey: general.validation.make-sure-to-select-a-person
@@ -5199,7 +5273,7 @@ workflow:
   vehicleAssetSource:
     pageConfiguration: *vehicleAssetSource
     nextPages:
-      - pageName: stockAssetSource
+      - pageName: investmentTypesIndividual
     skipCondition:
       logicalOperator: OR
       conditions:
@@ -5213,10 +5287,27 @@ workflow:
       - pageName: addHouseholdMembers
       - pageName: assets
       - pageName: choosePrograms
-  stockAssetSource:
-    pageConfiguration: *stockAssetSource
+  investmentTypesIndividual:
+    pageConfiguration: *investmentTypesIndividual
     nextPages:
-      - pageName: lifeInsuranceAssetSource
+      - pageName: investmentAssetType
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: assets
+          input: assets
+          value: STOCK_BOND
+          matcher: DOES_NOT_CONTAIN
+        - *doesNotLiveAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: assets
+      - pageName: choosePrograms
+  investmentAssetType:
+    pageConfiguration: *investmentAssetType
+    nextPages:
+      - pageName: stocksHouseHoldSource
     skipCondition:
       logicalOperator: OR
       conditions:
@@ -5230,6 +5321,72 @@ workflow:
       - pageName: addHouseholdMembers
       - pageName: assets
       - pageName: choosePrograms
+  stocksHouseHoldSource:
+    pageConfiguration: *stocksHouseHoldSource
+    nextPages:
+      - pageName: bondsHouseHoldSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: investmentAssetType
+          input: investmentAssetType
+          value: STOCKS
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+        - pageName: assets
+          input: assets
+          value: STOCK_BOND
+          matcher: DOES_NOT_CONTAIN 
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: investmentAssetType
+      - pageName: choosePrograms
+      - pageName: assets
+  bondsHouseHoldSource:
+    pageConfiguration: *bondsHouseHoldSource
+    nextPages:
+      - pageName: retirementAccountsHouseHoldSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: investmentAssetType
+          input: investmentAssetType
+          value: BONDS
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+        - pageName: assets
+          input: assets
+          value: STOCK_BOND
+          matcher: DOES_NOT_CONTAIN 
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: investmentAssetType
+      - pageName: choosePrograms
+      - pageName: assets
+  retirementAccountsHouseHoldSource:
+    pageConfiguration: *retirementAccountsHouseHoldSource
+    nextPages:
+      - pageName: lifeInsuranceAssetSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: investmentAssetType
+          input: investmentAssetType
+          value: RETIREMENT_ACCOUNTS
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+        - pageName: assets
+          input: assets
+          value: STOCK_BOND
+          matcher: DOES_NOT_CONTAIN 
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: investmentAssetType
+      - pageName: choosePrograms
+      - pageName: assets
   lifeInsuranceAssetSource:
     pageConfiguration: *lifeInsuranceAssetSource
     nextPages:

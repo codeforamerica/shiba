@@ -377,6 +377,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Does anyone in your household have any of these?
     testPage.enter("assets", "A vehicle");
+    testPage.enter("assets", "Stocks, bonds, retirement accounts");
     testPage.enter("assets", "Real estate (not including your own home)");
     testPage.clickContinue();
 
@@ -384,6 +385,17 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(testPage.getTitle()).isEqualTo("Who has a vehicle");
     driver.findElement(By.id("householdMember-me")).click();  
     testPage.clickContinue();
+    
+    //Which types of investment accounts does your household have? 
+    assertThat(testPage.getTitle()).isEqualTo("Which types of investment accounts does your household have");
+    driver.findElement(By.id("STOCKS")).click(); 
+    testPage.clickContinue();
+    
+    //
+    assertThat(testPage.getTitle()).isEqualTo("Who has stocks");
+    driver.findElement(By.id("householdMember-me")).click(); 
+    testPage.clickContinue();
+    
     
     //Who has real estate (not including your own home)
     assertThat(testPage.getTitle()).isEqualTo("Who has real estate (not including your own home)");
@@ -699,7 +711,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("MORTGAGE", "Yes");
     assertCafFieldEquals("HOUSING_EXPENSES", "123321.50");
     assertCafFieldEquals("HAVE_SAVINGS", "Yes");
-    assertCafFieldEquals("HAVE_INVESTMENTS", "No");
+    assertCafFieldEquals("HAVE_INVESTMENTS", "Yes");
     assertCafFieldEquals("HAVE_VEHICLE", "Yes");
     assertCafFieldEquals("HAVE_SOLD_ASSETS", "No");
     assertCafFieldEquals("AUTHORIZED_REP_FILL_OUT_FORM", "Yes");
