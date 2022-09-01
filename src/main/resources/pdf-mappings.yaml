@@ -449,7 +449,8 @@ mappings:
   applyForTribalTANF:
     applyForTribalTANF: TANF
   assetOwnerSource:
-    stockOwners: STOCK_OWNER_FULL_NAME
+    investmentOwners: INVESTMENT_OWNER_FULL_NAME
+    investmentType: INVESTMENT_TYPE
     vehicleOwners: VEHICLE_OWNER_FULL_NAME
     lifeInsuranceOwners: LIFE_INSURANCE_OWNER_FULL_NAME
     burialAccountOwners: BURIAL_ACCOUNT_OWNER_FULL_NAME

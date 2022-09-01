@@ -1066,7 +1066,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
 
 			// Section 15
-			assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
 
 			// Section 20
 			assertPdfFieldEquals("LIFE_INSURANCE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
@@ -1307,10 +1307,11 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_1", "2", pdf);
 
 			// Section 15
-            //TODO fix these when PDF is fixed for assets
-			//assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-			//assertPdfFieldEquals("STOCK_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
-
+			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_1", "Jim Halpert", pdf);
+			assertPdfFieldEquals("INVESTMENT_TYPE_0", "stocks, bonds, retirement accounts", pdf);
+			assertPdfFieldEquals("INVESTMENT_TYPE_1", "stocks, bonds, retirement accounts", pdf);
+			
 			// Section 16
 			assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Jim Halpert", pdf);
 
