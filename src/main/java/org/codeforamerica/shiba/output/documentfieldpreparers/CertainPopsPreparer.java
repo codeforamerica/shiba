@@ -126,6 +126,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	// income items. Section 11 allows for a maximum of 2 persons and 4 unearned
 	// income types per person.
 	private void mapUnearnedIncomeItems() {
+	    supplementPageText = String.format("%s\n\n", supplementPageText);
 		supplementPageText = String.format("%sQUESTION 11 continued:", supplementPageText);
 		int personCount = 1;
 		for (Person p : persons) {
