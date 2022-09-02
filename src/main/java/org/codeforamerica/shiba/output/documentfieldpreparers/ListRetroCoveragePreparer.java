@@ -28,27 +28,7 @@ public class ListRetroCoveragePreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     List<DocumentField> retroCoverageList = new ArrayList<>();
-    PagesData pagesData = application.getApplicationData().getPagesData();
-
-    boolean isRetroactiveCoverage = getBooleanValue(pagesData, RETROACTIVE_COVERAGE);
-    if (!isRetroactiveCoverage) {
-      return List.of();
-    } else {
-      List<String> retroCoverageMembers = getValues(pagesData, RETROACTIVE_COVERAGE_SOURCE).stream().toList();
-      List<RetroCoverageMember> allApplicants = new ArrayList<RetroCoverageMember>();
-      if(retroCoverageMembers.size() == 0) {//For Individual flow
-        String month = getFirstValue(pagesData, RETROACTIVE_TIME_INDIVIDUAL);
-        allApplicants.add(new RetroCoverageMember(getFullName(application),month));
-      } else {
-        retroCoverageMembers.stream().forEach(name ->{
-          List<String> nameList = Arrays.stream(name.split(" ")).collect(Collectors.toList());
-          String id = nameList.get(nameList.size()-1);
-          String month = getRetroactiveMonths(pagesData, id);
-          nameList.remove(id);
-          String fullName =  String.join(" ", nameList);
-          allApplicants.add(new RetroCoverageMember(fullName,month));
-        });
-      }
+    List<RetroCoverageMember> allApplicants = getRetroactiveMembers(application, document, recipient);
       int index = 0;
       for(RetroCoverageMember person: allApplicants) {
         retroCoverageList.add(new DocumentField(
@@ -63,8 +43,6 @@ public class ListRetroCoveragePreparer implements DocumentFieldPreparer {
             DocumentFieldType.SINGLE_VALUE, index ));
         index++;
       }
-      
-    }
 
     return retroCoverageList;
   }
@@ -75,6 +53,33 @@ public class ListRetroCoveragePreparer implements DocumentFieldPreparer {
     List<String> coverageMonth = getValues(pagesData, RETROACTIVE_COVERAGE_MONTH);
     result = coverageMonth.size()!=0?coverageMonth.get(index):result; 
     return result;
+  }
+  
+  public List<RetroCoverageMember> getRetroactiveMembers(Application application, Document document, Recipient recipient){
+    List<RetroCoverageMember> allApplicants = new ArrayList<RetroCoverageMember>();
+    PagesData pagesData = application.getApplicationData().getPagesData();
+
+    boolean isRetroactiveCoverage = getBooleanValue(pagesData, RETROACTIVE_COVERAGE);
+    if (!isRetroactiveCoverage) {
+      return List.of();
+    } else {
+      List<String> retroCoverageMembers = getValues(pagesData, RETROACTIVE_COVERAGE_SOURCE).stream().toList();
+     
+      if(retroCoverageMembers.size() == 0) {//For Individual flow
+        String month = getFirstValue(pagesData, RETROACTIVE_TIME_INDIVIDUAL);
+        allApplicants.add(new RetroCoverageMember(getFullName(application),month));
+      } else {
+        retroCoverageMembers.stream().forEach(name ->{
+          List<String> nameList = Arrays.stream(name.split(" ")).collect(Collectors.toList());
+          String id = nameList.get(nameList.size()-1);
+          String month = getRetroactiveMonths(pagesData, id);
+          nameList.remove(id);
+          String fullName =  String.join(" ", nameList);
+          allApplicants.add(new RetroCoverageMember(fullName,month));
+        });
+      }
+      return allApplicants;
+    }
   }
  
   public class RetroCoverageMember{

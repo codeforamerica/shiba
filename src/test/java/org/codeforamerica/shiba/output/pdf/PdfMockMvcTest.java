@@ -1419,7 +1419,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("WHO_HAS_DISABILITY_2", "householdMemberFirstName2", pdf);
 
 		}
-		
+		/* /* Keep this code till supplement page display is finalized as general supp. page.
 		@Test
         void shouldMapHHMemberMoreThan2HasRetroactiveCoverage() throws Exception {
             fillInRequiredPages();
@@ -1451,5 +1451,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_3", "2", pdf);
 
         }
+        */
 	}
 }

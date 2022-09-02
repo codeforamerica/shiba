@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
+import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -518,5 +520,83 @@ public class CertainPopsPreparerTest {
 		assertThat(supplementText).contains(
 				"QUESTION 6 continued:\nPerson 3: John Smith, Alien ID: C33333333C\nPerson 4: Jill Smith, Alien ID:");
 	}
+	//QUESTION 15
+	@Test
+    public void shouldMapQuestion15SupplementText() {
+      ApplicationData applicationData = new TestApplicationDataBuilder().withPersonalInfo()
+          .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
+          .withSubworkflow("household",
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
+                      new InputData(List.of("Smith")))))))
+          .withPageData("assets", "assets", List.of("STOCK_BOND"))
+          .withPageData("investmentAssetType", "investmentAssetType",
+              List.of("STOCKS", "BONDS", "RETIREMENT_ACCOUNTS"))
+          .withPageData("stocksHouseHoldSource", "stocksHouseHoldSource",
+              List.of("Jane Doe applicant", "Jane Smith notSpouse"))
+          .withPageData("bondsHouseHoldSource", "bondsHouseHoldSource",
+              List.of("Jane Smith notSpouse", "Jane Doe applicant"))
+          .withPageData("retirementAccountsHouseHoldSource", "retirementAccountsHouseHoldSource",
+              List.of("Jane Smith notSpouse", "Jane Doe applicant", "Jill Smith member1",
+                  "Jack Smith member2"))
+          .build();
+      List<DocumentField> result = preparer.prepareDocumentFields(
+          Application.builder().applicationData(applicationData).build(), null,
+          Recipient.CASEWORKER);
+      assertThat(result).isEqualTo(List.of(
+          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
+          new DocumentField("certainPops", "certainPopsSupplement",
+          List.of(
+              "\n\nQUESTION 15 continued:\nPerson 4: Jack Smith, Investment Type: retirement accounts"),
+          DocumentFieldType.ENUMERATED_SINGLE_VALUE)));
+	}
+	
+	//QUESTION 8
+    @Test
+    public void shouldMapQuestion8SupplementText() {
+      ApplicationData applicationData = new TestApplicationDataBuilder().withPersonalInfo()
+          .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
+          .withSubworkflow("household",
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
+                      new InputData(List.of("Smith")))))),
+              new PagesData(Map.of("householdMemberInfo",
+                  new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
+                      new InputData(List.of("Smith")))))))
+  
+          .withPageData("retroactiveCoverage", "retroactiveCoverageQuestion", "true")
+          .withPageData("retroactiveCoverageSource", "retroactiveCoverageSourceQuestion",
+              List.of("Jane Smith 0", "John Smith 1", "Jill Smith 2", "Jack Smith 3"))
+          .withPageData("retroactiveCoverageTimePeriod", "retroactiveCoverageNumberMonths",
+              List.of("1", "2", "3", "2"))
+          .withPageData("retroactiveCoverageTimePeriod", "retroactiveCoverageMap",
+              List.of("0", "1", "2", "3"))
+          .build();
+      List<DocumentField> result = preparer.prepareDocumentFields(
+          Application.builder().applicationData(applicationData).build(), null,
+          Recipient.CASEWORKER);
+      assertThat(result).isEqualTo(List.of(
+          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
+          new DocumentField("certainPops", "certainPopsSupplement",
+          List.of(
+              "\n\nQUESTION 8 continued:\nPerson 3: Jill Smith, Month/s: 3"
+              + "\nPerson 4: Jack Smith, Month/s: 2"),
+          DocumentFieldType.ENUMERATED_SINGLE_VALUE)));
+    }
 
 }

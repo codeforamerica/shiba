@@ -32,6 +32,20 @@ public class InvestmentOwnerPreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     List<DocumentField> results = new ArrayList<>();
+    List<Investment> investmentOwners = getInvestmentOwners(application, document, recipient);
+    int i = 0;
+    for(Investment inv: investmentOwners) {
+      results.add(new DocumentField("assetOwnerSource", "investmentOwners", List.of(inv.fullName), DocumentFieldType.SINGLE_VALUE, i));
+      results.add(new DocumentField("assetOwnerSource", "investmentType", 
+          inv.investmentType.stream().map(Object::toString).collect(Collectors.joining(", ")), DocumentFieldType.SINGLE_VALUE, i));
+      i++;
+    }
+ 
+    return results;
+  }
+  
+  public List<Investment> getInvestmentOwners(Application application, Document document, Recipient recipient){
+    
     boolean hasHouseHold = getValues(application.getApplicationData().getPagesData(),HAS_HOUSE_HOLD).contains("true");
 
     List<Investment> investmentOwners = new ArrayList<Investment>();
@@ -60,7 +74,7 @@ public class InvestmentOwnerPreparer implements DocumentFieldPreparer {
          }
         });
        if(!investmentType.isEmpty()) {
-    	   investmentOwners.add(new Investment(fullName, investmentType));
+           investmentOwners.add(new Investment(fullName, investmentType));
        }
        
      }
@@ -69,18 +83,8 @@ public class InvestmentOwnerPreparer implements DocumentFieldPreparer {
       investmentType = investmentType.stream().map(String::toLowerCase).map(type->type.replace("_", " ")).collect(Collectors.toList());
       investmentOwners.add(new Investment(getFullName(application), investmentType));
     }
-
-    int i = 0;
-    for(Investment inv: investmentOwners) {
-      results.add(new DocumentField("assetOwnerSource", "investmentOwners", List.of(inv.fullName), DocumentFieldType.SINGLE_VALUE, i));
-      results.add(new DocumentField("assetOwnerSource", "investmentType", 
-          inv.investmentType.stream().map(Object::toString).collect(Collectors.joining(", ")), DocumentFieldType.SINGLE_VALUE, i));
-      i++;
-    }
-
-    return results;
+    return investmentOwners;
   }
-  
   @NotNull
   private List<String> getApplicationInputsForSubworkflow(Subworkflow subworkflow, Application application) {
    

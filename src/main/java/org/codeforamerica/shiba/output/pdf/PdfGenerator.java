@@ -139,11 +139,13 @@ public class PdfGenerator implements FileGenerator {
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addDisabilitySupp"));
     }
   //For section 8 Retroactive coverage
+    /* Keep this code till supplement page display is finalized as general supp. page.
     if (documentFields.stream().anyMatch(
         field -> (field.getGroupName().contains("retroactiveCoverage")
             && (field.getIteration()!=null?field.getIteration():0) > 1))) {
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addRetroactiveCoverageSupp"));
     }
+    */
     // for the general supplement
     if (documentFields.stream().anyMatch(field -> (field.getName().contains("certainPopsSupplement")))) {
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addCertainPopsSupplement"));
