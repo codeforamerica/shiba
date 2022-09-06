@@ -3726,8 +3726,12 @@ pageDefinitions:
     pageTitle: investments.title
     headerKey: investments.tell-us-which-you-have
     headerHelpMessageKey: investments.select-all-that-apply
+    contextFragment: cashAccountsContextFragment
     inputs:
       - type: CHECKBOX
+        validators:
+        - validation: SELECT_AT_LEAST_ONE
+          errorMessageKey: general.validation.make-sure-you-answer-this-question
         name: investmentTypes
         options:
           selectableOptions:
