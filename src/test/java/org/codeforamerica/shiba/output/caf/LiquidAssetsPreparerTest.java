@@ -21,7 +21,7 @@ class LiquidAssetsPreparerTest {
     ApplicationData appData = new ApplicationData();
     PagesData pagesData =
         new PagesDataBuilder()
-            .withPageData("liquidAssets", Map.of("liquidAssets", "")).build();
+            .withPageData("liquidAssetsSingle", Map.of("liquidAssets", "")).build();
     appData.setPagesData(pagesData);
     Application application = Application.builder().applicationData(appData).build();
 
@@ -37,13 +37,14 @@ class LiquidAssetsPreparerTest {
     ApplicationData appData = new ApplicationData();
     PagesData pagesData =
         new PagesDataBuilder()
-            .withPageData("liquidAssets", Map.of("liquidAssets", "100")).build();
+            .withPageData("liquidAssetsSingle", Map.of("liquidAssets", "100"))
+            .withPageData("cashAmount", Map.of("cashAmount","200")).build();
     appData.setPagesData(pagesData);
     Application application = Application.builder().applicationData(appData).build();
 
 
     assertThat(liquidAssetsPreparer.prepareDocumentFields(application, null, Recipient.CLIENT))
-        .isEqualTo(List.of(new DocumentField("liquidAssets", "liquidAssetsValue", List.of("100.00"),
+        .isEqualTo(List.of(new DocumentField("liquidAssets", "liquidAssetsValue", List.of("300.00"),
             DocumentFieldType.SINGLE_VALUE)));
   }
 }

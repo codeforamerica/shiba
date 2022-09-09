@@ -38,7 +38,7 @@ class SnapExpeditedEligibilityDeciderTest {
     // Initialize with eligible snap
     applicationDataBuilder = new TestApplicationDataBuilder()
         .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of("1"))
-        .withPageData("liquidAssets", "liquidAssets", List.of("2"))
+        .withPageData("liquidAssetsSingle", "liquidAssets", List.of("2"))
         .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("3"))
         .withPageData("utilityPayments", "payForUtilities", List.of("utility"))
@@ -76,7 +76,7 @@ class SnapExpeditedEligibilityDeciderTest {
 
     ApplicationData applicationData = applicationDataBuilder
         .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of(incomeString))
-        .withPageData("liquidAssets", "liquidAssets", List.of(assetString))
+        .withPageData("liquidAssetsSingle", "liquidAssets", List.of(assetString))
         .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
         .withPageData("unearnedIncomeSources", "socialSecurityAmount", List.of(unearnedCafString))
         .withPageData("otherUnearnedIncome", "otherUnearnedIncome", List.of("BENEFITS"))
@@ -106,7 +106,7 @@ class SnapExpeditedEligibilityDeciderTest {
     when(totalIncomeCalculator.calculate(any())).thenReturn(Money.parse("9999"));
 
     ApplicationData applicationData = applicationDataBuilder
-        .withPageData("liquidAssets", "liquidAssets", List.of(assets))
+        .withPageData("liquidAssetsSingle", "liquidAssets", List.of(assets))
         .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of(isMigrantWorker))
         .withPageData("employmentStatus", "areYouWorking", hasJob)
         .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
@@ -138,7 +138,7 @@ class SnapExpeditedEligibilityDeciderTest {
     when(mockUtilityDeductionCalculator.calculate(utilitySelections)).thenReturn(Money.ONE);
 
     ApplicationData applicationData = applicationDataBuilder
-        .withPageData("liquidAssets", "liquidAssets", List.of(assets))
+        .withPageData("liquidAssetsSingle", "liquidAssets", List.of(assets))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of(housingCosts))
         .withPageData("utilityPayments", "payForUtilities", utilitySelections)
         .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
@@ -172,7 +172,7 @@ class SnapExpeditedEligibilityDeciderTest {
   void shouldDefaultToZeroIncomeWhenMissingIncome_UnearnedIncomeAndAssets() {
     ApplicationData applicationData = applicationDataBuilder.build();
     applicationData.getPagesData().remove("thirtyDayIncome");
-    applicationData.getPagesData().remove("liquidAssets");
+    applicationData.getPagesData().remove("liquidAssetsSingle");
     applicationData.getPagesData().remove("unearnedIncome");
     applicationData.getPagesData().remove("otherUnearnedIncome");
 
@@ -186,7 +186,7 @@ class SnapExpeditedEligibilityDeciderTest {
     when(unearnedIncomeCalculator.unearnedAmount(any())).thenReturn(Money.parse("500"));
 
     ApplicationData applicationData = applicationDataBuilder
-        .withPageData("liquidAssets", "liquidAssets", List.of("1000"))
+        .withPageData("liquidAssetsSingle", "liquidAssets", List.of("1000"))
         .withPageData("thirtyDayIncome", "moneyMadeLast30Days", List.of("500"))
         .withPageData("homeExpensesAmount", "homeExpensesAmount", List.of("1"))
         .withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))

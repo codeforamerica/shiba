@@ -1183,7 +1183,23 @@ pageDefinitions:
       defaultValue: thirty-day-income.how-much-money-is-available
       conditionalValues:
         - value: thirty-day-income.how-much-money-do-you-have-available
-          condition: *livesAlone?
+          condition: 
+            logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantDidNotChooseCERTAINPOPS?
+        - value: thirty-day-income.how-much-money-do-you-have-available-in-these
+          condition: 
+            logicalOperator: AND
+            conditions:
+              - *livesAlone?
+              - *applicantChoseCERTAINPOPS?
+        - value: thirty-day-income.how-much-money-is-available-in-these
+          condition: 
+            logicalOperator: AND
+            conditions:
+              - *doesNotLiveAlone?
+              - *applicantChoseCERTAINPOPS?
     inputs:
       - name: liquidAssets
         type: MONEY
@@ -3388,39 +3404,129 @@ pageDefinitions:
         type: YES_NO
         promptMessage:
           promptMessageFragmentName: savingsPrompt
-  - &liquidAssetSources
-    name: liquidAssets
-    pageTitle: liquid-assets-source.title
-    headerKey: liquid-assets-source.who-does-money-belong-to
-    headerHelpMessageKey: liquid-assets-source.this-helps-us-determine
+  - &cashAmount
+    name: cashAmount
+    pageTitle:
+      defaultValue: cash-amount.title-household
+      conditionalValues:
+        - value: cash-amount.title-one-person
+          condition: *livesAlone?
+    headerKey:
+      defaultValue: cash-amount.how-much-cash-does-your-household-have-available
+      conditionalValues:
+        - value: cash-amount.how-much-cash-do-you-have-on-hand
+          condition: *livesAlone?
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - name: cashAmount
+        type: MONEY
+        promptMessage:
+          promptMessageFragmentName: cashAmountPrompt
+        validators:
+          - validation: MONEY
+            errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
+            condition:
+              input: cashAmount
+              matcher: NOT_EMPTY
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question            
+  - &bankAccountTypes
+    name: bankAccountTypes
+    pageTitle: bankAccountTypes.title
+    headerKey: 
+      defaultValue: bankAccountTypes.does-your-household-have-any-of-these-accounts
+      conditionalValues:
+        - value: bankAccountTypes.do-you-have-any-of-these-accounts
+          condition: *livesAlone?
+    headerHelpMessageKey: bankAccountTypes.select-all-that-apply
+    contextFragment: cashAccountsContextFragment
+    inputs:
+      - name: bankAccountTypes
+        type: CHECKBOX
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: SAVINGS
+              messageKey: bankAccountTypes.savings
+            - value: CHECKING
+              messageKey: bankAccountTypes.checking
+            - value: MONEY_MARKET
+              messageKey: bankAccountTypes.money-market
+            - value: CERTIFICATE_OF_DEPOSIT
+              messageKey: bankAccountTypes.certificate-of-deposit
+            - value: NONE
+              messageKey: bankAccountTypes.none-of-the-above
+              isNone: true
+  - &savingsAccountSource
+    name: savingsAccountSource
+    pageTitle: savings-account-source.title
+    headerKey: savings-account-source.who-has
+    headerHelpMessageKey: savings-account-source.you-can-select
     contextFragment: liquidAssetsContextFragment
     inputs:
       - type: CUSTOM
-        name: monthlyIncomeChildOrSpousalSupport
-        helpMessageKey: general.if-you-dont-have
-        customInputFragment: householdOptionsCheckboxesWithFollowup
-        customFollowUps: 'true'
+        name: savingsAccountSource
         validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-to-select-a-person
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
         options:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - liquidAssetSourcesAmount
-        followUps:
-          - name: liquidAssets
-            type: MONEY
-            validators:
-              - validation: MONEY
-                errorMessageKey: general.validation.make-sure-you-enter-a-dollar-amount
-                condition:
-                  input: liquidAssets
-                  matcher: NOT_EMPTY
-            promptMessage:
-              promptMessageKey: liquid-assets-source.how-much-money-available
-            helpMessageKey: general.if-you-dont-have  
+  - &checkingAccountSource
+    name: checkingAccountSource
+    pageTitle: checking-account-source.title
+    headerKey: checking-account-source.who-has
+    headerHelpMessageKey: checking-account-source.you-can-select
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - type: CUSTOM
+        name: checkingAccountSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &moneyMarketSource
+    name: moneyMarketSource
+    pageTitle: money-market-source.title
+    headerKey: money-market-source.who-has
+    headerHelpMessageKey: money-market-source.you-can-select
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - type: CUSTOM
+        name: moneyMarketSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
+  - &certOfDepositSource
+    name: certOfDepositSource
+    pageTitle: cert-of-deposit-source.title
+    headerKey: cert-of-deposit-source.who-has
+    headerHelpMessageKey: cert-of-deposit-source.you-can-select
+    contextFragment: liquidAssetsContextFragment
+    inputs:
+      - type: CUSTOM
+        name: certOfDepositSource
+        validators:
+         - validation: NOT_BLANK
+           errorMessageKey: general.validation.make-sure-to-select-a-person
+        customInputFragment: householdOptionsCheckboxes
+        options:
+          datasources:
+            - pageName: personalInfo
+            - groupName: household
   - &soldAssets
     name: soldAssets
     pageTitle: sold-assets.title
@@ -5479,7 +5585,7 @@ workflow:
   savings:
     pageConfiguration: *savings
     nextPages:
-      - pageName: liquidAssetsSingle
+      - pageName: cashAmount
         condition: 
           pageName: savings
           input: haveSavings
@@ -5491,31 +5597,102 @@ workflow:
           value: "false"
     datasources:
       - pageName: addHouseholdMembers
-  liquidAssetsSingle:
-    pageConfiguration: *liquidAssetsSingle
-    skipCondition:
-      logicalOperator: AND
-      conditions:
-        - *applicantChoseCERTAINPOPS?
-        - *doesNotLiveAlone?
+  cashAmount:
+    pageConfiguration: *cashAmount
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
     nextPages:
-      - pageName: liquidAssetSources
+      - pageName: bankAccountTypes
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
-      - pageName: savings
-  liquidAssetSources:
-    pageConfiguration: *liquidAssetSources
+  bankAccountTypes:
+    pageConfiguration: *bankAccountTypes
+    skipCondition: *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: savingsAccountSource
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+  savingsAccountSource:
+    pageConfiguration: *savingsAccountSource
     skipCondition:
       logicalOperator: OR
       conditions:
+        - pageName: bankAccountTypes
+          input: bankAccountTypes
+          value: SAVINGS
+          matcher: DOES_NOT_CONTAIN
         - *livesAlone?
         - *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: checkingAccountSource
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: bankAccountTypes
+  checkingAccountSource:
+    pageConfiguration: *checkingAccountSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: bankAccountTypes
+          input: bankAccountTypes
+          value: CHECKING
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: moneyMarketSource
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: bankAccountTypes
+  moneyMarketSource:
+    pageConfiguration: *moneyMarketSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: bankAccountTypes
+          input: bankAccountTypes
+          value: MONEY_MARKET
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: certOfDepositSource
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: bankAccountTypes
+  certOfDepositSource:
+    pageConfiguration: *certOfDepositSource
+    skipCondition:
+      logicalOperator: OR
+      conditions:
+        - pageName: bankAccountTypes
+          input: bankAccountTypes
+          value: CERTIFICATE_OF_DEPOSIT
+          matcher: DOES_NOT_CONTAIN
+        - *livesAlone?
+        - *applicantDidNotChooseCERTAINPOPS?
+    nextPages:
+      - pageName: liquidAssetsSingle
+    datasources:
+      - pageName: choosePrograms
+      - pageName: addHouseholdMembers
+      - pageName: bankAccountTypes
+  liquidAssetsSingle:
+    pageConfiguration: *liquidAssetsSingle
+    skipCondition:
+      pageName: bankAccountTypes
+      input: bankAccountTypes
+      value: "NONE"
     nextPages:
       - pageName: soldAssets
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
+      - pageName: bankAccountTypes  
   soldAssets:
     pageConfiguration: *soldAssets
     nextPages:
@@ -5642,6 +5819,7 @@ workflow:
     datasources:
       - pageName: addHouseholdMembers
       - pageName: savings
+      - pageName: choosePrograms
   expeditedExpenses:
     pageConfiguration: *expeditedExpenses
     nextPages:

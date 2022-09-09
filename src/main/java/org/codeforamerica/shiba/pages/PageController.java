@@ -7,6 +7,7 @@ import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
@@ -380,6 +381,7 @@ public class PageController {
     model.put("cityInfo", cityInfoConfiguration.getCityToZipAndCountyMapping());
     model.put("zipCode", getFirstValue(applicationData.getPagesData(), HOME_ZIPCODE));
     model.put("featureFlags", featureFlags);
+    model.put("hasHousehold", getFirstValue(applicationData.getPagesData(), HAS_HOUSE_HOLD));
 
     var snapExpeditedEligibility = snapExpeditedEligibilityDecider.decide(applicationData);
     model.put("expeditedSnap", snapExpeditedEligibility);

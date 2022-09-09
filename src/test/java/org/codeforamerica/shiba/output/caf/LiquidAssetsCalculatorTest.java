@@ -16,7 +16,7 @@ public class LiquidAssetsCalculatorTest {
 	@Test
 	void liquidAssetsHouseholdShouldCalculateTo500() {
 		applicationDataBuilder = new TestApplicationDataBuilder()
-				.withPageData("liquidAssets", "liquidAssets", List.of("200", "300"))
+				.withPageData("cashAmount", "cashAmount", List.of("5,00"))
 				.withApplicantPrograms(List.of("SNAP", "CERTAIN_POPS"));
 		ApplicationData applicationData = applicationDataBuilder.build();
 		String totalLiquidAssetsString = liquidAssetsCalculator.findTotalLiquidAssets(applicationData);

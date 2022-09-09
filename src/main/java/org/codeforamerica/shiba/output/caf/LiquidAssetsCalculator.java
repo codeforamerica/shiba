@@ -18,7 +18,7 @@ public class LiquidAssetsCalculator {
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		 BigDecimal houseHoldAssets =   getValues(applicationData.getPagesData(), Field.HOUSEHOLD_ASSETS).stream()
 				 .filter(value -> ! value.isBlank())
-				 .map(value -> new BigDecimal(value))
+				 .map(value -> new BigDecimal(value.replace(",", "")))
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		 BigDecimal result = applicantAssets.add(houseHoldAssets);
 		return  result.toPlainString();

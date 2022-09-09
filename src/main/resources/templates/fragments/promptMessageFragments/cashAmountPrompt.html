@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="cashAmountPrompt" class="spacing-below-35">
+    <p th:text="#{cash-amount-prompt.please-include}"></p>
+    <ul class="list--bulleted">
+        <li th:text="#{cash-amount-prompt.cash-you-have-with-you}"></li>
+        <li th:text="#{cash-amount-prompt.cash-in-a-safety-deposit-box}"></li>
+        <li th:text="#{cash-amount-prompt.cash-available-at-home}"></li>
+    </ul>
+    <p th:if="${hasHousehold}" th:text="#{cash-amount-prompt.type-0-if-your-household-does-not-have-any}"></p>
+    <p th:if="${!hasHousehold}" th:text="#{cash-amount-prompt.type-0-if-you-do-not-have-any}"></p>
+</div>
+</body>
+</html>

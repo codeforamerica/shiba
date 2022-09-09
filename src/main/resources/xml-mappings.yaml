@@ -64,7 +64,7 @@ xml:
       selectedApartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
     thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
-    liquidAssets:
+    liquidAssetsSingle:
       liquidAssets: LIQUID_ASSETS
     utilityPayments:
       payForUtilities:

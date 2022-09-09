@@ -2,11 +2,13 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="liquidAssetsPrompt" class="spacing-below-35">
-    <p th:text="#{liquid-assets-prompt.this-includes}"></p>
+    <p th:if="${!programs.contains('CERTAIN_POPS')}" th:text="#{liquid-assets-prompt.this-includes}"></p>
+    <p th:if="${programs.contains('CERTAIN_POPS')}" th:text="#{liquid-assets-prompt.please-include-all}"></p>
     <ul class="list--bulleted">
         <li th:text="#{liquid-assets-prompt.checking-accounts}"></li>
-        <li th:text="#{liquid-assets-prompt.savings}"></li>
-        <li th:text="#{liquid-assets-prompt.cash}"></li>
+        <li th:if="${!programs.contains('CERTAIN_POPS')}" th:text="#{liquid-assets-prompt.savings}"></li>
+        <li th:if="${programs.contains('CERTAIN_POPS')}" th:text="#{liquid-assets-prompt.savings-accounts}"></li>
+        <li th:if="${!programs.contains('CERTAIN_POPS')}" th:text="#{liquid-assets-prompt.cash}"></li>
     </ul>
 </div>
 </body>

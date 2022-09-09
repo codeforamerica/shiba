@@ -405,10 +405,20 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Does anyone in the household have money in a bank account or debit card?
     testPage.enter("haveSavings", YES.getDisplayValue());
 
-    // Who does the money belong to?
-    driver.findElement(By.id("householdMember-me")).click();
-    testPage.enter("liquidAssets", "1234");
+    // How much cash does your household have available?
+    testPage.enter("cashAmount", "1234");
+    testPage.clickContinue();
     
+    //Does your household have any of these accounts?
+    driver.findElement(By.id("SAVINGS")).click();
+    testPage.clickContinue();
+    
+    //who has money in a savings account?
+    driver.findElement(By.id("householdMember-me")).click();    
+    testPage.clickContinue();
+    
+    //how much money is available in these accounts?
+    testPage.enter("liquidAssets", "1234");
     testPage.clickContinue();
     
     // In the last 12 months, has anyone in the household given away or sold any assets?
@@ -692,7 +702,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("GOING_TO_SCHOOL", "Yes");
     assertCafFieldEquals("IS_PREGNANT", "Yes");
     assertCafFieldEquals("IS_US_CITIZEN", "No");
-    assertCafFieldEquals("EXPEDITED_QUESTION_2", "1234.00");
+    assertCafFieldEquals("EXPEDITED_QUESTION_2", "2468.00");
     assertCafFieldEquals("HOUSING_EXPENSES", "123321.50");
     assertCafFieldEquals("HEAT", "Yes");
     assertCafFieldEquals("SUPPORT_AND_CARE", "Yes");

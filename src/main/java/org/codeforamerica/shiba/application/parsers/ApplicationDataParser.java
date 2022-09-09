@@ -120,7 +120,7 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));
 
     coordinatesMap.put(Field.APPLICANT_ASSETS, new ParsingCoordinate("liquidAssetsSingle", "liquidAssets"));
-    coordinatesMap.put(Field.HOUSEHOLD_ASSETS, new ParsingCoordinate("liquidAssets", "liquidAssets"));
+    coordinatesMap.put(Field.HOUSEHOLD_ASSETS, new ParsingCoordinate("cashAmount", "cashAmount"));
     coordinatesMap
         .put(Field.INCOME, new ParsingCoordinate("thirtyDayIncome", "moneyMadeLast30Days"));
     coordinatesMap.put(Field.MIGRANT_WORKER,
