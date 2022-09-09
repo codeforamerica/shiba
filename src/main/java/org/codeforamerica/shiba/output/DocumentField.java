@@ -8,6 +8,12 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * DocumentField maps the web page inputs to the PDF form fields.
+ * String groupName refers to the groups in pdf-mapping.yaml
+ * String name refers to the entries within each group, which maps to the PDF form field names.
+ * value is the actual value that gets entered in the PDF field.
+ */
 @Value
 public class DocumentField {
 

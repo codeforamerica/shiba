@@ -566,7 +566,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("MEDICAL_INSURANCE_PREMIUM_AMOUNT", "10.90");
     assertCcapFieldEquals("DENTAL_INSURANCE_PREMIUM_AMOUNT", "12.34");
     assertCcapFieldEquals("VISION_INSURANCE_PREMIUM_AMOUNT", "56.35");
-    assertCcapFieldEquals("IS_WORKING", "Yes");
+    assertCcapFieldEquals("IS_WORKING", "No");
     assertCcapFieldEquals("SOCIAL_SECURITY", "Yes");
     assertCcapFieldEquals("TRUST_MONEY", "Yes");
     assertCcapFieldEquals("BENEFITS", "Yes");
@@ -711,7 +711,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
     assertCafFieldEquals("HAS_DISABILITY", "Yes");
     assertCafFieldEquals("HAS_WORK_SITUATION", "No");
-    assertCafFieldEquals("IS_WORKING", "Yes");
+    assertCafFieldEquals("IS_WORKING", "No");
     assertCafFieldEquals("SOCIAL_SECURITY", "Yes");
     assertCafFieldEquals("SOCIAL_SECURITY_AMOUNT", "200.30");
     assertCafFieldEquals("EARN_LESS_MONEY_THIS_MONTH", "Yes");

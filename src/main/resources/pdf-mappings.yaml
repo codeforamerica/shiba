@@ -315,7 +315,7 @@ mappings:
   nonSelfEmployment_payPeriod:
     payPeriod: [ NON_SELF_EMPLOYMENT_PAY_FREQUENCY, NON_SELF_EMPLOYMENT_PAY_FREQUENCY_TEXT ]
   employmentStatus:
-    areYouWorking: IS_WORKING
+    isAnyoneWorking: IS_WORKING
   homeExpenses:
     RENT: RENT
     MORTGAGE: MORTGAGE
