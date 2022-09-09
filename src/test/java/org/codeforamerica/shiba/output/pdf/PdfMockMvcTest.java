@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.codeforamerica.shiba.Program;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
@@ -1138,7 +1137,66 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 		}
 
-		// This test just verifies that the Yes/No radio button is set
+		// This test verifies that the self-employment radio button is set to No when
+		// the applicant is not working.
+		@Test
+		void shouldMapSelfEmploymentToFalseWhenNotWorking() throws Exception {
+			fillInRequiredPages();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"),
+					"certainPopsConfirm");
+			fillInPersonalInfoAndContactInfoAndAddress();
+			postExpectingSuccess("employmentStatus", "areYouWorking", "false");
+			submitApplication();
+
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+			// Section 9
+			assertPdfFieldEquals("SELF_EMPLOYED", "No", pdf);
+		}
+
+		// This test verifies that the self-employment radio button is set to No when
+		// the applicant is working but not self-employed.
+		@Test
+		void shouldMapSelfEmploymentToFalseWhenNotSelfEmployed() throws Exception {
+			fillInRequiredPages();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"),
+					"certainPopsConfirm");
+			fillInPersonalInfoAndContactInfoAndAddress();
+			postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+			addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
+			submitApplication();
+
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+			// Section 9
+			assertPdfFieldEquals("SELF_EMPLOYED", "No", pdf);
+		}
+
+		// This test verifies that the self-employment radio button is set to Yes when
+		// the applicant is self-employed.
+		@Test
+		void shouldMapSelfEmploymentToTrueWhenSelfEmployed() throws Exception {
+			fillInRequiredPages();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER"),
+					"certainPopsConfirm");
+			fillInPersonalInfoAndContactInfoAndAddress();
+			postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+			addSelfEmployedJob(getApplicantFullNameAndId(), "someEmployerName");
+			submitApplication();
+
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+			// Section 9
+			assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
+		}
+
+		// This test just verifies that the unearned income Yes/No radio button is set
 		@Test
 		void shouldMapNoCpUnearnedIncomeToFalseWhenAnyUnearnedIncomeSelected() throws Exception {
 			fillInRequiredPages();

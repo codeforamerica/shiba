@@ -11,7 +11,6 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.FullNameFormatter.getFullName;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -42,8 +41,10 @@ public class SelfEmploymentPreparer extends SubworkflowScopePreparer {
     List<String> selfEmploymentInputs = getValues(application.getApplicationData(), JOBS, IS_SELF_EMPLOYMENT);
 
     if (selfEmploymentInputs == null) {
-      return Collections.emptyList();
-    }
+        List<DocumentField> results = new ArrayList<DocumentField>();
+        results.add(createApplicationInput("selfEmployed", "false"));
+        return results;
+      }
 
     if (document == Document.CERTAIN_POPS) {
       // Is applicant self-employed?

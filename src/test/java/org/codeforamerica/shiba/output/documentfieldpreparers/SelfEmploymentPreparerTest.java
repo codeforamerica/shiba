@@ -66,14 +66,13 @@ public class SelfEmploymentPreparerTest {
   }
 
   @Test
-  void shouldMapEmptyIfNoJobs() {
+  void shouldMapNoSelfEmploymentIfNoJobs() {
     ApplicationData applicationData = new ApplicationData();
     Application application = Application.builder().applicationData(applicationData).build();
 
     assertThat(selfEmploymentPreparer
         .prepareDocumentFields(application, null, Recipient.CLIENT
-        ))
-        .isEmpty();
+        )).containsOnly(new DocumentField("employee", "selfEmployed", "false", SINGLE_VALUE));
   }
   
   @Test
