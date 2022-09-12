@@ -219,12 +219,6 @@ pageDefinitions:
     name: landing
     pageTitle: landing.title
     usingPageTemplateFragment: false
-  - &goToApplyMn
-    name: goToApplyMn
-    pageTitle: go-to-apply-mn.title
-    headerKey: go-to-apply-mn.header
-    contextFragment: goToApplyMnContextFragment
-    hasPrimaryButton: false
   - &prepareToApply
     name: prepareToApply
     pageTitle: prepare-to-apply.title
@@ -4042,10 +4036,7 @@ workflow:
           input: mappedCounty
           matcher: DOES_NOT_CONTAIN
           value: Other
-      - pageName: goToApplyMn
     subtleLinkTargetPage: identifyCountyBeforeApplying
-  goToApplyMn:
-    pageConfiguration: *goToApplyMn
   prepareToApply:
     pageConfiguration: *prepareToApply
     nextPages:
