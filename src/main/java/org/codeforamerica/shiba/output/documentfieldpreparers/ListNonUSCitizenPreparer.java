@@ -28,27 +28,7 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
   public List<DocumentField> prepareDocumentFields(Application application, Document document,
       Recipient recipient) {
     List<DocumentField> nonUSCitizens = new ArrayList<>();
-    PagesData pagesData = application.getApplicationData().getPagesData();
-
-    boolean allApplicantsAreCitizens = getBooleanValue(pagesData, EVERYONE_US_CITIZENS);
-    if (allApplicantsAreCitizens) {
-      return List.of();
-    } else {
-      List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
-      List<NonUSCitizen> allApplicantsNonCitizen = new ArrayList<NonUSCitizen>();
-      if(nonCitizens.size() == 0) {//For Individual flow
-        String alienId = getFirstValue(pagesData, ALIEN_ID);
-        allApplicantsNonCitizen.add(new NonUSCitizen(getFullName(application),alienId==null?"":alienId));
-      } else {
-        nonCitizens.stream().forEach(name ->{
-          List<String> nameList = Arrays.stream(name.split(" ")).collect(Collectors.toList());
-          String id = nameList.get(nameList.size()-1);
-          String alienNumber = getAlienNumber(pagesData, id);
-          nameList.remove(id);
-          String fullName =  String.join(" ", nameList);
-          allApplicantsNonCitizen.add(new NonUSCitizen(fullName,alienNumber));
-        });
-      }
+    List<NonUSCitizen> allApplicantsNonCitizen = getNonUSCitizens(application, document, recipient);
       int index = 0;
       for(NonUSCitizen person: allApplicantsNonCitizen) {
         nonUSCitizens.add(new DocumentField(
@@ -63,11 +43,38 @@ public class ListNonUSCitizenPreparer implements DocumentFieldPreparer {
             DocumentFieldType.SINGLE_VALUE, index ));
         index++;
       }
-      
-    }
-
     return nonUSCitizens;
   }
+
+    public List<NonUSCitizen> getNonUSCitizens(Application application, Document document,
+        Recipient recipient) {
+
+      List<NonUSCitizen> allApplicantsNonCitizen = new ArrayList<NonUSCitizen>();
+      PagesData pagesData = application.getApplicationData().getPagesData();
+
+      boolean allApplicantsAreCitizens = getBooleanValue(pagesData, EVERYONE_US_CITIZENS);
+      if (allApplicantsAreCitizens) {
+        return List.of();
+      } else {
+        List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
+
+        if (nonCitizens.size() == 0) {// For Individual flow
+          String alienId = getFirstValue(pagesData, ALIEN_ID);
+          allApplicantsNonCitizen
+              .add(new NonUSCitizen(getFullName(application), alienId == null ? "" : alienId));
+        } else {
+          nonCitizens.stream().forEach(name -> {
+            List<String> nameList = Arrays.stream(name.split(" ")).collect(Collectors.toList());
+            String id = nameList.get(nameList.size() - 1);
+            String alienNumber = getAlienNumber(pagesData, id);
+            nameList.remove(id);
+            String fullName = String.join(" ", nameList);
+            allApplicantsNonCitizen.add(new NonUSCitizen(fullName, alienNumber));
+          });
+        }
+      }
+      return allApplicantsNonCitizen;
+    }
   private String getAlienNumber(PagesData pagesData, String condition) {
     String result = "";
     List<String> alienIdMap = getValues(pagesData, ALIEN_ID_MAP);

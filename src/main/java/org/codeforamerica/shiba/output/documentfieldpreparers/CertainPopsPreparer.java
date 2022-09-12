@@ -24,6 +24,7 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.InvestmentOwnerPreparer.Investment;
+import org.codeforamerica.shiba.output.documentfieldpreparers.ListNonUSCitizenPreparer.NonUSCitizen;
 import org.codeforamerica.shiba.output.documentfieldpreparers.ListRetroCoveragePreparer.RetroCoverageMember;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.InputData;
@@ -63,7 +64,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	// questions.
 	private List<DocumentField> map(Application application, Document document, Recipient recipient) {
 		// Question 6, non-US citizens, generate the supplement if needed
-		createNonUsCitizensSupplementPage();
+		createNonUsCitizensSupplementPage(application, document, recipient);
 		
 		//Question 8, Retroactive coverage
 		mapRetroactiveCoverage(application, document, recipient);
@@ -80,34 +81,22 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	}
 
 	// Question 6, non-US citizens
-	private void createNonUsCitizensSupplementPage() {
-		boolean allApplicantsAreCitizens = getBooleanValue(pagesData, EVERYONE_US_CITIZENS);
-		if (!allApplicantsAreCitizens) {
-			List<String> nonCitizens = getValues(pagesData, WHO_ARE_NON_US_CITIZENS).stream().toList();
-			if (nonCitizens.size() > 2) {
-				needsSupplementPage = true;
-				supplementPageText = String.format("%sQUESTION 6 continued:", supplementPageText);
-				for (int i = 2; i < nonCitizens.size(); i++) {
-					String nonCitizen = nonCitizens.get(i);
-					String personName = nonCitizen.substring(0, nonCitizen.lastIndexOf(" "));
-					String personId = nonCitizen.substring(nonCitizen.lastIndexOf(" ") + 1);
-					String alienNumber = getAlienNumber(pagesData, personId);
-					supplementPageText = String.format("%s\nPerson %d: %s, Alien ID: %s", supplementPageText, i + 1,
-							personName, alienNumber);
-				}
-				supplementPageText = String.format("%s\n\n", supplementPageText);
-			}
-		}
+	private void createNonUsCitizensSupplementPage(Application application, Document document, Recipient recipient) {
+      ListNonUSCitizenPreparer lncp = new ListNonUSCitizenPreparer();
+      List<NonUSCitizen> nonCitizens = lncp.getNonUSCitizens(application, document, recipient);
+      if (nonCitizens.size() > 2) {
+        needsSupplementPage = true;
+        supplementPageText = String.format("%sQUESTION 6 continued:", supplementPageText);
+        int i = 2;
+        for (NonUSCitizen nuc : nonCitizens.subList(2, nonCitizens.size())) {
+          supplementPageText = String.format("%s\nPerson %d: %s, Alien ID: %s", supplementPageText,
+              i + 1, nuc.fullName, nuc.alienId);
+          i++;
+        }
+        supplementPageText = String.format("%s\n\n", supplementPageText);
+      }
 	}
-
-	private String getAlienNumber(PagesData pagesData, String condition) {
-		String result = "";
-		List<String> alienIdMap = getValues(pagesData, ALIEN_ID_MAP);
-		int index = alienIdMap.stream().collect(Collectors.toList()).indexOf(condition);
-		List<String> alienNumbers = getValues(pagesData, ALIEN_IDS);
-		result = alienNumbers.size() != 0 ? alienNumbers.get(index) : result;
-		return result;
-	}
+  
 
 	// Question 11, unearned income
 	private void mapUnearnedIncomeFields() {
