@@ -3806,6 +3806,27 @@ pageDefinitions:
               input: programs
               matcher: CONTAINS
               value: CCAP
+          - value: CONTRACTS_NOTES_AGREEMENTS
+            messageKey: assets.ownership-in-contracts-for-deed
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
+          - value: TRUST_OR_ANNUITY
+            messageKey: assets.trust-or-annuity
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
+          - value: OTHER_ASSETS
+            messageKey: assets.other-type-of-assets
+            condition:
+              pageName: choosePrograms
+              input: programs
+              matcher: CONTAINS
+              value: CERTAIN_POPS
           - value: NONE
             messageKey: assets.none-of-the-above
             isNone: true
