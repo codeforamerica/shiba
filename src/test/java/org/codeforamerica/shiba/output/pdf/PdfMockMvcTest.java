@@ -975,7 +975,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
 			addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
 			postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "LIFE_INSURANCE",
-					"BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_ESTATE"));
+					"BURIAL_ACCOUNT", "OWNERSHIP_BUSINESS", "REAL_ESTATE", "CONTRACTS_NOTES_AGREEMENTS", "TRUST_OR_ANNUITY", "OTHER_ASSETS"));
 			assertNavigationRedirectsToCorrectNextPage("assets", "investmentTypesIndividual");
 			postExpectingSuccess("investmentAssetType", "investmentAssetType", List.of("STOCKS", "BONDS", "RETIREMENT_ACCOUNTS"));
 			completeHelperWorkflow(true);
@@ -1060,9 +1060,15 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// CertainPops Healthcare Coverage Question
 			assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
+			
+			// Section 17
+			assertPdfFieldEquals("HAVE_CONTRACTS_NOTES_AGREEMENTS", "Yes", pdf);
 
 			// Section 18
 			assertPdfFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+			
+			// Section 19
+			assertPdfFieldEquals("HAVE_TRUST_OR_ANNUITY", "Yes", pdf);
 
 			// Section 15
 			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
@@ -1075,6 +1081,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// Section 22
 			assertPdfFieldEquals("BUSINESS_OWNERSHIP_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
+			
+			// Section 23
+			assertPdfFieldEquals("HAVE_OTHER_ASSETS", "Yes", pdf);
 
 			// Section 16
 			assertPdfFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
