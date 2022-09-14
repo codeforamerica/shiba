@@ -2,11 +2,23 @@ package org.codeforamerica.shiba.output.pdf;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.ImageOutputStream;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -39,6 +51,8 @@ public class PdfGenerator implements FileGenerator {
 
   private static final List<String> IMAGE_TYPES_TO_CONVERT_TO_PDF = List
       .of("jpg", "jpeg", "png", "gif");
+  private static final List<String> IMAGE_TYPES_TO_COMPRESS = List
+      .of("jpg", "jpeg");
 
 
   private final PdfFieldMapper pdfFieldMapper;
@@ -264,6 +278,27 @@ public class PdfGenerator implements FileGenerator {
 
   private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception {
     try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+     
+      var extension = Utils.getFileType(filename);
+      if(IMAGE_TYPES_TO_COMPRESS.contains(extension)) {
+        ByteArrayOutputStream outputFile = new ByteArrayOutputStream();
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageFileBytes));
+        JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
+        jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        jpegParams.setCompressionQuality(0.50f);
+        ImageWriter writer = getImageWriter();
+        try (final ImageOutputStream stream = ImageIO.createImageOutputStream(outputFile)) {
+          writer.setOutput(stream);
+          try {
+            writer.write(null, new IIOImage(img, null, null), jpegParams);
+          } finally {
+            writer.dispose();
+            stream.flush();
+          }
+        }
+        imageFileBytes = outputFile.toByteArray();
+        outputFile.close();
+      }
       var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, filename);
       // Figure out page size
       var pageSize = PDRectangle.LETTER;
@@ -295,4 +330,17 @@ public class PdfGenerator implements FileGenerator {
       throw e;
     }
   }
+  
+  private static ImageWriter getImageWriter() throws IOException {
+    IIORegistry registry = IIORegistry.getDefaultInstance();
+    Iterator<ImageWriterSpi> services = registry.getServiceProviders(ImageWriterSpi.class, (provider) -> {
+        if (provider instanceof ImageWriterSpi) {
+            return Arrays.stream(((ImageWriterSpi) provider).getFormatNames()).anyMatch(formatName -> formatName.equalsIgnoreCase("JPEG"));
+        }
+        return false;
+    }, true);
+    ImageWriterSpi writerSpi = services.next();
+    ImageWriter writer = writerSpi.createWriterInstance();
+    return writer;
+}
 }
