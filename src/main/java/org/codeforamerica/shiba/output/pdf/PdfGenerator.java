@@ -35,6 +35,7 @@ import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.ImageUtility;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
@@ -218,12 +219,18 @@ public class PdfGenerator implements FileGenerator {
           log.warn("Unsupported file-type: " + extension);
         }
         if (extension.equals("pdf")) {
-          try {
-          combinedPDF = addPageToPdf(combinedPDF, fileBytes);
-          }catch(Exception er) {
-            log.error("File not able to combine to pdf "+uDoc.getFilename());
-            combinedDocList.add(fileBytes);
-          }
+			try {
+				fileBytes = ImageUtility.compressImagesInPDF(fileBytes);
+			} catch (Exception e) {
+				log.error("Compress images in PDF failed: " + e.getMessage());
+			}
+			
+			try {
+				combinedPDF = addPageToPdf(combinedPDF, fileBytes);
+			} catch (Exception er) {
+				log.error("File not able to combine to pdf " + uDoc.getFilename());
+				combinedDocList.add(fileBytes);
+			}
         }
       }
      

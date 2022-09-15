@@ -430,7 +430,7 @@ class MnitDocumentConsumerTest {
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
 //        Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
 //        
-    //Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
+   // Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
    
 
     // Assert that converted file contents are as expected
