@@ -1446,7 +1446,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			fillInRequiredPages();
 			selectPrograms("CERTAIN_POPS");
 			postExpectingSuccess("savings", "haveSavings", "true");
-			postExpectingSuccess("liquidAssets", "liquidAssets", "300.00");
+			postExpectingSuccess("cashAmount", "cashAmount", "300.00");
 
 			var certainPops = submitAndDownloadCertainPops();
 
