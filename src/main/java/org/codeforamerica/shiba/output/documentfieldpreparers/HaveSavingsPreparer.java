@@ -40,7 +40,11 @@ public class HaveSavingsPreparer implements DocumentFieldPreparer {
       DocumentField hasSavingsDocumentFieldDecision = shouldBeNo ?
           new DocumentField("savings", "haveNonZeroSavings", List.of("No"),  DocumentFieldType.SINGLE_VALUE) :
           new DocumentField("savings", "haveNonZeroSavings", List.of(hasSavings), DocumentFieldType.SINGLE_VALUE);
+      DocumentField savingsAmountFieldDecision = hasSavings.equals("false") ?
+              new DocumentField("savings", "cashAmount", "0",  DocumentFieldType.SINGLE_VALUE) :
+              new DocumentField("savings", "cashAmount", savingsAmountValue, DocumentFieldType.SINGLE_VALUE);
       haveSavingsDocumentField.add(hasSavingsDocumentFieldDecision);
+      haveSavingsDocumentField.add(savingsAmountFieldDecision);
     }
     return haveSavingsDocumentField;
   }

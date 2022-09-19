@@ -286,6 +286,11 @@ public class AbstractShibaMockMvcTest {
     submitApplication();
     return downloadCcapClientPDF();
   }
+  
+  protected PDAcroForm submitAndDownloadCertainPops() throws Exception {
+    submitApplication();
+    return downloadCertainPopsClientPDF();
+  }
 
   protected PDAcroForm downloadCafClientPDF() throws Exception {
     var zipBytes = mockMvc.perform(get("/download")

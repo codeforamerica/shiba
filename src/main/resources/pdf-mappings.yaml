@@ -340,6 +340,7 @@ mappings:
     supportAndCare: SUPPORT_AND_CARE
   savings:
     haveNonZeroSavings: HAVE_SAVINGS
+    cashAmount: CASH_AMOUNT
   assets:
     STOCK_BOND: HAVE_INVESTMENTS
     VEHICLE: HAVE_VEHICLE
