@@ -895,6 +895,11 @@ public class PageController {
     return new ModelAndView("redirect:/pages/uploadDocuments");
   }
 
+  /*
+   * This method is used in the CCAP flow when the applicant is nudged to add
+   * a child to application if they don't choose other household members.
+   * This method sets the livesAlone input data as needed to maintain application logic.
+   */
   @PostMapping("/pages/{pageName}/{option}")
   ModelAndView livesAlone(@PathVariable String pageName, @PathVariable String option) {
     String livesAlone = "true";
