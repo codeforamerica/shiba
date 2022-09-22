@@ -118,7 +118,7 @@ public class ApplicationRepository {
     List<Application> applicationsStuckSending = jdbcTemplate.query(
         "SELECT * FROM applications where completed_at IS NOT NULL AND completed_at BETWEEN '2021-12-06' AND ? AND id IN ("
             + "SELECT application_id FROM application_status WHERE "
-            + "status ='sending' AND document_type != 'XML'" // TODO Do we need to exclude XMLs?
+            + "status ='sending'" 
             + ") ORDER BY completed_at LIMIT 50",
         applicationRowMapper(),
         eightHoursAgo);
