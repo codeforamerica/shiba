@@ -166,7 +166,16 @@ mappings:
 
   certainPops:
     certainPopsSupplement: CP_SUPPLEMENT
-    
+  
+  certainPopsBankAccounts:
+    hasCertainPopsBankAccounts: CP_HAS_BANK_ACCOUNTS
+    certainPopsBankAccountOwnerLine_1: CP_BANK_ACCOUNT_OWNER_LINE_1
+    certainPopsBankAccountOwnerLine_2: CP_BANK_ACCOUNT_OWNER_LINE_2
+    certainPopsBankAccountOwnerLine_3: CP_BANK_ACCOUNT_OWNER_LINE_3
+    certainPopsBankAccountTypeLine_1: CP_BANK_ACCOUNT_TYPE_LINE_1
+    certainPopsBankAccountTypeLine_2: CP_BANK_ACCOUNT_TYPE_LINE_2
+    certainPopsBankAccountTypeLine_3: CP_BANK_ACCOUNT_TYPE_LINE_3
+     
   certainPopsUnearnedIncome:
     noCertainPopsUnearnedIncome: NO_CP_UNEARNED_INCOME
     certainPopsUnearnedIncomePerson1: CP_UNEARNED_INCOME_PERSON_1

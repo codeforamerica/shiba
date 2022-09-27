@@ -1,15 +1,9 @@
 package org.codeforamerica.shiba.output.documentfieldpreparers;
 
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.UNEARNED_INCOME_OTHER;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WHO_ARE_NON_US_CITIZENS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_IDS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.ALIEN_ID_MAP;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.EVERYONE_US_CITIZENS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
@@ -32,7 +26,6 @@ import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -70,7 +63,9 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 		mapRetroactiveCoverage(application, document, recipient);
 		// Question 11, unearned income
 		mapUnearnedIncomeFields();
-		//Question 15
+		// Question 14, accounts
+		mapBankAccountsFields(application, document, recipient);
+		//Question 15, investment types
 		mapInvestmentType(application, document, recipient);
 
 		if (needsSupplementPage) {
@@ -324,6 +319,47 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 		}
 	}
 	
+	// Question 14, accounts.  Document has space for 3 lines, the rest is written to the supplement.
+	private void mapBankAccountsFields(Application application, Document document, Recipient recipient) {
+		int lineNumber = 1;
+		lineNumber = createBankAccountFields(lineNumber, "savingsAccountSource", "savingsAccountSource", "Savings account");
+		lineNumber = createBankAccountFields(lineNumber, "checkingAccountSource", "checkingAccountSource", "Checking account");
+		lineNumber = createBankAccountFields(lineNumber, "moneyMarketSource", "moneyMarketSource", "Money market account");
+		lineNumber = createBankAccountFields(lineNumber, "certOfDepositSource", "certOfDepositSource", "Certificate of deposit");
+
+		certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
+				String.valueOf(lineNumber>1), ENUMERATED_SINGLE_VALUE));
+	}
+	
+	private int createBankAccountFields(int lineNumber, String pageName, String pageAttributeName, String bankAccountType) {
+		PageData pageData = pagesData.getPage(pageName);
+		if (pageData != null) {
+			InputData inputData = pageData.get(pageAttributeName);
+			if (inputData != null) {
+				List<String> values = inputData.getValue();
+				for (String value : values) {
+					value = value.substring(0,value.lastIndexOf(" "));  // strip off the id
+					String owner = String.format("certainPopsBankAccountOwnerLine_%d", lineNumber);
+					String type = String.format("certainPopsBankAccountTypeLine_%d", lineNumber);
+					if (lineNumber < 4) {
+						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", owner, value, ENUMERATED_SINGLE_VALUE));
+						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", type, bankAccountType, ENUMERATED_SINGLE_VALUE));
+					}
+
+				    if (lineNumber == 4) {
+				          needsSupplementPage = true;
+				          supplementPageText = String.format("%sQUESTION 14 continued:", supplementPageText);
+				    }
+					
+					lineNumber++;
+				}
+			}
+		}
+
+		return lineNumber;
+	}
+	
+	// Question 15, investment types
 	private void mapInvestmentType(Application application, Document document, Recipient recipient) {
 	  InvestmentOwnerPreparer iop = new InvestmentOwnerPreparer();
 	  List<Investment> investmentOwnerList = iop.getInvestmentOwners(application, document, recipient);

@@ -273,6 +273,21 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.CP_UNEARNED_INCOME_FREQUENCY_2_4,
             new ParsingCoordinate("certainPopsUnearnedIncome", "certainPopsUnearnedIncomeFrequency_2_4"));
 
+    coordinatesMap.put(Field.CP_HAS_BANK_ACCOUNTS,
+            new ParsingCoordinate("certainPopsBankAccounts", "hasCertainPopsBankAccounts"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_OWNER_LINE_1,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_1"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_OWNER_LINE_2,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_2"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_OWNER_LINE_3,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_3"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_TYPE_LINE_1,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_1"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_TYPE_LINE_2,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_2"));
+    coordinatesMap.put(Field.CP_BANK_ACCOUNT_TYPE_LINE_3,
+            new ParsingCoordinate("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_3"));
+
     coordinatesMap.put(Field.CP_SUPPLEMENT,
             new ParsingCoordinate("certainPops", "certainPopsSupplement"));
     
@@ -521,7 +536,15 @@ public class ApplicationDataParser {
     CP_UNEARNED_INCOME_FREQUENCY_2_2,
     CP_UNEARNED_INCOME_FREQUENCY_2_3,
     CP_UNEARNED_INCOME_FREQUENCY_2_4,
-    
+
+    CP_HAS_BANK_ACCOUNTS,
+    CP_BANK_ACCOUNT_OWNER_LINE_1,
+    CP_BANK_ACCOUNT_OWNER_LINE_2,
+    CP_BANK_ACCOUNT_OWNER_LINE_3,
+    CP_BANK_ACCOUNT_TYPE_LINE_1,
+    CP_BANK_ACCOUNT_TYPE_LINE_2,
+    CP_BANK_ACCOUNT_TYPE_LINE_3,
+
     UNEARNED_BENEFITS_PROGRAMS_AMOUNT,
     UNEARNED_INSURANCE_PAYMENTS_AMOUNT,
     UNEARNED_CONTRACT_FOR_DEED_AMOUNT,

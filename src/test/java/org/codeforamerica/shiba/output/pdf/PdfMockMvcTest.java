@@ -972,6 +972,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			postExpectingSuccess("medicalInOtherState", "medicalInOtherState", "true");
 			postExpectingSuccess("unearnedIncome", "unearnedIncome", "NO_UNEARNED_INCOME_SELECTED");
 			postExpectingSuccess("otherUnearnedIncome", "otherUnearnedIncome", "NO_OTHER_UNEARNED_INCOME_SELECTED");
+			postExpectingSuccess("savings", "hasSavings", "false");
 			addFirstJob(getApplicantFullNameAndId(), "someEmployerName");
 			addSelfEmployedJob(getApplicantFullNameAndId(), "My own boss");
 			postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "LIFE_INSURANCE",
@@ -1057,6 +1058,9 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// Section 11
 			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
+
+			// Section 14
+			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "No", pdf);
 
 			// CertainPops Healthcare Coverage Question
 			assertPdfFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes", pdf);
@@ -1317,6 +1321,40 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 		}
 
 		@Test
+		void shouldMapFieldsForApplicantOnlyBankAccountsSelections() throws Exception {
+			fillInRequiredPages();
+			fillOutPersonalInfo();
+			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect(
+					"basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA",
+							"HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+					"certainPopsConfirm");
+			postExpectingSuccess("savingsAccountSource", "savingsAccountSource",
+					List.of("Dwight Schrute applicant"));
+			postExpectingSuccess("checkingAccountSource", "checkingAccountSource",
+					List.of("Dwight Schrute applicant"));
+			postExpectingSuccess("moneyMarketSource", "moneyMarketSource",
+					List.of("Dwight Schrute applicant"));
+			postExpectingSuccess("certOfDepositSource", "certOfDepositSource",
+					List.of("Dwight Schrute applicant"));
+			completeHelperWorkflow(true);
+
+			submitApplication();
+			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
+
+            // Section 14
+			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "Yes", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_1", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_1", "Savings account", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_2", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_2", "Checking account", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_3", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_3", "Money market account", pdf);
+            
+		}
+
+		@Test
 		void shouldMapFieldsForHouseholdRelatedSelections() throws Exception {
 			fillInRequiredPages();
 			fillOutPersonalInfo();
@@ -1352,6 +1390,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 					List.of("Dwight Schrute applicant", "Jim Halpert " + jimHalpertId), "realEstateAssetSource");
 			postExpectingRedirect("realEstateAssetSource", "realEstateAssetSource",
 					List.of("Jim Halpert " + jimHalpertId), "savings");
+			postExpectingSuccess("savingsAccountSource", "savingsAccountSource",
+					List.of("Jim Halpert " + jimHalpertId));
+			postExpectingSuccess("checkingAccountSource", "checkingAccountSource",
+					List.of("Jim Halpert " + jimHalpertId));
+			postExpectingSuccess("certOfDepositSource", "certOfDepositSource",
+					List.of("Jim Halpert " + jimHalpertId));
 			completeHelperWorkflow(true);
 
 			submitApplication();
@@ -1372,6 +1416,16 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "1", pdf);
             assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_1", "Jim Halpert", pdf);
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_1", "2", pdf);
+            
+            // Section 14
+			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "Yes", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_1", "Jim Halpert", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_1", "Savings account", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_2", "Jim Halpert", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_2", "Checking account", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_3", "Jim Halpert", pdf);
+			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_3", "Certificate of deposit", pdf);
+            
 
 			// Section 15
 			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);

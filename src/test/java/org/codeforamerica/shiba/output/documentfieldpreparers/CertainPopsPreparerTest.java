@@ -397,6 +397,74 @@ public class CertainPopsPreparerTest {
 		assertThat(result).contains(documentField);
 	}
 
+	// Answer is No on savings page, result is "false" for hasCertainPopsBankAccounts.
+	@Test
+	public void shouldMapBankAccountFieldsToFalse() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo",
+						Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"))))
+				.withPageData("savings", "haveSavings", "false")
+				.build();
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+		DocumentField documentField = createApplicationInput("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
+				"false");
+		assertThat(result).contains(documentField);
+	}
+
+	// The applicant and one household member each have two bank accounts.  Test DocumentFields for the first three items.
+	@Test
+	public void shouldMapBankAccountFieldsForHousehold() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo",
+						Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"))))
+				.withPageData("savingsAccountSource", "savingsAccountSource", List.of("David Smith applicant"))
+				.withPageData("checkingAccountSource", "checkingAccountSource", List.of("Jane Smith 12345678-1234-1234-1234-123456789012"))
+				.withPageData("moneyMarketSource", "moneyMarketSource", List.of("David Smith applicant"))
+				.withPageData("certOfDepositSource", "certOfDepositSource", List.of("Jane Smith 12345678-1234-1234-1234-123456789012"))
+				.build();
+		
+		applicationData.getSubworkflows().get("household").get(0)
+				.setId(UUID.fromString("12345678-1234-1234-1234-123456789012"));
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+		DocumentField documentField = createApplicationInput("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
+				"true");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_1",
+				"David Smith");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_1",
+				"Savings account");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_2",
+				"Jane Smith");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_2",
+				"Checking account");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_3",
+				"David Smith");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_3",
+				"Money market account");
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountOwnerLine_4",
+				"Jane Smith");
+		assertThat(result).doesNotContain(documentField);
+		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_4",
+				"Certificate of deposit");
+		assertThat(result).doesNotContain(documentField);
+		
+	}
+
+
 	// Question 11 supplement text is generated when more than 2 people have unearned income or
 	// when a person has more than 4 unearned income types.
 	// This test has 3 persons with unearned income. Person 3 has 5 unearned income
@@ -552,7 +620,7 @@ public class CertainPopsPreparerTest {
       List<DocumentField> result = preparer.prepareDocumentFields(
           Application.builder().applicationData(applicationData).build(), null,
           Recipient.CASEWORKER);
-      assertThat(result).isEqualTo(List.of(
+      assertThat(result).containsAll(List.of(
           new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
           new DocumentField("certainPops", "certainPopsSupplement",
           List.of(
@@ -590,7 +658,7 @@ public class CertainPopsPreparerTest {
       List<DocumentField> result = preparer.prepareDocumentFields(
           Application.builder().applicationData(applicationData).build(), null,
           Recipient.CASEWORKER);
-      assertThat(result).isEqualTo(List.of(
+      assertThat(result).containsAll(List.of(
           new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
           new DocumentField("certainPops", "certainPopsSupplement",
           List.of(
