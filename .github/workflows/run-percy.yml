@@ -35,7 +35,7 @@ jobs:
           java-version: '17'
           cache: 'gradle'
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v3.4.1
+        uses: actions/setup-node@v3.5.0
         with:
           node-version: '14.x'
       - name: Install percy from npm
