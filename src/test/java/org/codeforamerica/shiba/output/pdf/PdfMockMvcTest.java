@@ -1351,7 +1351,11 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_2", "Checking account", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_3", "Dwight Schrute", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_3", "Money market account", pdf);
-            
+            // Supplement
+			assertPdfFieldContains("CP_SUPPLEMENT",
+					"QUESTION 14 continued:\n4) Owner name: Dwight Schrute, Type of account: Certificate of deposit",
+					pdf);
+
 		}
 
 		@Test
