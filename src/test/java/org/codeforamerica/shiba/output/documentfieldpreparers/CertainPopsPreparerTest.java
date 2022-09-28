@@ -461,7 +461,11 @@ public class CertainPopsPreparerTest {
 		documentField = createApplicationInput("certainPopsBankAccounts", "certainPopsBankAccountTypeLine_4",
 				"Certificate of deposit");
 		assertThat(result).doesNotContain(documentField);
-		
+		// Verify supplement
+		DocumentField supplementDocumentField = findAndVerifyCertainPopsSupplement(result);
+		String supplementText = supplementDocumentField.getValue(0);
+		assertThat(supplementText).contains(
+				"QUESTION 14 continued:\n4) Owner name: Jane Smith, Type of account: Certificate of deposit");
 	}
 
 
@@ -524,14 +528,7 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 
-		DocumentField supplementDocumentField = null;
-		for (DocumentField documentField : result) {
-			if (documentField.getName().compareTo("certainPopsSupplement") == 0) {
-				supplementDocumentField = documentField;
-				break;
-			}
-		}
-		assertThat(supplementDocumentField).isNotNull();
+		DocumentField supplementDocumentField = findAndVerifyCertainPopsSupplement(result);
 		String supplementText = supplementDocumentField.getValue(0);
 		assertThat(supplementText).contains(
 				"QUESTION 11 continued:\nPerson 3, John Smith:\n  1) Social Security, 102, Monthly\n  2) Insurance payments, 200, Monthly\n  3) Trust money, 201, Monthly\n  4) Rental income, 202, Monthly\n  5) Interest or dividends, 203, Monthly");
@@ -576,18 +573,12 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 
-		DocumentField supplementDocumentField = null;
-		for (DocumentField documentField : result) {
-			if (documentField.getName().compareTo("certainPopsSupplement") == 0) {
-				supplementDocumentField = documentField;
-				break;
-			}
-		}
-		assertThat(supplementDocumentField).isNotNull();
+		DocumentField supplementDocumentField = findAndVerifyCertainPopsSupplement(result);
 		String supplementText = supplementDocumentField.getValue(0);
 		assertThat(supplementText).contains(
 				"QUESTION 6 continued:\nPerson 3: John Smith, Alien ID: C33333333C\nPerson 4: Jill Smith, Alien ID:");
 	}
+	
 	//QUESTION 15
 	@Test
     public void shouldMapQuestion15SupplementText() {
@@ -665,6 +656,18 @@ public class CertainPopsPreparerTest {
               "\n\nQUESTION 8 continued:\nPerson 3: Jill Smith, Month/s: 3"
               + "\nPerson 4: Jack Smith, Month/s: 2"),
           DocumentFieldType.ENUMERATED_SINGLE_VALUE)));
+    }
+    
+    private DocumentField findAndVerifyCertainPopsSupplement(List<DocumentField> result) {
+		DocumentField supplementDocumentField = null;
+		for (DocumentField documentField : result) {
+			if (documentField.getName().compareTo("certainPopsSupplement") == 0) {
+				supplementDocumentField = documentField;
+				break;
+			}
+		}
+		assertThat(supplementDocumentField).isNotNull();
+		return supplementDocumentField;
     }
 
 }

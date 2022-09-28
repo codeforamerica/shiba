@@ -329,6 +329,9 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 
 		certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
 				String.valueOf(lineNumber>1), ENUMERATED_SINGLE_VALUE));
+		if (lineNumber > 3) {
+	          supplementPageText = String.format("%s\n\n", supplementPageText);
+		}
 	}
 	
 	private int createBankAccountFields(int lineNumber, String pageName, String pageAttributeName, String bankAccountType) {
@@ -348,7 +351,11 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 
 				    if (lineNumber == 4) {
 				          needsSupplementPage = true;
+				          supplementPageText = String.format("%s\n\n", supplementPageText);
 				          supplementPageText = String.format("%sQUESTION 14 continued:", supplementPageText);
+				    }
+				    if (lineNumber >= 4) {
+				          supplementPageText = String.format("%s\n%d) Owner name: %s, Type of account: %s", supplementPageText, lineNumber, value, bankAccountType);
 				    }
 					
 					lineNumber++;
