@@ -6,11 +6,10 @@ import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.output.Document;

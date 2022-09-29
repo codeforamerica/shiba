@@ -3,7 +3,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.Map;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;

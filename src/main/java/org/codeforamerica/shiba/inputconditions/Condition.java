@@ -1,22 +1,19 @@
 package org.codeforamerica.shiba.inputconditions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-import javax.validation.constraints.NotNull;
+
+import org.codeforamerica.shiba.output.LogicalOperator;
+import org.codeforamerica.shiba.pages.data.PageData;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.codeforamerica.shiba.output.LogicalOperator;
-import org.codeforamerica.shiba.pages.data.ApplicationData;
-import org.codeforamerica.shiba.pages.data.PageData;
-import org.codeforamerica.shiba.pages.data.PagesData;
 
 @With
 @Data

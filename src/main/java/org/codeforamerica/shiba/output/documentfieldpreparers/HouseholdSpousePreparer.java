@@ -5,21 +5,23 @@ import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_DOB;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_MARITAL_STATUS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_RELATIONSHIP;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_SEX;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_SSN;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_MARITAL_STATUS;
-import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
-import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
 import static org.codeforamerica.shiba.output.DocumentFieldType.DATE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
+import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;import java.util.stream.Collector;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
