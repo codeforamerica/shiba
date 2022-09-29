@@ -96,8 +96,8 @@ public class ResubmissionService {
               routingDestination.getEmail(), documentName, routingDestination);
         } else {
           var applicationFile = pdfGenerator.generate(application, document, CASEWORKER, routingDestination);
-          emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
-              application);
+          emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile, application);
+          log.info("Sending resubmit failed email to " + routingDestination.getEmail() + " for application " + id);
         }
         applicationStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
         log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));

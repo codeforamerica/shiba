@@ -100,7 +100,7 @@ import org.springframework.context.annotation.Profile;
 public class CountyMapConfiguration {
 
   private ServicingAgencyMap<CountyRoutingDestination> countyMap;
-  private final String DEV_EMAIL = "help+dev@mnbenefits.org";
+  private final String DEV_EMAIL = "mnbenefits@state.mn.us";
 
   @Bean
   @Profile({"default", "test", "dev", "atst"})

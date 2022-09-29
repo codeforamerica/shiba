@@ -31,18 +31,18 @@ public class TribalNationConfiguration {
     ServicingAgencyMap<TribalNationRoutingDestination> result = getDefaultTribalNations();
     addTribalNation(result, MilleLacsBandOfOjibwe,
         "A602658300",
-        "help+staging@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "320-532-7407"
     );
 
     addTribalNation(result, WhiteEarth,
         "A086642300",
-        "help+staging@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-935-2359"
     );
     addTribalNation(result, RedLakeNation,
         "A590043300",
-        "help+staging@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-679-3350"
     );
     return result;
@@ -55,18 +55,18 @@ public class TribalNationConfiguration {
     addTribalNation(result,
         MilleLacsBandOfOjibwe,
         "A602658300",
-        "help+demo@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "320-532-7407"
     );
     addTribalNation(result,
         WhiteEarth,
         "A086642300",
-        "help+demo@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-935-2359"
     );
     addTribalNation(result, RedLakeNation,
         "A590043300",
-        "help+demo@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-679-3350"
     );
     return result;
@@ -100,7 +100,7 @@ public class TribalNationConfiguration {
     ServicingAgencyMap<TribalNationRoutingDestination> result = new ServicingAgencyMap<>();
     addTribalNation(result, MilleLacsBandOfOjibwe,
         "A602658300",
-        "help+dev@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "320-532-7407"
     );
     addTribalNation(result, FondDuLac, "A590043300", "sarah.smythe@redlakenation.org",
@@ -111,14 +111,14 @@ public class TribalNationConfiguration {
         "218-679-3350");
     addTribalNation(result, WhiteEarth,
         "A086642300",
-        "help+dev@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-935-2359"
     );
     addTribalNation(result, BoisForte, "A590043300", "sarah.smythe@redlakenation.org",
         "218-679-3350");
     addTribalNation(result, RedLakeNation,
         "A590043300",
-        "help+dev@mnbenefits.org",
+        "mnbenefits@state.mn.us",
         "218-679-3350"
     );
     return result;
