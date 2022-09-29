@@ -189,15 +189,20 @@ public class ApplicationData implements Serializable {
   }
   
   @NotNull
-  public Set<String> getApplicantAndHouseholdMember() {
+  public int getApplicantAndHouseholdMemberSize() {
+	int householdSize = 0;
+	// compute applicant size, some tests don't generate the applicant, just the household members
     List<String> applicantFirstName = getValues(pagesData, PERSONAL_INFO_FIRST_NAME);
-    Set<String> applicantAndHouseholdMemberNames = new HashSet<>(applicantFirstName);
+    if (applicantFirstName != null) {
+    	householdSize = householdSize + applicantFirstName.size(); // the applicant
+    }
     List<String> householdNames = getValues(this, HOUSEHOLD, HOUSEHOLD_INFO_FIRST_NAME);
     if (householdNames != null) {
-      applicantAndHouseholdMemberNames.addAll(householdNames);
+      householdSize = householdSize + householdNames.size(); // the rest of the household
     }
-    return applicantAndHouseholdMemberNames;
+    return householdSize;
   }
+
   @NotNull
   public long getHouseholdMemberWithoutSpouse() {
    

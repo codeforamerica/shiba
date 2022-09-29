@@ -126,10 +126,10 @@ public class PdfGenerator implements FileGenerator {
       Recipient recipient, String filename) {
     List<DocumentField> documentFields = preparers.prepareDocumentFields(application, document,
         recipient);
-    var houseHold = application.getApplicationData().getApplicantAndHouseholdMember();
+    var householdSize = application.getApplicationData().getApplicantAndHouseholdMemberSize();
     PdfFieldFiller pdfFiller = pdfFieldFillerMap.get(recipient).get(document);
 
-    if (document.equals(Document.CAF) && (houseHold.size() > 5 && houseHold.size() <= 10)) {
+    if (document.equals(Document.CAF) && (householdSize > 5 && householdSize <= 10)) {
       pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
     }
     if(document.equals(Document.CERTAIN_POPS)) {
