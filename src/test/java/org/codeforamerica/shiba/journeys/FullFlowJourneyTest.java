@@ -752,7 +752,117 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("MONEY_MADE_LAST_MONTH", "120.00");
     assertCafFieldEquals("BLACK_OR_AFRICAN_AMERICAN", "Yes");
     assertCafFieldEquals("HISPANIC_LATINO_OR_SPANISH_NO", "Yes");
+    
+    // CERTAIN POPS
+    assertCertainPopsFieldEquals("APPLICATION_ID", applicationId);
+    assertCertainPopsFieldEquals("SUBMISSION_DATETIME", "01/01/2020 at 04:15 AM");
+    assertCertainPopsFieldEquals("PAY_FREQUENCY_0", "Hourly");
+    assertCertainPopsFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
+    assertCertainPopsFieldEquals("DATE_OF_BIRTH", "01/12/1928");
+    assertCertainPopsFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
+    assertCertainPopsFieldEquals("APPLICANT_PHONE_NUMBER", "(723) 456-7890");
+    assertCertainPopsFieldEquals("APPLICANT_EMAIL", "some@example.com");
+    assertCertainPopsFieldEquals("PHONE_OPTIN", "Yes");
+    assertCertainPopsFieldEquals("ADDITIONAL_INFO_CASE_NUMBER", "");
+    assertCertainPopsFieldEquals("EMPLOYERS_NAME_0", "some employer");
+    assertCertainPopsFieldEquals("INCOME_PER_PAY_PERIOD_0", "1.00");
+    assertCertainPopsFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
+    assertCertainPopsFieldEquals("SSN_0", "XXX-XX-XXXX");
+    assertCertainPopsFieldEquals("COUNTY_INSTRUCTIONS",
+            """
+                This application was submitted to Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
 
+                For more support, you can call Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (320-532-7407) and Hennepin County (612-596-1300).""");
+    assertCertainPopsFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
+    assertCertainPopsFieldEquals("FULL_NAME", "Ahmed St. George");
+    assertCertainPopsFieldEquals("TRIBAL_NATION", "Bois Forte");
+    assertCertainPopsFieldEquals("FULL_NAME_0", householdMemberFullName);
+    assertCertainPopsFieldEquals("PROGRAMS_0", "CCAP");
+    assertCertainPopsFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+    assertCertainPopsFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
+    assertCertainPopsFieldEquals("APPLICANT_FIRST_NAME", "Ahmed");
+    assertCertainPopsFieldEquals("APPLICANT_LAST_NAME", "St. George");
+    assertCertainPopsFieldEquals("DATE_OF_BIRTH", "01/12/1928");
+    assertCertainPopsFieldEquals("APPLICANT_SSN", "XXX-XX-XXXX");
+    assertCertainPopsFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
+    assertCertainPopsFieldEquals("APPLICANT_SEX", "FEMALE");
+    assertCertainPopsFieldEquals("BLIND", "Yes");
+    assertCertainPopsFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes");
+    assertCertainPopsFieldEquals("DISABILITY_DETERMINATION", "Yes");
+    assertCertainPopsFieldEquals("NEED_LONG_TERM_CARE", "Yes");
+    assertCertainPopsFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
+    assertCertainPopsFieldEquals("NEED_INTERPRETER", "Yes");
+    assertCertainPopsFieldEquals("APPLICANT_HOME_STREET_ADDRESS", "someStreetAddress");
+    assertCertainPopsFieldEquals("APPLICANT_HOME_CITY", "someCity");
+    assertCertainPopsFieldEquals("APPLICANT_HOME_STATE", "MN");
+    assertCertainPopsFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
+    assertCertainPopsFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104");
+    assertCertainPopsFieldEquals("APPLICANT_MAILING_CITY", "Cooltown");
+    assertCertainPopsFieldEquals("APPLICANT_MAILING_STATE", "CA");
+    assertCertainPopsFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "smarty street");
+    assertCertainPopsFieldEquals("APPLICANT_MAILING_COUNTY", "someCounty");
+    assertCertainPopsFieldEquals("MEDICAL_IN_OTHER_STATE", "Yes");
+    assertCertainPopsFieldEquals("LIVING_SITUATION", "HOTEL_OR_MOTEL");
+    assertCertainPopsFieldEquals("HH_FIRST_NAME_0", "householdMemberFirstName");
+    assertCertainPopsFieldEquals("HH_MI_0", "");
+    assertCertainPopsFieldEquals("HH_LAST_NAME_0", "householdMemberLastName");
+    assertCertainPopsFieldEquals("HH_DATE_OF_BIRTH_0", "09/14/2018");
+    assertCertainPopsFieldEquals("HH_RELATIONSHIP_0", "child");
+    assertCertainPopsFieldEquals("HH_SEX_0", "MALE");
+    assertCertainPopsFieldEquals("HH_MARITAL_STATUS_0", "NEVER_MARRIED");
+    assertCertainPopsFieldEquals("HH_SSN_YESNO_0", "Yes");
+    assertCertainPopsFieldEquals("HH_SSN_0", "XXX-XX-XXXX");
+    assertCertainPopsFieldEquals("IS_US_CITIZEN", "No");
+    assertCertainPopsFieldEquals("NAME_OF_NON_US_CITIZEN_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("ALIEN_ID_0", "A12345678");
+    assertCertainPopsFieldEquals("WANT_AUTHORIZED_REP", "Yes");
+    assertCertainPopsFieldEquals("RETROACTIVE_COVERAGE_HELP", "Yes");
+    assertCertainPopsFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "1");
+    //assertCertainPopsFieldEquals("SELF_EMPLOYED", "Yes");
+    assertCertainPopsFieldEquals("IS_WORKING", "No");
+    //assertCertainPopsFieldEquals("NO_CP_UNEARNED_INCOME", "Yes");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_PERSON_1", "Ahmed St. George");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Social Security");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_1", "200.30");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_1", "Monthly");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_TYPE_1_2", "Insurance payments");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_2", "100.00");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_2", "Monthly");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_TYPE_1_3", "Trust money");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_3", "100.00");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_3", "Monthly");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_TYPE_1_4", "Rental income");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_4", "100.00");
+    assertCertainPopsFieldEquals("CP_UNEARNED_INCOME_FREQUENCY_1_4", "Monthly");
+    assertCertainPopsFieldEquals("BLIND_OR_HAS_DISABILITY", "Yes");
+    assertCertainPopsFieldEquals("WHO_HAS_DISABILITY_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("CASH_AMOUNT", "1234");
+    assertCertainPopsFieldEquals("HAVE_INVESTMENTS", "Yes");
+    assertCertainPopsFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("INVESTMENT_TYPE_0", "stocks");
+    assertCertainPopsFieldEquals("HAVE_REAL_ESTATE", "Yes");
+    assertCertainPopsFieldEquals("REAL_ESTATE_OWNER_FULL_NAME_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("HAVE_CONTRACTS_NOTES_AGREEMENTS", "No");
+    assertCertainPopsFieldEquals("HAVE_VEHICLE", "Yes");
+    assertCertainPopsFieldEquals("VEHICLE_OWNER_FULL_NAME_0", "Ahmed St. George");
+    assertCertainPopsFieldEquals("HAVE_TRUST_OR_ANNUITY", "No");
+    assertCertainPopsFieldEquals("HAVE_LIFE_INSURANCE", "No");
+    assertCertainPopsFieldEquals("HAVE_BURIAL_ACCOUNT", "No");
+    assertCertainPopsFieldEquals("HAVE_OWNERSHIP_BUSINESS", "No");
+    assertCertainPopsFieldEquals("HAVE_OTHER_ASSETS", "No");
+    assertCertainPopsFieldEquals("HAD_A_PAST_ACCIDENT_OR_INJURY", "Yes");
+    assertCertainPopsFieldEquals("HAVE_HEALTHCARE_COVERAGE", "Yes");
+    assertCertainPopsFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
+    assertCertainPopsFieldEquals("CREATED_DATE", "2020-01-01");
+    assertCertainPopsFieldEquals("AUTHORIZED_REP_NAME", "defaultFirstName defaultLastName");
+    assertCertainPopsFieldEquals("AUTHORIZED_REP_ADDRESS", "someStreetAddress");
+    assertCertainPopsFieldEquals("AUTHORIZED_REP_CITY", "someCity");
+    assertCertainPopsFieldEquals("AUTHORIZED_REP_ZIP_CODE", "12345");
+    assertCertainPopsFieldEquals("AUTHORIZED_REP_PHONE_NUMBER", "(723) 456-7890");
+    assertCertainPopsFieldEquals("CP_SUPPLEMENT", "\n\nQUESTION 11 continued:\nPerson 1, Ahmed St. George:\n  5) Interest or dividends, 100.00, Monthly\n  6) Healthcare reimbursement, 100.00, Monthly\n  7) Contract for Deed, 100.00, Monthly\n  8) Benefits programs, 100.00, Monthly\n  9) Other payments, 100.00, Monthly");
+    
+    
     assertApplicationSubmittedEventWasPublished(applicationId, FULL, 8);
   }
 

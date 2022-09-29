@@ -125,7 +125,7 @@ public abstract class AbstractBasePageTest {
       ZipEntry zEntry;
       String destination = path.toFile().getPath();
       while ((zEntry = zipStream.getNextEntry()) != null) {
-        if(zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP") ) {
+        if(zEntry.getName().contains("_CAF") || zEntry.getName().contains("_CCAP") || zEntry.getName().contains("_CERTAIN_POPS") ) {
           if (!zEntry.isDirectory()) {
             File files = new File(destination, zEntry.getName());
             FileOutputStream fout = new FileOutputStream(files);
@@ -158,6 +158,8 @@ public abstract class AbstractBasePageTest {
       return Document.CAF;
     } else if (fileName.contains("_CCAP")) {
       return Document.CCAP;
+    } else if (fileName.contains("_CERTAIN_POPS")) {
+      return Document.CERTAIN_POPS;
     } else {
       return Document.CAF;
     }
