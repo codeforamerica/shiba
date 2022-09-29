@@ -54,7 +54,7 @@ class ResubmissionServiceTest {
   private final String APP_ID = "myappid";
   private final String DEFAULT_EMAIL = "olmsted@example.com";
   private final String ANOKA_EMAIL = "anoka@example.com";
-  private final String MILLE_LACS_BAND_EMAIL = "help+dev@mnbenefits.org";
+  private final String MILLE_LACS_BAND_EMAIL = "mnbenefits@state.mn.us";
 
   private final ServicingAgencyMap<CountyRoutingDestination> countyMap = new ServicingAgencyMap<>();
   @Mock

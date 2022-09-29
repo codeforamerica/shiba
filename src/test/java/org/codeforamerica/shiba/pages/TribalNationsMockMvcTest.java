@@ -194,7 +194,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
     RoutingDestination routingDestination = routingDestinations.get(0);
     assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
-    assertThat(routingDestination.getEmail()).isEqualTo("help+dev@mnbenefits.org");
+    assertThat(routingDestination.getEmail()).isEqualTo("mnbenefits@state.mn.us");
     assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
   }
 
