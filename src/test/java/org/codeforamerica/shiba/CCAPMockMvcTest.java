@@ -100,7 +100,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");
     postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "true", "usCitizen");
     postExpectingRedirect("usCitizen", "isUsCitizen", "true", "workSituation");
-    postExpectingRedirect("workSituation", "hasWorkSituation", "true", "introIncome");
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "introIncome");
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     postExpectingRedirect("employmentStatus", "areYouWorking", "false", "jobSearch");
     postExpectingRedirect("jobSearch", "currentlyLookingForJob", "true", "incomeUpNext");

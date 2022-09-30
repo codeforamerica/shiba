@@ -1864,18 +1864,14 @@ pageDefinitions:
   - &tribalNationMember
     name: tribalNationMember
     pageTitle: tribal-nation-member.title
-    headerKey: tribal-nation-member.is-anyone-in-your-household-a-member-of-a-tribal-nation
+    headerKey:
+      defaultValue: tribal-nation-member.is-anyone-in-your-household-a-member-of-a-tribal-nation
+      conditionalValues:
+        - value: tribal-nation-member.are-you-a-member-of-a-tribal-nation
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: isTribalNationMember
-        type: YES_NO
-  - &nationsBoundary
-    name: nationsBoundary
-    pageTitle: nations-boundary.title
-    headerKey: nations-boundary.are-any-of-the-tribal-members
-    hasPrimaryButton: false
-    inputs:
-      - name: livingInNationBoundary
         type: YES_NO
   - &selectTheTribe
     name: selectTheTribe
@@ -1916,6 +1912,18 @@ pageDefinitions:
               messageKey: select-the-tribe.white-earth
             - value: Federally recognized tribe outside of MN
               messageKey: select-the-tribe.other
+  - &nationsBoundary
+    name: nationsBoundary
+    pageTitle: nations-boundary.title
+    headerKey:
+      defaultValue: nations-boundary.are-any-of-the-tribal-members
+      conditionalValues:
+        - value: nations-boundary.are-you-living-nations-boundary
+          condition: *livesAlone?
+    hasPrimaryButton: false
+    inputs:
+      - name: livingInNationBoundary
+        type: YES_NO
   - &applyForTribalTANF
     name: applyForTribalTANF
     pageTitle: apply-for-tribal-TANF.title
@@ -4511,7 +4519,6 @@ workflow:
         condition: *applicantChoseCERTAINPOPS?
         flag: certain-pops
       - pageName: introIncome
-    skipCondition: *livesAlone?
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
@@ -4575,12 +4582,6 @@ workflow:
     skipCondition:
       logicalOperator: OR
       conditions:
-        - logicalOperator: OR
-          conditions:
-            - *livesAlone?
-            - pageName: tribalNationMember
-              input: isTribalNationMember
-              value: NO
         - *isUrbanTribalNationMember?
         - pageName: selectTheTribe
           input: selectedTribe

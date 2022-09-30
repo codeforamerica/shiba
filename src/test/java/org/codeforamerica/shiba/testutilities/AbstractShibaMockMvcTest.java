@@ -811,14 +811,8 @@ public class AbstractShibaMockMvcTest {
     	postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
     	postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
     }
-    
-    if (hasHousehold) {
-      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
-      postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false",
-          "introIncome");
-    } else {
-      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
-    }
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "introIncome");
   }
 
   protected void getToPersonalInfoScreen(String... programSelections) throws Exception {
@@ -901,11 +895,8 @@ public class AbstractShibaMockMvcTest {
     }
 
     postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
-    if (hasHousehold) {
-      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
-    } else {
-      postExpectingRedirect("workSituation", "hasWorkSituation", "false", "introIncome");
-    }
+    postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
     if (isWorking) {
       postExpectingRedirect("employmentStatus", "areYouWorking", "true", "incomeByJob");
