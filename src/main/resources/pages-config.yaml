@@ -4550,6 +4550,12 @@ workflow:
                 - pageName: identifyCounty
                   input: county
                   matcher: IS_MILLE_LACS_RURAL_COUNTY
+            - logicalOperator: AND
+              conditions:
+                - *livesAlone?
+                - pageName: pregnant
+                  input: isPregnant
+                  value: "true"
       - pageName: medicalCareMilestone
         condition:
           conditions:
@@ -4592,6 +4598,7 @@ workflow:
       - pageName: selectTheTribe
       - pageName: tribalNationMember
       - pageName: identifyCounty
+      - pageName: pregnant
   applyForTribalTANF:
     pageConfiguration: *applyForTribalTANF
     nextPages:
@@ -4604,8 +4611,17 @@ workflow:
         condition: *applicantChoseCERTAINPOPS?
         flag: certain-pops
       - pageName: introIncome
+    skipCondition:
+      logicalOperator: AND
+      conditions:
+        - *livesAlone?
+        - pageName: pregnant
+          input: isPregnant
+          value: "false"
     datasources:
       - pageName: choosePrograms
+      - pageName: pregnant
+      - pageName: addHouseholdMembers
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
