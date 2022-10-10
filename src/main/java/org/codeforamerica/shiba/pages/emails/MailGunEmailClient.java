@@ -93,7 +93,7 @@ public class MailGunEmailClient implements EmailClient {
       Locale locale) {
     var lms = new LocaleSpecificMessageSource(locale, messageSource);
     var subject = getEmailSubject("email.subject", lms);
-    var emailBody = emailContentCreator.createShortClientConfirmationEmail(applicationId, locale);
+    var emailBody = emailContentCreator.createShortClientConfirmationEmail(applicationData, applicationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles);
     log.info("Short confirmation email sent for " + applicationId);
   }
