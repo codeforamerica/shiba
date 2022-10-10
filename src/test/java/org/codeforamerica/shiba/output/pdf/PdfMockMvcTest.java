@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1330,20 +1331,13 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 					"basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA",
 							"HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
 					"certainPopsConfirm");
-			postExpectingSuccess("savingsAccountSource", "savingsAccountSource",
-					List.of("Dwight Schrute applicant"));
-			postExpectingSuccess("checkingAccountSource", "checkingAccountSource",
-					List.of("Dwight Schrute applicant"));
-			postExpectingSuccess("moneyMarketSource", "moneyMarketSource",
-					List.of("Dwight Schrute applicant"));
-			postExpectingSuccess("certOfDepositSource", "certOfDepositSource",
-					List.of("Dwight Schrute applicant"));
+			postExpectingSuccess("bankAccountTypes", "bankAccountTypes", Arrays.asList("SAVINGS", "CHECKING", "MONEY_MARKET", "CERTIFICATE_OF_DEPOSIT"));
 			completeHelperWorkflow(true);
 
 			submitApplication();
 			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
-            // Section 14
+			// Section 14
 			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "Yes", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_1", "Dwight Schrute", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_1", "Savings account", pdf);
@@ -1351,7 +1345,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_2", "Checking account", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_OWNER_LINE_3", "Dwight Schrute", pdf);
 			assertPdfFieldEquals("CP_BANK_ACCOUNT_TYPE_LINE_3", "Money market account", pdf);
-            // Supplement
+			// Supplement
 			assertPdfFieldContains("CP_SUPPLEMENT",
 					"QUESTION 14 continued:\n4) Owner name: Dwight Schrute, Type of account: Certificate of deposit",
 					pdf);

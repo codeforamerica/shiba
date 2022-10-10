@@ -7,15 +7,20 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.output.DocumentFieldType.ENUMERATED_SINGLE_VALUE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.documentfieldpreparers.InvestmentOwnerPreparer.Investment;
 import org.codeforamerica.shiba.output.documentfieldpreparers.ListNonUSCitizenPreparer.NonUSCitizen;
@@ -26,6 +31,7 @@ import org.codeforamerica.shiba.pages.data.Iteration;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.data.Subworkflow;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,6 +41,8 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	List<DocumentField> certainPopsDocumentFields = null;
 	String supplementPageText = "";
 	boolean needsSupplementPage = false;
+	Set<String> cpAccountTypes = null;
+	
 
 	// Question 11, unearned income
 	ArrayList<Person> persons = null;
@@ -42,6 +50,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 
 	@Override
 	public List<DocumentField> prepareDocumentFields(Application application, Document document, Recipient recipient) {
+		cpAccountTypes = Stream.of("SAVINGS", "CHECKING", "MONEY_MARKET", "CERTIFICATE_OF_DEPOSIT").collect(Collectors.toCollection(HashSet::new));
 		applicationData = application.getApplicationData();
 		pagesData = applicationData.getPagesData();
 		certainPopsDocumentFields = new ArrayList<DocumentField>();
@@ -321,32 +330,66 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	
 	// Question 14, accounts.  Document has space for 3 lines, the rest is written to the supplement.
 	private void mapBankAccountsFields(Application application, Document document, Recipient recipient) {
+		var householdSize = application.getApplicationData().getApplicantAndHouseholdMemberSize();
 		int lineNumber = 1;
-		lineNumber = createBankAccountFields(lineNumber, "savingsAccountSource", "savingsAccountSource", "Savings account");
-		lineNumber = createBankAccountFields(lineNumber, "checkingAccountSource", "checkingAccountSource", "Checking account");
-		lineNumber = createBankAccountFields(lineNumber, "moneyMarketSource", "moneyMarketSource", "Money market account");
-		lineNumber = createBankAccountFields(lineNumber, "certOfDepositSource", "certOfDepositSource", "Certificate of deposit");
+		if (householdSize > 1) {
+			lineNumber = createBankAccountFields(lineNumber, "savingsAccountSource", "savingsAccountSource", "Savings account");
+			lineNumber = createBankAccountFields(lineNumber, "checkingAccountSource", "checkingAccountSource", "Checking account");
+			lineNumber = createBankAccountFields(lineNumber, "moneyMarketSource", "moneyMarketSource", "Money market account");
+			lineNumber = createBankAccountFields(lineNumber, "certOfDepositSource", "certOfDepositSource", "Certificate of deposit");
+			certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
+					String.valueOf(lineNumber > 1), ENUMERATED_SINGLE_VALUE));
+			if (lineNumber > 3) {
+				supplementPageText = String.format("%s\n\n", supplementPageText);
+			}
+		} else {
+			PageData pageData = pagesData.getPage("bankAccountTypes");
+			if (pageData != null) {
+				InputData inputData = pageData.get("bankAccountTypes");
+				@NotNull
+				List<String> accountTypes = inputData.getValue();
+				if (accountTypes.size() > 0) {
+					certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts",
+							"hasCertainPopsBankAccounts", "true", ENUMERATED_SINGLE_VALUE));
+					String fullName = FullNameFormatter.getFullName(application);
 
-		certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
-				String.valueOf(lineNumber>1), ENUMERATED_SINGLE_VALUE));
-		if (lineNumber > 3) {
-	          supplementPageText = String.format("%s\n\n", supplementPageText);
+					for (String accountType : accountTypes) {
+						switch (accountType) {
+						case "SAVINGS":
+							lineNumber = createBankAccountFieldsForIndividual(lineNumber, fullName, "Savings account");
+							break;
+						case "CHECKING":
+							lineNumber = createBankAccountFieldsForIndividual(lineNumber, fullName, "Checking account");
+							break;
+						case "MONEY_MARKET":
+							lineNumber = createBankAccountFieldsForIndividual(lineNumber, fullName,	"Money market account");
+							break;
+						case "CERTIFICATE_OF_DEPOSIT":
+							lineNumber = createBankAccountFieldsForIndividual(lineNumber, fullName,	"Certificate of deposit");
+							break;
+						}
+					}
+				}
+			} else {
+				certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", "hasCertainPopsBankAccounts",
+						"false", ENUMERATED_SINGLE_VALUE));
+			}
 		}
 	}
 	
 	private int createBankAccountFields(int lineNumber, String pageName, String pageAttributeName, String bankAccountType) {
-		PageData pageData = pagesData.getPage(pageName);
+			PageData pageData = pagesData.getPage(pageName);
 		if (pageData != null) {
 			InputData inputData = pageData.get(pageAttributeName);
 			if (inputData != null) {
-				List<String> values = inputData.getValue();
-				for (String value : values) {
-					value = value.substring(0,value.lastIndexOf(" "));  // strip off the id
-					String owner = String.format("certainPopsBankAccountOwnerLine_%d", lineNumber);
-					String type = String.format("certainPopsBankAccountTypeLine_%d", lineNumber);
+				List<String> personsNames = inputData.getValue();
+				for (String name : personsNames) {
+					name = name.substring(0,name.lastIndexOf(" "));  // strip off the id
+					String ownerCoordinate = String.format("certainPopsBankAccountOwnerLine_%d", lineNumber);
+					String typeCoordinate = String.format("certainPopsBankAccountTypeLine_%d", lineNumber);
 					if (lineNumber < 4) {
-						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", owner, value, ENUMERATED_SINGLE_VALUE));
-						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", type, bankAccountType, ENUMERATED_SINGLE_VALUE));
+						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", ownerCoordinate, name, ENUMERATED_SINGLE_VALUE));
+						certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", typeCoordinate, bankAccountType, ENUMERATED_SINGLE_VALUE));
 					}
 
 				    if (lineNumber == 4) {
@@ -355,7 +398,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 				          supplementPageText = String.format("%sQUESTION 14 continued:", supplementPageText);
 				    }
 				    if (lineNumber >= 4) {
-				          supplementPageText = String.format("%s\n%d) Owner name: %s, Type of account: %s", supplementPageText, lineNumber, value, bankAccountType);
+				          supplementPageText = String.format("%s\n%d) Owner name: %s, Type of account: %s", supplementPageText, lineNumber, name, bankAccountType);
 				    }
 					
 					lineNumber++;
@@ -365,6 +408,29 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 
 		return lineNumber;
 	}
+	
+	private int createBankAccountFieldsForIndividual(int lineNumber, String fullName, String bankAccountType) {
+		String ownerCoordinate = String.format("certainPopsBankAccountOwnerLine_%d", lineNumber);
+		String typeCoordinate = String.format("certainPopsBankAccountTypeLine_%d", lineNumber);
+		if (lineNumber < 4) {
+			certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", ownerCoordinate, fullName, ENUMERATED_SINGLE_VALUE));
+			certainPopsDocumentFields.add(new DocumentField("certainPopsBankAccounts", typeCoordinate, bankAccountType,	ENUMERATED_SINGLE_VALUE));
+		}
+
+		if (lineNumber == 4) {
+			needsSupplementPage = true;
+			supplementPageText = String.format("%s\n\n", supplementPageText);
+			supplementPageText = String.format("%sQUESTION 14 continued:", supplementPageText);
+		}
+		if (lineNumber >= 4) {
+			supplementPageText = String.format("%s\n%d) Owner name: %s, Type of account: %s", supplementPageText,
+					lineNumber, fullName, bankAccountType);
+		}
+
+		lineNumber++;
+		return lineNumber;
+	}
+
 	
 	// Question 15, investment types
 	private void mapInvestmentType(Application application, Document document, Recipient recipient) {
