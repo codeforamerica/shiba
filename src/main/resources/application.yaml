@@ -59,7 +59,7 @@ client:
 mnit-filenet:
   username: ${MNIT-FILENET_USERNAME}
   password: ${MNIT-FILENET_PASSWORD}
-  upload-url: https://test-svcs.dhs.mn.gov/WebServices/FileNet/ObjectService/SOAP
+  upload-url: https://extsvcs-stst.dhs.state.mn.us/WebServices/FileNet/ObjectService/SOAP
   # future endpoint for atompub/chemistry implementation:
   # url: https://test-svcs.dhs.mn.gov/fncmis/resources/Service
   #  sftp-upload-url: http://10.217.19.80:9083/router/api/fileNetToSftp
