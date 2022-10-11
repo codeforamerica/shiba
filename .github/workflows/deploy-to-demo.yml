@@ -1,4 +1,4 @@
-name: Deploy to atst
+name: Deploy to CfA Demo
 
 on:
   workflow_run:
@@ -12,7 +12,6 @@ on:
 jobs:
   deploy:
     name: Deploy to Aptible demo
-    needs: draft-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,9 +23,6 @@ jobs:
         with:
           key: ${{ secrets.APTIBLE_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
-      - name: Generate Sentry release name from sha
-        id: generate-release
-        run: echo "::set-output name=RELEASE::$(git rev-parse HEAD)"
       - name: Push to Aptible remote branch
         run: git push --force git@beta.aptible.com:mn-shiba-prod/demo.git "${{ github.event.inputs.branch }}:demo-deploy"
       - name: Install Aptible CLI and deploy to Aptible
