@@ -1,4 +1,10 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="demoBanner" class="demo-banner" th:if="${@environment.getProperty('demo')}">This site is for example purposes only. If you need to submit an application, apply on <a class="link--subtle" href="https://mnbenefits.mn.gov/">MNbenefits</a>.</div>
+<div th:fragment="demoBanner" class="demo-banner" th:if="${@environment.getProperty('demo')}">
+  This site is for example purposes only, and marks a point in time version at the end of the co-development between Code for America and MNIT.
+  <ul>
+    <li>If you are looking to submit a valid application, visit <a class="link--subtle" href="https://mnbenefits.mn.gov/">MNBenefits</a>.</li>
+    <li>If you are looking to see a demo of the current version of MNBenefits improved and operated by the Minnesota Department of Human Services and Minnesota IT Services (MNIT), visit <a class="link--subtle" href="https://mnbenefits-atst.mn.gov/">https://mnbenefits-atst.mn.gov/</a></li>
+  </ul>
+</div>
 </html>
