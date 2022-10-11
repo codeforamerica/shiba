@@ -24,10 +24,10 @@ jobs:
           key: ${{ secrets.APTIBLE_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.APTIBLE_KNOWN_HOSTS }}
       - name: Push to Aptible remote branch
-        run: git push --force git@beta.aptible.com:mn-shiba-prod/demo.git main:demo-deploy
+        run: git push --force git@beta.aptible.com:mn-shiba-prod/demo.git ${{ github.sha }}:demo-deploy
       - name: Install Aptible CLI and deploy to Aptible
         run: |
           wget -O aptible-package https://omnibus-aptible-toolbelt.s3.amazonaws.com/aptible/omnibus-aptible-toolbelt/master/206/pkg/aptible-toolbelt_0.16.5%2B20200508143656~ubuntu.16.04-1_amd64.deb
           sudo dpkg -i aptible-package
           aptible login --email=${{ secrets.APTIBLE_USERNAME }} --password=${{ secrets.APTIBLE_PASSWORD}}
-          aptible deploy --app demo --git-commitish main SPRING_PROFILES_ACTIVE=atst
+          aptible deploy --app demo --git-commitish ${{ github.sha }} SPRING_PROFILES_ACTIVE=atst
