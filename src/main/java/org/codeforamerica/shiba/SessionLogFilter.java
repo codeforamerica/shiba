@@ -74,7 +74,7 @@ public class SessionLogFilter implements Filter {
   }
 
   private String createRequestIp(HttpServletRequest request) {
-    String requestIpHeader = Optional.ofNullable(request.getHeader("X-FORWARDED-FOR")).orElse("");
+    String requestIpHeader = Optional.ofNullable(request.getHeader("X-FDWR-IP")).orElse("");
     String[] ipAddresses = requestIpHeader.split(",");
     return ipAddresses.length > 1 ? ipAddresses[ipAddresses.length - 2].trim()
         : request.getRemoteAddr();
