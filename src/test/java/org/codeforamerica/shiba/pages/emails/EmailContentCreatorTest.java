@@ -256,7 +256,7 @@ class EmailContentCreatorTest {
     		+ "application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe Tribal Nation "
     		+ "Servicing Agency (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: "
     		+ "<strong>In review</strong><br><br>If you would like an update on your case, please call the county "
-    		+ "or Tribal Nation listed above..</body></html>");
+    		+ "or Tribal Nation listed above.</body></html>");
     assertThat(emailContent).doesNotContain(
         "if you donâ€™t hear from them in the time period weâ€™ve noted");
     assertThat(emailContent).doesNotContain("Verification Docs");
