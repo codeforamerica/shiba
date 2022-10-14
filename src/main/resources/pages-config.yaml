@@ -1908,7 +1908,7 @@ pageDefinitions:
               messageKey: select-the-tribe.shakopee-mdewakanton
             - value: Upper Sioux
               messageKey: select-the-tribe.upper-sioux
-            - value: White Earth
+            - value: White Earth Nation
               messageKey: select-the-tribe.white-earth
             - value: Federally recognized tribe outside of MN
               messageKey: select-the-tribe.other

@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 public class RoutingDecisionService {
 
   private final List<String> TRIBES_WE_CAN_ROUTE_TO = Stream.of(MilleLacsBandOfOjibwe,
-      WhiteEarth, BoisForte, FondDuLac, GrandPortage, LeechLake, RedLakeNation,
+      WhiteEarthNation, BoisForte, FondDuLac, GrandPortage, LeechLake, RedLakeNation,
       OtherFederallyRecognizedTribe).map(Enum::toString).toList();
   private final ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
   private final ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations;
@@ -60,7 +60,7 @@ public class RoutingDecisionService {
       TribalNation tribalNation = TribalNation.getFromName(tribeName);
       // Route members of Tribal Nations we service
       return switch (tribalNation) {
-        case WhiteEarth -> routeWhiteEarthClients(programs, applicationData, document, county);
+        case WhiteEarthNation -> routeWhiteEarthClients(programs, applicationData, document, county);
         case MilleLacsBandOfOjibwe, BoisForte, FondDuLac, GrandPortage, LeechLake ->
             routeClientsServicedByMilleLacs(
                 programs, applicationData, document, county);
@@ -127,7 +127,7 @@ public class RoutingDecisionService {
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
 
     if (livesInCountyServicedByWhiteEarth(county, selectedTribeName)) {
-      return List.of(tribalNations.get(WhiteEarth));
+      return List.of(tribalNations.get(WhiteEarthNation));
     }
 
     if (URBAN_COUNTIES.contains(county)) {
@@ -138,7 +138,7 @@ public class RoutingDecisionService {
 
   private boolean livesInCountyServicedByWhiteEarth(County county, String selectedTribeName) {
     return selectedTribeName != null
-        && selectedTribeName.equals(WhiteEarth.toString())
+        && selectedTribeName.equals(WhiteEarthNation.toString())
         && COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county);
   }
 

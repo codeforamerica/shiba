@@ -10,7 +10,7 @@ import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.TribalNation.MilleLacsBandOfOjibwe;
 import static org.codeforamerica.shiba.TribalNation.OtherFederallyRecognizedTribe;
 import static org.codeforamerica.shiba.TribalNation.RedLakeNation;
-import static org.codeforamerica.shiba.TribalNation.WhiteEarth;
+import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
 
 import static org.codeforamerica.shiba.output.Document.*;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -96,31 +96,31 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Grand Portage,Hennepin",
       "Leech Lake,Hennepin",
       "Mille Lacs Band of Ojibwe,Hennepin",
-      "White Earth,Hennepin",
+      "White Earth Nation,Hennepin",
       "Bois Forte,Anoka",
       "Fond Du Lac,Anoka",
       "Grand Portage,Anoka",
       "Leech Lake,Anoka",
       "Mille Lacs Band of Ojibwe,Anoka",
-      "White Earth,Anoka",
+      "White Earth Nation,Anoka",
       "Bois Forte,Ramsey",
       "Fond Du Lac,Ramsey",
       "Grand Portage,Ramsey",
       "Leech Lake,Ramsey",
       "Mille Lacs Band of Ojibwe,Ramsey",
-      "White Earth,Ramsey",
+      "White Earth Nation,Ramsey",
       "Bois Forte,Chisago",
       "Fond Du Lac,Chisago",
       "Grand Portage,Chisago",
       "Leech Lake,Chisago",
       "Mille Lacs Band of Ojibwe,Chisago",
-      "White Earth,Chisago",
+      "White Earth Nation,Chisago",
       "Bois Forte,Kanabec",
       "Fond Du Lac,Kanabec",
       "Grand Portage,Kanabec",
       "Leech Lake,Kanabec",
       "Mille Lacs Band of Ojibwe,Kanabec",
-      "White Earth,Kanabec",
+      "White Earth Nation,Kanabec",
       "Mille Lacs Band of Ojibwe,Ramsey",
       "Mille Lacs Band of Ojibwe,Aitkin",
       "Mille Lacs Band of Ojibwe,Benton",
@@ -149,19 +149,19 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Grand Portage,Hennepin",
       "Leech Lake,Hennepin",
       "Mille Lacs Band of Ojibwe,Hennepin",
-      "White Earth,Hennepin",
+      "White Earth Nation,Hennepin",
       "Bois Forte,Anoka",
       "Fond Du Lac,Anoka",
       "Grand Portage,Anoka",
       "Leech Lake,Anoka",
       "Mille Lacs Band of Ojibwe,Anoka",
-      "White Earth,Anoka",
+      "White Earth Nation,Anoka",
       "Bois Forte,Ramsey",
       "Fond Du Lac,Ramsey",
       "Grand Portage,Ramsey",
       "Leech Lake,Ramsey",
       "Mille Lacs Band of Ojibwe,Ramsey",
-      "White Earth,Ramsey",
+      "White Earth Nation,Ramsey",
       "Mille Lacs Band of Ojibwe,Ramsey",
       "Mille Lacs Band of Ojibwe,Aitkin",
       "Mille Lacs Band of Ojibwe,Benton",
@@ -185,11 +185,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
   void routeWhiteEarthApplicationsToWhiteEarthOnlyAndSeeMFIP(String county) throws Exception {
     addHouseholdMembersWithProgram("EA");
-    goThroughShortMfipFlow(county, WhiteEarth, new String[]{EA, CCAP, GRH, SNAP});
+    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{EA, CCAP, GRH, SNAP});
 
-    assertRoutingDestinationIsCorrectForDocument(CAF, WhiteEarth.toString());
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WhiteEarth.toString());
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, WhiteEarth.toString());
+    assertRoutingDestinationIsCorrectForDocument(CAF, WhiteEarthNation.toString());
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WhiteEarthNation.toString());
+    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, WhiteEarthNation.toString());
 
     var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
     RoutingDestination routingDestination = routingDestinations.get(0);
@@ -202,7 +202,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @ValueSource(strings = {"Nobles", "Scott", "Meeker"})
   void routeWhiteEarthApplicationsToCountyOnlyAndSeeMfip(String county) throws Exception {
     addHouseholdMembersWithProgram("EA");
-    goThroughShortMfipFlow(county, WhiteEarth, new String[]{EA, CCAP, GRH, SNAP});
+    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{EA, CCAP, GRH, SNAP});
 
     assertRoutingDestinationIsCorrectForDocument(CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
@@ -223,7 +223,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       String destinationName) throws Exception {
     addHouseholdMembersWithProgram("EA");
 
-    goThroughShortTribalTanfFlow(WhiteEarth.toString(), county, applyForTribalTANF, EA);
+    goThroughShortTribalTanfFlow(WhiteEarthNation.toString(), county, applyForTribalTANF, EA);
 
     assertRoutingDestinationIsCorrectForDocument(CAF, destinationName);
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, destinationName);
@@ -236,12 +236,12 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
       "Grand Portage,Olmsted,Mille Lacs Band of Ojibwe",
       "Leech Lake,Olmsted,Mille Lacs Band of Ojibwe",
       "Mille Lacs Band of Ojibwe,Olmsted,Mille Lacs Band of Ojibwe",
-      "White Earth,Olmsted,Olmsted",
+      "White Earth Nation,Olmsted,Olmsted",
       "Bois Forte,Aitkin,Mille Lacs Band of Ojibwe",
       "Fond Du Lac,Benton,Mille Lacs Band of Ojibwe",
       "Grand Portage,Crow Wing,Mille Lacs Band of Ojibwe",
       "Leech Lake,Morrison,Mille Lacs Band of Ojibwe",
-      "White Earth,Mille Lacs,Mille Lacs",
+      "White Earth Nation,Mille Lacs,Mille Lacs",
       "Bois Forte,Pine,Mille Lacs Band of Ojibwe",
       "Federally recognized tribe outside of MN,Otter Tail,Otter Tail"
   })
@@ -456,7 +456,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     addHouseholdMembersWithProgram("EA");
     String county = "Becker";
-    goThroughShortMfipFlow(county, WhiteEarth, new String[]{EA, CCAP, GRH, SNAP});
+    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{EA, CCAP, GRH, SNAP});
 
     assertRoutingDestinationIsCorrectForDocument(CAF, MilleLacsBandOfOjibwe.toString(),
         county);
@@ -474,7 +474,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     addHouseholdMembersWithProgram("CCAP");
     String county = "Becker";
-    goThroughShortMfipFlow(county, WhiteEarth, new String[]{CCAP});
+    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{CCAP});
 
     assertRoutingDestinationIsCorrectForDocument(CAF, county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
@@ -489,7 +489,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     String county = "Hennepin";
     addHouseholdMembersWithProgram("EA");
-    goThroughShortTribalTanfFlow(WhiteEarth.toString(), county, "true", EA, CCAP, GRH, SNAP);
+    goThroughShortTribalTanfFlow(WhiteEarthNation.toString(), county, "true", EA, CCAP, GRH, SNAP);
     assertRoutingDestinationIsCorrectForDocument(CAF, MilleLacsBandOfOjibwe.toString(),
         county);
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC,

@@ -30,7 +30,7 @@ public enum TribalNation implements ServicingAgency {
   MilleLacsBandOfOjibwe(Constants.MILLE_LACS_BAND_OF_OJIBWE),
 
   // Not serviced by Mille Lacs Band of Ojibwe
-  WhiteEarth("White Earth"),
+  WhiteEarthNation("White Earth Nation"),
   LowerSioux("Lower Sioux"),
   PrairieIsland("Prairie Island"),
   RedLakeNation("Red Lake Nation"),
@@ -44,7 +44,7 @@ public enum TribalNation implements ServicingAgency {
   public static final List<County> MILLE_LACS_RURAL_COUNTIES = List.of(
       Aitkin, Benton, CrowWing, Morrison, MilleLacs, Pine);
   public static final Set<TribalNation> MILLE_LACS_SERVICED_TRIBES = Set.of(BoisForte, GrandPortage,
-      LeechLake, MilleLacsBandOfOjibwe, WhiteEarth, FondDuLac);
+      LeechLake, MilleLacsBandOfOjibwe, WhiteEarthNation, FondDuLac);
   private final String name;
 
   TribalNation(String name) {

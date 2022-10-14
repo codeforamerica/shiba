@@ -6,7 +6,7 @@ import static org.codeforamerica.shiba.TribalNation.GrandPortage;
 import static org.codeforamerica.shiba.TribalNation.LeechLake;
 import static org.codeforamerica.shiba.TribalNation.MilleLacsBandOfOjibwe;
 import static org.codeforamerica.shiba.TribalNation.RedLakeNation;
-import static org.codeforamerica.shiba.TribalNation.WhiteEarth;
+import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
 
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNation;
@@ -35,7 +35,7 @@ public class TribalNationConfiguration {
         "320-532-7407"
     );
 
-    addTribalNation(result, WhiteEarth,
+    addTribalNation(result, WhiteEarthNation,
         "A086642300",
         "mnbenefits@state.mn.us",
         "218-935-2359"
@@ -59,7 +59,7 @@ public class TribalNationConfiguration {
         "320-532-7407"
     );
     addTribalNation(result,
-        WhiteEarth,
+        WhiteEarthNation,
         "A086642300",
         "mnbenefits@state.mn.us",
         "218-935-2359"
@@ -82,7 +82,7 @@ public class TribalNationConfiguration {
         "320-532-7407"
     );
     addTribalNation(result,
-        WhiteEarth,
+        WhiteEarthNation,
         "A086642300",
         "amy.littlewolf@whiteearth-nsn.gov",
         "218-935-2359"
@@ -109,7 +109,7 @@ public class TribalNationConfiguration {
         "218-679-3350");
     addTribalNation(result, LeechLake, "A590043300", "sarah.smythe@redlakenation.org",
         "218-679-3350");
-    addTribalNation(result, WhiteEarth,
+    addTribalNation(result, WhiteEarthNation,
         "A086642300",
         "mnbenefits@state.mn.us",
         "218-935-2359"

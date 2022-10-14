@@ -42,7 +42,7 @@ class RoutingDestinationMessageServiceTest {
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
         Anoka, true, routingDestinations)).isEqualTo(
-        "Anoka County (555-5555) and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
+        "Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222)");
   }
 
   @Test
@@ -59,7 +59,7 @@ class RoutingDestinationMessageServiceTest {
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
         Anoka, false, routingDestinations)).isEqualTo(
-        "Anoka County and Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency");
+        "Anoka County and Mille Lacs Band of Ojibwe");
   }
 
   @Test
@@ -85,6 +85,6 @@ class RoutingDestinationMessageServiceTest {
 
     assertThat(routingDestinationMessageService.generatePhrase(LocaleContextHolder.getLocale(),
         Anoka, true, routingDestinations)).isEqualTo(
-        "Mille Lacs Band of Ojibwe Tribal Nation Servicing Agency (222-2222)");
+        "Mille Lacs Band of Ojibwe (222-2222)");
   }
 }
