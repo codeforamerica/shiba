@@ -371,7 +371,7 @@ mappings:
     helpWithBenefits: WANT_AUTHORIZED_REP
   authorizedRepCommunicate:
     communicateOnYourBehalf: AUTHORIZED_REP_FILL_OUT_FORM
-  authorizedRepSpeakToCounty:
+  authorizedRepMailNotices:
     getMailNotices: AUTHORIZED_REP_GET_NOTICES
   authorizedRepSpendOnYourBehalf:
     authorizedRepSpendOnYourBehalf: AUTHORIZED_REP_SPEND_ON_YOUR_BEHALF

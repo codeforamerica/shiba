@@ -980,8 +980,8 @@ public class AbstractShibaMockMvcTest {
   protected void completeHelperWorkflow(boolean helpWithBenefits) throws Exception {
     if (helpWithBenefits) {
       postExpectingRedirect("authorizedRep", "helpWithBenefits", "true", "authorizedRepCommunicate");
-      postExpectingRedirect("authorizedRepCommunicate", "communicateOnYourBehalf", "true", "authorizedRepSpeakToCounty");
-      postExpectingRedirect("authorizedRepSpeakToCounty", "getMailNotices", "true", "authorizedRepSpendOnYourBehalf");
+      postExpectingRedirect("authorizedRepCommunicate", "communicateOnYourBehalf", "true", "authorizedRepMailNotices");
+      postExpectingRedirect("authorizedRepMailNotices", "getMailNotices", "true", "authorizedRepSpendOnYourBehalf");
       postExpectingRedirect("authorizedRepSpendOnYourBehalf", "spendOnYourBehalf", "true", "authorizedRepContactInfo");
       postExpectingRedirect("authorizedRepContactInfo", Map.of(
           "authorizedRepFullName", List.of("My Helpful Friend"),

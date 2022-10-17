@@ -161,7 +161,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     // You are expedited!
     assertThat(driver.findElement(By.tagName("p")).getText()).contains(
-        "Your county or tribal servicing agency should reach out to you for your interview within 24 hours.");
+        "Your county or Tribal Nation should reach out to you for your interview within 24 hours.");
     testPage.clickButton("Finish application");
 
     // Legal Stuff

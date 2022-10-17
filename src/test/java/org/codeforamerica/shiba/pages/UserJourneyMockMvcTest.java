@@ -74,7 +74,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         "snapExpeditedDetermination");
     FormPage page = new FormPage(getPage("snapExpeditedDetermination"));
     assertThat(page.getElementsByTag("p").get(0).text()).isEqualTo(
-        "A caseworker will contact you within 5-7 days to review your application.");
+        "An eligibility worker will contact you within 5-7 days to review your application.");
     assertNavigationRedirectsToCorrectNextPage("snapExpeditedDetermination", "legalStuff");
     page = new FormPage(getPage("legalStuff"));
     assertThat(page.getTitle()).isEqualTo("Legal Stuff");

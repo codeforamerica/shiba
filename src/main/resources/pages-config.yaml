@@ -3629,8 +3629,8 @@ pageDefinitions:
     pageTitle: authorized-rep-communicate.title
     hasPrimaryButton: false
     contextFragment: authorizedRepContextFragment
-  - &authorizedRepSpeakToCounty
-    name: authorizedRepSpeakToCounty
+  - &authorizedRepMailNotices
+    name: authorizedRepMailNotices
     headerKey: authorized-rep-speak-to-county.do-you-want-your-helper-to-get-mail-and-notices-for-you
     inputs:
       - name: getMailNotices
@@ -5756,9 +5756,9 @@ workflow:
   authorizedRepCommunicate:
     pageConfiguration: *authorizedRepCommunicate
     nextPages:
-      - pageName: authorizedRepSpeakToCounty
-  authorizedRepSpeakToCounty:
-    pageConfiguration: *authorizedRepSpeakToCounty
+      - pageName: authorizedRepMailNotices
+  authorizedRepMailNotices:
+    pageConfiguration: *authorizedRepMailNotices
     nextPages:
       - pageName: authorizedRepSpendOnYourBehalf
   authorizedRepSpendOnYourBehalf:
@@ -5775,7 +5775,7 @@ workflow:
         - pageName: authorizedRep
           input: communicateOnYourBehalf
           value: "false"
-        - pageName: authorizedRepSpeakToCounty
+        - pageName: authorizedRepMailNotices
           input: getMailNotices
           value: "false"
         - pageName: authorizedRepSpendOnYourBehalf
