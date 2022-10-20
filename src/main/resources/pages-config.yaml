@@ -1916,7 +1916,7 @@ pageDefinitions:
     name: nationsBoundary
     pageTitle: nations-boundary.title
     headerKey:
-      defaultValue: nations-boundary.are-any-of-the-tribal-members
+      defaultValue: nations-boundary.are-you-living-nations-boundary
       conditionalValues:
         - value: nations-boundary.are-you-living-nations-boundary
           condition: *livesAlone?
