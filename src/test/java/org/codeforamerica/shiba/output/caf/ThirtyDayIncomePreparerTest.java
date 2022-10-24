@@ -18,9 +18,8 @@ class ThirtyDayIncomePreparerTest {
 
   private final TotalIncomeCalculator totalIncomeCalculator = mock(TotalIncomeCalculator.class);
   private final TotalIncomeParser totalIncomeParser = mock(TotalIncomeParser.class);
-  ThirtyDayIncomePreparer thirtyDayIncomePreparer = new ThirtyDayIncomePreparer(
-      totalIncomeCalculator,
-      totalIncomeParser);
+  private final UnearnedIncomeCalculator unearnedIncomeCalculator = mock(UnearnedIncomeCalculator.class);
+  ThirtyDayIncomePreparer thirtyDayIncomePreparer = new ThirtyDayIncomePreparer(totalIncomeCalculator, totalIncomeParser, unearnedIncomeCalculator);
 
   @Test
   void returnsCalculatedTotalIncome() {
@@ -31,9 +30,10 @@ class ThirtyDayIncomePreparerTest {
     Money thirtyDayIncome = Money.ONE;
     when(totalIncomeParser.parse(appData))
         .thenReturn(new TotalIncome(thirtyDayIncome, jobIncomeInformationList));
-    when(
-        totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList)))
-        .thenReturn(Money.parse("111"));
+    when(totalIncomeCalculator.calculate(new TotalIncome(thirtyDayIncome, jobIncomeInformationList)))
+         .thenReturn(Money.parse("111"));
+    when(unearnedIncomeCalculator.unearnedAmount(appData))
+        .thenReturn(Money.parse("222"));
 
     assertThat(
         thirtyDayIncomePreparer.prepareDocumentFields(application, null, Recipient.CLIENT))
@@ -41,7 +41,7 @@ class ThirtyDayIncomePreparerTest {
             new DocumentField(
                 "totalIncome",
                 "thirtyDayIncome",
-                List.of("111.00"),
+                List.of("333.00"),
                 DocumentFieldType.SINGLE_VALUE
             )
         ));
