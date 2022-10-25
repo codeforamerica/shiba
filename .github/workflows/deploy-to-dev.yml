@@ -1,0 +1,69 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Deploy to MNbenefits Dev
+
+on:
+  workflow_run:
+    workflows: ["Run tests"]
+    branches: [main]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs: { }
+
+jobs:
+  announce_failure:
+    name: Announce test failure on Slack
+    runs-on: ubuntu-latest
+    steps:
+      - name: Announce on Teams
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+        # uses: actions/checkout@v2
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: Tests failed in CI! 
+          notification-color: ff0000
+          timezone: America/Chicago          
+  mnitdeploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: deploy to MNIT dev
+    runs-on: ubuntu-latest
+    steps:
+    - name: Authenticate and set context for non-prod
+      uses: redhat-actions/oc-login@v1
+      with:
+        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_NON_PROD }}
+        openshift_token: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
+        namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
+    - name: update and run build
+      run: |
+        oc start-build mn-benefits --follow
+    - name: Announce on Teams
+      if: ${{ always() }}
+      uses: jdcargile/ms-teams-notification@v1.3
+      with:
+        github-token: ${{ github.token }} # this will use the runner's token.
+        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        notification-summary: Deploy to MNIT Dev status ${{ job.status }}
+        notification-color: 4169e1
+        timezone: America/Chicago          
+  merge_to_staging:
+    needs: mnitdeploy
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Merge main -> staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+          ref: main
+      - uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
+        with:
+          branchtomerge: main
+          branch: staging
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
