@@ -1,7 +1,8 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+# For more information regarding posting announcements to MS Teams see: https://github.com/marketplace/actions/microsoft-teams-notification
 
-name: Deploy to MNbenefits Dev
+name: Deploy to MNbenefits DEV
 
 on:
   workflow_run:
@@ -14,22 +15,22 @@ on:
 
 jobs:
   announce_failure:
-    name: Announce test failure on Slack
+    name: Announce test failure on Teams
     runs-on: ubuntu-latest
     steps:
       - name: Announce on Teams
         if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-        # uses: actions/checkout@v2
         uses: jdcargile/ms-teams-notification@v1.3
         with:
           github-token: ${{ github.token }} # this will use the runner's token.
           ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          notification-summary: Tests failed in CI! 
+          notification-summary: MNbenefits tests failed in CI! 
+          # color is red
           notification-color: ff0000
           timezone: America/Chicago          
   mnitdeploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: deploy to MNIT dev
+    name: deploy to MNbenefits DEV
     runs-on: ubuntu-latest
     steps:
     - name: Authenticate and set context for non-prod
@@ -41,14 +42,25 @@ jobs:
     - name: update and run build
       run: |
         oc start-build mn-benefits --follow
-    - name: Announce on Teams
-      if: ${{ always() }}
+    - name: Announce success on Teams
+      if: ${{ job.status == 'success' }}
       uses: jdcargile/ms-teams-notification@v1.3
       with:
         github-token: ${{ github.token }} # this will use the runner's token.
         ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        notification-summary: Deploy to MNIT Dev status ${{ job.status }}
-        notification-color: 4169e1
+        notification-summary: Deploy to MNbenefits DEV succeeded, status - ${{ job.status }}
+        # color is green
+        notification-color: 008000
+        timezone: America/Chicago          
+    - name: Announce fail on Teams
+      if: ${{ job.status != 'success' }}
+      uses: jdcargile/ms-teams-notification@v1.3
+      with:
+        github-token: ${{ github.token }} # this will use the runner's token.
+        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        notification-summary: Deploy to MNbenefits DEV failed, status - ${{ job.status }}
+        # color is red
+        notification-color: ff0000
         timezone: America/Chicago          
   merge_to_staging:
     needs: mnitdeploy

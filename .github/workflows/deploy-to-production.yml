@@ -11,7 +11,7 @@ jobs:
   # 4. Import image tagged with the git release tag from non-prod to prod
   # 5. Rollout updated image
   mnitdeploy:
-    name: deploy to MNIT prod
+    name: deploy to MNbenefits PROD
     runs-on: ubuntu-latest
     steps:
     - name: Fetch Latest Release
@@ -42,13 +42,24 @@ jobs:
         oc import-image mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} --from=${{ secrets.OPENSHIFT_IMAGE_LOCATION }}/mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }} -n ${{ secrets.OPENSHIFT_NAMESPACE_PROD }}
         oc patch dc mn-benefits-prod -p '{"spec":{"triggers":[{"type": "ImageChange", "imageChangeParams":{"from":{"name":"mn-benefits:${{ steps.fetch-latest-release.outputs.tag_name }}"}, "containerNames":["mn-benefits-prod"]}}]}}'
         oc rollout latest dc/mn-benefits-prod
-    - name: Announce on Slack
-      if: ${{ always() }}
-      uses: innocarpe/actions-slack@v1
+    - name: Announce success on Teams
+      if: ${{ job.status == 'success' }}
+      uses: jdcargile/ms-teams-notification@v1.3
       with:
-        status: ${{ job.status }}
-        success_text: 'Deploy to MNIT production succeeded :smile: <!subteam^S0209RR14KB> <@U019GSLR63H>'
-        failure_text: 'Deploy to MNIT production failed :frowning:'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        github-token: ${{ github.token }} # this will use the runner's token.
+        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        notification-summary: Deploy to MNbenefits Production succeeded, status - ${{ job.status }}
+        # color is green
+        notification-color: 008000
+        timezone: America/Chicago          
+    - name: Announce fail on Teams
+      if: ${{ job.status != 'success' }}
+      uses: jdcargile/ms-teams-notification@v1.3
+      with:
+        github-token: ${{ github.token }} # this will use the runner's token.
+        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+        notification-summary: Deploy to MNbenefits Production failed, status - ${{ job.status }}
+        # color is red
+        notification-color: ff0000
+        timezone: America/Chicago          
+        
