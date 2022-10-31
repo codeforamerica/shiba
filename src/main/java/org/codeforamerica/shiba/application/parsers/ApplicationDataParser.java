@@ -139,6 +139,10 @@ public class ApplicationDataParser {
         new ParsingCoordinate("goingToSchool", "goingToSchool"));
     coordinatesMap.put(Field.WHO_IS_GOING_TO_SCHOOL,
         new ParsingCoordinate("whoIsGoingToSchool", "whoIsGoingToSchool"));
+    coordinatesMap.put(Field.IS_PREGNANT,
+            new ParsingCoordinate("pregnant", "isPregnant"));
+    coordinatesMap.put(Field.WHO_IS_PREGNANT,
+            new ParsingCoordinate("whoIsPregnant", "whoIsPregnant"));
     coordinatesMap.put(Field.IS_LOOKING_FOR_JOB,
         new ParsingCoordinate("jobSearch", "currentlyLookingForJob"));
     coordinatesMap.put(Field.WHO_IS_LOOKING_FOR_A_JOB,
@@ -483,6 +487,8 @@ public class ApplicationDataParser {
     PREPARING_MEALS_TOGETHER,
     IS_GOING_TO_SCHOOL,
     WHO_IS_GOING_TO_SCHOOL,
+    IS_PREGNANT,
+    WHO_IS_PREGNANT,
     IS_LOOKING_FOR_JOB,
     WHO_IS_LOOKING_FOR_A_JOB,
 

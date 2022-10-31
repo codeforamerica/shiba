@@ -17,9 +17,12 @@ class HouseholdPregnancyPreparerTest {
   @Test
   void shouldJoinAllNamesTogether() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
+    	.withPersonalInfo()
         .withPageData("whoIsPregnant", "whoIsPregnant",
-            List.of("personAFirstName personALastName applicant",
-                "personBFirstName personBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d")).build();
+            List.of("Jane Doe applicant",
+                "personBFirstName personBLastName b99f3f7e-d13a-4cf0-9093-23ccdba2a64d"))
+        .withPageData("pregnant", "isPregnant", "true")
+        .build();
 
     List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
         .applicationData(applicationData)
@@ -28,7 +31,15 @@ class HouseholdPregnancyPreparerTest {
     assertThat(result).contains(new DocumentField(
         "householdPregnancy",
         "householdPregnancy",
-        List.of("personAFirstName personALastName, personBFirstName personBLastName"),
+        List.of("Jane Doe, personBFirstName personBLastName"),
+        DocumentFieldType.SINGLE_VALUE,
+        null
+    ));
+    
+    assertThat(result).contains(new DocumentField(
+        "pregnant",
+        "applicantIsPregnant",
+        List.of("Yes"),
         DocumentFieldType.SINGLE_VALUE,
         null
     ));

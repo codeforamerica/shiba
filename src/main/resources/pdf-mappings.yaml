@@ -56,6 +56,7 @@ mappings:
     ssn: SPOUSE_SSN_VAL
     ssnYesNo: SPOUSE_YESNO
     sex: SPOUSE_SEX
+    pregnant: SPOUSE_PREGNANT
     relationship: SPOUSE_RELATIONSHIP
     moveToMnDate: DATE_OF_MOVING_TO_MN
     moveToMnPreviousState: PREVIOUS_STATE
@@ -75,6 +76,7 @@ mappings:
     ssn: HH_SSN
     ssnYesNo: HH_SSN_YESNO
     sex: HH_SEX
+    pregnant: HH_PREGNANT
     relationship: HH_RELATIONSHIP
     moveToMnDate: HH_DATE_OF_MOVING_TO_MN
     moveToMnPreviousState: HH_PREVIOUS_STATE
@@ -136,6 +138,7 @@ mappings:
     ccapHasCostsForChildCare: CCAP_HAS_COSTS_FOR_CHILD_CARE
   pregnant:
     isPregnant: IS_PREGNANT
+    applicantIsPregnant: APPLICANT_IS_PREGNANT
   usCitizen:
     isUsCitizen: IS_US_CITIZEN
   disability:
@@ -448,6 +451,7 @@ mappings:
     additionalInfo: ADDITIONAL_APPLICATION_INFO
     caseNumber: ADDITIONAL_INFO_CASE_NUMBER
   raceAndEthnicity:
+    applicantRaceAndEthnicity: APPLICANT_RACE_AND_ETHNICITY
     ASIAN: ASIAN
     AMERICAN_INDIAN_OR_ALASKA_NATIVE: AMERICAN_INDIAN_OR_ALASKA_NATIVE
     BLACK_OR_AFRICAN_AMERICAN: BLACK_OR_AFRICAN_AMERICAN

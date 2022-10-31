@@ -912,6 +912,82 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 				assertPdfFieldEquals("CLIENT_REPORTED", "SomeOtherRaceOrEthnicity", ccap);
 			}
 		}
+		
+		@Nested
+		@Tag("pdf")
+		class RaceAndEthinicityCertainPops {
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithMiddleEasternOrNorthAfricanOnly() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+
+				postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "MIDDLE_EASTERN_OR_NORTH_AFRICAN");
+
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "Middle Eastern / N. African", certainPops);
+			}
+			
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithHispanicLatinoOrSpanishOnly() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+
+				postExpectingSuccess("raceAndEthnicity", "raceAndEthnicity", "HISPANIC_LATINO_OR_SPANISH");
+
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "Hispanic, Latino, or Spanish", certainPops);
+			}
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithHispanicLatinoOrSpanishAndAsianSelected() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+
+				postExpectingSuccess("raceAndEthnicity",
+						Map.of("raceAndEthnicity", List.of("ASIAN", "HISPANIC_LATINO_OR_SPANISH", "WHITE")));
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "White, Asian, Hispanic, Latino, or Spanish", certainPops);
+			}
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithAsianWhiteMiddleEasternOrNorthAfricanSelected() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+
+				postExpectingSuccess("raceAndEthnicity",
+						Map.of("raceAndEthnicity", List.of("ASIAN", "WHITE", "MIDDLE_EASTERN_OR_NORTH_AFRICAN")));
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "Middle Eastern / N. African, White, Asian", certainPops);
+			}
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithOtherRaceOrEthnicitySelected() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+				postExpectingSuccess("raceAndEthnicity",
+						Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "ASIAN"),
+								"otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "Asian, SomeOtherRaceOrEthnicity", certainPops);
+			}
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithOtherRaceOrEthnicityAndMENASelected() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+				postExpectingSuccess("raceAndEthnicity",
+						Map.of("raceAndEthnicity",
+								List.of("SOME_OTHER_RACE_OR_ETHNICITY", "MIDDLE_EASTERN_OR_NORTH_AFRICAN"),
+								"otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "Middle Eastern / N. African, SomeOtherRaceOrEthnicity", certainPops);
+			}
+
+			@Test
+			void shouldWriteToApplicantRaceAndEthnicityFieldWithOtherRaceOrEthnicityAndWHITESelected() throws Exception {
+				selectPrograms("CERTAIN_POPS");
+				postExpectingSuccess("raceAndEthnicity",
+						Map.of("raceAndEthnicity", List.of("SOME_OTHER_RACE_OR_ETHNICITY", "WHITE"),
+								"otherRaceOrEthnicity", List.of("SomeOtherRaceOrEthnicity")));
+				var certainPops = submitAndDownloadCertainPops();
+				assertPdfFieldEquals("APPLICANT_RACE_AND_ETHNICITY", "White, SomeOtherRaceOrEthnicity", certainPops);
+			}
+		}
 
 	}
 

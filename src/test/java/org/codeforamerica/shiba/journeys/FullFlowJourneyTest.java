@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
+import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
@@ -787,6 +788,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCertainPopsFieldEquals("MARITAL_STATUS", "NEVER_MARRIED");
     assertCertainPopsFieldEquals("APPLICANT_SEX", "FEMALE");
     assertCertainPopsFieldEquals("BLIND", "Yes");
+    assertCertainPopsFieldEquals("APPLICANT_IS_PREGNANT", "Yes");
     assertCertainPopsFieldEquals("HAS_PHYSICAL_MENTAL_HEALTH_CONDITION", "Yes");
     assertCertainPopsFieldEquals("DISABILITY_DETERMINATION", "Yes");
     assertCertainPopsFieldEquals("NEED_LONG_TERM_CARE", "Yes");
