@@ -193,7 +193,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
       testPage.enter("basicCriteria",
           "I have a disability that has been certified by the State Medical Review Team (SMRT)");
       testPage.enter("basicCriteria",
-          "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EDP)");
+          "I want to apply for Medical Assistance for Employed Persons with Disabilities (MA-EPD)");
       testPage.enter("basicCriteria", "I have Medicare and need help with my costs");
       testPage.clickContinue();
       assertThat(testPage.getTitle()).isEqualTo("Certain Pops Confirmation");
