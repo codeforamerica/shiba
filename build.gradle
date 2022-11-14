@@ -162,7 +162,7 @@ dependencies {
     testImplementation("org.springframework.ws:spring-ws-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.percy:percy-java-selenium:1.1.0")
-    testImplementation("com.deque.html.axe-core:selenium:4.4.2")
+    testImplementation("com.deque.html.axe-core:selenium:4.5.0")
     testImplementation("org.jsoup:jsoup:1.15.3")
 }
 
