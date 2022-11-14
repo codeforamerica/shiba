@@ -81,7 +81,9 @@ public class InvestmentOwnerPreparer implements DocumentFieldPreparer {
     }else {
       List<String> investmentType = getValues(application.getApplicationData().getPagesData(),INVESTMENT_TYPE_INDIVIDUAL);
       investmentType = investmentType.stream().map(String::toLowerCase).map(type->type.replace("_", " ")).collect(Collectors.toList());
-      investmentOwners.add(new Investment(getFullName(application), investmentType));
+      if (!investmentType.isEmpty()) {
+    	  investmentOwners.add(new Investment(getFullName(application), investmentType));
+      }
     }
     return investmentOwners;
   }

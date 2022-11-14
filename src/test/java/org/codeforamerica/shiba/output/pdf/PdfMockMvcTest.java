@@ -1151,9 +1151,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			// Section 19
 			assertPdfFieldEquals("HAVE_TRUST_OR_ANNUITY", "Yes", pdf);
 
-			// Section 15
-			assertPdfFieldEquals("INVESTMENT_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
-
 			// Section 20
 			assertPdfFieldEquals("LIFE_INSURANCE_OWNER_FULL_NAME_0", "Dwight Schrute", pdf);
 
@@ -1328,8 +1325,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// Section 11
 			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
-			assertPdfFieldEquals("CP_UNEARNED_INCOME_PERSON_1", "Dwight Schrute", pdf);
-			
 
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Social Security", pdf);
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_1", "100", pdf);
