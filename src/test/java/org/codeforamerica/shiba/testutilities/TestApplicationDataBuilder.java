@@ -57,6 +57,18 @@ public class TestApplicationDataBuilder {
     personalInfo.put("livedInMnWholeLife", new InputData(List.of("true")));
     return this;
   }
+  
+  public TestApplicationDataBuilder withMatchInfo() {
+    PageData matchInfo = getPageData("matchInfo");
+    matchInfo.put("firstName", new InputData(List.of("Jane")));
+    matchInfo.put("lastName", new InputData(List.of("Doe")));
+    matchInfo.put("dateOfBirth", new InputData(List.of("10", "04", "2020")));
+    matchInfo.put("ssn", new InputData(List.of("123-45-6789")));
+    matchInfo.put("phoneNumber", new InputData(List.of("(603) 879-1111")));
+    matchInfo.put("email", new InputData(List.of("jane@example.com")));
+    matchInfo.put("caseNumber", new InputData(List.of("123456789")));
+    return this;
+  }
 
   public TestApplicationDataBuilder withContactInfo() {
     PageData pageData = getPageData("contactInfo");

@@ -44,4 +44,31 @@ class HouseholdPregnancyPreparerTest {
         null
     ));
   }
+  
+  @Test
+  void laterDocsFlowNoPregnancyInfo() {
+    ApplicationData applicationData = new TestApplicationDataBuilder()
+        .withMatchInfo()
+        .build();
+
+    List<DocumentField> result = preparer.prepareDocumentFields(Application.builder()
+        .applicationData(applicationData)
+        .build(), null, null);
+
+    assertThat(result).contains(new DocumentField(
+        "householdPregnancy",
+        "householdPregnancy",
+        List.of(""),
+        DocumentFieldType.SINGLE_VALUE,
+        null
+    ));
+    
+    assertThat(result).contains(new DocumentField(
+        "pregnant",
+        "applicantIsPregnant",
+        List.of("No"),
+        DocumentFieldType.SINGLE_VALUE,
+        null
+    ));
+  }
 }

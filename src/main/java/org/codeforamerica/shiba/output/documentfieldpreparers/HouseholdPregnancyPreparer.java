@@ -24,7 +24,7 @@ public class HouseholdPregnancyPreparer implements DocumentFieldPreparer {
     List<String> pregnantHouseholdMembers = getListOfSelectedFullNames(application, "whoIsPregnant",
         "whoIsPregnant");
     PagesData data = application.getApplicationData().getPagesData();
-    String anyoneInHouseholdPregnant = getFirstValue(data, IS_PREGNANT);
+    Boolean anyoneInHouseholdPregnant = Boolean.valueOf(getFirstValue(data, IS_PREGNANT));
     String applicantName = FullNameFormatter.getFullName(application);
     
     List<DocumentField> results = new ArrayList<DocumentField>();
@@ -32,8 +32,7 @@ public class HouseholdPregnancyPreparer implements DocumentFieldPreparer {
     results.add(new DocumentField("householdPregnancy", "householdPregnancy",
             List.of(String.join(", ", pregnantHouseholdMembers)), DocumentFieldType.SINGLE_VALUE,
             null));
-    
-    if (pregnantHouseholdMembers.contains(applicantName) || (anyoneInHouseholdPregnant.contains("true") && pregnantHouseholdMembers.contains(""))) {
+    if (pregnantHouseholdMembers.contains(applicantName) || (anyoneInHouseholdPregnant && pregnantHouseholdMembers.contains(""))) {
     	results.add(new DocumentField("pregnant", "applicantIsPregnant",
                 "Yes", DocumentFieldType.SINGLE_VALUE));
     }
