@@ -4,7 +4,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
-import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
@@ -43,6 +42,8 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(driver.findElement(By.id("intercom-frame"))).isNotNull();
     // Assert that the Delayed Processing Time Notice is displayed on the landing page.
     assertThat(driver.findElement(By.id("delayed-processing-time-notice"))).isNotNull();
+    // Assert that the EBT Scam Alert is displayed on the landing page.
+    assertThat(driver.findElement(By.id("ebt-scam-alert"))).isNotNull();
 
     List<String> programSelections = List
         .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
