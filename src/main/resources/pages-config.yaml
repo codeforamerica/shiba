@@ -4958,7 +4958,6 @@ workflow:
               value: TRIBAL_PAYMENTS
             - *doesNotLiveAlone?
             - *applicantChoseCERTAINPOPS?
-      - pageName: unearnedIncome
     datasources:
       - pageName: addHouseholdMembers
       - pageName: choosePrograms
