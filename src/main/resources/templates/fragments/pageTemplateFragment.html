@@ -14,7 +14,7 @@
           <h1 id="page-header" class="h2" th:utext="#{${page.headerKey}}"></h1>
           <p id="page-header-help-message"
              th:if="${page.hasHeaderHelpMessageKey()}"
-             th:text="#{${page.headerHelpMessageKey}}"></p>
+             th:utext="#{${page.headerHelpMessageKey}}"></p>
         </div>
         <th:block th:if="${pageNameContext != null}">
           <div th:replace="${pageNameContext} :: ${pageNameContext}"></div>

@@ -118,6 +118,8 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.IDENTIFY_ZIPCODE, new ParsingCoordinate("identifyZipcode", "zipCode"));
     coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));
+    coordinatesMap.put(Field.IDENTIFY_COUNTY_LATER_DOCS, new ParsingCoordinate("identifyCountyOrTribalNation", "county"));
+    coordinatesMap.put(Field.IDENTIFY_TRIBAL_NATION_LATER_DOCS, new ParsingCoordinate("identifyCountyOrTribalNation", "tribalNation"));
 
     coordinatesMap.put(Field.APPLICANT_ASSETS, new ParsingCoordinate("liquidAssetsSingle", "liquidAssets"));
     coordinatesMap.put(Field.HOUSEHOLD_ASSETS, new ParsingCoordinate("cashAmount", "cashAmount"));
@@ -475,6 +477,8 @@ public class ApplicationDataParser {
 
     IDENTIFY_ZIPCODE,
     IDENTIFY_COUNTY("Other"),
+    IDENTIFY_COUNTY_LATER_DOCS("Other"),
+    IDENTIFY_TRIBAL_NATION_LATER_DOCS,
 
     APPLICANT_ASSETS("0"),
     HOUSEHOLD_ASSETS("0"),

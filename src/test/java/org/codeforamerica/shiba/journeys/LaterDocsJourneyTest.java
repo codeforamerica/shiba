@@ -20,7 +20,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     testPage.clickButton("Upload documents");
 
-    assertThat(driver.getTitle()).isEqualTo("Identify County");
+    assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
 //    testPage.clickLink("Enter my zip code instead.");
 //    assertThat(driver.getTitle()).isEqualTo("Identify zip");
 //
@@ -39,7 +39,12 @@ public class LaterDocsJourneyTest extends JourneyTest {
 //    navigateTo("identifyCounty");
 
     // should allow me to enter personal info and continue the flow if my county is supported
+    testPage.enter("county", "Select your county");
+    testPage.enter("tribalNation", "Select a Tribal Nation");
+    testPage.clickContinue();
+    assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
     testPage.enter("county", "Hennepin");
+    testPage.enter("tribalNation", "Red Lake");
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
@@ -52,7 +57,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // should allow me to upload documents and those documents should be sent to the ESB
-    assertThat(driver.getTitle()).isEqualTo("Submit any recommended documents you have available.");
+    assertThat(driver.getTitle()).isEqualTo("Upload documents");
     assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
     uploadPdfFile();
@@ -60,7 +65,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickButton("Submit my documents");
     assertThat(driver.getTitle()).isEqualTo("Doc submit confirmation");
     testPage.clickButton("No, add more documents"); // Go back
-    assertThat(driver.getTitle()).isEqualTo("Submit any recommended documents you have available.");
+    assertThat(driver.getTitle()).isEqualTo("Upload documents");
 
     testPage.clickButton("Submit my documents");
     testPage.clickButton("Yes, submit and finish");
@@ -74,4 +79,5 @@ public class LaterDocsJourneyTest extends JourneyTest {
     navigateTo("documentSubmitConfirmation");
     assertThat(driver.getTitle()).isEqualTo("Documents Sent");
   }
+  
 }

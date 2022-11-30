@@ -1,17 +1,17 @@
 package org.codeforamerica.shiba.pages.data;
 
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.BASIC_CRITERIA_CERTAIN_POPS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MEDICAL_EXPENSES;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_RELATIONSHIP;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MEDICAL_EXPENSES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.PERSONAL_INFO_FIRST_NAME;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.WRITTEN_LANGUAGE_PREFERENCES;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group.HOUSEHOLD;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -24,10 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.output.caf.ExpeditedEligibility;
@@ -39,6 +36,11 @@ import org.codeforamerica.shiba.pages.config.PageWorkflowConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.multipart.MultipartFile;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Slf4j

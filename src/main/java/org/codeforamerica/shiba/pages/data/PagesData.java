@@ -12,6 +12,10 @@ import lombok.EqualsAndHashCode;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.config.*;
 
+/**
+ * PagesData extends HashMap&lt;String, PageData&gt; 
+ *
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class PagesData extends HashMap<String, PageData> {
@@ -41,6 +45,14 @@ public class PagesData extends HashMap<String, PageData> {
     this.put(pageName, pageData);
   }
 
+  /**
+   * PagesData satisfies method checks if condition contains multiple conditions,
+   * which then uses allMatch for AND logicalOperator, or anyMatch for OR logicalOperator.</br>
+   * If there are no multiple conditions, it checks if the single condition matches the pageData.</br>
+   * This method recursivly calls itself.
+   * @param condition
+   * @return Boolean
+   */
   public boolean satisfies(Condition condition) {
     if (condition.getConditions() != null) {
       Stream<Condition> conditionStream = condition.getConditions().stream();
@@ -141,17 +153,28 @@ public class PagesData extends HashMap<String, PageData> {
         .orElse(value.getDefaultValue());
   }
 
+  /**
+   * Evaluate this PagesData object for display on the web page.
+   * Inputs to be displayed are determined by any conditionals that are applied to them.
+   * @param featureFlags
+   * @param pageWorkflowConfiguration
+   * @param applicationData
+   * @return
+   */
   public PageTemplate evaluate(FeatureFlagConfiguration featureFlags,
       PageWorkflowConfiguration pageWorkflowConfiguration, ApplicationData applicationData) {
     PageConfiguration pageConfiguration = pageWorkflowConfiguration.getPageConfiguration();
     DatasourcePages datasourcePages = this
         .getDatasourcePagesBy(pageWorkflowConfiguration.getDatasources());
 
-    var inputs = pageConfiguration.getInputs().stream()
-        .filter(input ->
-            Optional.ofNullable(input.getCondition()).map(datasourcePages::satisfies).orElse(true))
-        .map(formInput -> convert(pageConfiguration.getName(), formInput, applicationData))
-        .collect(Collectors.toList());
+    List<FormInputTemplate> inputs = null;
+
+        inputs = pageConfiguration.getInputs().stream() //list of FormInputs
+            .filter(input ->
+                Optional.ofNullable(input.getCondition()).map(datasourcePages::satisfies).orElse(true))
+            .map(formInput -> convert(pageConfiguration.getName(), formInput, applicationData))
+            .collect(Collectors.toList());
+ 
     return new PageTemplate(
         inputs,
         pageConfiguration.getName(),
@@ -168,7 +191,7 @@ public class PagesData extends HashMap<String, PageData> {
         pageConfiguration.getAlertBox()
     );
   }
-
+  
   private FormInputTemplate convert(String pageName, FormInput formInput,
       ApplicationData applicationData) {
     List<String> errorMessageKeys = Optional.ofNullable(this.getPage(pageName))
@@ -193,7 +216,9 @@ public class PagesData extends HashMap<String, PageData> {
         formInput.getDatasources(),
         formInput.getCustomFollowUps(),
         formInput.getInputPostfix(),
-        formInput.getHelpMessageKeyBelow()
+        formInput.getHelpMessageKeyBelow(),
+        formInput.getNoticeMessage(),
+        formInput.getValidationIcon()
     );
   }
 }

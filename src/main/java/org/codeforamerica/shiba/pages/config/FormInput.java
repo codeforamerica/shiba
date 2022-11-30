@@ -2,12 +2,14 @@ package org.codeforamerica.shiba.pages.config;
 
 import java.util.Collections;
 import java.util.List;
-import lombok.Data;
+
 import org.codeforamerica.shiba.inputconditions.Condition;
 
-@Data
-public class FormInput {
+import lombok.Data;
 
+@Data
+public class FormInput{
+  
   private FormInputType type;
   private String name;
   private String customInputFragment; // for type=CUSTOM
@@ -25,4 +27,6 @@ public class FormInput {
   private String customFollowUps;
   private String inputPostfix; // for text behind the input, name is from honeycrisp css class
   private String helpMessageKeyBelow;// help message appear below inputs
+  private String noticeMessage;//for NOTICE input type
+  private Boolean validationIcon = true;
 }

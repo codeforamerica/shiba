@@ -3,8 +3,10 @@ package org.codeforamerica.shiba.pages;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNation.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY_LATER_DOCS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_TRIBAL_NATION_LATER_DOCS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
@@ -16,6 +18,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -52,6 +55,9 @@ public class RoutingDecisionService {
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
       Document document) {
+    if (applicationData.getFlow() == FlowType.LATER_DOCS) {
+	    return getLaterDocsRoutingDestinations(applicationData, document);
+    }
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
     County county = CountyParser.parse(applicationData);
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
@@ -73,6 +79,22 @@ public class RoutingDecisionService {
 
     // By default, just send to county
     return List.of(countyRoutingDestinations.get(county));
+  }
+
+  private List<RoutingDestination> getLaterDocsRoutingDestinations(ApplicationData applicationData,
+	      Document document) {
+	List<RoutingDestination> result = new ArrayList<>();
+	String countyName = getFirstValue(applicationData.getPagesData(), IDENTIFY_COUNTY_LATER_DOCS);
+	if (countyName != null && !countyName.isEmpty()) {
+		County county = County.getForName(countyName);
+		RoutingDestination destination = countyRoutingDestinations.get(county);
+		result.add(destination);
+	}
+	String tribalNationName = getFirstValue(applicationData.getPagesData(), IDENTIFY_TRIBAL_NATION_LATER_DOCS);
+	if (tribalNationName != null && !tribalNationName.isEmpty()) {
+		result.add(tribalNations.get(TribalNation.getFromName(tribalNationName)));
+	}
+	return result;
   }
 
   public RoutingDestination getRoutingDestinationByName(String name) {

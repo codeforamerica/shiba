@@ -128,6 +128,9 @@
                 </th:block>
             </select>
         </div>
+        <div th:case="${T(org.codeforamerica.shiba.pages.config.FormInputType).NOTICE}" class="notice--success spacing-below-60">
+            <span th:utext="#{${input.noticeMessage}}"></span>
+        </div>
 
     </th:block>
     <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>

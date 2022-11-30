@@ -7,6 +7,11 @@ import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 
+/**
+ * This config class represents the workflow section
+ * of pages-config.yaml.
+ *
+ */
 @Data
 public class PageWorkflowConfiguration {
 
@@ -20,6 +25,10 @@ public class PageWorkflowConfiguration {
   private String enrichment;
   private String subtleLinkTargetPage;
 
+  /**
+   * If none of the nextPages have conditions or flags, return true.
+   * @return
+   */
   public Boolean isDirectNavigation() {
     return nextPages.stream()
         .noneMatch(page -> page.getCondition() != null || page.getFlag() != null);

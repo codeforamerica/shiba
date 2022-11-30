@@ -79,9 +79,10 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
     // Enter nothing to throw error on select to check aria-properties on error
     testPage.clickContinue();
-    assertThat(testPage.selectHasInputError("county")).isTrue();
-    assertThat(testPage.getSelectAriaLabel("county")).isEqualTo("Error county");
-    assertThat(testPage.getSelectAriaDescribedBy("county")).isEqualTo("county-error-message-1");
+    //assertThat(testPage.selectHasInputError("county")).isTrue();
+    assertThat(testPage.selectHasInputError("tribalNation")).isTrue();
+    assertThat(testPage.getSelectAriaDescribedBy("tribalNation")).isEqualTo("tribalNation-error-message-1");
+   // assertThat(testPage.getSelectAriaDescribedBy("county")).isEqualTo("county-error-message-1");
 
     // should direct me to email docs to my county if my county is not supported
     navigateTo("identifyCounty");

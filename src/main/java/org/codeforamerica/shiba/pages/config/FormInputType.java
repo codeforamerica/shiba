@@ -16,5 +16,6 @@ public enum FormInputType {
   SSN,
   CUSTOM,
   HIDDEN,
-  PEOPLE_CHECKBOX
+  PEOPLE_CHECKBOX,
+  NOTICE
 }

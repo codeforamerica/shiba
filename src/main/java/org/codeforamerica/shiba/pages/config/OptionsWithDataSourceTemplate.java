@@ -10,8 +10,21 @@ import org.codeforamerica.shiba.pages.data.DatasourcePages;
 import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
 
+/**
+ * Trying to document what this interface does.
+ * This is not a functional interface because there is no unimplented method.
+ * Java allows interfaces such as this to have static implemented methods.
+ *
+ */
 public interface OptionsWithDataSourceTemplate {
 
+	/**
+	 * Returns either a {@link ReferenceOptionsTemplate} if there are no selectable {@link Options}
+	 *  or a {@link SelectableOptionsTemplate} if selectableOptions do exist, as configured in pages-config.yaml.
+	 * @param formInput
+	 * @param applicationData
+	 * @return Object that extends this interface
+	 */
   static OptionsWithDataSourceTemplate createOptionsWithDataSourceTemplate(FormInput formInput,
       ApplicationData applicationData) {
     if (formInput.getOptions() != null) {

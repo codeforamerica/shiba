@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
+import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
@@ -883,7 +884,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     deleteAFile();
 
     assertThat(testPage.getTitle()).isEqualTo(
-        "Submit any recommended documents you have available.");
+        "Upload documents");
     assertThat(driver.findElements(By.linkText("delete")).size()).isEqualTo(0);
 
     assertStylingOfEmptyDocumentUploadPage();

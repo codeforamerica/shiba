@@ -91,9 +91,16 @@
       <div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
       <h1 class="max-width-446 h2 spacing-below-25 margin-left-right-auto spacing-above-10"
           th:utext="#{landing.submit-documents-to-county}"></h1>
+    <div th:if="${@environment.getProperty('feature-flag.tribal-routing')}">
+      <a class="button spacing-below-0" th:href="'/pages/identifyCountyOrTribalNation'">
+        <span th:text="#{landing.upload-documents}"></span>
+      </a>
+    </div>
+    <div th:if="!${@environment.getProperty('feature-flag.tribal-routing')}">
       <a class="button spacing-below-0" th:href="'/pages/identifyCounty'">
         <span th:text="#{landing.upload-documents}"></span>
       </a>
+    </div>
     </section>
   </main>
 </div>

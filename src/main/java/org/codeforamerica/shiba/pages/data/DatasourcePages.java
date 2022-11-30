@@ -6,11 +6,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.codeforamerica.shiba.inputconditions.Condition;
 
-// Very similar to PagesData, with some subtle differences. Used for
+// Original comment: Very similar to PagesData, with some subtle differences. Used for
 // - Skip conditions, to hold the data for their datasources
 // - Configuration, to represent options on follow ups and inputs, via OptionsWithDataSourceTemplate
 // - PagesData#resolve, to create the PageTemplate (done in PagesController#getPage)
 // - PagesData#evaluate
+/**
+ * DatasourcePages extends HashMap<String, PageData> </br>
+ * Original comment: Very similar to PagesData, with some subtle differences.
+ */
 public class DatasourcePages extends HashMap<String, PageData> {
 
   @Serial
@@ -24,6 +28,14 @@ public class DatasourcePages extends HashMap<String, PageData> {
     super(pagesData);
   }
 
+  /**
+   * DatasourcePages satisfies method checks if condition contains multiple conditions,
+   * which then uses allMatch for AND logicalOperator, or anyMatch for OR logicalOperator.</br>
+   * If there are no multiple conditions, it checks if the single condition matches the pageData.</br>
+   * This method recursivly calls itself.
+   * @param condition
+   * @return Boolean
+   */
   public Boolean satisfies(Condition condition) {
     if (condition.getConditions() != null) {
       Stream<Condition> conditionStream = condition.getConditions().stream();

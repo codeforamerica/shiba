@@ -2,11 +2,11 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <p th:fragment="validationError(data, input)" class="text--error"
    th:with="isRadioOrCheckbox=${input.isRadioOrCheckbox()}"
-   th:if="${!data.isValid() && !inputData.valid(data)}"
+   th:if="${!data.isValid() && !inputData.valid(data) && input.validationIcon}"
    th:aria-label="#{error.title}"
     th:id="${input.name} + '-error-p'">
   <th:block th:each="option, iter: ${input.validationErrorMessageKeys}">
-    <i class="icon-warning"
+    <i th:if="${input.validationIcon}" class="icon-warning"
        th:id="${input.name + '-error-icon'} + ${iter.index + 1}"></i>
     <!-- Add the iteration index to the id and class name if it's a radio or checkbox since they have multiple inputs  -->
     <th:block th:switch="${input.type.toString()}">

@@ -82,6 +82,7 @@ mail-gun:
   max-attachment-size: 20000000 #20MB
 
 feature-flag:
+  tribal-routing: on
   certain-pops: on
   submit-via-api: on
   white-earth-and-red-lake-routing: on

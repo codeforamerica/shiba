@@ -214,6 +214,33 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: CONTAINS
+# new conditions for tribal routing -->
+  - &countyNotSelected?
+    pageName: identifyCountyOrTribalNation
+    input: county
+    matcher: EMPTY
+  - &tribalNationNotSelected?
+    pageName: identifyCountyOrTribalNation
+    input: tribalNation
+    matcher: EMPTY
+  - &countySelected?
+    pageName: identifyCountyOrTribalNation
+    input: county
+    matcher: NOT_EMPTY
+  - &tribalNationSelected?
+    pageName: identifyCountyOrTribalNation
+    input: tribalNation
+    matcher: NOT_EMPTY
+  - &countyANDtribalNationNotSelected?
+    logicalOperator: AND
+    conditions:
+      - *countyNotSelected?
+      - *tribalNationNotSelected?
+  - &eitherCountyOrTribalNationIsSelected?
+    logicalOperator: OR
+    conditions:
+      - *countySelected?
+      - *tribalNationSelected?
 pageDefinitions:
   - &landing
     name: landing
@@ -1691,6 +1718,225 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
+  - &identifyCountyOrTribalNation
+    name: identifyCountyOrTribalNation
+    pageTitle: identify-county-or-tribal-nation.title
+    headerKey: identify-county.where-would-you-like-to-send-documents
+    headerHelpMessageKey: identify-county.choose-a-location
+    contextFragment: countyContextFragment
+    inputs:
+      - name: county
+        type: SELECT
+        promptMessage:
+          promptMessageKey: identify-county.select-a-county
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.blank
+            condition: 
+              input: tribalNation
+              matcher: EMPTY
+        validationIcon: false
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: identify-county.select-your-county
+            - value: Aitkin
+              messageKey: identify-county-aitkin
+            - value: Anoka
+              messageKey: identify-county-anoka
+            - value: Becker
+              messageKey: identify-county-becker
+            - value: Beltrami
+              messageKey: identify-county-beltrami
+            - value: Benton
+              messageKey: identify-county-benton
+            - value: BigStone
+              messageKey: identify-county-big-stone
+            - value: BlueEarth
+              messageKey: identify-county-blue-earth
+            - value: Brown
+              messageKey: identify-county-brown
+            - value: Carlton
+              messageKey: identify-county-carlton
+            - value: Carver
+              messageKey: identify-county-carver
+            - value: Cass
+              messageKey: identify-county-cass
+            - value: Chippewa
+              messageKey: identify-county-chippewa
+            - value: Chisago
+              messageKey: identify-county-chisago
+            - value: Clay
+              messageKey: identify-county-clay
+            - value: Clearwater
+              messageKey: identify-county-clearwater
+            - value: Cook
+              messageKey: identify-county-cook
+            - value: Cottonwood
+              messageKey: identify-county-cottonwood
+            - value: CrowWing
+              messageKey: identify-county-crow-wing
+            - value: Dakota
+              messageKey: identify-county-dakota
+            - value: Dodge
+              messageKey: identify-county-dodge
+            - value: Douglas
+              messageKey: identify-county-douglas
+            - value: Faribault
+              messageKey: identify-county-faribault
+            - value: Fillmore
+              messageKey: identify-county-fillmore
+            - value: Freeborn
+              messageKey: identify-county-freeborn
+            - value: Goodhue
+              messageKey: identify-county-goodhue
+            - value: Grant
+              messageKey: identify-county-grant
+            - value: Hennepin
+              messageKey: identify-county-hennepin
+            - value: Houston
+              messageKey: identify-county-houston
+            - value: Hubbard
+              messageKey: identify-county-hubbard
+            - value: Isanti
+              messageKey: identify-county-isanti
+            - value: Itasca
+              messageKey: identify-county-itasca
+            - value: Jackson
+              messageKey: identify-county-jackson
+            - value: Kanabec
+              messageKey: identify-county-kanabec
+            - value: Kandiyohi
+              messageKey: identify-county-kandiyohi
+            - value: Kittson
+              messageKey: identify-county-kittson
+            - value: Koochiching
+              messageKey: identify-county-koochiching
+            - value: LacQuiParle
+              messageKey: identify-county-lac-qui-parle
+            - value: Lake
+              messageKey: identify-county-lake
+            - value: LakeOfTheWoods
+              messageKey: identify-county-lake-of-the-woods
+            - value: LeSueur
+              messageKey: identify-county-le-sueur
+            - value: Lincoln
+              messageKey: identify-county-lincoln
+            - value: Lyon
+              messageKey: identify-county-lyon
+            - value: McLeod
+              messageKey: identify-county-mcleod
+            - value: Mahnomen
+              messageKey: identify-county-mahnomen
+            - value: Marshall
+              messageKey: identify-county-marshall
+            - value: Meeker
+              messageKey: identify-county-meeker
+            - value: Martin
+              messageKey: identify-county-martin
+            - value: MilleLacs
+              messageKey: identify-county-mille-lacs
+            - value: Morrison
+              messageKey: identify-county-morrison
+            - value: Mower
+              messageKey: identify-county-mower
+            - value: Murray
+              messageKey: identify-county-murray
+            - value: Nicollet
+              messageKey: identify-county-nicollet
+            - value: Nobles
+              messageKey: identify-county-nobles
+            - value: Norman
+              messageKey: identify-county-norman
+            - value: Olmsted
+              messageKey: identify-county-olmsted
+            - value: OtterTail
+              messageKey: identify-county-otter-tail
+            - value: Pennington
+              messageKey: identify-county-pennington
+            - value: Pine
+              messageKey: identify-county-pine
+            - value: Pipestone
+              messageKey: identify-county-pipestone
+            - value: Polk
+              messageKey: identify-county-polk
+            - value: Pope
+              messageKey: identify-county-pope
+            - value: Ramsey
+              messageKey: identify-county-ramsey
+            - value: RedLake
+              messageKey: identify-county-red-lake
+            - value: Redwood
+              messageKey: identify-county-redwood
+            - value: Renville
+              messageKey: identify-county-renville
+            - value: Rice
+              messageKey: identify-county-rice
+            - value: Rock
+              messageKey: identify-county-rock
+            - value: Roseau
+              messageKey: identify-county-roseau
+            - value: StLouis
+              messageKey: identify-county-saint-louis
+            - value: Scott
+              messageKey: identify-county-scott
+            - value: Sherburne
+              messageKey: identify-county-sherburne
+            - value: Sibley
+              messageKey: identify-county-sibley
+            - value: Stearns
+              messageKey: identify-county-stearns
+            - value: Steele
+              messageKey: identify-county-steele
+            - value: Stevens
+              messageKey: identify-county-stevens
+            - value: Swift
+              messageKey: identify-county-swift
+            - value: Todd
+              messageKey: identify-county-todd
+            - value: Traverse
+              messageKey: identify-county-traverse
+            - value: Wabasha
+              messageKey: identify-county-wabasha
+            - value: Wadena
+              messageKey: identify-county-wadena
+            - value: Waseca
+              messageKey: identify-county-waseca
+            - value: Washington
+              messageKey: identify-county-washington
+            - value: Watonwan
+              messageKey: identify-county-watonwan
+            - value: Wilkin
+              messageKey: identify-county-wilkin
+            - value: Winona
+              messageKey: identify-county-winona
+            - value: Wright
+              messageKey: identify-county-wright
+            - value: YellowMedicine
+              messageKey: identify-county-yellow-medicine
+      - name: tribalNation
+        type: SELECT
+        promptMessage:
+          promptMessageKey: identify-county.select-a-tribal-nation
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-make-a-selection
+            condition: 
+              input: county
+              matcher: EMPTY
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: select-the-tribe.select-the-tribe
+            - value: Mille Lacs Band of Ojibwe
+              messageKey: select-the-tribe.mille-lacs
+            - value: Red Lake Nation
+              messageKey: select-the-tribe.red-lake
+            - value: White Earth Nation
+              messageKey: select-the-tribe.white-earth
+      - name: notice
+        type: NOTICE
+        noticeMessage: identify-county.you-can-see-where-your-application
   #    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
   - &identifyZipcode
     name: identifyZipcode
@@ -4034,6 +4280,38 @@ workflow:
     nextPages:
       - pageName: prepareToApply
     subtleLinkTargetPage: identifyZipcodeBeforeApplying
+# We are navigating directly from later docs button on the landing page to here:
+  identifyCountyOrTribalNation:
+    pageConfiguration: *identifyCountyOrTribalNation
+    nextPages:
+      - pageName: matchInfo
+        flow: LATER_DOCS
+  identifyCounty:
+    pageConfiguration: *identifyCounty
+    nextPages:
+      - pageName: matchInfo
+        flow: LATER_DOCS
+    subtleLinkTargetPage: identifyZipcode
+  identifyZipcode:
+    pageConfiguration: *identifyZipcode
+    enrichment: zipcodeToCountyEnrichment
+    nextPages:
+      - pageName: matchInfo
+        flow: LATER_DOCS
+        condition:
+          pageName: identifyZipcode
+          input: mappedCounty
+          matcher: DOES_NOT_CONTAIN
+          value: Other
+      - pageName: emailDocsToYourCounty
+        flow: LATER_DOCS
+    subtleLinkTargetPage: identifyCounty
+  matchInfo:
+    pageConfiguration: *matchInfo
+    enrichment: matchInfoDateOfBirthEnrichment
+    nextPages:
+      - pageName: howToAddDocuments
+        flow: LATER_DOCS
   identifyZipcodeBeforeApplying:
     pageConfiguration: *identifyZipcode
     enrichment: zipcodeToCountyEnrichment
@@ -6013,32 +6291,7 @@ workflow:
         optional: "true"
       - pageName: medicalExpenses
 
-  identifyCounty:
-    pageConfiguration: *identifyCounty
-    nextPages:
-      - pageName: matchInfo
-        flow: LATER_DOCS
-    subtleLinkTargetPage: identifyZipcode
-  identifyZipcode:
-    pageConfiguration: *identifyZipcode
-    enrichment: zipcodeToCountyEnrichment
-    nextPages:
-      - pageName: matchInfo
-        flow: LATER_DOCS
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          matcher: DOES_NOT_CONTAIN
-          value: Other
-      - pageName: emailDocsToYourCounty
-        flow: LATER_DOCS
-    subtleLinkTargetPage: identifyCounty
-  matchInfo:
-    pageConfiguration: *matchInfo
-    enrichment: matchInfoDateOfBirthEnrichment
-    nextPages:
-      - pageName: howToAddDocuments
-        flow: LATER_DOCS
+
   emailDocsToYourCounty:
     pageConfiguration: *emailDocsToYourCounty
     datasources:
@@ -6105,6 +6358,7 @@ landmarkPages:
   startTimerPages: # "the first page" of a flow, where we set applicationData.startTime
     - identifyCountyBeforeApplying
     - identifyCounty
+    - identifyCountyOrTribalNation
   landingPages: # the home page of the app
     - landing
   postSubmitPages: # pages which are accessible after submitting an application, also all pages of the laterdocs flow
