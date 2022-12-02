@@ -17,6 +17,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
   void laterDocsFlow() {
     when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");
 
@@ -44,7 +45,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickContinue();
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
     testPage.enter("county", "Hennepin");
-    testPage.enter("tribalNation", "Red Lake");
+    testPage.enter("tribalNation", "Red Lake Nation");
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");

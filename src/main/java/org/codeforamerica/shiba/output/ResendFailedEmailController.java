@@ -55,7 +55,7 @@ public class ResendFailedEmailController {
     EmailParser.parse(applicationData)
         .ifPresent(email -> {
           if (application.getFlow() == FlowType.LATER_DOCS) {
-            emailClient.sendLaterDocsConfirmationEmail(email, LocaleContextHolder.getLocale());
+            emailClient.sendLaterDocsConfirmationEmail(application, applicationId, email, LocaleContextHolder.getLocale());
           } else {
             SnapExpeditedEligibility snapExpeditedEligibility = snapExpeditedEligibilityDecider
                 .decide(application.getApplicationData());

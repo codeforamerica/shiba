@@ -126,9 +126,9 @@ public class MailGunEmailClient implements EmailClient {
   }
 
   @Override
-  public void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale) {
+  public void sendLaterDocsConfirmationEmail(Application application, String confirmationId, String recipientEmail, Locale locale) {
     String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
-    String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(locale);
+    String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
     log.info("later docs confirmation email sent");
   }

@@ -40,7 +40,10 @@ public interface EmailClient {
 
   void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
 
-  void sendLaterDocsConfirmationEmail(String recipientEmail, Locale locale);
+  void sendLaterDocsConfirmationEmail(Application application, 
+		  String confirmationId,
+		  String recipientEmail, 
+		  Locale locale);
 
   void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application);

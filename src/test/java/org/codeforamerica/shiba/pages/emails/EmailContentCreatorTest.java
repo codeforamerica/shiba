@@ -60,7 +60,7 @@ class EmailContentCreatorTest {
 
   @Autowired
   private MessageSource messageSource;
-
+  
   @Autowired
   private NextStepsContentService nextStepsContentService;
 
@@ -98,7 +98,7 @@ class EmailContentCreatorTest {
     when(routingDestinationMessageService.generatePhrase(any(),
             any(), anyBoolean(), any())).thenReturn(
             "Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222)");
-    
+
     applicationData = new ApplicationData();
     applicationData.setId("9870000123");
     doReturn(Application.builder()
@@ -205,12 +205,18 @@ class EmailContentCreatorTest {
     String laterDocsConfirmationEmailSubject = emailContentCreator
         .createClientLaterDocsConfirmationEmailSubject(ENGLISH);
     String laterDocsConfirmationEmailBody = emailContentCreator
-        .createClientLaterDocsConfirmationEmailBody(ENGLISH);
+        .createClientLaterDocsConfirmationEmailBody(applicationData, "9870000123", ENGLISH);
     assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received your documents");
     assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
-                                                         "<p>We received your documents for your Minnesota Benefits application. Look out for mail about your case. You may need to complete additional steps.</p>"
+                                                         "<p>We received your documents for your Minnesota Benefits application.</p>"
                                                          +
-                                                         "<p>To ask about your application status, find your county's contact information <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p>"
+                                                         "<p>Your documents were submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".</p>"
+                                                         +
+                                                         "<p>Document confirmation number: #9870000123</p>"
+                                                         +
+                                                         "<p>Look out for mail containing more information about your case. You may need to complete additional steps.</p>"
+                                                         +
+                                                         "<p>If you would like an update on your case, please call the county or Tribal Nation listed above.</p>"
                                                          +
                                                          "</body></html>");
   }

@@ -55,6 +55,6 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     ApplicationData applicationData = application.getApplicationData();
 
     EmailParser.parse(applicationData)
-        .ifPresent(email -> emailClient.sendLaterDocsConfirmationEmail(email, locale));
+        .ifPresent(email -> emailClient.sendLaterDocsConfirmationEmail(application,  application.getId(), email, locale));
   }
 }
