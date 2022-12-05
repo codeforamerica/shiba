@@ -39,9 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       "touhid.khan@state.mn.us",
       "william.prew@state.mn.us",
       "ramesh.shakya@state.mn.us",
-      "jeffrey.hendrix@state.mn.us",
-      "jenna.penfieldlaw@state.mn.us",
-      "allison.wehlage@state.mn.us",
+      "marlene.merwarth@state.mn.us",
       "ryan.b.smith@state.mn.us",
       "michael.hauck@state.mn.us",
       "aaron.coonce@state.mn.us"
