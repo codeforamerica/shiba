@@ -206,7 +206,7 @@ class EmailContentCreatorTest {
         .createClientLaterDocsConfirmationEmailSubject(ENGLISH);
     String laterDocsConfirmationEmailBody = emailContentCreator
         .createClientLaterDocsConfirmationEmailBody(applicationData, "9870000123", ENGLISH);
-    assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received your documents");
+    assertThat(laterDocsConfirmationEmailSubject).isEqualTo("We received documents for your MNbenefits Application");
     assertThat(laterDocsConfirmationEmailBody).isEqualTo("<html><body>" +
                                                          "<p>We received your documents for your Minnesota Benefits application.</p>"
                                                          +
