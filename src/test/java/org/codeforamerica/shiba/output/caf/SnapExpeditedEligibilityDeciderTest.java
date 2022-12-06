@@ -169,6 +169,23 @@ class SnapExpeditedEligibilityDeciderTest {
   }
 
   @Test
+  void shouldQualifyWhenJobsEarnLessThanThreshold() {
+    ApplicationData applicationData = applicationDataBuilder
+        .withJobs()
+        .build();
+
+    assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
+  }
+
+  @Test
+  void shouldQualifyWhenNoJobs() {
+    ApplicationData applicationData = applicationDataBuilder
+        .build();
+
+    assertThat(decider.decide(applicationData)).isEqualTo(ELIGIBLE);
+  }
+
+  @Test
   void shouldDefaultToZeroIncomeWhenMissingIncome_UnearnedIncomeAndAssets() {
     ApplicationData applicationData = applicationDataBuilder.build();
     applicationData.getPagesData().remove("thirtyDayIncome");
@@ -210,15 +227,6 @@ class SnapExpeditedEligibilityDeciderTest {
         .withPageData("migrantFarmWorker", "migrantOrSeasonalFarmWorker", List.of("false"))
         .build();
     applicationData.getPagesData().remove("utilityPayments");
-
-    assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
-  }
-
-  @Test
-  void undeterminedWhenThereAreBlankThirtyDayEstimates() {
-    ApplicationData applicationData = applicationDataBuilder
-        .withJobs()
-        .build();
 
     assertThat(decider.decide(applicationData)).isEqualTo(UNDETERMINED);
   }
