@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.7.5"
+    id("org.springframework.boot") version "2.7.6"
     id("io.spring.dependency-management") version "1.1.0"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.1"
@@ -95,7 +95,7 @@ dependencies {
 
 	implementation("org.springframework.mobile:spring-mobile-starter:2.0.0.M3")
     implementation("org.springframework.session:spring-session-jdbc")
-    implementation("io.sentry:sentry-spring-boot-starter:6.9.1")
+    implementation("io.sentry:sentry-spring-boot-starter:6.9.2")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.apache.logging.log4j:log4j-api:2.19.0")
     implementation("org.apache.logging.log4j:log4j-to-slf4j:2.19.0")
@@ -115,7 +115,7 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.apache.httpcomponents:httpclient")
-    implementation("io.sentry:sentry-logback:6.9.1")
+    implementation("io.sentry:sentry-logback:6.9.2")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.google.crypto.tink:tink:1.7.0")
@@ -130,8 +130,10 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
-    implementation("ch.qos.logback:logback-core:1.2.11")
-    implementation("ch.qos.logback:logback-classic:1.2.0")
+    implementation("ch.qos.logback:logback-parent:1.4.5"){
+         exclude group: "ch.qos.logback", module: "logback-classic"
+    }
+    implementation("ch.qos.logback:logback-classic:1.2.10")
     implementation("net.logstash.logback:logstash-logback-encoder:7.2")
     implementation("net.javacrumbs.shedlock:shedlock-spring:4.43.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.43.0")
