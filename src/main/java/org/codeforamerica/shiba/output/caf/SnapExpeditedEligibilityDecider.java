@@ -126,9 +126,7 @@ public class SnapExpeditedEligibilityDecider {
     if (isMigrantWorker == null || missingUtilities) {
       return false;
     }
-    List<String> thirtyDayEstimates = getValues(applicationData, JOBS, LAST_THIRTY_DAYS_JOB_INCOME);
-    return thirtyDayEstimates == null || !thirtyDayEstimates.stream().allMatch(String::isBlank);
-
+    return true;
   }
 
 

@@ -525,7 +525,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
     assertCcapFieldEquals("PROGRAMS_0", "CCAP");
-    assertCcapFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+    assertCcapFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCcapFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
     assertCcapFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCcapFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104");
@@ -641,7 +641,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
     assertCafFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCafFieldEquals("PROGRAMS_0", "CCAP");
-    assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+    assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
     assertCafFieldEquals("GROSS_MONTHLY_INCOME_0", "120.00");
     assertCafFieldEquals("CREATED_DATE", "2020-01-01");
@@ -781,7 +781,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCertainPopsFieldEquals("TRIBAL_NATION", "Bois Forte");
     assertCertainPopsFieldEquals("FULL_NAME_0", householdMemberFullName);
     assertCertainPopsFieldEquals("PROGRAMS_0", "CCAP");
-    assertCertainPopsFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "");
+    assertCertainPopsFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCertainPopsFieldEquals("CCAP_EXPEDITED_ELIGIBILITY", "CCAP");
     assertCertainPopsFieldEquals("APPLICANT_FIRST_NAME", "Ahmed");
     assertCertainPopsFieldEquals("APPLICANT_LAST_NAME", "St. George");
