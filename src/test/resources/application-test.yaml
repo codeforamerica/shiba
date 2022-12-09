@@ -28,7 +28,6 @@ mail-gun:
   max-attachment-size: 1000000 # 1MB
 
 feature-flag:
-  submit-docs-via-email-for-hennepin: on
   county-ottertail: on
   show-delayed-processing-time-notice: on
 

@@ -57,9 +57,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingSuccess("languagePreferences",
         Map.of("writtenLanguage", List.of("ENGLISH"), "spokenLanguage", List.of("ENGLISH"))
     );
-
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
-        FeatureFlag.ON);
   }
 
   @ParameterizedTest
@@ -286,15 +283,12 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   @Test
   void clientsFromOtherFederallyRecognizedNationsShouldBeAbleToApplyForMFIPAndRouteToCounty()
       throws Exception {
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing"))
-        .thenReturn(FeatureFlag.OFF);
-
     addHouseholdMembersWithProgram("EA");
     goThroughShortTribalTanfFlow(OtherFederallyRecognizedTribe.toString(), Beltrami.toString(),
         "true", EA);
-    assertRoutingDestinationIsCorrectForDocument(CAF, Beltrami.toString());
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, Beltrami.toString());
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, Beltrami.toString());
+    assertRoutingDestinationIsCorrectForDocument(CAF, RedLakeNation.toString());
+    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, RedLakeNation.toString());
+    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, RedLakeNation.toString());
   }
 
   @ParameterizedTest
@@ -430,71 +424,6 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
 
     assertRoutingDestinationIsCorrectForDocument(CAF, county);
     assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, county);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
-  }
-
-  @Test
-  void redLakeApplicationsGetSentToCountyIfFeatureFlagIsTurnedOff() throws Exception {
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
-        FeatureFlag.OFF);
-    fillOutPersonalInfo();
-    addHouseholdMembersWithProgram(CCAP);
-
-    String county = "Olmsted";
-    goThroughLongTribalTanfFlow(RedLakeNation.toString(), county, "false", GRH);
-
-    assertRoutingDestinationIsCorrectForDocument(CAF, county);
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, county);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
-  }
-
-  @Test
-  void whiteEarthApplicationsGetSentToCountyAndMilleLacsIfFeatureFlagIsTurnedOff()
-      throws Exception {
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
-        FeatureFlag.OFF);
-
-    addHouseholdMembersWithProgram("EA");
-    String county = "Becker";
-    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{EA, CCAP, GRH, SNAP});
-
-    assertRoutingDestinationIsCorrectForDocument(CAF, MilleLacsBandOfOjibwe.toString(),
-        county);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
-
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC,
-        MilleLacsBandOfOjibwe.toString(),
-        county);
-  }
-
-  @Test
-  void whiteEarthApplicationsGetSentToCountyOnlyIfFeatureFlagIsTurnedOff() throws Exception {
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
-        FeatureFlag.OFF);
-
-    addHouseholdMembersWithProgram("CCAP");
-    String county = "Becker";
-    goThroughShortMfipFlow(county, WhiteEarthNation, new String[]{CCAP});
-
-    assertRoutingDestinationIsCorrectForDocument(CAF, county);
-    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC, county);
-  }
-
-  @Test
-  void whiteEarthApplicationsGetSentToMilleLacsAndCountyIfFeatureFlagIsTurnedOff()
-      throws Exception {
-    when(featureFlagConfiguration.get("white-earth-and-red-lake-routing")).thenReturn(
-        FeatureFlag.OFF);
-
-    String county = "Hennepin";
-    addHouseholdMembersWithProgram("EA");
-    goThroughShortTribalTanfFlow(WhiteEarthNation.toString(), county, "true", EA, CCAP, GRH, SNAP);
-    assertRoutingDestinationIsCorrectForDocument(CAF, MilleLacsBandOfOjibwe.toString(),
-        county);
-    assertRoutingDestinationIsCorrectForDocument(UPLOADED_DOC,
-        MilleLacsBandOfOjibwe.toString(),
-        county);
     assertRoutingDestinationIsCorrectForDocument(Document.CCAP, county);
   }
 

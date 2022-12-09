@@ -72,7 +72,6 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("county-dakota")).thenReturn(FeatureFlag.OFF);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
 

@@ -85,7 +85,6 @@ feature-flag:
   tribal-routing: on
   certain-pops: on
   submit-via-api: on
-  white-earth-and-red-lake-routing: on
   show-delayed-processing-time-notice: on
   
 document-upload:

@@ -42,15 +42,11 @@ public class RoutingDecisionService {
       OtherFederallyRecognizedTribe).map(Enum::toString).toList();
   private final ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
   private final ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations;
-  private final FeatureFlagConfiguration featureFlagConfiguration;
-  private final String WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME = "white-earth-and-red-lake-routing";
-
   public RoutingDecisionService(ServicingAgencyMap<TribalNationRoutingDestination> tribalNations,
       @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations,
       FeatureFlagConfiguration featureFlagConfiguration) {
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
-    this.featureFlagConfiguration = featureFlagConfiguration;
   }
 
   public List<RoutingDestination> getRoutingDestinations(ApplicationData applicationData,
@@ -109,8 +105,7 @@ public class RoutingDecisionService {
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
       County county) {
-    if (!county.equals(County.Beltrami) ||
-        featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
+    if (!county.equals(County.Beltrami)) {
       return List.of(countyRoutingDestinations.get(county));
     }
     return List.of(tribalNations.get(RedLakeNation));
@@ -121,8 +116,7 @@ public class RoutingDecisionService {
 
     boolean isLivingInTribalNationBoundary = getBooleanValue(applicationData.getPagesData(),
         LIVING_IN_TRIBAL_NATION_BOUNDARY);
-    if (!isLivingInTribalNationBoundary || isOnlyApplyingForGrh(programs, applicationData)
-        || featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
+    if (!isLivingInTribalNationBoundary || isOnlyApplyingForGrh(programs, applicationData)) {
       return List.of(countyRoutingDestinations.get(county));
     }
 
@@ -141,9 +135,6 @@ public class RoutingDecisionService {
   private List<RoutingDestination> routeWhiteEarthClients(Set<String> programs,
       ApplicationData applicationData,
       Document document, County county) {
-    if (featureFlagConfiguration.get(WHITE_EARTH_AND_RED_LAKE_ROUTING_FLAG_NAME).isOff()) {
-      return routeClientsServicedByMilleLacs(programs, applicationData, document, county);
-    }
 
     var pagesData = applicationData.getPagesData();
     var selectedTribeName = getFirstValue(pagesData, SELECTED_TRIBAL_NATION);
