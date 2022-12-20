@@ -36,7 +36,7 @@
                         </div>
                         <div>
                             <span th:utext="#{${option.messageKey}}"></span>
-                            <p th:if="${option.helpMessageKey != null}" th:text="#{${option.helpMessageKey}}"
+                            <p th:if="${option.helpMessageKey != null}" th:utext="#{${option.helpMessageKey}}"
                                class="text--help with-no-padding"></p>
                         </div>
                     </label>

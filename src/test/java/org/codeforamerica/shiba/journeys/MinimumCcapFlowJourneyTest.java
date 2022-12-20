@@ -136,9 +136,10 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     // Does anyone in the household pay for court-ordered child support, spousal
     // support, child care support or medical care?
     testPage.enter("supportAndCare", NO.getDisplayValue());
-
+   
     // Does anyone in your household have any of these?
     testPage.enter("assets", "None of the above");
+    driver.findElement(By.xpath("//*[contains(text(),\"Assets include your family's cash, bank accounts, vehicles, investments, and real estate\")]")).isDisplayed();
     testPage.clickContinue();
 
     // Does anyone in the household have money in a bank account or debit card?

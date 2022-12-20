@@ -4049,6 +4049,7 @@ pageDefinitions:
                   value: CERTAIN_POPS
           - value: ONE_MILLION_ASSETS
             messageKey: assets.more-than-1-million-in-family-assets
+            helpMessageKey: assets.assets-include-cash-bank-accounts
             condition:
               pageName: choosePrograms
               input: programs
