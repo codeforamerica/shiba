@@ -163,7 +163,7 @@ public class ResubmissionService {
       String id = application.getId();
       // Add applicationId to the logs to make it easier to query for in datadog
       MDC.put("applicationId", id);
-      log.info("Retriggering submission for application with id " + id);
+      log.info("Retriggering submission for NO_STATUS application with id " + id);
 
       applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
 
