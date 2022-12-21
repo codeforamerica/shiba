@@ -74,6 +74,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
   void laterDocsFlow() {
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("clamav")).thenReturn(FeatureFlag.ON);
 
     testPage.clickButton("Upload documents");
 

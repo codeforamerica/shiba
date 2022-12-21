@@ -6,10 +6,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLICANT_PROGRAMS;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
@@ -18,6 +17,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
@@ -31,12 +35,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Cookie;
-import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -80,6 +84,7 @@ import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -87,6 +92,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,12 +105,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+
 @Controller
 @Slf4j
 public class PageController {
 
   private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
   private static final int MAX_FILES_UPLOADED = 20;
+  private static final String VIRUS_STATUS_CODE = "418";
   private final ApplicationData applicationData;
   private final ApplicationConfiguration applicationConfiguration;
   private final Clock clock;
@@ -125,6 +135,7 @@ public class PageController {
   private final RoutingDestinationMessageService routingDestinationMessageService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
+  private final String clammitUrl;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -146,7 +157,8 @@ public class PageController {
       ApplicationRepository applicationRepository,
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
-      EligibilityListBuilder listBuilder) {
+      EligibilityListBuilder listBuilder, 
+      @Value("${mnit-clammit.url}") String clammitUrl) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -167,6 +179,7 @@ public class PageController {
     this.routingDestinationMessageService = routingDestinationMessageService;
     this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
+    this.clammitUrl = clammitUrl;
   }
 
   @GetMapping("/")
@@ -792,18 +805,18 @@ public class PageController {
   private boolean hasSubmittedDocuments() {
     Application application;
     String id = applicationData.getId();
-    
-    if (id == null) 
-    {
+
+    if (id == null) {
       // TODO: session timeout perhaps?
       log.info("Attempt to get application data with null id");
       return false;
     }
-    
+
     try {
       application = applicationRepository.find(id);
     } catch (Exception e) {
-      log.warn("An error finding application with id [" + id + "] failed. Message: " + e.getMessage());
+      log.warn(
+          "An error finding application with id [" + id + "] failed. Message: " + e.getMessage());
       return false;
     }
     return application.getApplicationStatuses(UPLOADED_DOC).stream()
@@ -811,9 +824,7 @@ public class PageController {
   }
 
   @Nullable
-  private ResponseEntity<String> getErrorResponseForInvalidFile(MultipartFile file, String type,
-      LocaleSpecificMessageSource lms) throws IOException
-  {
+  private ResponseEntity<String> getErrorResponseForInvalidFile(MultipartFile file, String type, LocaleSpecificMessageSource lms) throws IOException{
     log.info(type);
     if (file.getSize() == 0) {
       return new ResponseEntity<>(
@@ -828,6 +839,35 @@ public class PageController {
           lms.getMessage("upload-documents.MS-word-files-not-accepted"),
           HttpStatus.UNPROCESSABLE_ENTITY);
     }
+	if (featureFlags.get("clamav").isOn()) {
+		try {
+			var client = HttpClient.newHttpClient();
+			var request = HttpRequest.newBuilder(URI.create(clammitUrl))
+					.header("Content-Type", "text/plain; charset=UTF-8")
+					.POST(BodyPublishers.ofByteArray(file.getBytes())).build();
+
+			var response = client.send(request, BodyHandlers.ofString());
+			if (VIRUS_STATUS_CODE.equalsIgnoreCase(Integer.toString(response.statusCode()))) {
+				log.info("Virus detected in file " + file.getOriginalFilename() + ". File size: " + file.getSize() + " bytes.");
+				return new ResponseEntity<>(lms.getMessage("upload-documents.virus-detected"),
+						HttpStatus.UNPROCESSABLE_ENTITY);
+			}
+
+		} catch (java.net.ConnectException ce) {
+			// Use this log info string to search in DataDog and create an alert for the
+			// service being down.
+			log.info("Clammit server exception connection error: " + ce.getLocalizedMessage());
+			return new ResponseEntity<>(lms.getMessage("upload-documents.clammit-server-error"),
+					HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) {
+			// Catch any other exceptions as a precaution
+			log.info("Clammit server exception type: " + e.getClass().getName() + " message: " +   e.getLocalizedMessage());
+			return new ResponseEntity<>(lms.getMessage("upload-documents.clammit-server-error"),
+					HttpStatus.SERVICE_UNAVAILABLE);
+		}
+
+	}
+    
     if (type.contains("pdf")) {
       // Return an error response if this is an pdf we can't work with
       try (var pdfFile = PDDocument.load(file.getBytes())) {
@@ -870,7 +910,8 @@ public class PageController {
     applicationRepository.save(application);
     if (featureFlags.get("submit-via-api").isOn()) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
-      applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING, UPLOADED_DOC);
+      applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING,
+          UPLOADED_DOC);
       pageEventPublisher.publish(
           new UploadedDocumentsSubmittedEvent(httpSession.getId(), application.getId(),
               LocaleContextHolder.getLocale()));

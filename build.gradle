@@ -262,6 +262,14 @@ def axeAccessibilityTest = tasks.register("accessibilityTest", Test) {
         }
 }
 
+def virusUploadTest = tasks.register("virusUploadTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags("virusUploadJourney")
+        }
+}
+
 test {
     useJUnitPlatform {
         JUnitPlatformOptions options ->

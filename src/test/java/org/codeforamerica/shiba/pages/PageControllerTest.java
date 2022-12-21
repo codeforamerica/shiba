@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.ws.test.client.RequestMatchers.connectionTo;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
@@ -60,6 +62,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -76,6 +79,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.test.client.MockWebServiceServer;
+import org.springframework.ws.test.client.ResponseCreators;
+import org.springframework.xml.transform.StringSource;
 
 @ActiveProfiles("test")
 @SpringBootTest(
@@ -109,11 +116,14 @@ class PageControllerTest {
   private Device device;
   @MockBean
   private EligibilityListBuilder listBuilder;
-
   @Autowired
   private PageController pageController;
   @Autowired
   private ApplicationData applicationData;
+  @MockBean
+  private MockWebServiceServer mockWebServiceServer;
+  @Value("${mnit-clammit.url}")
+  private String clammitUrl;
 
   @BeforeEach
   void setUp() {
@@ -131,6 +141,9 @@ class PageControllerTest {
         .thenReturn("default success message");
     when(messageSource.getMessage(eq("success.feedback-failure"), any(), eq(Locale.ENGLISH)))
         .thenReturn("default failure message");
+    mockWebServiceServer = MockWebServiceServer.createServer(new WebServiceTemplate());
+        mockWebServiceServer.expect(connectionTo(clammitUrl))
+        .andRespond(ResponseCreators.withPayload(new StringSource("200")));
   }
 
   @AfterEach
@@ -487,6 +500,18 @@ class PageControllerTest {
   }
 
   @Test
+	void shouldReturnErrorForFileWithVirus() throws Exception {
+		mockWebServiceServer = MockWebServiceServer.createServer(new WebServiceTemplate());
+		mockWebServiceServer.expect(connectionTo(clammitUrl))
+				.andRespond(ResponseCreators.withPayload(new StringSource("418")));
+
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/document-upload").file("file", new byte[] {}).param("data",
+				"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"))
+				.andExpect(status().is4xxClientError());
+		mockWebServiceServer.reset();
+	}
+  
+  @Test
   void shouldHandleMissingThumbnails() throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
     var applicationId = "someId";
@@ -548,9 +573,10 @@ class PageControllerTest {
 
     mockMvc.perform(get("/pages/doesNotExist/navigation")).andExpect(redirectedUrl("/error"));
   }
- 
+
   @Test
-  void shouldRedirectToUploadDocumentPageWhenGoingToSubmitConfirmationWithoutDocuments() throws Exception {
+  void shouldRedirectToUploadDocumentPageWhenGoingToSubmitConfirmationWithoutDocuments()
+      throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
     applicationData.setUploadedDocs(List.of());
     String applicationId = "someId";
@@ -563,10 +589,11 @@ class PageControllerTest {
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
     when(applicationRepository.find(applicationId)).thenReturn(application);
 
-    mockMvc.perform(get("/pages/documentSubmitConfirmation")).andExpect(redirectedUrl("/pages/uploadDocuments"));
+    mockMvc.perform(get("/pages/documentSubmitConfirmation"))
+        .andExpect(redirectedUrl("/pages/uploadDocuments"));
   }
 
-  
+
   @Test
   void shouldUpdateTriageAnsWithCCAPChildNudgeAns() throws Exception {
     applicationData.setStartTimeOnce(Instant.now());
@@ -583,9 +610,13 @@ class PageControllerTest {
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
     mockMvc.perform(post("/pages/addChildrenConfirmation/0"));
-    assertThat(applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers").getValue()).contains("true");
+    assertThat(
+        applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers")
+            .getValue()).contains("true");
     mockMvc.perform(post("/pages/addChildrenConfirmation/1"));
-    assertThat(applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers").getValue()).contains("false");
+    assertThat(
+        applicationData.getPagesData().getPage("addHouseholdMembers").get("addHouseholdMembers")
+            .getValue()).contains("false");
   }
 
 }
