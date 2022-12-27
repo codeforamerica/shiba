@@ -22,6 +22,7 @@ public class ApplicationFactory {
   public Application newApplication(ApplicationData applicationData) {
     ApplicationData copy = new ApplicationData();
     copy.setId(applicationData.getId());
+    copy.setClientIP(applicationData.getClientIP());
     copy.setPagesData(SerializationUtils.clone(applicationData.getPagesData()));
     copy.setSubworkflows(SerializationUtils.clone(applicationData.getSubworkflows()));
     copy.setIncompleteIterations(applicationData.getIncompleteIterations());

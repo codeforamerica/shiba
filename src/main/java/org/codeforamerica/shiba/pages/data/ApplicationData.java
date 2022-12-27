@@ -50,6 +50,7 @@ public class ApplicationData implements Serializable {
   private static final long serialVersionUID = 5573310526258484730L;
 
   private String id;
+  private String clientIP;
   @Setter(AccessLevel.NONE)
   private Instant startTime;
   private String utmSource;

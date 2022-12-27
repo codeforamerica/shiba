@@ -29,6 +29,7 @@ public class SessionLogFilter implements Filter {
   // we do not want to use in the rest of the app
   private final ObjectMapper objectMapper = new ObjectMapper();
   private ApplicationData applicationData;
+  private String clientIP;
 
   public SessionLogFilter(MonitoringService monitoringService) {
     this.monitoringService = monitoringService;
@@ -55,7 +56,11 @@ public class SessionLogFilter implements Filter {
 
     MDC.put("url", String.valueOf(httpReq.getRequestURL()));
     MDC.put("sessionId", sessionId);
-    MDC.put("ip", createRequestIp(httpReq));
+    clientIP = createRequestIp(httpReq);
+    if (applicationData != null && applicationData.getClientIP() == null) {
+    	applicationData.setClientIP(clientIP);
+    }
+    MDC.put("ip", clientIP);
     if (applicationData != null && applicationData.getId() != null) {
       monitoringService.setApplicationId(applicationData.getId());
       MDC.put("applicationId", applicationData.getId());
