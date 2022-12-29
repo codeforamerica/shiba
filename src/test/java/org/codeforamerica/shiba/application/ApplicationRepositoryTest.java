@@ -84,6 +84,7 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     MockMultipartFile image = new MockMultipartFile("image", originalFilename, contentType,
         "test".getBytes());
     applicationData.addUploadedDoc(image, "someS3FilePath", "someDataUrl", contentType);
+    applicationData.setClientIP("192.168.0.0");
 
     Application application = Application.builder()
         .id("someid")
@@ -102,6 +103,9 @@ class ApplicationRepositoryTest extends AbstractRepositoryTest {
     assertThat(savedApplication.getCounty()).isEqualTo(application.getCounty());
     assertThat(savedApplication.getTimeToComplete()).isEqualTo(application.getTimeToComplete());
     assertThat(savedApplication.getApplicationStatuses()).isEmpty();
+
+    ApplicationData savedApplicationData = savedApplication.getApplicationData();
+    assertThat(savedApplicationData.getClientIP()).isEqualTo("192.168.0.0");
 
     UploadedDocument uploadedDoc = savedApplication.getApplicationData().getUploadedDocs().get(0);
     assertThat(uploadedDoc.getFilename()).isEqualTo(originalFilename);
