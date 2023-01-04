@@ -241,6 +241,21 @@ conditionDefinitions:
     conditions:
       - *countySelected?
       - *tribalNationSelected?
+  - &certainPopsPilot?
+    logicalOperator: OR
+    conditions:
+      - pageName: identifyCounty
+        input: county
+        value: "Chisago"
+      - pageName: identifyCounty
+        input: county
+        value: "MilleLacs"
+      - pageName: identifyCounty
+        input: county
+        value: "Mower"
+      - pageName: identifyCounty
+        input: county
+        value: "Polk"
 pageDefinitions:
   - &landing
     name: landing
@@ -351,10 +366,13 @@ pageDefinitions:
               helpMessageKey: choose-programs.certain-pops-help
               helpIcon: icon-medical-expenses
               flag: certain-pops
+              condition: *certainPopsPilot?
             - value: NONE
               messageKey: choose-programs.none-of-the-above
               helpIcon: icon-people
               isNone: true
+          datasources:
+            - pageName: identifyCounty
     alertBox:
       type: CHOOSE_NONE_WARNING
       message: choose-programs.you-will-be-asked
@@ -476,6 +494,9 @@ pageDefinitions:
             - value: "dont-have-ssn"
               messageKey: personal-info.dont-have-ssn
               flag: certain-pops
+              condition: *certainPopsPilot?
+          datasources:
+            - pageName: identifyCounty
         followUpValues:
           - "dont-have-ssn"
         followUps:
@@ -553,6 +574,7 @@ pageDefinitions:
             type: TEXT
             promptMessage:
               promptMessageKey: personal-info.what-state-did-you-move-from
+      
   - &contactInfo
     name: contactInfo
     pageTitle: contact-info.title
@@ -4797,12 +4819,17 @@ workflow:
           input: isTribalNationMember
           value: "true"
       - pageName: medicalCareMilestone
-        condition: *applicantChoseCERTAINPOPS?
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - *certainPopsPilot?
         flag: certain-pops
       - pageName: introIncome
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
+      - pageName: identifyCounty
   selectTheTribe:
     pageConfiguration: *selectTheTribe
     nextPages:
@@ -4840,6 +4867,7 @@ workflow:
       - pageName: medicalCareMilestone
         condition:
           conditions:
+            - *certainPopsPilot?
             - *applicantChoseCERTAINPOPS?
             - pageName: nationsBoundary
               input: livingInNationBoundary
@@ -4889,7 +4917,11 @@ workflow:
           input: applyForTribalTANF
           value: "true"
       - pageName: medicalCareMilestone
-        condition: *applicantChoseCERTAINPOPS?
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *certainPopsPilot?
+            - *applicantChoseCERTAINPOPS?
         flag: certain-pops
       - pageName: introIncome
     skipCondition:
@@ -4903,6 +4935,7 @@ workflow:
       - pageName: choosePrograms
       - pageName: pregnant
       - pageName: addHouseholdMembers
+      - pageName: identifyCounty
   applyForMFIP:
     pageConfiguration: *applyForMFIP
     nextPages:
@@ -4912,11 +4945,16 @@ workflow:
           input: applyForMFIP
           value: "true"
       - pageName: medicalCareMilestone
-        condition: *applicantChoseCERTAINPOPS?
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - *certainPopsPilot?
         flag: certain-pops
       - pageName: introIncome
     skipCondition: *someoneChoseCASH?
     datasources:
+      - pageName: identifyCounty
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
@@ -4924,18 +4962,28 @@ workflow:
     pageConfiguration: *tribalTANFConfirmation
     nextPages:
       - pageName: medicalCareMilestone
-        condition: *applicantChoseCERTAINPOPS?
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - *certainPopsPilot?
         flag: certain-pops
       - pageName: introIncome
     datasources:
+      - pageName: identifyCounty
       - pageName: choosePrograms
   applyForMFIPConfirmation:
     pageConfiguration: *applyForMFIPConfirmation
     nextPages:
       - pageName: medicalCareMilestone
-        condition: *applicantChoseCERTAINPOPS?
+        condition: 
+          logicalOperator: AND
+          conditions:
+            - *applicantChoseCERTAINPOPS?
+            - *certainPopsPilot?
         flag: certain-pops
       - pageName: introIncome
+      - pageName: identifyCounty
     datasources:
       - pageName: choosePrograms
   medicalCareMilestone:

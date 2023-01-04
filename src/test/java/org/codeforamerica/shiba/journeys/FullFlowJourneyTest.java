@@ -4,12 +4,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
-import static org.codeforamerica.shiba.testutilities.TestUtils.assertPdfFieldEquals;
 import static org.codeforamerica.shiba.testutilities.TestUtils.getAbsoluteFilepathString;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -48,7 +46,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     List<String> programSelections = List
         .of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH, PROGRAM_CERTAIN_POPS);
-    getToHomeAddress("Hennepin", programSelections);
+    getToHomeAddress("Chisago", programSelections);
 
     // Where are you currently Living?
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
@@ -497,7 +495,7 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("submission-date").getText()).contains(
-        "Your application was submitted to Hennepin County (612-596-1300) and Mille Lacs Band of Ojibwe (320-532-7407) on January 1, 2020.");
+        "Your application was submitted to Chisago County (888-234-1246) and Mille Lacs Band of Ojibwe (320-532-7407) on January 1, 2020.");
     applicationId = downloadPdfs();
 
     // CCAP fields
@@ -516,9 +514,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("DATE_OF_BIRTH_0", "09/14/2018");
     assertCcapFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCcapFieldEquals("COUNTY_INSTRUCTIONS", """
-        This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
+        This application was submitted to Chisago County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
                     
-        For more support, you can call Hennepin County (612-596-1300).""");
+        For more support, you can call Chisago County (888-234-1246).""");
     assertCcapFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCcapFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("UTM_SOURCE", "");
@@ -633,9 +631,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCafFieldEquals("COUNTY_INSTRUCTIONS",
         """
-            This application was submitted to Mille Lacs Band of Ojibwe and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
+            This application was submitted to Mille Lacs Band of Ojibwe and Chisago County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
 
-            For more support, you can call Mille Lacs Band of Ojibwe (320-532-7407) and Hennepin County (612-596-1300).""");
+            For more support, you can call Mille Lacs Band of Ojibwe (320-532-7407) and Chisago County (888-234-1246).""");
     assertCafFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCafFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCcapFieldEquals("TRIBAL_NATION", "Bois Forte");
@@ -773,9 +771,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCertainPopsFieldEquals("SSN_0", "XXX-XX-XXXX");
     assertCertainPopsFieldEquals("COUNTY_INSTRUCTIONS",
             """
-                This application was submitted to Mille Lacs Band of Ojibwe and Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
+                This application was submitted to Mille Lacs Band of Ojibwe and Chisago County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
 
-                For more support, you can call Mille Lacs Band of Ojibwe (320-532-7407) and Hennepin County (612-596-1300).""");
+                For more support, you can call Mille Lacs Band of Ojibwe (320-532-7407) and Chisago County (888-234-1246).""");
     assertCertainPopsFieldEquals("PROGRAMS", "SNAP, CCAP, EA, GRH, CERTAIN_POPS, TRIBAL TANF, CASH");
     assertCertainPopsFieldEquals("FULL_NAME", "Ahmed St. George");
     assertCertainPopsFieldEquals("TRIBAL_NATION", "Bois Forte");

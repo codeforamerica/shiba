@@ -199,6 +199,14 @@ public class Page {
         .map(input -> input.findElement(By.xpath("./..")).getText().split("\n")[0])
         .collect(Collectors.toList());
   }
+  
+  public List<String> getCheckboxDisplays(String inputName) {
+    return driver.findElements(By.cssSelector(String.format("input[name='%s[]']", inputName)))
+        .stream()
+        .filter(WebElement::isDisplayed)
+        .map(input -> input.findElement(By.xpath("./..")).getText().split("\n")[0])
+        .collect(Collectors.toList());
+  }
 
   public String getSelectValue(String inputName) {
     return driver.findElement(By.cssSelector(String.format("select[name='%s[]']", inputName)))
