@@ -137,6 +137,15 @@
       myDropZone.emit('destroy', file);
     }
   }
+  
+  function doesAnyFileHaveError() {
+	if ($('#file').hasClass('form-group--error')) {
+      return true;
+	} 
+	else {
+	  return false;
+	}
+  }
 
   function processDZQueueAfterThumbnailGeneration() {
     var allUploadsHaveThumbnails = myDropZone.getQueuedFiles().every(
@@ -202,7 +211,7 @@
     acceptedFiles: ".jpeg,.jpg,.png,.gif,.pdf",
     clickable: ".drag-and-drop-box",
     previewTemplate: `
-            <div class="dz-preview dz-file-preview spacing-below-15">
+            <div id="file" class="dz-preview dz-file-preview spacing-below-15">
               <div class="dz-details grid">
                 <div class="grid__item width-one-sixth mobile-width-one-fourth doc-rectangle">
                     <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
@@ -310,6 +319,9 @@
       this.on('destroy', function (file) {
         myDropZone.removeFile(file);
         showNumberOfAddedFiles()
+        if (!doesAnyFileHaveError()) {
+		  $('#submit-my-documents').removeClass("disabled");
+	    }
       });
       
       this.on('processing', function (file) {
@@ -360,7 +372,7 @@
       removeLink.onclick = destroyerCreator(file);
       removeLink.innerText = [[#{general.remove}]].toLowerCase();
       removeLink.classList.add("text--red");
-
+      
       var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
       filePreview.innerHTML = "<svg class=\"margin-auto\" width=\"40\" height=\"47\" viewBox=\"0 0 40 47\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
           +
