@@ -60,8 +60,7 @@ public class SelfEmploymentPreparerTest {
         .prepareDocumentFields(application, null, Recipient.CLIENT
         ))
         .containsExactlyInAnyOrder(
-            new DocumentField("employee", "selfEmployed", "false", SINGLE_VALUE),
-            new DocumentField("employee", "selfEmployedGrossMonthlyEarnings", "", SINGLE_VALUE)
+            new DocumentField("employee", "selfEmployed", "false", SINGLE_VALUE)
         );
   }
 
@@ -80,11 +79,10 @@ public class SelfEmploymentPreparerTest {
     ApplicationData applicationData = new TestApplicationDataBuilder()
     		.withPersonalInfo()
     		.withHouseholdMember("Other", "Person")
-        .withSubworkflow("jobs",
-            new PagesDataBuilder().withNonHourlyJob("true", "12", "EVERY_WEEK"),//true for selfEmployed
-            new PagesDataBuilder().withPageData("householdSelectionForIncome", "whoseJobIsIt", "Jane Doe applicant"),
-            new PagesDataBuilder().withPageData("householdSelectionForIncome", "whoseJobIsIt", "Other Person xyz")
-        		)
+        .withSubworkflow("jobs", new PagesDataBuilder().withNonHourlyJob("true", "12", "EVERY_WEEK") //true for selfEmployed
+            .withPageData("householdSelectionForIncome", "whoseJobIsIt", "Jane Doe applicant")
+            .withPageData("householdSelectionForIncome", "whoseJobIsItFormatted", "Jane Doe")
+        	)
         .build();
 
     Application application = Application.builder().applicationData(applicationData).build();
@@ -101,7 +99,10 @@ public class SelfEmploymentPreparerTest {
         new DocumentField("selfEmployment_payPeriod", "payPeriod", "EVERY_WEEK", SINGLE_VALUE, 0),
         new DocumentField("selfEmployment_paidByTheHour", "paidByTheHour", "false", SINGLE_VALUE,  0),
         new DocumentField("selfEmployment_selfEmployment", "selfEmployment", "true", SINGLE_VALUE, 0),
-        new DocumentField("employee","selfEmployedApplicantName", "Jane Doe", SINGLE_VALUE)
+        new DocumentField("selfEmployment_householdSelectionForIncome","whoseJobIsIt", "Jane Doe applicant", SINGLE_VALUE, 0),
+        new DocumentField("selfEmployment_householdSelectionForIncome","whoseJobIsItFormatted", "Jane Doe", SINGLE_VALUE, 0),
+        new DocumentField("selfEmployment_employee","name", "Jane Doe", SINGLE_VALUE, 0),
+        new DocumentField("selfEmployment_employee", "grossMonthlyIncome", "48.00", SINGLE_VALUE, 0)
     );
   }
     
@@ -120,7 +121,7 @@ public class SelfEmploymentPreparerTest {
     
     assertThat(actual).contains(
         new DocumentField("employee", "selfEmployed", "true", SINGLE_VALUE),
-        new DocumentField("employee","selfEmployedApplicantName", "Jane Doe", SINGLE_VALUE));
+        new DocumentField("selfEmployment_employee","grossMonthlyIncome", "48.00", SINGLE_VALUE, 0));
   }
   
 }

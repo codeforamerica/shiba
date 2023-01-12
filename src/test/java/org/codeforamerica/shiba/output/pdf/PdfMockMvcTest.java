@@ -1120,9 +1120,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			// Section 9
 			assertPdfFieldEquals("SELF_EMPLOYED", "Yes", pdf);
-			assertPdfFieldEquals("SELF_EMPLOYMENT_APPLICANT_NAME", "Dwight Schrute", pdf);
+			assertPdfFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_NAME_0", "Dwight Schrute", pdf);
 			assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
-			assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "", pdf);
 
 			// Section 10
 			assertPdfFieldEquals("IS_WORKING", "Yes", pdf);
@@ -1446,6 +1445,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			postExpectingSuccess("retroactiveCoverageTimePeriod", Map.of(
 			    "retroactiveCoverageNumberMonths",List.of("1", "2" ),
 			    "retroactiveCoverageMap",List.of("applicant",jimHalpertId)));
+			//TODO new -->
+			postExpectingSuccess("employmentStatus", "areYouWorking", "true");
+			addSelfEmployedJob(getApplicantFullNameAndId(), "someEmployerName");
+			addSelfEmployedJob(getJimFullNameAndId(), "someEmployerName");
+			
+			
 			postExpectingSuccess("assets", "assets", List.of("VEHICLE", "STOCK_BOND", "REAL_ESTATE"));
 			assertNavigationRedirectsToCorrectNextPage("assets", "vehicleAssetSource");
 			postExpectingRedirect("vehicleAssetSource", "vehicleAssetSource",
@@ -1485,6 +1490,12 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_0", "1", pdf);
             assertPdfFieldEquals("RETROACTIVE_APPLICANT_FULLNAME_1", "Jim Halpert", pdf);
             assertPdfFieldEquals("RETROACTIVE_COVERAGE_MONTH_1", "2", pdf);
+            
+            //Section 9
+            assertPdfFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_NAME_0", "Dwight Schrute", pdf);
+            assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_0", "480.00", pdf);
+            assertPdfFieldEquals("SELF_EMPLOYMENT_EMPLOYEE_NAME_1", "Jim Halpert", pdf);
+            assertPdfFieldEquals("SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME_1", "480.00", pdf);
             
             // Section 14
 			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "Yes", pdf);

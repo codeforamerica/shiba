@@ -54,10 +54,10 @@ class GrossMonthlyIncomePreparerTest {
   }
 
   /**
-   * For certain-pops, we only want to map gross monthly income for applicant's self-employment
+   * For certain-pops, we want to map gross monthly income for applicant's and household member's self-employment
    */
   @Test
-  void shouldMapApplicantJobIncomeInformationForCertainPops() {
+  void shouldMapAllJobIncomeInformationForCertainPops() {
     Application application = Application.builder().applicationData(applicationData).build();
     PagesData applicantJob = new TestApplicationDataBuilder()
         .withPageData(
@@ -77,7 +77,10 @@ class GrossMonthlyIncomePreparerTest {
     assertThat(documentFields).containsOnly(
         new DocumentField("employee", "grossMonthlyIncome", "1440.00", SINGLE_VALUE, 0),
         new DocumentField("nonSelfEmployment_employee", "grossMonthlyIncome", "1440.00",
-            SINGLE_VALUE, 0)
+            SINGLE_VALUE, 0),
+        new DocumentField("employee", "grossMonthlyIncome", "1080.00", SINGLE_VALUE, 1),
+        new DocumentField("nonSelfEmployment_employee", "grossMonthlyIncome", "1080.00",
+            SINGLE_VALUE, 1)
     );
   }
 }
