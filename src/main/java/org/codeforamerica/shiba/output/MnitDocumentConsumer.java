@@ -9,6 +9,7 @@ import static org.codeforamerica.shiba.output.Document.XML;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -42,6 +44,7 @@ public class MnitDocumentConsumer {
   private final FilenetWebServiceClient mnitClient;
   private final FilenameGenerator filenameGenerator;
   private final UploadedDocsPreparer uploadedDocsPreparer;
+  private final ThreadPoolTaskExecutor executor;
 
   public MnitDocumentConsumer(XmlGenerator xmlGenerator,
       PdfGenerator pdfGenerator,
@@ -50,7 +53,8 @@ public class MnitDocumentConsumer {
       ApplicationStatusRepository applicationStatusRepository,
       FilenetWebServiceClient mnitClient,
       FilenameGenerator filenameGenerator,
-      UploadedDocsPreparer uploadedDocsPreparer) {
+      UploadedDocsPreparer uploadedDocsPreparer,
+      ThreadPoolTaskExecutor threadPoolEexecutor) {
     this.xmlGenerator = xmlGenerator;
     this.pdfGenerator = pdfGenerator;
     this.monitoringService = monitoringService;
@@ -59,6 +63,7 @@ public class MnitDocumentConsumer {
     this.mnitClient = mnitClient;
     this.filenameGenerator = filenameGenerator;
     this.uploadedDocsPreparer = uploadedDocsPreparer;
+    this.executor = threadPoolEexecutor;
   }
 
   public void processCafAndCcap(Application application) {
@@ -78,7 +83,7 @@ public class MnitDocumentConsumer {
 
   @NotNull
   private List<Thread> createThreadsForSendingThisApplication(Application application, String id) {
-    List<Thread> threads = new ArrayList<>();
+    List<Thread> threads = Collections.synchronizedList(new ArrayList<>());
     Set<RoutingDestination> allRoutingDestinations = new HashSet<>();
     ApplicationData applicationData = application.getApplicationData();
 
@@ -92,8 +97,7 @@ public class MnitDocumentConsumer {
 
       for (RoutingDestination rd : routingDestinations) {
         ApplicationFile pdf = pdfGenerator.generate(id, doc, CASEWORKER, rd);
-        Thread thread = new Thread(
-            () -> sendOrSetToFailed(application, rd, pdf, doc));
+        Thread thread = executor.createThread(() -> sendOrSetToFailed(application, rd, pdf, doc));
         thread.start();
         threads.add(thread);
       }
@@ -102,7 +106,7 @@ public class MnitDocumentConsumer {
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
       ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
-      Thread thread = new Thread(() -> sendOrSetToFailed(application, rd, xml, XML));
+      Thread thread = executor.createThread(() -> sendOrSetToFailed(application, rd, xml, XML));
       thread.start();
       threads.add(thread);
     });
