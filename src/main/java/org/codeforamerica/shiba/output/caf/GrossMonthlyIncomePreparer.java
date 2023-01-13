@@ -84,12 +84,6 @@ public class GrossMonthlyIncomePreparer implements DocumentFieldPreparer {
         grossMonthlyIncomeParser.parse(application.getApplicationData());
 
     List<JobIncomeInformation> grossIncomeInfoToIncludeInThisDocument = grossIncomeInfoForAllHouseholdMembers;
-    if (document == Document.CERTAIN_POPS) {
-      // Only include income info for jobs held by the applicant
-      grossIncomeInfoToIncludeInThisDocument = grossIncomeInfoForAllHouseholdMembers.stream()
-          .filter(GrossMonthlyIncomePreparer::doesApplicantHaveIncomeFromAJob)
-          .toList();
-    }
     return grossIncomeInfoToIncludeInThisDocument;
   }
 }

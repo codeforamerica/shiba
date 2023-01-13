@@ -397,6 +397,7 @@ mappings:
   selfEmployment_employee:
     firstName: SELF_EMPLOYMENT_EMPLOYEE_FIRST_NAME
     lastName: SELF_EMPLOYMENT_EMPLOYEE_LAST_NAME
+    name: SELF_EMPLOYMENT_EMPLOYEE_NAME
     grossMonthlyIncome: SELF_EMPLOYMENT_GROSS_MONTHLY_INCOME
   selfEmployment_hoursAWeek:
     hoursAWeek: SELF_EMPLOYMENT_HOURS_A_WEEK

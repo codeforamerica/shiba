@@ -20,6 +20,10 @@ import org.codeforamerica.shiba.pages.config.PageConfiguration;
 import org.codeforamerica.shiba.pages.config.Validator;
 import org.springframework.util.MultiValueMap;
 
+/**
+ * PageData extends HashMap&lt;String, InputData&gt;
+ *
+ */
 @EqualsAndHashCode(callSuper = true)
 @Value
 @NoArgsConstructor
