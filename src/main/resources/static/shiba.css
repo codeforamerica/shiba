@@ -159,6 +159,12 @@
   position: relative;
   height: auto !important;
   flex-shrink: 0;
+  padding: 30px 42px;
+}
+@media screen and (max-width: 600px) {
+  .main-footer {
+  padding: 30px 30px;
+  }
 }
 
 .main-footer a:visited {
@@ -477,9 +483,28 @@ form .drag-and-drop-box-compact {
   margin-top: 74px;
 }
 
-.illustration--cfa-logo {
-  background-image: url(/images/code-for-america-logo_white.svg);
+.illustration--mn-logo {
+  background-image: url(/images/minnesota-logo.svg);
   margin-left: 0;
+  width: 70px;
+  height:43px
+}
+/* when screen width is 600px or less the logo is to the left so we need some space on the top. */
+@media screen and (max-width: 600px) {
+  .illustration--mn-logo {
+  margin-top: 25px;
+  }
+}
+
+.main-footer__mn-logo {
+	margin-top: 0;
+}
+/* when screen width is 601px or greater we put the logo to the right. */
+@media screen and (min-width: 601px) {
+	.main-footer__mn-logo {
+		margin-top: 0;
+		float: right;
+	}
 }
 
 .mn-logo {
