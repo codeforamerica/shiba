@@ -49,8 +49,6 @@ public class EmailContentCreator {
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_LOOK_OUT_FOR = "later-docs.comfirmation-email-look-out-for";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_UPDATE = "later-docs.comfirmation-email-update";
   private final static String RESUBMIT_EMAIL_BODY = "email.resubmit-email";
-  private final static String DEMO_PURPOSES_ONLY = "email.demo-purposes-only";
-  private final static String SHARE_FEEDBACK = "email.share-feedback";
   private final MessageSource messageSource;
   private final String activeProfile;
   private final NextStepsContentService nextStepsContentService;
@@ -116,8 +114,6 @@ public class EmailContentCreator {
     if (docRecs.length() > 0) {
       content = "%s<p>%s</p>".formatted(content, docRecs);
     }
-
-    content = addDemoMessage(content, lms);
     return wrapHtml(content);
   }
 
@@ -127,7 +123,6 @@ public class EmailContentCreator {
     String content;
     content = getDocumentRecommendations(applicationData, locale, lms,
         DOCUMENT_RECOMMENDATION_EMAIL);
-    content = addDemoMessage(content, lms);
     return wrapHtml(content);
   }
 
@@ -172,7 +167,6 @@ public class EmailContentCreator {
     String content = lms.getMessage(CLIENT_BODY,
         List.of(confirmationId, "", lms.getMessage(IF_YOU_WANT_AN_UPDATE), finalDestinationList, formattedTime));
 
-    content = addDemoMessage(content, lms);
     return wrapHtml(content);
   }
 
@@ -190,8 +184,6 @@ public class EmailContentCreator {
         .map(nextStepSection -> "<strong>" + nextStepSection.title() + ":</strong><br>"
             + nextStepSection.message())
         .collect(Collectors.joining("<br><br>"));
-
-    content = addDemoMessage(content, lms);
 
     return wrapHtml(content);
   }
@@ -271,14 +263,6 @@ public class EmailContentCreator {
         "<p><b>E-mail:</b> " + args.get("email") + "</p>" +
         "<p>Fields that are blank were not shared by the client in their application.</p>" +
         "<p>Please reach out to help@mnbenefits.org for support.</p>");
-  }
-
-  private String addDemoMessage(String content, LocaleSpecificMessageSource lms) {
-    if ("demo".equals(activeProfile)) {
-      content = "%s<p>%s</p><p>%s</p>"
-          .formatted(content, lms.getMessage(DEMO_PURPOSES_ONLY), lms.getMessage(SHARE_FEEDBACK));
-    }
-    return content;
   }
 
   private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args,

@@ -236,23 +236,6 @@ class EmailContentCreatorTest {
                                             "</body></html>");
   }
 
-  @Test
-  void shouldCreateConfirmationEmailFromDemo() {
-    emailContentCreator = new EmailContentCreator(messageSource, "demo", nextStepsContentService,
-        docRecommendationMessageService, applicationRepository, routingDecisionService, routingDestinationMessageService);
-
-    String emailContent = emailContentCreator.createFullClientConfirmationEmail(
-        new ApplicationData(),
-        "someNumber",
-        List.of(CCAP),
-        SnapExpeditedEligibility.UNDETERMINED,
-        CcapExpeditedEligibility.ELIGIBLE,
-        ENGLISH);
-    assertThat(emailContent).contains(
-        "This e-mail is for demo purposes only. No application for benefits was submitted on your behalf.");
-    assertThat(emailContent).contains(
-        "Within 5 days, your county or Tribal Nation will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.");
-  }
 
   @Test
   void shouldCreateShortConfirmationEmail() {
