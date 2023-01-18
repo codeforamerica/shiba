@@ -42,7 +42,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev | atst | production">
+    <springProfile name="dev | production">
         <root level="INFO">
             <appender-ref ref="HostedConsole"/>
             <appender-ref ref="DatadogJSON"/>

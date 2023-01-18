@@ -50,7 +50,8 @@ server:
     whitelabel:
       enabled: true
 sentry:
-  traces-sample-rate: 0.3
+  traces-sample-rate: 0.2
+  send-default-pii: true
 
 client:
   keystore: src/main/resources/shiba-keystore.jks

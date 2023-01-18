@@ -53,8 +53,11 @@ public class SessionLogFilter implements Filter {
     // Don't create a new session in logging and create a "unique" id for expired sessions for tracking
     String sessionId = httpReq.getSession(false) != null ?
             httpReq.getSession(false).getId() :  "expired : " + System.currentTimeMillis();
-
-    MDC.put("url", String.valueOf(httpReq.getRequestURL()));
+	String url = String.valueOf(httpReq.getRequestURL());
+	if(!url.endsWith("navigation")) {
+		MDC.put("url", url);
+	}
+    
     MDC.put("sessionId", sessionId);
     clientIP = createRequestIp(httpReq);
     if (applicationData != null && applicationData.getClientIP() == null) {
