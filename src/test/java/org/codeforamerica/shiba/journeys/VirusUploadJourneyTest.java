@@ -64,6 +64,39 @@ public class VirusUploadJourneyTest extends JourneyTest {
     	.contains("hidden");
     testPage.clickLink("remove");
     
+    uploadJpgFile();
+    uploadPDFVirusFile3();
+    waitForErrorMessage();
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
+            "Your file cannot be uploaded because a virus was detected. Try uploading a different copy of the file.");
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
+        "1 file added");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+    	.contains("disabled");
+    uploadPDFVirusFile3();
+    waitForErrorMessage();
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
+            "Your file cannot be uploaded because a virus was detected. Try uploading a different copy of the file.");
+    assertThat(driver.findElements(By.className("text--error")).get(1).getText()).contains(
+            "Your file cannot be uploaded because a virus was detected. Try uploading a different copy of the file.");
+    assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
+        "1 file added");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+    	.contains("disabled");
+    testPage.clickLink("remove");
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
+            "Your file cannot be uploaded because a virus was detected. Try uploading a different copy of the file.");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+		.contains("disabled");
+    testPage.clickLink("remove");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+    	.doesNotContain("disabled");
+    assertThat(driver.findElement(By.id("submit-my-documents")).getAttribute("class"))
+	.doesNotContain("hidden");
+    testPage.clickLink("delete");
+    testPage.clickButton("Yes");
+    
+    
     uploadPDFVirusFile3();
     waitForErrorMessage();
     assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
