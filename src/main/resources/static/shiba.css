@@ -794,12 +794,8 @@ input[type=number] {
 /* Changes from Honeycrisp.css that were migrated here */
 
 @font-face {
-  src: url(/fonts/icomoon.eot?ia7soh);
-  src: url(/fonts/icomoon.eot?ia7soh#iefix) format("embedded-opentype"), url(/fonts/icomoon.ttf?ia7soh) format("truetype"), url(/fonts/icomoon.woff?ia7soh) format("woff"), url(/fonts/icomoon.svg?ia7soh#icomoon) format("svg");
   font-family: 'MaterialIcons-Regular';
-  src: url(/fonts/MaterialIcons-Regular.eot?ia7soh);
-  src: url(/fonts/MaterialIcons-Regular.eot?ia7soh#iefix) format("embedded-opentype"),
-  url(/fonts/MaterialIcons-Regular.ttf?ia7soh) format("truetype"),
+  src: url(/fonts/MaterialIcons-Regular.ttf?ia7soh) format("truetype"),
   url(/fonts/MaterialIcons-Regular.woff?ia7soh) format("woff"),
   url(/fonts/MaterialIcons-Regular.svg?ia7soh#MaterialIcons-Regular) format("svg");
   font-weight: normal;
