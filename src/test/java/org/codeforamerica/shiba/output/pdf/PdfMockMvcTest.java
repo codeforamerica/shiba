@@ -1133,7 +1133,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("INCOME_PER_PAY_PERIOD_EVERY_WEEK_0", "1", pdf);
 
 			// Section 11
-			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
+			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
 
 			// Section 14
 			assertPdfFieldEquals("CP_HAS_BANK_ACCOUNTS", "No", pdf);
@@ -1298,7 +1298,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
 			// Section 11
-			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
 		}
 
 		// The applicant has unearned income, there are no additional household members
@@ -1323,7 +1323,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
 			// Section 11
-			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
 
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Social Security", pdf);
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_AMOUNT_1_1", "100", pdf);
@@ -1377,7 +1377,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			var pdf = downloadCertainPopsCaseWorkerPDF(applicationData.getId());
 
 			// Section 11
-			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "No", pdf);
+			assertPdfFieldEquals("NO_CP_UNEARNED_INCOME", "Yes", pdf);
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_PERSON_1", "householdMemberFirstName0 householdMemberLastName0",
 					pdf);
 			assertPdfFieldEquals("CP_UNEARNED_INCOME_TYPE_1_1", "Unemployment", pdf);

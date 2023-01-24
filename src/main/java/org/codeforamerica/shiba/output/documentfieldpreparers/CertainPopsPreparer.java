@@ -334,7 +334,7 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 			}
 		}
 		certainPopsDocumentFields.add(new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				String.valueOf(hasNoUnearnedIncome && hasNoOtherUnearnedIncome), ENUMERATED_SINGLE_VALUE));
+				String.valueOf(!(hasNoUnearnedIncome && hasNoOtherUnearnedIncome)), ENUMERATED_SINGLE_VALUE));
 
 		return hasNoUnearnedIncome && hasNoOtherUnearnedIncome;
 	}

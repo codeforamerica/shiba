@@ -26,9 +26,26 @@ public class CertainPopsPreparerTest {
 
 	// Neither unearned income nor other unearned income types are selected.
 	@Test
-	public void shouldMapNoUnearndIncomeAndNoOtherUnearnedIncomeToTrue() {
+	public void shouldMapNoUnearndIncomeAndNoOtherUnearnedIncomeToFalse() {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
 				.withPageData("unearnedIncome", "unearnedIncome", List.of("NO_UNEARNED_INCOME_SELECTED"))
+				.withPageData("otherUnearnedIncome", "otherUnearnedIncome",
+						List.of("NO_OTHER_UNEARNED_INCOME_SELECTED"))
+				.build();
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
+				"false");
+		assertThat(result).contains(documentField);
+	}
+
+	// An unearned income type is selected but no other unearned income types are
+	// selected.
+	@Test
+	public void shouldMapUnearndIncomeAndNoOtherUnearnedIncomeToTrue() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
 				.withPageData("otherUnearnedIncome", "otherUnearnedIncome",
 						List.of("NO_OTHER_UNEARNED_INCOME_SELECTED"))
 				.build();
@@ -40,27 +57,10 @@ public class CertainPopsPreparerTest {
 		assertThat(result).contains(documentField);
 	}
 
-	// An unearned income type is selected but no other unearned income types are
-	// selected.
-	@Test
-	public void shouldMapUnearndIncomeAndNoOtherUnearnedIncomeToFalse() {
-		ApplicationData applicationData = new TestApplicationDataBuilder()
-				.withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
-				.withPageData("otherUnearnedIncome", "otherUnearnedIncome",
-						List.of("NO_OTHER_UNEARNED_INCOME_SELECTED"))
-				.build();
-
-		List<DocumentField> result = preparer
-				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
-		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
-		assertThat(result).contains(documentField);
-	}
-
 	// No unearned income types are selected but an other unearned income type is
 	// selected.
 	@Test
-	public void shouldMapNoUnearndIncomeAndOtherUnearnedIncomeToFalse() {
+	public void shouldMapNoUnearndIncomeAndOtherUnearnedIncomeToTrue() {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
 				.withPageData("unearnedIncome", "unearnedIncome", List.of("NO_UNEARNED_INCOME_SELECTED"))
 				.withPageData("otherUnearnedIncome", "otherUnearnedIncome", List.of("TRUST_MONEY")).build();
@@ -68,14 +68,14 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
+				"true");
 		assertThat(result).contains(documentField);
 	}
 
 	// An unearned income type is selected and an other unearned income type is
 	// selected.
 	@Test
-	public void shouldMapUnearndIncomeAndOtherUnearnedIncomeToFalse() {
+	public void shouldMapUnearndIncomeAndOtherUnearnedIncomeToTrue() {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
 				.withPageData("unearnedIncome", "unearnedIncome", List.of("SOCIAL_SECURITY"))
 				.withPageData("otherUnearnedIncome", "otherUnearnedIncome", List.of("TRUST_MONEY")).build();
@@ -83,7 +83,7 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
+				"true");
 		assertThat(result).contains(documentField);
 	}
 
@@ -120,7 +120,7 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
+				"true");
 		assertThat(result).contains(documentField);
 		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson1",
 				"David Smith");
@@ -169,7 +169,7 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
+				"true");
 		assertThat(result).contains(documentField);
 		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson1",
 				"Jane Smith");
@@ -231,7 +231,7 @@ public class CertainPopsPreparerTest {
 		List<DocumentField> result = preparer
 				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
 		DocumentField documentField = createApplicationInput("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome",
-				"false");
+				"true");
 		assertThat(result).contains(documentField);
 		documentField = createApplicationInput("certainPopsUnearnedIncome", "certainPopsUnearnedIncomePerson1",
 				"David Smith");
@@ -612,7 +612,7 @@ public class CertainPopsPreparerTest {
           Application.builder().applicationData(applicationData).build(), null,
           Recipient.CASEWORKER);
       assertThat(result).containsAll(List.of(
-          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
+          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "false", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
           new DocumentField("certainPops", "certainPopsSupplement",
           List.of(
               "\n\nQUESTION 15 continued:\nPerson 4: Jack Smith, Investment Type: retirement accounts"),
@@ -650,7 +650,7 @@ public class CertainPopsPreparerTest {
           Application.builder().applicationData(applicationData).build(), null,
           Recipient.CASEWORKER);
       assertThat(result).containsAll(List.of(
-          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "true", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
+          new DocumentField("certainPopsUnearnedIncome", "noCertainPopsUnearnedIncome", "false", DocumentFieldType.ENUMERATED_SINGLE_VALUE),
           new DocumentField("certainPops", "certainPopsSupplement",
           List.of(
               "\n\nQUESTION 8 continued:\nPerson 3: Jill Smith, Month/s: 3"
