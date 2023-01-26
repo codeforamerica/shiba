@@ -1663,3 +1663,6 @@ legend.form-question {
 .link--alert-banner:visited {
 	color:#5B0E5D;
 	}	
+.text--small--footer{
+	font-size: 1.5rem;
+}
