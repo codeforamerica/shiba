@@ -29,5 +29,11 @@ public class ControllerAdvisor {
         + " and last viewed page is " + applicationData.getLastPageViewed());
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  public void handleLocaleException(final IllegalArgumentException ex, final WebRequest request,
+      final HttpServletRequest req) {
+	MDC.put("applicationId", applicationData.getId());
+    log.info("IllegalArgumentException Detected " + ex.getMessage());
+  }
 
 }
