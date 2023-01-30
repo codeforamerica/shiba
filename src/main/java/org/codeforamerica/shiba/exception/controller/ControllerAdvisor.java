@@ -1,6 +1,9 @@
 package org.codeforamerica.shiba.exception.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.connector.ClientAbortException;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.slf4j.MDC;
@@ -31,9 +34,10 @@ public class ControllerAdvisor {
 
   @ExceptionHandler(IllegalArgumentException.class)
   public void handleLocaleException(final IllegalArgumentException ex, final WebRequest request,
-      final HttpServletRequest req) {
+      final HttpServletRequest req, HttpServletResponse response) throws IOException {
 	MDC.put("applicationId", applicationData.getId());
     log.info("IllegalArgumentException Detected " + ex.getMessage());
+    response.sendRedirect("/error");
   }
 
 }
