@@ -73,7 +73,7 @@ jobs:
         with:
           fetch-depth: '0'
           ref: main
-      - uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
+      - uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.1
         with:
           branchtomerge: main
           branch: staging
