@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 public class CertainPopsPreparer implements DocumentFieldPreparer {
 	ApplicationData applicationData = null;
 	PagesData pagesData = null;
-	List<DocumentField> certainPopsDocumentFields = null;
+	List<DocumentField> certainPopsDocumentFields = new ArrayList<>();
 	String supplementPageText = "";
 	boolean needsSupplementPage = false;
 	Set<String> cpAccountTypes = null;
