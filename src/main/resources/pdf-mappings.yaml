@@ -37,6 +37,7 @@ mappings:
     ssn: SSN
     ssnYesNo: SSN_YESNO
     sex: SEX
+    pregnant: PREGNANT
     relationship: RELATIONSHIP
     moveToMnDate: DATE_OF_MOVING_TO_MN
     moveToMnPreviousState: PREVIOUS_STATE
@@ -47,46 +48,6 @@ mappings:
       CCAP: CCAP
       NONE: PROGRAM_NONE
     programList: PROGRAMS
-  spouseInfo:
-    firstName: SPOUSE_FIRST_NAME
-    lastName: SPOUSE_LAST_NAME
-    maritalStatus: SPOUSE_MARITAL_STATUS
-    otherName: OTHER_NAME
-    dateOfBirth: SPOUSE_DOB
-    ssn: SPOUSE_SSN_VAL
-    ssnYesNo: SPOUSE_YESNO
-    sex: SPOUSE_SEX
-    pregnant: SPOUSE_PREGNANT
-    relationship: SPOUSE_RELATIONSHIP
-    moveToMnDate: DATE_OF_MOVING_TO_MN
-    moveToMnPreviousState: PREVIOUS_STATE
-    programs:
-      SNAP: FOOD
-      CASH: CASH
-      EA: EMERGENCY
-      CCAP: CCAP
-      NONE: PROGRAM_NONE
-    programList: PROGRAMS
-  householdMemberWithoutSpouseInfo:
-    firstName: HH_FIRST_NAME
-    lastName: HH_LAST_NAME
-    maritalStatus: HH_MARITAL_STATUS
-    otherName: HH_OTHER_NAME
-    dateOfBirth: HH_DATE_OF_BIRTH
-    ssn: HH_SSN
-    ssnYesNo: HH_SSN_YESNO
-    sex: HH_SEX
-    pregnant: HH_PREGNANT
-    relationship: HH_RELATIONSHIP
-    moveToMnDate: HH_DATE_OF_MOVING_TO_MN
-    moveToMnPreviousState: HH_PREVIOUS_STATE
-    programs:
-      SNAP: HH_FOOD
-      CASH: HH_CASH
-      EA: HH_EMERGENCY
-      CCAP: HH_CCAP
-      NONE: HH_PROGRAM_NONE
-    programList: HH_PROGRAMS
   basicCriteria:
     BLIND: BLIND
     HELP_WITH_MEDICARE: HELP_WITH_MEDICARE
