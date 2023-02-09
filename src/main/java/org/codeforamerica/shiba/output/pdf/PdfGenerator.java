@@ -141,12 +141,14 @@ public class PdfGenerator implements FileGenerator {
             && field.getIteration() > 1))) {
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("addIncome"));
     }
-    //For household more than two
-    var houseHoldWithoutSpouse = application.getApplicationData().getHouseholdMemberWithoutSpouse();
-    if (houseHoldWithoutSpouse > 1 && houseHoldWithoutSpouse <= 14) {
-      String name = "addHousehold"+String.valueOf(Math.ceil(houseHoldWithoutSpouse/2));
+    // Compute the number of household members that will need to be accounted for on supplemental
+    // pages. The first two are recorded on the Certain Pops PDF, the remainder (a max of 14) are handled on
+    // supplemental pages. (Note: The -3 accounts for the applicant and the first two household members)
+    var householdSupplementCount = Math.min(application.getApplicationData().getApplicantAndHouseholdMemberSize()-3, 14);
+    if (householdSupplementCount > 0) {
+      String name = "addHousehold"+String.valueOf(Math.ceil((householdSupplementCount)/2));
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get(name));
-        }
+    }
     //for Disability more than two
     if (documentFields.stream().anyMatch(
         field -> (field.getGroupName().contains("whoHasDisability")
