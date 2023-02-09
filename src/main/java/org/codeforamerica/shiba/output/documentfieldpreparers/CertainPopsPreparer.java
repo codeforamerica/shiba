@@ -21,6 +21,7 @@ import org.codeforamerica.shiba.application.parsers.ApplicationDataParser;
 import org.codeforamerica.shiba.application.parsers.GrossMonthlyIncomeParser;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
+import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.FullNameFormatter;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.JobIncomeInformation;
@@ -70,6 +71,9 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 	// This method controls the mapping logic for each of the Certain Pops
 	// questions.
 	private List<DocumentField> map(Application application, Document document, Recipient recipient) {
+		// Question 4, household healthcare coverage
+		mapHouseholdHealthCareCoverage(application, document, recipient);
+		
 		// Question 6, non-US citizens, generate the supplement if needed
 		createNonUsCitizensSupplementPage(application, document, recipient);
 		
@@ -91,6 +95,23 @@ public class CertainPopsPreparer implements DocumentFieldPreparer {
 					ENUMERATED_SINGLE_VALUE));
 		}
 		return certainPopsDocumentFields;
+	}
+	
+	// Question 4, household healthcare coverage
+	private void mapHouseholdHealthCareCoverage(Application application, Document document, Recipient recipient) {
+		Subworkflow householdMemberSubworkflow = application.getApplicationData().getSubworkflows().get("household");
+
+		if (householdMemberSubworkflow != null) {
+			for (int i = 0; i < householdMemberSubworkflow.size(); i++) {
+				Iteration iteration = householdMemberSubworkflow.get(i);
+				PagesData pagesData = iteration.getPagesData();
+				PageData householdMemberInfo = pagesData.getPage("householdMemberInfo");
+				InputData programs = householdMemberInfo.get("programs");
+				certainPopsDocumentFields.add(new DocumentField("certainPopsHouseholdMemberInfo",
+						"choseHealthcareCoverage", programs.getValue().contains("CERTAIN_POPS") ? "true" : "false",
+						DocumentFieldType.ENUMERATED_SINGLE_VALUE, i));
+			}
+		}
 	}
 
 	// Question 6, non-US citizens

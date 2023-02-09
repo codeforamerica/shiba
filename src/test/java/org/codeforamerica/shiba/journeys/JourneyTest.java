@@ -6,6 +6,7 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
+import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -151,7 +153,32 @@ abstract class JourneyTest extends AbstractBasePageTest {
   protected Callable<Boolean> zipDownloadCompletes(SuccessPage successPage) {
        return () -> getZipFile().size() == successPage.countDownloadLinks();
   }
+  
+  protected void goBackToPage(String pageName) {
+	    while(!testPage.getTitle().equalsIgnoreCase(pageName)){
+	    	 testPage.goBack();
+	    }
+  }
 
+  protected void goToPageBeforeSelectPrograms(String county) {
+	    // Landing page
+	    testPage.clickButton("Apply now");
+
+	    // Select county
+	    testPage.enter("county", county);
+	    testPage.clickContinue();
+
+	    // Informational pages
+	    testPage.clickContinue();
+	    testPage.clickContinue();
+
+	    // Language Preferences
+	    testPage.enter("writtenLanguage", "English");
+	    testPage.enter("spokenLanguage", "English");
+	    testPage.enter("needInterpreter", "Yes");
+	    testPage.clickContinue();
+  }
+  
   protected void getToHomeAddress(String county, List<String> programSelections) {
     // Landing page
     testPage.clickButton("Apply now");
@@ -232,7 +259,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("dateOfBirth", "01/12/1928");
     testPage.clickContinue();
   }
-
+  
   protected void fillOutHomeAndMailingAddress(String homeZip, String homeCity,
       String homeStreetAddress, String homeApartmentNumber) {
     testPage.enter("zipCode", homeZip);
@@ -278,6 +305,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
     }
     
   }
+  
 
   protected void assertApplicationSubmittedEventWasPublished(String applicationId,
       FlowType flowType, int expectedNumberOfEvents) {

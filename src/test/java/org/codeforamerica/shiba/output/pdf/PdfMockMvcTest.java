@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -1643,6 +1644,35 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("WHO_HAS_DISABILITY_2", "householdMemberFirstName2", pdf);
 
 		}
+
+		@Test
+		void shouldMapHHMemberHealthcareCoverageChoice() throws Exception {
+			fillInRequiredPages();
+			selectPrograms("CERTAIN_POPS");
+			postExpectingRedirect(
+					"basicCriteria", "basicCriteria", List.of("SIXTY_FIVE_OR_OLDER", "BLIND", "HAVE_DISABILITY_SSA",
+							"HAVE_DISABILITY_SMRT", "MEDICAL_ASSISTANCE", "SSI_OR_RSDI", "HELP_WITH_MEDICARE"),
+					"certainPopsConfirm");
+
+			fillOutHousemateInfoMoreThanFiveLessThanTen(4);
+			// Modify the selected programs for these household members
+			applicationData.getSubworkflows().get("household").get(0).getPagesData().getPage("householdMemberInfo")
+					.replace("programs", new InputData(List.of("NONE")));
+			applicationData.getSubworkflows().get("household").get(1).getPagesData().getPage("householdMemberInfo")
+					.replace("programs", new InputData(List.of("CERTAIN_POPS")));
+			applicationData.getSubworkflows().get("household").get(2).getPagesData().getPage("householdMemberInfo")
+					.replace("programs", new InputData(List.of("SNAP")));
+			applicationData.getSubworkflows().get("household").get(3).getPagesData().getPage("householdMemberInfo")
+					.replace("programs", new InputData(List.of("SNAP", "CERTAIN_POPS")));
+
+			submitApplication();
+			var pdf = downloadCertainPopsClientPDF();
+			assertPdfFieldEquals("HH_HEALTHCARE_COVERAGE_0", "No", pdf);
+			assertPdfFieldEquals("HH_HEALTHCARE_COVERAGE_1", "Yes", pdf);
+			assertPdfFieldEquals("HH_HEALTHCARE_COVERAGE_2", "No", pdf);
+			assertPdfFieldEquals("HH_HEALTHCARE_COVERAGE_3", "Yes", pdf);
+		}
+		
 		/* /* Keep this code till supplement page display is finalized as general supp. page.
 		@Test
         void shouldMapHHMemberMoreThan2HasRetroactiveCoverage() throws Exception {

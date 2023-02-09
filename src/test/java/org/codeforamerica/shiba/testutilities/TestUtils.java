@@ -85,6 +85,12 @@ public class TestUtils {
   }
   
   @NotNull
+  public static DocumentField createApplicationInputEnumeratedSingleValue(String groupName, String name,
+      String value, int index) {
+    return new DocumentField(groupName, name, List.of(value), ENUMERATED_SINGLE_VALUE, index);
+  }
+  
+  @NotNull
   public static DocumentField createApplicationInputSingleValue(String groupName, String name,
       String value) {
     return new DocumentField(groupName, name, List.of(value), SINGLE_VALUE);

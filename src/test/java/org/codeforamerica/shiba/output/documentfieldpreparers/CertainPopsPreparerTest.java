@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.testutilities.TestUtils.createApplicationInput;
+import static org.codeforamerica.shiba.testutilities.TestUtils.createApplicationInputEnumeratedSingleValue;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -160,8 +161,8 @@ public class CertainPopsPreparerTest {
 				.withPageData("trustMoneyIncomeSource", "trustMoneyAmount", List.of("", "200"))
 				.withPageData("trustMoneyIncomeSource", "monthlyIncomeTrustMoney",
 						List.of("Jane Smith 12345678-1234-1234-1234-123456789012"))
-				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo",
-						Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"))))
+				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo", Map
+						.of("firstName", List.of("Jane"), "lastName", List.of("Smith"), "programs", List.of("NONE"))))
 				.build();
 		applicationData.getSubworkflows().get("household").get(0)
 				.setId(UUID.fromString("12345678-1234-1234-1234-123456789012"));
@@ -403,8 +404,11 @@ public class CertainPopsPreparerTest {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
 				.withPageData("personalInfo", "firstName", List.of("David"))
 				.withPageData("personalInfo", "lastName", List.of("Smith"))
-				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo",
-						Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"))))
+				.withSubworkflow("household",
+						new PagesDataBuilder()
+								.withPageData("householdMemberInfo",
+										Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"), "programs",
+												List.of("NONE"))))
 				.withPageData("savings", "haveSavings", "false")
 				.build();
 
@@ -421,8 +425,10 @@ public class CertainPopsPreparerTest {
 		ApplicationData applicationData = new TestApplicationDataBuilder()
 				.withPageData("personalInfo", "firstName", List.of("David"))
 				.withPageData("personalInfo", "lastName", List.of("Smith"))
-				.withSubworkflow("household", new PagesDataBuilder().withPageData("householdMemberInfo",
-						Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"))))
+				.withSubworkflow("household",
+						new PagesDataBuilder().withPageData("householdMemberInfo",
+								Map.of("firstName", List.of("Jane"), "lastName", List.of("Smith"), "programs",
+										List.of("NONE"))))
 				.withPageData("savingsAccountSource", "savingsAccountSource", List.of("David Smith applicant"))
 				.withPageData("checkingAccountSource", "checkingAccountSource", List.of("Jane Smith 12345678-1234-1234-1234-123456789012"))
 				.withPageData("moneyMarketSource", "moneyMarketSource", List.of("David Smith applicant"))
@@ -468,6 +474,46 @@ public class CertainPopsPreparerTest {
 				"QUESTION 14 continued:\n4) Owner name: Jane Smith, Type of account: Certificate of deposit");
 	}
 
+	// There are 4 household members with different program selections. Those that include "CERTAIN_POPS" will
+	// map a choseHealthcareCoverage DocumentField =  true.
+	@Test
+	public void shouldMapHouseholdMemberHealthcareCoverageFields() {
+		ApplicationData applicationData = new TestApplicationDataBuilder()
+				.withPageData("personalInfo", "firstName", List.of("David"))
+				.withPageData("personalInfo", "lastName", List.of("Smith"))
+				.withSubworkflow("household",
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("CERTAIN_POPS")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Ann")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("SNAP")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Jim")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("SNAP","CERTAIN_POPS")))))))
+				.build();
+		applicationData.getSubworkflows().get("household").get(0)
+				.setId(UUID.fromString("12345678-1234-1234-1234-123456789012"));
+
+		List<DocumentField> result = preparer
+				.prepareDocumentFields(Application.builder().applicationData(applicationData).build(), null, null);
+		DocumentField documentField = createApplicationInputEnumeratedSingleValue("certainPopsHouseholdMemberInfo", "choseHealthcareCoverage",
+				"false", 0);
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInputEnumeratedSingleValue("certainPopsHouseholdMemberInfo", "choseHealthcareCoverage",
+				"true", 1);
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInputEnumeratedSingleValue("certainPopsHouseholdMemberInfo", "choseHealthcareCoverage",
+				"false", 2);
+		assertThat(result).contains(documentField);
+		documentField = createApplicationInputEnumeratedSingleValue("certainPopsHouseholdMemberInfo", "choseHealthcareCoverage",
+				"true", 3);
+		assertThat(result).contains(documentField);
+	}
+	
 
 	// Question 11 supplement text is generated when more than 2 people have unearned income or
 	// when a person has more than 4 unearned income types.
@@ -515,9 +561,10 @@ public class CertainPopsPreparerTest {
 				.withSubworkflow("household",
 						new PagesData(Map.of("householdMemberInfo",
 								new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
-										new InputData(List.of("Smith")))))),
-						new PagesData(Map.of("householdMemberInfo", new PageData(Map.of("firstName",
-								new InputData(List.of("John")), "lastName", new InputData(List.of("Smith")))))))
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))))
 				.build();
 
 		// fix the iteration IDs
@@ -556,12 +603,13 @@ public class CertainPopsPreparerTest {
 				.withSubworkflow("household",
 						new PagesData(Map.of("householdMemberInfo",
 								new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
-										new InputData(List.of("Smith")))))),
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
 						new PagesData(Map.of("householdMemberInfo",
 								new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
-										new InputData(List.of("Smith")))))),
-						new PagesData(Map.of("householdMemberInfo", new PageData(Map.of("firstName",
-								new InputData(List.of("Jill")), "lastName", new InputData(List.of("Smith")))))))
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+						new PagesData(Map.of("householdMemberInfo",
+								new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
+										new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))))
 				.build();
 
 		// fix the iteration IDs
@@ -584,20 +632,20 @@ public class CertainPopsPreparerTest {
     public void shouldMapQuestion15SupplementText() {
       ApplicationData applicationData = new TestApplicationDataBuilder().withPersonalInfo()
           .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
-          .withSubworkflow("household",
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
-                      new InputData(List.of("Smith")))))))
-          .withPageData("assets", "assets", List.of("STOCK_BOND"))
+		  .withSubworkflow("household",
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))))
+		  .withPageData("assets", "assets", List.of("STOCK_BOND"))
           .withPageData("investmentAssetType", "investmentAssetType",
               List.of("STOCKS", "BONDS", "RETIREMENT_ACCOUNTS"))
           .withPageData("stocksHouseHoldSource", "stocksHouseHoldSource",
@@ -623,20 +671,20 @@ public class CertainPopsPreparerTest {
     @Test
     public void shouldMapQuestion8SupplementText() {
       ApplicationData applicationData = new TestApplicationDataBuilder().withPersonalInfo()
-          .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
-          .withSubworkflow("household",
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
-                      new InputData(List.of("Smith")))))),
-              new PagesData(Map.of("householdMemberInfo",
-                  new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
-                      new InputData(List.of("Smith")))))))
+		  .withPageData("addHouseholdMembers", "addHouseholdMembers", "true")
+		  .withSubworkflow("household",
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jane")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("John")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jill")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))),
+				new PagesData(Map.of("householdMemberInfo",
+						new PageData(Map.of("firstName", new InputData(List.of("Jack")), "lastName",
+								new InputData(List.of("Smith")), "programs", new InputData(List.of("NONE")))))))
   
           .withPageData("retroactiveCoverage", "retroactiveCoverageQuestion", "true")
           .withPageData("retroactiveCoverageSource", "retroactiveCoverageSourceQuestion",
