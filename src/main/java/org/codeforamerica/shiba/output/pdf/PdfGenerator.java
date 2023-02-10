@@ -146,7 +146,7 @@ public class PdfGenerator implements FileGenerator {
     // supplemental pages. (Note: The -3 accounts for the applicant and the first two household members)
     var householdSupplementCount = Math.min(application.getApplicationData().getApplicantAndHouseholdMemberSize()-3, 14);
     if (householdSupplementCount > 0) {
-      String name = "addHousehold"+String.valueOf(Math.ceil((householdSupplementCount)/2));
+      String name = "addHousehold"+String.valueOf(Math.ceil((householdSupplementCount+1)/2)); // round up
       pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get(name));
     }
     //for Disability more than two
