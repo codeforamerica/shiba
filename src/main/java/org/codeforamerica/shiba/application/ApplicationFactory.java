@@ -31,6 +31,7 @@ public class ApplicationFactory {
     copy.setUtmSource(applicationData.getUtmSource());
     copy.setLastPageViewed(applicationData.getLastPageViewed());
     copy.setExpeditedEligibility(applicationData.getExpeditedEligibility());
+    copy.setOriginalCounty(applicationData.getOriginalCounty());
     monitoringService.setApplicationId(applicationData.getId());
 
     return Application.builder()

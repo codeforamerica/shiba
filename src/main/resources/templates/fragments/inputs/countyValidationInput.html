@@ -1,0 +1,47 @@
+<!-- This is a custom input for the county validation screen to select the enriched or non-enriched county (if smarty-streets was able to find it) -->
+<th:block th:fragment="countyValidationInput (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                   homeAddressData=${pageDatasources.get('homeAddress')},
+                   identifyCountyData=${pageDatasources.get('identifyCounty')},
+                   foundEnrichedCounty=${homeAddressData.containsKey('enrichedCounty')}"
+>
+  <div class="grid__item spacing-above-35 spacing-below-35">
+    <h1 class="h2" th:if="${foundEnrichedCounty}"
+        th:text="#{county-validation.check-your-county}"></h1>
+    <h1 class="h2" th:unless="${foundEnrichedCounty}"
+        th:text="#{county-validation.make-sure-your-county-is-correct}"></h1>
+    <p th:if="${foundEnrichedCounty}"
+       th:text="#{county-validation.we-updated-the-county-you-entered}"
+       class="notice--warning"></p>
+    <p th:unless="${foundEnrichedCounty}"
+       th:text="#{county-validation.we-couldnt-find-your-county}" class="notice--warning"></p>
+  </div>
+  <div class="grid__item address-validation spacing-below-60">
+    <label th:for="enriched-county" class="radio-button"
+           th:if="${foundEnrichedCounty}">
+      <p class="spacing-below-15"
+         th:text="#{${input.options.selectableOptions.get(0).messageKey}}"></p>
+      <div th:text="${homeAddressData.get('enrichedCounty').value[0]}"></div>
+      <input type="radio" th:name="${formInputName}" id="enriched-county"
+             th:value="true"
+             th:checked="true">
+    </label>
+    <label th:for="original-county" class="radio-button"
+           th:classappend="${foundEnrichedCounty} ? '' : 'is-selected left-aligned'">
+      <p class="spacing-below-15"
+         th:text="#{${input.options.selectableOptions.get(1).messageKey}}"></p>
+      <div th:text="${T(org.codeforamerica.shiba.County).getForName(identifyCountyData.get('county').value[0])}"></div>
+      <input type="radio" th:classappend="${foundEnrichedCounty} ? '' : 'hide-radio-circle'"
+             th:name="${formInputName}" id="original-county"
+             th:value="false"
+             th:checked="${foundEnrichedCounty} ? false : true">
+    </label>
+    
+  </div>
+  <button th:if="${foundEnrichedCounty}" id="form-submit-button" class="button button--primary"
+          type="submit" th:text="#{general.continue}"></button>
+  <a th:href="'/pages/'+${pageName}+'/navigation?option=1'" th:if="${!foundEnrichedCounty}"
+     class="button button--primary" th:text="#{county-validation.edit-my-county}"></a>
+  <button th:if="${!foundEnrichedCounty}" id="form-submit-button" class="button" type="submit"
+          th:text="#{county-validation.use-this-county}"></button>
+</th:block>

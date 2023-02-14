@@ -96,6 +96,8 @@ public class ApplicationDataParser {
         new ParsingCoordinate("homeAddress", "enrichedCounty"));
     coordinatesMap.put(Field.USE_ENRICHED_HOME_ADDRESS,
         new ParsingCoordinate("homeAddressValidation", "useEnrichedAddress"));
+    coordinatesMap.put(Field.USE_ENRICHED_HOME_COUNTY,
+        new ParsingCoordinate("countyValidation", "useEnrichedCounty"));
 
     coordinatesMap.put(Field.GENERAL_DELIVERY_CITY,
         new ParsingCoordinate("cityForGeneralDelivery", "whatIsTheCity"));
@@ -464,6 +466,7 @@ public class ApplicationDataParser {
     ENRICHED_HOME_APARTMENT_NUMBER,
     ENRICHED_HOME_COUNTY,
     USE_ENRICHED_HOME_ADDRESS,
+    USE_ENRICHED_HOME_COUNTY,
 
     NO_PERMANENT_ADDRESS,
     SAME_MAILING_ADDRESS,

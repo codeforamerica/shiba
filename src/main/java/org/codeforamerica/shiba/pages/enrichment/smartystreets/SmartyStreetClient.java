@@ -48,6 +48,10 @@ public class SmartyStreetClient implements LocationClient {
         .flatMap(verifyStreetResponse -> verifyStreetResponse.stream().findFirst())
         .map(addressCandidate -> {
           Components components = addressCandidate.getComponents();
+          String county = addressCandidate.getMetadata().getCountyName();
+          if(county.equalsIgnoreCase("Lake of the Woods")) {
+        	  county = "Lake Of The Woods";
+          }
           return new Address(
               addressCandidate.getDeliveryLine1(),
               components.getCityName(),
@@ -56,7 +60,8 @@ public class SmartyStreetClient implements LocationClient {
               Stream.of(components.getSecondaryDesignator(), components.getSecondaryNumber())
                   .filter(Objects::nonNull)
                   .collect(Collectors.joining(" ")),
-              addressCandidate.getMetadata().getCountyName());
+                  county
+              );
         });
   }
 }

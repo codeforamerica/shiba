@@ -1,5 +1,6 @@
 package org.codeforamerica.shiba.pages;
 
+import static java.lang.Boolean.parseBoolean;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -9,6 +10,7 @@ import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_HOME_COUNTY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
@@ -650,7 +652,7 @@ public class PageController {
       if (pageName != null && !pageName.isEmpty()) {
         applicationData.setLastPageViewed(pageName);
       }
-
+      
       ofNullable(pageWorkflow.getEnrichment())
           .map(applicationEnrichment::getEnrichment)
           .map(enrichment -> enrichment.process(pagesData))
@@ -687,9 +689,15 @@ public class PageController {
         log.error("Unexpected null applicationData ID on submit");
         applicationData.setId(applicationRepository.getNextId());
       }
+      applicationData.setOriginalCounty(CountyParser.parse(applicationData).name());
+      if (parseBoolean(getFirstValue(pagesData, USE_ENRICHED_HOME_COUNTY))) {
+        applicationData.getPageData("identifyCounty").get("county").setValue(CountyParser.parseEnrich(applicationData).name(), 0);
+      }
       Application application = applicationFactory.newApplication(applicationData);
       application.setCompletedAtTime(clock); // how we mark that the application is complete
       recordDeviceType(device, application);
+      
+      
       if(!applicationData.isSubmitted()) {
         applicationRepository.save(application);
         applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);

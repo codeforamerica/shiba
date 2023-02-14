@@ -47,8 +47,11 @@ public class FullFlowJourneyTest extends JourneyTest {
     goToPageBeforeSelectPrograms("Chisago");
      
     selectProgramsWithoutCertainPopsAndEnterPersonalInfo();
+    fillOutHomeAndMailingAddressWithoutEnrich("12345", "someCity", "someStreetAddress", "someApartmentNumber");
+    
     fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
-    fillOutContactAndReview(true);
+    fillOutContactAndReview(true, "Chisago");
+    
     testPage.clickLink("This looks correct");
     verifyHouseholdMemberCannotSelectCertainPops();
     goBackToPage("Choose Programs");

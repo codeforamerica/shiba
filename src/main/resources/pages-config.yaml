@@ -24,6 +24,16 @@ conditionDefinitions:
     input: isHomeless
     matcher: DOES_NOT_CONTAIN
     value: "true"
+  - &selectedCountyDoesNotMatchEnrichedCountyHome?
+    pageName: homeAddressValidation
+    input: enrichedCountyDifferentFromSelected
+    matcher: CONTAINS
+    value: "false"
+  - &selectedCountyDoesNotMatchEnrichedCountyMailing?
+    pageName: mailingAddressValidation
+    input: enrichedCountyDifferentFromSelected
+    matcher: CONTAINS
+    value: "false"
   - &isApplicantsJob?
     pageName: householdSelectionForIncome
     input: whoseJobIsIt
@@ -3835,6 +3845,8 @@ pageDefinitions:
               messageKey: address-validation.suggested-address
             - value: "false"
               messageKey: address-validation.address-you-entered
+      - name: enrichedCountyDifferentFromSelected
+        type: HIDDEN
   - &mailingAddressValidation
     name: mailingAddressValidation
     pageTitle: address-validation.title
@@ -3849,6 +3861,22 @@ pageDefinitions:
               messageKey: address-validation.suggested-address
             - value: "false"
               messageKey: address-validation.address-you-entered
+      - name: enrichedCountyDifferentFromSelected
+        type: HIDDEN
+  - &countyValidation
+    name: countyValidation
+    pageTitle: county-validation.title
+    hasPrimaryButton: false
+    inputs:
+      - name: useEnrichedCounty
+        type: CUSTOM
+        customInputFragment: countyValidationInput
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: county-validation.suggested-county
+            - value: "false"
+              messageKey: county-validation.county-you-entered
   - &registerToVote
     name: registerToVote
     headerKey: register-to-vote.do-you-want-to-register-to-vote
@@ -4493,6 +4521,7 @@ workflow:
     datasources:
       - pageName: homeAddress
       - pageName: mailingAddress
+      - pageName: identifyCounty
     nextPages:
       - pageName: verifyMailingAddress
       - pageName: homeAddress
@@ -4506,9 +4535,34 @@ workflow:
     datasources:
       - pageName: mailingAddress
       - pageName: homeAddress
+      - pageName: identifyCounty
     nextPages:
+      - pageName: verifyCounty
       - pageName: contactInfo
       - pageName: mailingAddress
+  verifyCounty:
+    pageConfiguration: *countyValidation
+    skipCondition: 
+      logicalOperator: OR
+      conditions:
+        - *selectedCountyDoesNotMatchEnrichedCountyHome?
+        - *selectedCountyDoesNotMatchEnrichedCountyMailing?
+        - <<: *isHomeless?
+          matcher: CONTAINS
+    datasources:
+      - pageName: homeAddress
+      - pageName: mailingAddress
+      - pageName: identifyCounty
+      - pageName: verifyHomeAddress
+      - pageName: homeAddressValidation
+      - pageName: mailingAddressValidation
+    nextPages:
+      - pageName: contactInfo
+      - pageName: identifyCountyAgain
+  identifyCountyAgain:
+    pageConfiguration: *identifyCounty
+    nextPages:
+      - pageName: contactInfo
   reviewInfo:
     subtleLinkTargetPage: doYouNeedHelpImmediately
     pageConfiguration: *reviewInfo
@@ -4519,6 +4573,7 @@ workflow:
       - pageName: addHouseholdMembers
         flow: FULL
     datasources:
+      - pageName: identifyCounty
       - pageName: personalInfo
       - pageName: homeAddress
       - pageName: homeAddressValidation
@@ -4527,6 +4582,7 @@ workflow:
       - pageName: cityForGeneralDelivery
       - pageName: contactInfo
       - pageName: choosePrograms
+      - pageName: countyValidation
   addHouseholdMembers:
     pageConfiguration: *addHouseholdMembers
     nextPages:

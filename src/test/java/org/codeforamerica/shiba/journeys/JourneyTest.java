@@ -266,6 +266,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.enter("city", homeCity);
     testPage.enter("streetAddress", homeStreetAddress);
     testPage.enter("apartmentNumber", homeApartmentNumber);
+    when(smartyStreetClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "1b", "someCounty"))
+    );
     testPage.clickContinue();
 
     // Where can the county send your mail? (accept the smarty streets enriched address)
@@ -277,13 +280,41 @@ abstract class JourneyTest extends AbstractBasePageTest {
     when(smartyStreetClient.validateAddress(any())).thenReturn(
         Optional.of(new Address("smarty street", "Cooltown", "CA", "03104", "1b", "someCounty"))
     );
+    
     testPage.clickContinue();
+    
     testPage.clickElementById("enriched-address");
+    testPage.clickContinue();
+    testPage.clickElementById("original-county");
     testPage.clickContinue();
   }
   
+  protected void fillOutHomeAndMailingAddressWithoutEnrich(String homeZip, String homeCity,
+      String homeStreetAddress, String homeApartmentNumber) {
+    testPage.enter("zipCode", homeZip);
+    testPage.enter("city", homeCity);
+    testPage.enter("streetAddress", homeStreetAddress);
+    testPage.enter("apartmentNumber", homeApartmentNumber);
+    testPage.clickContinue();
+    testPage.enter("zipCode", "23456");
+    testPage.enter("city", "someCity");
+    testPage.enter("streetAddress", "someStreetAddress");
+    testPage.enter("state", "IL");
+    testPage.enter("apartmentNumber", "someApartmentNumber");
+    testPage.clickContinue();
+    testPage.clickButton("Use this address");
+    testPage.clickButton("Edit my county");
+    testPage.enter("county", "Chisago");
+    testPage.clickContinue();
+    testPage.goBack();
+    testPage.goBack();
+    testPage.goBack();
+    testPage.goBack();
+    testPage.goBack();
+  }
   
-  protected void fillOutContactAndReview(boolean isReview) {   
+  
+  protected void fillOutContactAndReview(boolean isReview, String county) {   
     // Check that we get the no phone number confirmation screen if no phone number is entered
     testPage.enter("email", "some@example.com");
     testPage.clickContinue();
@@ -301,7 +332,9 @@ abstract class JourneyTest extends AbstractBasePageTest {
     {
       // Let's review your info
       assertThat(driver.findElement(By.id("mailingAddress-address_street")).getText())
-          .isEqualTo("smarty street");           
+          .isEqualTo("smarty street");  
+      assertThat(driver.findElement(By.id("home-address_county")).getText())
+      .isEqualTo(county); 
     }
     
   }

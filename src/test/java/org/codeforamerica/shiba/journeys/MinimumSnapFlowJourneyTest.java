@@ -60,7 +60,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Contact
-    fillOutContactAndReview(false);
+    fillOutContactAndReview(false, "Hennepin");
 
     // Let's review your info
     assertThat(driver.findElement(By.id("homeAddress-address_message")).getText())
@@ -122,7 +122,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     String homeStreetAddress = "someStreetAddress";
     String homeApartmentNumber = "someApartmentNumber";
     fillOutHomeAndMailingAddress(homeZip, homeCity, homeStreetAddress, homeApartmentNumber);
-    fillOutContactAndReview(true);
+    fillOutContactAndReview(true, "Hennepin");
 
     testPage.clickLink("Submit an incomplete application now with only the above information.");
 

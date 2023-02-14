@@ -97,10 +97,11 @@ public class ApplicationRepository {
 
   public Application find(String id) {
     // TODO use a single sql query with a join instead of doing two separate sql queries
+    try {
     Application application = jdbcTemplate.queryForObject(
         "SELECT * FROM applications WHERE id = ?",
         applicationRowMapper(), id);
-    try {
+   
       Objects.requireNonNull(application).setApplicationStatuses(
               jdbcTemplate.query("SELECT * FROM application_status WHERE application_id = ?",
                       new ApplicationStatusRowMapper(), id));
@@ -110,6 +111,17 @@ public class ApplicationRepository {
       throw new EmptyResultDataAccessException(e.getMessage() + ", searching for application Id:" + id,
                                                e.getExpectedSize(),
                                                e);
+    }
+  }
+  
+  public String findCounty(String id) {
+    try {
+    String county = (String) jdbcTemplate.queryForObject(
+        "SELECT county FROM applications WHERE id = ?",
+        String.class, id);
+      return county;
+    } catch(EmptyResultDataAccessException e) {
+      return null;
     }
   }
 
