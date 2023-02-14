@@ -682,8 +682,16 @@ pageDefinitions:
             type: TEXT
             promptMessage:
               promptMessageKey: home-address.what-is-the-state
-            readOnly: true
+            helpMessageKey: home-address.what-is-the-state-helper
+            readOnly: false
             defaultValue: MN
+            validators:
+              - validation: STATE
+                errorMessageKey: general.validation.make-sure-to-provide-a-valid-2-letter-state-code
+                condition:
+                  input: isHomeless
+                  matcher: DOES_NOT_CONTAIN
+                  value: "true"
           - name: zipCode
             type: TEXT
             promptMessage:

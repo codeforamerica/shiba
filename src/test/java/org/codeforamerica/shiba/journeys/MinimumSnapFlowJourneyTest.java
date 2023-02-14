@@ -29,7 +29,14 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.enter("city", "someCity");
     testPage.enter("streetAddress", "someStreetAddress");
     testPage.enter("apartmentNumber", "someApartmentNumber");
-    testPage.clickContinue();
+    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("MN"); // home address page default state is MN
+    testPage.enter("state", "WI"); // user can set state to something besides MN
+    testPage.clickContinue(); // go to mailing address page, then back
+    testPage.goBack();
+    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("WI");
+    testPage.enter("state", "MN");
+    testPage.clickContinue(); // go to the mailing address page
+    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("MN"); // mailing address page default state is MN
     assertThat(testPage.getTitle()).isEqualTo("Mailing address");
     testPage.goBack();
 
@@ -37,8 +44,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.enter("isHomeless", "I don't have a permanent address"); // check
     testPage.enter("isHomeless", "I don't have a permanent address"); // uncheck
     testPage.clickContinue();
-    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("MN");
-    assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs
+    assertThat(testPage.hasInputError("streetAddress")).isTrue(); // verify cleared previous inputs but state is MN by default
+    assertThat(driver.findElement(By.id("state")).getAttribute("value")).isEqualTo("MN"); 
     testPage.enter("isHomeless", "I don't have a permanent address"); // check
     testPage.clickContinue();
 
