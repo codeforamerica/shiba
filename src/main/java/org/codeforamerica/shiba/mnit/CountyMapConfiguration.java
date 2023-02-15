@@ -149,7 +149,7 @@ public class CountyMapConfiguration {
     updateCounty(Kanabec, "family.services@co.kanabec.mn.us", "1396819108");
     updateCounty(Kandiyohi, "hs-financial@kcmn.us", "A000034500");
     updateCounty(Kittson, "bseed@co.kittson.mn.us", "A000035300");
-    updateCounty(Koochiching, "valerie.long@co.koochiching.mn.us", "A000036100");
+    updateCounty(Koochiching, "Kccs.intake@co.koochiching.mn.us", "A000036100");
     updateCounty(LacQuiParle, "familyservices@co.lac-qui-parle.mn.us", "A000037000");
     updateCounty(Lake, "financial.assistance@co.lake.mn.us", "A000038800");
     updateCounty(LakeOfTheWoods, "cassondra_b@co.lotw.mn.us", "A000039600");
@@ -194,7 +194,7 @@ public class CountyMapConfiguration {
     updateCounty(Todd, "Ricoh@co.todd.mn.us", "1336372465");
     updateCounty(Traverse, "stacey.hennen@co.traverse.mn.us", "A000078700");
     updateCounty(Wabasha, "imuinterview@co.wabasha.mn.us", "A000079500");
-    updateCounty(Wadena, "wchs.benefits@co.wadena.mn.us", "A000080900");
+    updateCounty(Wadena, "Deb.Nelson@WCMN.US", "A000080900");
     updateCounty(Waseca, "OSS@MNPrairie.org", "A000081700");
     updateCounty(Washington, "stephanie.schlageter@co.washington.mn.us", "1700969334");
     updateCounty(Watonwan, "randee.nelson@co.watonwan.mn.us", "1942539846");
