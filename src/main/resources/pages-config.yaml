@@ -1578,7 +1578,17 @@ pageDefinitions:
     name: identifyCounty
     pageTitle: identify-county.title
     headerKey: identify-county.select-your-county
-    headerHelpMessageKey: identify-county.this-is-the-county
+    headerHelpMessageKey: 
+      defaultValue: identify-county.this-is-the-county
+      conditionalValues:
+        - value: identify-county.select-your-county-without-mn
+          condition:
+            logicalOperator: OR
+            conditions:
+              - <<: *selectedCountyDoesNotMatchEnrichedCountyHome?
+                value: "true"
+              - <<: *selectedCountyDoesNotMatchEnrichedCountyMailing?
+                value: "true"
     contextFragment: countyContextFragment
     inputs:
       - name: county
@@ -4571,6 +4581,9 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: contactInfo
+    datasources:
+      - pageName: homeAddressValidation
+      - pageName: mailingAddressValidation
   reviewInfo:
     subtleLinkTargetPage: doYouNeedHelpImmediately
     pageConfiguration: *reviewInfo
