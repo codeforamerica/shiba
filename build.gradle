@@ -97,8 +97,8 @@ dependencies {
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("io.sentry:sentry-spring-boot-starter:6.14.0")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.apache.logging.log4j:log4j-api:2.20.0")
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.20.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.19.0")
+    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.19.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-web-services") {
         exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
@@ -164,7 +164,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.percy:percy-java-selenium:1.3.2")
     testImplementation("com.deque.html.axe-core:selenium:4.6.0")
-    testImplementation("org.jsoup:jsoup:1.15.4")
+    testImplementation("org.jsoup:jsoup:1.15.3")
 }
 
 compileJava {
