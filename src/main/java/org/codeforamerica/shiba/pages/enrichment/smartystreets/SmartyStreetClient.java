@@ -52,6 +52,9 @@ public class SmartyStreetClient implements LocationClient {
           if(county.equalsIgnoreCase("Lake of the Woods")) {
         	  county = "Lake Of The Woods";
           }
+          if(county.equalsIgnoreCase("Saint Louis")) {
+            county = "StLouis";
+          }
           return new Address(
               addressCandidate.getDeliveryLine1(),
               components.getCityName(),
