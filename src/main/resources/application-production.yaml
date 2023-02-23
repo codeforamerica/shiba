@@ -8,8 +8,8 @@ spring:
         cachecontrol:
           max-age: 2h
 client:
-  keystore: src/main/resources/shiba-keystore-production-2021.jks
-  truststore: src/main/resources/shiba-truststore-production.jks
+  keystore: src/main/resources/keystore-production.jks
+  truststore: src/main/resources/truststore-production.jks
 
 mail-gun:
   shouldCC: true
