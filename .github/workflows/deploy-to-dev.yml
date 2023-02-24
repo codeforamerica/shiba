@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Announce on Teams
+        if: ${{ github.event.workflow_run.conclusion == 'failure' }}
         uses: jdcargile/ms-teams-notification@v1.3
         with:
           github-token: ${{ github.token }} # this will use the runner's token.
@@ -28,6 +29,7 @@ jobs:
           notification-color: ff0000
           timezone: America/Chicago          
   mnitdeploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: deploy to MNbenefits DEV
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +64,7 @@ jobs:
         timezone: America/Chicago          
   merge_to_staging:
     needs: mnitdeploy
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Merge main -> staging
     runs-on: ubuntu-latest
     steps:

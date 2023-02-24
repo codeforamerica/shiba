@@ -40,7 +40,7 @@ public class SeleniumFactory implements FactoryBean<RemoteWebDriver> {
     chromePrefs.put("download.default_directory", tempdir.toString());
     options.setExperimentalOption("prefs", chromePrefs);
     options.addArguments("--window-size=1280,1600");
-    options.addArguments("--headless");
+    options.addArguments("--headless=new");
     driver = new ChromeDriver(options);
   }
 
