@@ -1452,6 +1452,20 @@ legend.form-question {
     margin-right: 0;
   }
 
+  .width-three-twelfths {
+    float: left;
+    display: block;
+	margin-right: 2%;
+	width: 25%;
+	min-width: 100px;
+  }
+  
+  .shift-content-right {
+	margin-left: auto;
+	margin-right: 0;
+	width: fit-content;
+  }
+
   .grid-ignore-mobile .width-five-twelfths {
     float: left;
     display: block;
@@ -1474,6 +1488,13 @@ legend.form-question {
     margin-right: 0;
   }
 
+  .width-eight-twelfths {
+    float: left;
+    display: block;
+    margin-right: 0;
+    width: 66.7%;
+  }
+
   .grid-ignore-mobile .width-eleven-twelfths {
     float: left;
     display: block;
@@ -1483,6 +1504,12 @@ legend.form-question {
 
   .grid-ignore-mobile .width-eleven-twelfths:last-child {
     margin-right: 0;
+  }
+
+  .width-twelve-twelfths {
+    float: left;
+    display: block;
+    width: 100%;
   }
 
   .grid-ignore-mobile .shift-one-half {

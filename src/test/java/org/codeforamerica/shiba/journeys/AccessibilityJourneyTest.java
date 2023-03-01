@@ -76,7 +76,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("clamav")).thenReturn(FeatureFlag.ON);
 
-    testPage.clickButton("Upload documents");
+    testPage.clickButton("Upload Documents");
 
     // Enter nothing to throw error on select to check aria-properties on error
     testPage.clickContinue();

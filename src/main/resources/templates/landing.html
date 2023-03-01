@@ -45,16 +45,76 @@
         </div>
       </div>
     </section>
+	<section class="slab slab--white">
+		<div id="process-steps" class="grid">
+			<h1 class="h2 spacing-below-60 text--centered" th:text="#{landing.application-process}"></h1>
+			<!-- row 1 -->
+			<div id="process-step-1" class="grid__item width-twelve-twelfths">
+				<div class="grid__item width-three-twelfths">
+					<div class="shift-content-right">
+						<div th:replace="fragments/icons/icon-process-apply-online :: icon-process-apply-online"></div>
+					</div>
+				</div>
+				<div class="grid__item width-eight-twelfths">
+					<h2 class="h3 spacing-below-10" th:text="#{landing.apply-online}"></h2>
+					<p class="form-card__body-text spacing-below-35" th:text="#{landing.submit-an-application}"></p>
+				</div>
+			</div>
+			<!-- row 2 -->
+			<div id="process-step-2" class="grid__item width-twelve-twelfths">
+				<div class="grid__item width-three-twelfths">
+					<div class="shift-content-right">
+						<div th:replace="fragments/icons/icon-process-upload-documents :: icon-process-upload-documents">
+						</div>
+					</div>
+				</div>
+				<div class="grid__item width-eight-twelfths">
+					<h2 class="h3 spacing-below-10" th:text="#{landing.upload-documents}"></h2>
+					<p class="form-card__body-text spacing-below-35" th:text="#{landing.upload-your-documents}"></p>
+				</div>
+			</div>
+			<!-- row 3 -->
+			<div id="process-step-3" class="grid__item width-twelve-twelfths">
+				<div class="grid__item width-three-twelfths">
+					<div class="shift-content-right">
+						<div
+							th:replace="fragments/icons/icon-process-application-review :: icon-process-application-review">
+						</div>
+					</div>
+				</div>
+				<div class="grid__item width-eight-twelfths">
+					<h2 class="h3 spacing-below-10" th:text="#{landing.application-review}"></h2>
+					<p class="form-card__body-text spacing-below-35" th:text="#{landing.your-application-will-be-reviewed}"></p>
+				</div>
+			</div>
+			<!-- row 4 -->
+			<div id="process-step-4" class="grid__item width-twelve-twelfths">
+				<div class="grid__item width-three-twelfths">
+					<div class="shift-content-right">
+						<div th:replace="fragments/icons/icon-process-interview :: icon-process-interview"></div>
+					</div>
+				</div>
+				<div class="grid__item width-eight-twelfths">
+					<h2 class="h3 spacing-below-10" th:text="#{landing.interview}"></h2>
+					<p class="form-card__body-text spacing-below-35" th:text="#{landing.most-programs-require-an-interview}"></p>
+				</div>
+			</div>
+		</div>
+	</section>
+    
     <section class="slab slab--minnesota-sky-blue">
       <div class="grid">
         <h1 class="h2 spacing-below-60 text--centered"
             th:text="#{landing.apply-to-these-programs}"></h1>
+ 
+ 
         <div class="grid__item width-five-twelfths">
           <div class="grid__item spacing-below-35">
             <h2 class="h3 spacing-below-10" th:text="#{landing.food-assistance-SNAP}"></h2>
             <p class="form-card__body-text"
                th:text="#{landing.SNAP-helps-low-income-Minnesotans-get-the-food-they-need}"></p>
           </div>
+          
           <div class="grid__item spacing-below-35">
             <h2 class="h3 spacing-below-10" th:text="#{landing.cash-programs}"></h2>
             <p class="form-card__body-text"
@@ -67,7 +127,10 @@
               <li th:text="#{landing.refugee-cash-assistance-rca}"></li>
             </ul>
           </div>
+          
         </div>
+        
+        
         <div class="grid__item width-five-twelfths shift-one-twelfth">
           <div class="grid__item spacing-below-35">
             <h2 class="h3 spacing-below-10" th:text="#{landing.emergency-assistance}"></h2>

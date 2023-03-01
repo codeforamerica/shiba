@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
   void laterDocsFlow() {
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
-
-    testPage.clickButton("Upload documents");
+    testPage.clickButton("Upload Documents");
 
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
 //    testPage.clickLink("Enter my zip code instead.");
