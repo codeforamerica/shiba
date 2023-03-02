@@ -5,10 +5,6 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
-
-import com.deque.html.axecore.results.Results;
-import com.deque.html.axecore.results.Rule;
-import com.deque.html.axecore.selenium.AxeBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +12,15 @@ import java.util.Map;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.AccessibilityTestPage;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import com.deque.html.axecore.results.Results;
+import com.deque.html.axecore.results.Rule;
+import com.deque.html.axecore.selenium.AxeBuilder;
 
 //@Tag("a11y")
 public class AccessibilityJourneyTest extends JourneyTest {
@@ -70,14 +72,13 @@ public class AccessibilityJourneyTest extends JourneyTest {
     resultMap.values().forEach(resultsList::addAll);
   }
 
-  @Disabled
   @Test
   void laterDocsFlow() {
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("clamav")).thenReturn(FeatureFlag.ON);
 
-    testPage.clickButton("Upload Documents");
+    testPage.clickButton("Upload your documents");
 
     // Enter nothing to throw error on select to check aria-properties on error
     testPage.clickContinue();
