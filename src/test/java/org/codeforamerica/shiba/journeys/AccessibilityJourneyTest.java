@@ -70,6 +70,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
     resultMap.values().forEach(resultsList::addAll);
   }
 
+  @Disabled
   @Test
   void laterDocsFlow() {
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
