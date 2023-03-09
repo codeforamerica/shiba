@@ -146,6 +146,11 @@
   background-color: #E9F6FF;
 }
 
+.slab--minnesota-light-blue {
+  background-color: #EFF6FF;
+}
+
+
 .footer-minnesota-blue {
   color: #FFF;
   background-color: #003865;
@@ -1459,6 +1464,13 @@ legend.form-question {
 	width: 25%;
 	min-width: 100px;
   }
+   .width-one-twelfths {
+    float: left;
+    display: block;
+    margin-right: 2%;
+    width: 10%;
+    min-width: 10px;
+  }
   
   .shift-content-right {
 	margin-left: auto;
@@ -1693,3 +1705,51 @@ legend.form-question {
 .text--small--footer{
 	font-size: 1.5rem;
 }
+.vertical-line{
+	border-left: 3px solid #9BCBEB;
+	height: 150px;
+    position:absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: rotate(90deg);
+}
+.width-one-twelfths{
+	float: centered;
+    display: block;
+    margin-right: 2.3576520234%;
+    width: 100%;
+    text-align:center;
+}
+.width-four-twelfths{
+    float: left;
+    display: block;
+    margin-right: 2.3576520234%;
+    width: 100%;
+    text-align:center;
+    margin-bottom: 3rem;
+}
+
+@media screen and (min-width: 912px){
+    .vertical-line{
+	    border-left: 3px solid #9BCBEB;
+	    height: 200px;
+	    position:absolute;
+	    left: 50%;
+	    bottom: 20%;
+	    transform: rotate(180deg);
+        }
+        .width-one-twelfths{
+		    float: left;
+		    display: block;
+		    width: 5%;
+		    margin-left:5%;
+		    margin-right:5%;
+        }
+        .width-four-twelfths{
+		    float: left;
+		    display: block;
+		    width: 30%;
+		    text-align:left;
+		    margin-left:2%;
+        }
+    }

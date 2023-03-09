@@ -17,14 +17,9 @@
           <div class="spacing-above-35">
             <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
           </div>
-          <h1 class="spacing-below-35" th:text="#{landing.header}"></h1>
+          <h1 class="spacing-below-25" th:text="#{landing.header}"></h1>
           <p class="text-25 spacing-below-15" th:text="#{landing.subheader}"></p>
-          <div class="spacing-above-15 spacing-below-0">
-            <a href="#later-docs-upload">
-              <span th:utext="#{landing.alread-applied}"></span>
-            </a>
-          </div>
-          <a class="button button--primary spacing-below-0 spacing-above-45"
+          <a class="button button--primary spacing-below-0 spacing-above-25"
              th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${#locale.language}" lang="en">
             <span lang="en" th:text="#{landing.apply-now}"></span>
             <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
@@ -44,6 +39,9 @@
           <img src="/images/minnesota-splash.png" alt="" class="splash">
         </div>
       </div>
+    </section>
+    <section class="slab padding-bottom-3rem slab--minnesota-light-blue">
+        <div th:replace="fragments/alreadyAppliedHomePage :: alreadyAppliedHomePage"></div>
     </section>
 	<section class="slab slab--white">
 		<div id="process-steps" class="grid">
@@ -101,7 +99,6 @@
 			</div>
 		</div>
 	</section>
-    
     <section class="slab slab--minnesota-sky-blue">
       <div class="grid">
         <h1 class="h2 spacing-below-60 text--centered"
@@ -149,21 +146,6 @@
           </div>
         </div>
       </div>
-    </section>
-    <section id="later-docs-upload" class="slab text--centered">
-      <div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
-      <h1 class="max-width-446 h2 spacing-below-25 margin-left-right-auto spacing-above-10"
-          th:utext="#{landing.submit-documents-to-county}"></h1>
-    <div th:if="${@environment.getProperty('feature-flag.tribal-routing')}">
-      <a class="button spacing-below-0" th:href="'/pages/identifyCountyOrTribalNation'">
-        <span th:text="#{landing.upload-documents}"></span>
-      </a>
-    </div>
-    <div th:if="!${@environment.getProperty('feature-flag.tribal-routing')}">
-      <a class="button spacing-below-0" th:href="'/pages/identifyCounty'">
-        <span th:text="#{landing.upload-documents}"></span>
-      </a>
-    </div>
     </section>
   </main>
 </div>
