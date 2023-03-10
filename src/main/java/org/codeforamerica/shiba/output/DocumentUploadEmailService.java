@@ -34,6 +34,8 @@ public class DocumentUploadEmailService {
   private final MessageSource messageSource;
   private final String senderEmail;
   private final DocRecommendationMessageService docRecommendationMessageService;
+  @Value("${spring.profiles.active:Unknown}")
+  private String activeProfile;
 
   public DocumentUploadEmailService(
       @Value("${sender-email}") String senderEmail,
@@ -63,16 +65,18 @@ public class DocumentUploadEmailService {
   @Scheduled(cron = "${documentUploadEmails.cronExpression}")
   @SchedulerLock(name = "documentUploadEmails", lockAtMostFor = "30m", lockAtLeastFor = "15m")
   public void sendDocumentUploadEmailReminders() {
-    log.info("Checking for applications that need document upload email reminders");
-    List<Application> applications = getApplicationsThatNeedDocumentUploadEmails();
+    if (!"demo".equals(activeProfile)) {
+      log.info("Checking for applications that need document upload email reminders");
+      List<Application> applications = getApplicationsThatNeedDocumentUploadEmails();
 
-    if (applications.isEmpty()) {
-      log.info("There are no applications that need document upload email reminders");
-      return;
+      if (applications.isEmpty()) {
+        log.info("There are no applications that need document upload email reminders");
+        return;
+      }
+
+      applications.forEach(this::sendDocumentUploadEmailReminder);
+      MDC.clear();
     }
-
-    applications.forEach(this::sendDocumentUploadEmailReminder);
-    MDC.clear();
   }
 
   private List<Application> getApplicationsThatNeedDocumentUploadEmails() {

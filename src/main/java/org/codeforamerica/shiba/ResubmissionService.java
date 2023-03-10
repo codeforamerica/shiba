@@ -31,6 +31,7 @@ import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,9 @@ public class ResubmissionService {
   private final RoutingDecisionService routingDecisionService;
   private final ApplicationStatusRepository applicationStatusRepository;
   private final PageEventPublisher pageEventPublisher;
+
+  @Value("${spring.profiles.active:Unknown}")
+  private String activeProfile;
 
 
   public ResubmissionService(ApplicationRepository applicationRepository,
@@ -66,44 +70,46 @@ public class ResubmissionService {
   )
   @SchedulerLock(name = "emailResubmissionTask", lockAtMostFor = "${failed-resubmission.lockAtMostFor}", lockAtLeastFor = "${failed-resubmission.lockAtLeastFor}")
   public void resubmitFailedApplications() {
-    log.info("Checking for applications that failed to send");
-    List<ApplicationStatus> applicationsToResubmit = applicationStatusRepository.getDocumentStatusToResubmit();
+    if (!"demo".equals(activeProfile)) {
+      log.info("Checking for applications that failed to send");
+      List<ApplicationStatus> applicationsToResubmit = applicationStatusRepository.getDocumentStatusToResubmit();
 
-    MDC.put("failedApps", String.valueOf(applicationsToResubmit.size()));
-    log.info("Resubmitting " + applicationsToResubmit.size() + " apps over email");
-    if (applicationsToResubmit.isEmpty()) {
-      log.info("There are no applications to resubmit from failure status");
-      return;
-    }
-
-    applicationsToResubmit.forEach(applicationStatus -> {
-      String id = applicationStatus.getApplicationId();
-      MDC.put("applicationId", id);
-      Document document = applicationStatus.getDocumentType();
-      String routingDestinationName = applicationStatus.getRoutingDestinationName();
-      String documentName = applicationStatus.getDocumentName();
-      log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
-          + " for application id " + id);
-      try {
-        Application application = applicationRepository.find(id);
-        RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
-            routingDestinationName);
-        if (document == UPLOADED_DOC) {
-          resubmitUploadedDocumentsForApplication(document, application,
-              routingDestination.getEmail(), documentName, routingDestination);
-        } else {
-          var applicationFile = pdfGenerator.generate(application, document, CASEWORKER, routingDestination);
-          emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
-              application);
-        }
-        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
-        log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
-      } catch (Exception e) {
-        log.error("Failed to resubmit application %s via email".formatted(id), e);
-        applicationStatusRepository.createOrUpdate(id, document, routingDestinationName,
-            RESUBMISSION_FAILED, documentName);
+      MDC.put("failedApps", String.valueOf(applicationsToResubmit.size()));
+      log.info("Resubmitting " + applicationsToResubmit.size() + " apps over email");
+      if (applicationsToResubmit.isEmpty()) {
+        log.info("There are no applications to resubmit from failure status");
+        return;
       }
-    });
+
+      applicationsToResubmit.forEach(applicationStatus -> {
+        String id = applicationStatus.getApplicationId();
+        MDC.put("applicationId", id);
+        Document document = applicationStatus.getDocumentType();
+        String routingDestinationName = applicationStatus.getRoutingDestinationName();
+        String documentName = applicationStatus.getDocumentName();
+        log.info("Resubmitting " + document.name() + "(s) to " + routingDestinationName
+            + " for application id " + id);
+        try {
+          Application application = applicationRepository.find(id);
+          RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(
+              routingDestinationName);
+          if (document == UPLOADED_DOC) {
+            resubmitUploadedDocumentsForApplication(document, application,
+                routingDestination.getEmail(), documentName, routingDestination);
+          } else {
+            var applicationFile = pdfGenerator.generate(application, document, CASEWORKER, routingDestination);
+            emailClient.resubmitFailedEmail(routingDestination.getEmail(), document, applicationFile,
+                application);
+          }
+          applicationStatusRepository.createOrUpdate(id, document, routingDestinationName, DELIVERED_BY_EMAIL, documentName);
+          log.info("Resubmitted %s(s) for application id %s".formatted(document.name(), id));
+        } catch (Exception e) {
+          log.error("Failed to resubmit application %s via email".formatted(id), e);
+          applicationStatusRepository.createOrUpdate(id, document, routingDestinationName,
+              RESUBMISSION_FAILED, documentName);
+        }
+      });
+    }
     MDC.clear();
   }
 
@@ -113,24 +119,26 @@ public class ResubmissionService {
   )
   @SchedulerLock(name = "esbResubmissionTask", lockAtMostFor = "${in-progress-resubmission.lockAtMostFor}", lockAtLeastFor = "${in-progress-resubmission.lockAtLeastFor}")
   public void republishApplicationsInSendingStatus() {
-    log.info("Checking for applications that are stuck in progress/sending");
+    if (!"demo".equals(activeProfile)) {
+      log.info("Checking for applications that are stuck in progress/sending");
 
-    List<Application> applicationsStuckSending = applicationRepository.findApplicationsStuckSending();
-    MDC.put("appsStuckSending", String.valueOf(applicationsStuckSending.size()));
-    log.info(
-        "Resubmitting " + applicationsStuckSending.size() + " applications stuck sending");
+      List<Application> applicationsStuckSending = applicationRepository.findApplicationsStuckSending();
+      MDC.put("appsStuckSending", String.valueOf(applicationsStuckSending.size()));
+      log.info(
+          "Resubmitting " + applicationsStuckSending.size() + " applications stuck sending");
 
-    for (Application application : applicationsStuckSending) {
-      String id = application.getId();
-      // Add applicationId to the logs to make it easier to query for in datadog
-      MDC.put("applicationId", id);
-      log.info("Retriggering submission for application with id " + id);
+      for (Application application : applicationsStuckSending) {
+        String id = application.getId();
+        // Add applicationId to the logs to make it easier to query for in datadog
+        MDC.put("applicationId", id);
+        log.info("Retriggering submission for application with id " + id);
 
-      sendDocumentsViaESB(application, id, true);
+        sendDocumentsViaESB(application, id, true);
+
+      }
+      // remove last applicationId from the mdc so it doesn't pollute future logs
+      MDC.clear();
     }
-
-    // remove last applicationId from the mdc so it doesn't pollute future logs
-    MDC.clear();
   }
 
   @Scheduled(
@@ -139,33 +147,35 @@ public class ResubmissionService {
   )
   @SchedulerLock(name = "noStatusEsbResubmissionTask", lockAtMostFor = "${no-status-applications-resubmission.lockAtMostFor}", lockAtLeastFor = "${no-status-applications-resubmission.lockAtLeastFor}")
   public void resubmitBlankStatusApplicationsViaEsb() {
-    log.info("Checking for applications that have no statuses");
-    List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
+    if (!"demo".equals(activeProfile)) {
+      log.info("Checking for applications that have no statuses");
+      List<Application> applicationsWithBlankStatuses = applicationRepository.findApplicationsWithBlankStatuses();
 
-    MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
-    log.info(
-        "Resubmitting " + applicationsWithBlankStatuses.size() + " applications with no statuses");
+      MDC.put("blankStatusApps", String.valueOf(applicationsWithBlankStatuses.size()));
+      log.info(
+          "Resubmitting " + applicationsWithBlankStatuses.size() + " applications with no statuses");
 
-    //from applicationData, decide on what docs need to be created
-    for (Application application : applicationsWithBlankStatuses) {
-      String id = application.getId();
-      // Add applicationId to the logs to make it easier to query for in datadog
-      MDC.put("applicationId", id);
-      log.info("Retriggering submission for application with id " + id);
+      //from applicationData, decide on what docs need to be created
+      for (Application application : applicationsWithBlankStatuses) {
+        String id = application.getId();
+        // Add applicationId to the logs to make it easier to query for in datadog
+        MDC.put("applicationId", id);
+        log.info("Retriggering submission for application with id " + id);
 
-      applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
+        applicationStatusRepository.createOrUpdateApplicationType(application, SENDING);
 
-      if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
-          .getUploadedDocs().isEmpty()) {
-        applicationStatusRepository.createOrUpdateAllForDocumentType(application,
-            SENDING, UPLOADED_DOC);
+        if (application.getFlow().equals(LATER_DOCS) || !application.getApplicationData()
+            .getUploadedDocs().isEmpty()) {
+          applicationStatusRepository.createOrUpdateAllForDocumentType(application,
+              SENDING, UPLOADED_DOC);
+        }
+
+        Application retrievedApp = applicationRepository.find(id);
+        sendDocumentsViaESB(retrievedApp, id, false);
       }
-
-      Application retrievedApp = applicationRepository.find(id);
-      sendDocumentsViaESB(retrievedApp, id, false);
+      //resend application docs
+      MDC.clear();
     }
-    //resend application docs
-    MDC.clear();
   }
 
   private void sendDocumentsViaESB(Application application, String id,

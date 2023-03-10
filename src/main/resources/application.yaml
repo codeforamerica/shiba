@@ -65,7 +65,7 @@ mnit-filenet:
   #  sftp-upload-url: http://10.217.19.80:9083/router/api/fileNetToSftp
   sftp-upload-url: https://mn-its-stst.dhs.state.mn.us/router/api/fileNetToSftp
   jaxb-context-path: org.codeforamerica.shiba.filenetwsdl
-  max-attempts: 4
+  max-attempts: 1
   delay: 5400000 # 1.5 hours
   multiplier: 2
   max-delay: 10800000 # 3 hours
