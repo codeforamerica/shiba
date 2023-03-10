@@ -1709,7 +1709,7 @@ legend.form-question {
 	border-left: 3px solid #9BCBEB;
 	height: 150px;
     position:absolute;
-    bottom: 30%;
+    bottom: 35%;
     left: 50%;
     transform: rotate(90deg);
 }
@@ -1721,12 +1721,17 @@ legend.form-question {
     text-align:center;
 }
 .width-four-twelfths{
-    float: left;
+    float: centered;
     display: block;
     margin-right: 2.3576520234%;
+    margin-left: 0%;
     width: 100%;
     text-align:center;
     margin-bottom: 3rem;
+    padding-left:2rem;
+    padding-right:2rem;
+    padding-bottom: 5rem;
+    padding-top: 5rem;
 }
 
 @media screen and (min-width: 912px){
@@ -1741,15 +1746,21 @@ legend.form-question {
         .width-one-twelfths{
 		    float: left;
 		    display: block;
-		    width: 5%;
+		    width: 6%;
 		    margin-left:5%;
 		    margin-right:5%;
         }
         .width-four-twelfths{
 		    float: left;
 		    display: block;
+		    margin-right: 2%;
+		    margin-left: 2%;
 		    width: 30%;
 		    text-align:left;
-		    margin-left:2%;
+		    margin-bottom: 0rem;
+		    padding-left:0rem;
+		    padding-right:0rem;
+		    padding-bottom: 0rem;
+		    padding-top: 0rem;
         }
     }
