@@ -2,41 +2,25 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="toolbar">
-    <header class="main-header toolbar__wrapper">
-        <a href="#content" id="skip-to-content" class="button button--small button--intercom">Skip to content</a>
-        <div class="toolbar">
-            <a class="logo" href="/">
-                <img class="mn-state-icon"
-                     src="/images/minn_filled.svg"
-                     alt="MN State Icon">
-                <span class="sr-only-on-mobile">MNbenefits.mn.gov</span>
-            </a>
-            <div>
-                <a href="#" id="intercom_custom_launcher"
-                   class="button button--small button--intercom"><i
-                        class="button__icon--left icon-insert_comment"></i>Chat
-                </a>
-            </div>
-            <select th:replace="fragments/localeSelect :: localeSelect"></select>
-            <script th:inline="javascript" th:with="lang=${#locale.toString()}">
-                window.intercomSettings = {
-                    app_id: "dje5ebi4",
-                    confirmation_id: [[${applicationId}]],
-                    county: [[${county}]],
-                    zip_code: [[${zipCode}]],
-                    programs: [[${programs}]],
-                    expedited_snap: [[${expeditedSnap}]],
-                    expedited_ccap: [[${expeditedCcap}]],
-                    custom_launcher_selector: '#intercom_custom_launcher',
-                    hide_default_launcher: true,
-                    language_override: [[${lang}]]
-                };
-            </script>
-            <script>
-                (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/dje5ebi4';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
-            </script>
-        </div>
-    </header>
+  <header class="main-header toolbar__wrapper">
+    <a href="#content" id="skip-to-content" class="button button--small button--intercom">Skip to
+      content</a>
+    <div class="toolbar">
+      <a class="logo" href="/">
+        <img class="mn-state-icon"
+             src="/images/minn_filled.svg"
+             alt="MN State Icon">
+        <span class="sr-only-on-mobile">MNbenefits.mn.gov</span>
+      </a>
+      <div>
+        <a href="#" id="intercom_custom_launcher" class="button button--small button--intercom"
+           onClick="(() => alert ('Intercom is disabled for this demo environment. Please visit the live state website at mnbenefits.mn.gov for further assistance.'))()">
+        <i class="button__icon--left icon-insert_comment"></i>Chat
+        </a>
+      </div>
+      <select th:replace="fragments/localeSelect :: localeSelect"></select>
+    </div>
+  </header>
 </div>
 </body>
 

@@ -37,9 +37,6 @@ public class FullFlowJourneyTest extends JourneyTest {
     when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
     when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
-    // Assert intercom button is present on landing page
-    await().atMost(5, SECONDS).until(() -> !driver.findElements(By.id("intercom-frame")).isEmpty());
-    assertThat(driver.findElement(By.id("intercom-frame"))).isNotNull();
     // Assert that the Delayed Processing Time Notice is displayed on the landing page.
     assertThat(driver.findElement(By.id("delayed-processing-time-notice"))).isNotNull();
 
