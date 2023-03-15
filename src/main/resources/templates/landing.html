@@ -14,31 +14,39 @@
             <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
         </div>
         <div class="grid__item width-one-half">
-          <div class="spacing-above-35">
-            <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
-          </div>
-          <h1 class="spacing-below-25" th:text="#{landing.header}"></h1>
-          <p class="text-25 spacing-below-15" th:text="#{landing.subheader}"></p>
-          <a class="button button--primary spacing-below-0 spacing-above-25"
-             th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${#locale.language}" lang="en">
-            <span lang="en" th:text="#{landing.apply-now}"></span>
-            <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
-          </a>
-          <!--Add button to apply now in Spanish-->
-          <div class="spacing-above-45"
-               th:with="otherLocale=${#locale.toString().equals('en') ? 'es' : 'en'}">
-            <a class="button button--small"
-               th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${otherLocale}" lang="es">
-              <span lang="es" th:text="#{landing.apply-now-espanol}"></span>
-              <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
-            </a>
-          </div>
-
+            <div class="spacing-above-35">
+                <img src="/images/mn-logo-horizontal-rgb.png" alt="" class="mn-logo">
+            </div>
+            <h1 class="spacing-below-25" th:text="#{landing.header}"></h1>
+            <p class="text-25 spacing-below-15" th:text="#{landing.subheader}"></p>
         </div>
         <div class="grid__item width-one-half">
           <img src="/images/minnesota-splash.png" alt="" class="splash">
         </div>
       </div>
+      <div class="grid">
+        <div class="grid__item width-one-fourth">
+          <a class="button button--primary spacing-above-25"
+             th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${#locale.language}" lang="en">
+            <span lang="en" th:text="#{landing.apply-now}"></span>
+             <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
+          </a>
+          <!--Add button to apply now in Spanish-->
+          <div th:with="otherLocale=${#locale.toString().equals('en') ? 'es' : 'en'}" class="spacing-above-25">
+            <a class="button button--small button-width"
+               th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${otherLocale}" lang="es" >
+              <span lang="es" th:text="#{landing.apply-now-espanol}"></span>
+              <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
+            </a>
+          </div>
+         </div>
+         <div class="grid__item width-one-half spacing-above-25-45">
+           <a class="button button--tertiary"
+          href="#about-programs">
+               <span th:text="#{landing.learn-about-programs}"></span>
+           </a>
+         </div>
+       </div>
     </section>
     <section class="slab padding-bottom-3rem slab--minnesota-light-blue">
         <div th:replace="fragments/alreadyAppliedHomePage :: alreadyAppliedHomePage"></div>
@@ -99,8 +107,8 @@
 			</div>
 		</div>
 	</section>
-    <section class="slab slab--minnesota-sky-blue">
-      <div class="grid">
+    <section class="slab slab--C1EBEB">
+      <div class="grid" id="about-programs">
         <h1 class="h2 spacing-below-60 text--centered"
             th:text="#{landing.apply-to-these-programs}"></h1>
  

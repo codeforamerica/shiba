@@ -142,6 +142,10 @@
   background-color: #FFFFFF;
 }
 
+.slab--C1EBEB {
+	background-color: #C1EBEB;
+}
+
 .slab--minnesota-sky-blue {
   background-color: #E9F6FF;
 }
@@ -313,6 +317,14 @@ form .drag-and-drop-box-compact {
   padding-bottom: 3rem;
 }
 
+.splash {
+  margin-top: 30px;
+  max-width: 85%;
+  display:block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media screen and (min-width: 601px) {
   .hide-on-desktop {
     display: none;
@@ -353,7 +365,7 @@ form .drag-and-drop-box-compact {
   }
 
   .splash {
-    max-width: none;
+    max-width: 85%;
   }
 }
 
@@ -484,9 +496,7 @@ form .drag-and-drop-box-compact {
   font-style: normal;
 }
 
-.splash {
-  margin-top: 74px;
-}
+
 
 .illustration--mn-logo {
   background-image: url(/images/minnesota-logo.svg);
@@ -839,6 +849,19 @@ input[type=number] {
 .button--primary:hover {
   border-color: #00223D;
   background-color: #00223D;
+  color: #FFFFFF;
+}
+
+.button--tertiary {
+  color:#FFFFFF!important;
+  background-color: #008EAA;
+  border-color: #008EAA;
+  box-shadow: 0 2px 0 #005567;
+}
+
+.button--tertiary:hover {
+  border-color: #005567;
+  background-color: #005567;
   color: #FFFFFF;
 }
 
@@ -1734,6 +1757,13 @@ legend.form-question {
     padding-top: 5rem;
 }
 
+.spacing-above-25-45{
+    margin-top: 45px;
+}
+.button-width{
+	padding-right: 2.5rem;
+	padding-left: 2.5rem;
+}
 @media screen and (min-width: 912px){
     .vertical-line{
 	    border-left: 3px solid #9BCBEB;
@@ -1763,4 +1793,7 @@ legend.form-question {
 		    padding-bottom: 0rem;
 		    padding-top: 0rem;
         }
-    }
+        .spacing-above-25-45{
+            margin-top: 25px;
+        }
+     }
