@@ -25,14 +25,14 @@
         </div>
       </div>
       <div class="grid">
-        <div class="grid__item width-one-fourth">
+        <div class="grid__item width-desktop-one-fourth">
           <a class="button button--primary spacing-above-25"
              th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${#locale.language}" lang="en">
             <span lang="en" th:text="#{landing.apply-now}"></span>
              <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
           </a>
           <!--Add button to apply now in Spanish-->
-          <div th:with="otherLocale=${#locale.toString().equals('en') ? 'es' : 'en'}" class="spacing-above-25">
+          <div th:with="otherLocale=${#locale.toString().equals('en') ? 'es' : 'en'}" class="spacing-above-45">
             <a class="button button--small button-width"
                th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${otherLocale}" lang="es" >
               <span lang="es" th:text="#{landing.apply-now-espanol}"></span>
@@ -40,7 +40,7 @@
             </a>
           </div>
          </div>
-         <div class="grid__item width-one-half spacing-above-25-45">
+         <div class="grid__item width-desktop-one-half spacing-above-25-45">
            <a class="button button--tertiary"
           href="#about-programs">
                <span th:text="#{landing.learn-about-programs}"></span>

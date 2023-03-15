@@ -1757,9 +1757,7 @@ legend.form-question {
     padding-top: 5rem;
 }
 
-.spacing-above-25-45{
-    margin-top: 45px;
-}
+
 .button-width{
 	padding-right: 2.5rem;
 	padding-left: 2.5rem;
@@ -1793,7 +1791,34 @@ legend.form-question {
 		    padding-bottom: 0rem;
 		    padding-top: 0rem;
         }
-        .spacing-above-25-45{
-            margin-top: 25px;
-        }
+       
      }
+
+@media screen and (min-width: 768px){
+		.grid .width-desktop-one-fourth {
+		    width: 30.2317609825%;
+		}
+		.grid .width-desktop-one-half{
+		    width: 48%;
+		}
+}
+.grid .width-desktop-one-fourth {
+	margin-right: 2.3576520234%;
+	width: auto;
+	float: left;
+	display: block;
+}
+.grid .width-desktop-one-half {
+	margin-right: 2.3576520234%;
+    width: auto;
+    float: left;
+    display: block;
+}
+.spacing-above-25-45{
+    margin-top: 45px;
+}
+@media screen and (min-width: 503px){
+	.spacing-above-25-45{
+	    margin-top: 25px;
+	}
+}
