@@ -11,7 +11,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HAS_HOUSE_HOLD;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOME_ZIPCODE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_HOME_COUNTY;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.awt.image.BufferedImage;
@@ -91,23 +90,23 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import lombok.extern.slf4j.Slf4j;
+import mobi.openddr.classifier.model.Device;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
@@ -671,7 +670,7 @@ public class PageController {
       @RequestBody(required = false) MultiValueMap<String, String> model,
       HttpServletResponse httpResponse,
       HttpSession httpSession,
-      Device device
+      @RequestAttribute("currentDevice") Device device
   ) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
@@ -721,20 +720,33 @@ public class PageController {
   }
 
   private void recordDeviceType(Device device, Application application) {
-    String deviceType = "unknown";
-    String platform = "unknown";
-    if (device != null) {
-      if (device.isNormal()) {
-        deviceType = "desktop";
-      } else if (device.isMobile()) {
-        deviceType = "mobile";
-      } else if (device.isTablet()) {
-        deviceType = "tablet";
-      }
-      platform = device.getDevicePlatform().name();
-    }
-    application.getApplicationData().setDevicePlatform(platform);
-    application.getApplicationData().setDeviceType(deviceType);
+  	String deviceType = "unknown";
+	String platform = "unknown";
+
+	if (device != null) {
+		String isDesktop = device.getProperty("is_desktop");
+		if (isDesktop != null && Boolean.parseBoolean(isDesktop)) {
+			deviceType = "desktop";
+		} else {
+			String isTablet = device.getProperty("is_tablet");
+			if (isTablet != null && Boolean.parseBoolean(isTablet)) {
+				deviceType = "tablet";
+			} else {
+				String id = device.getId();
+				if (id != null && !id.equalsIgnoreCase("unknown")) {
+					deviceType = "mobile";
+				}
+			}
+		}
+
+		String devicePlatform = device.getProperty("device_os");
+		if (devicePlatform != null) {
+			platform = devicePlatform;
+		}
+	}
+
+	application.getApplicationData().setDevicePlatform(platform);
+	application.getApplicationData().setDeviceType(deviceType);
   }
 
   @PostMapping("/submit-feedback")

@@ -93,7 +93,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-	implementation("org.springframework.mobile:spring-mobile-starter:2.0.0.M3")
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("io.sentry:sentry-spring-boot-starter:6.15.0")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -139,6 +138,8 @@ dependencies {
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
     implementation("net.coobird:thumbnailator:0.4.19")
+    implementation("mobi.openddr.client:openddr-classifier-client:1.4.1")
+    implementation("mobi.openddr:openddr-data:1.34")
     
     implementation("org.springframework.ws:spring-ws-core")
     jaxb(

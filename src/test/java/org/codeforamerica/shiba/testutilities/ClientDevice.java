@@ -1,18 +1,23 @@
 package org.codeforamerica.shiba.testutilities;
 
+import java.util.HashMap;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mobile.device.Device;
-import org.springframework.mobile.device.DevicePlatform;
-import org.springframework.mobile.device.DeviceType;
-import org.springframework.mobile.device.LiteDevice;
+
+import mobi.openddr.classifier.model.Device;
 
 @TestConfiguration
 public class ClientDevice {
 	
 	@Bean
 	public Device device() {
-		return LiteDevice.from(DeviceType.MOBILE, DevicePlatform.ANDROID);
+		HashMap<String,String> properties = new HashMap<String,String>();
+		properties.put("id", "genericAndroid");
+		properties.put("is_tablet", "false");
+		properties.put("is_desktop", "false");
+		properties.put("device_os", "Android");
+
+		return new Device("genericAndroid", properties);
 	}
 
 }

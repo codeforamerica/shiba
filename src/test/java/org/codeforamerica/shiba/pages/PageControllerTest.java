@@ -68,9 +68,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
-import org.springframework.mobile.device.Device;
-import org.springframework.mobile.device.DevicePlatform;
-import org.springframework.mobile.device.DeviceType;
+import mobi.openddr.classifier.model.Device;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -156,10 +154,8 @@ class PageControllerTest {
     applicationData.setStartTimeOnce(Instant.now());
     when(clock.instant())
         .thenReturn(LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant());
-    Map<String, Object> deviceAttribute = new HashMap<>();
-    deviceAttribute.put("device", device);
     MockHttpServletRequestBuilder request = post("/submit")
-        .flashAttrs(deviceAttribute)
+        .requestAttr("currentDevice", device)
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         .param("foo[]", "some value");
     mockMvc.perform(request).andExpect(redirectedUrl("/pages/secondPage/navigation"));
@@ -168,8 +164,8 @@ class PageControllerTest {
     assertThat(secondPage.get("foo").getValue()).contains("some value");
     String devicePlatform = applicationData.getDevicePlatform();
     String deviceType = applicationData.getDeviceType();
-    assertThat(devicePlatform).isEqualToIgnoringCase(DevicePlatform.ANDROID.toString());
-    assertThat(deviceType).isEqualToIgnoringCase(DeviceType.MOBILE.toString());
+    assertThat(devicePlatform).isEqualToIgnoringCase("Android");
+    assertThat(deviceType).isEqualToIgnoringCase("mobile");
   }
 
   @Test
@@ -188,10 +184,8 @@ class PageControllerTest {
     when(applicationFactory.newApplication(eq(applicationData))).thenReturn(application);
     String sessionId = "someSessionId";
     MockHttpSession session = new MockHttpSession(null, sessionId);
-    Map<String, Object> deviceAttribute = new HashMap<>();
-    deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
-        .flashAttrs(deviceAttribute)
+        .requestAttr("currentDevice", device)
         .session(session)
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
@@ -316,10 +310,8 @@ class PageControllerTest {
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
 
     assertThat(application.getTimeToComplete()).isEqualTo(null);
-    Map<String, Object> deviceAttribute = new HashMap<>();
-    deviceAttribute.put("device", device);
     mockMvc.perform(post("/submit")
-        .flashAttrs(deviceAttribute)
+        .requestAttr("currentDevice", device)
         .param("foo[]", "some value")
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
 
