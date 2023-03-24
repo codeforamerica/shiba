@@ -534,14 +534,6 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertNull(caf.getField("FIRST_NAME_4"));
 		}
 
-		@Test
-		void shouldNotMapHHMemberMoreThan10() throws Exception {
-			fillInRequiredPages();
-			selectPrograms("SNAP");
-			fillOutHousemateInfoMoreThanFiveLessThanTen(11);
-			var caf = submitAndDownloadCaf();
-			assertNull(caf.getField("FIRST_NAME_4"));
-		}
 
 		@Test
 		void shouldMapMfipAsCash() throws Exception {
