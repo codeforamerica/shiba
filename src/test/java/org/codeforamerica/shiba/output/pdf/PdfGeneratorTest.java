@@ -57,6 +57,8 @@ class PdfGeneratorTest {
     caseworkerFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller caseworkerCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller clientCafWdHouseholdSuppFiller = mock(PdfFieldFiller.class);
+    PdfFieldFiller caseworkerCafWdHouseholdSuppFiller2 = mock(PdfFieldFiller.class);
+    PdfFieldFiller clientCafWdHouseholdSuppFiller2 = mock(PdfFieldFiller.class);
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
     resourceLoader = mock(ResourceLoader.class);
@@ -79,6 +81,12 @@ class PdfGeneratorTest {
         CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller),
         CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller)
     );
+    
+    Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers2 = Map.of(
+        CASEWORKER, Map.of(Document.CAF, caseworkerCafWdHouseholdSuppFiller2),
+        CLIENT, Map.of(Document.CAF, clientCafWdHouseholdSuppFiller2)
+    );
+    
     resourceLoader = new DefaultResourceLoader(getClass().getClassLoader());
     Resource coverPages = resourceLoader.getResource("cover-pages.pdf");
     Resource certainPops = resourceLoader.getResource("certain-pops.pdf");
@@ -102,6 +110,7 @@ class PdfGeneratorTest {
         pdfFieldMapper,
         pdfFieldFillers,
         pdfFieldWithCAFHHSuppFillers,
+        pdfFieldWithCAFHHSuppFillers2,
         pdfResourcesCertainPops,
         applicationRepository,
         null,

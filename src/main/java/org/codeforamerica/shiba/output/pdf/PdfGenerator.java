@@ -59,6 +59,7 @@ public class PdfGenerator implements FileGenerator {
   private final PdfFieldMapper pdfFieldMapper;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillerMap;
   private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap;
+  private final Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillersMap2;
   private final Map<Recipient, Map<String, List<Resource>>> pdfResourcesCertainPops;
   private final ApplicationRepository applicationRepository;
   private final DocumentRepository documentRepository;
@@ -71,6 +72,7 @@ public class PdfGenerator implements FileGenerator {
   public PdfGenerator(PdfFieldMapper pdfFieldMapper,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers,
       Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers,
+      Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldWithCAFHHSuppFillers2,
       Map<Recipient, Map<String, List<Resource>>> pdfResourcesCertainPops,
       ApplicationRepository applicationRepository,
       DocumentRepository documentRepository,
@@ -87,6 +89,7 @@ public class PdfGenerator implements FileGenerator {
     this.fileNameGenerator = fileNameGenerator;
     this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
+    this.pdfFieldWithCAFHHSuppFillersMap2 = pdfFieldWithCAFHHSuppFillers2;
     this.pdfResourcesCertainPops = pdfResourcesCertainPops;
     this.countyMap = countyMap;
   }
@@ -132,6 +135,11 @@ public class PdfGenerator implements FileGenerator {
     if (document.equals(Document.CAF) && (householdSize > 5 && householdSize <= 10)) {
       pdfFiller = pdfFieldWithCAFHHSuppFillersMap.get(recipient).get(document);
     }
+    
+    if (document.equals(Document.CAF) && householdSize > 10) {
+      pdfFiller = pdfFieldWithCAFHHSuppFillersMap2.get(recipient).get(document);
+    }    
+    
     if(document.equals(Document.CERTAIN_POPS)) {
     List<Resource> pdfResource = new ArrayList<Resource>(); 
     pdfResource.addAll(pdfResourcesCertainPops.get(recipient).get("default"));
