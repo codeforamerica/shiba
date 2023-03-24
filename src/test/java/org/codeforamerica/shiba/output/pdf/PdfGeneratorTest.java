@@ -5,29 +5,38 @@ import static org.codeforamerica.shiba.County.Anoka;
 import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAsByteArray;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
+import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.DocumentFieldType;
 import org.codeforamerica.shiba.output.Recipient;
+import org.codeforamerica.shiba.output.UploadedDocsPreparer;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
+import org.codeforamerica.shiba.output.xml.XmlGenerator;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.web.servlet.MockMvc;
 
 class PdfGeneratorTest {
 
@@ -47,6 +57,11 @@ class PdfGeneratorTest {
   private DocumentFieldPreparers preparers;
   private FilenameGenerator fileNameGenerator;
   private Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers;
+  MockMvc mockMvc;
+  XmlGenerator xmlGenerator = mock(XmlGenerator.class);
+  ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
+  UploadedDocsPreparer uploadedDocsPreparer = mock(UploadedDocsPreparer.class);
+  DocumentRepository documentRepository;
 
   @Autowired
   ResourceLoader resourceLoader;
@@ -62,7 +77,7 @@ class PdfGeneratorTest {
     PdfFieldFiller clientFiller = mock(PdfFieldFiller.class);
     PdfFieldFiller ccapFiller = mock(PdfFieldFiller.class);
     resourceLoader = mock(ResourceLoader.class);
-    
+    documentRepository = mock(DocumentRepository.class);
     preparers = mock(DocumentFieldPreparers.class);
     ApplicationRepository applicationRepository = mock(ApplicationRepository.class);
     fileNameGenerator = mock(FilenameGenerator.class);
@@ -113,7 +128,7 @@ class PdfGeneratorTest {
         pdfFieldWithCAFHHSuppFillers2,
         pdfResourcesCertainPops,
         applicationRepository,
-        null,
+        documentRepository,
         preparers,
         fileNameGenerator,
         featureFlags,
@@ -187,6 +202,37 @@ class PdfGeneratorTest {
     pdfGenerator.generate(applicationId, Document.CAF, recipient);
     verify(pdfFieldFillers.get(recipient).get(Document.CAF)).fill(any(), any(), any());
   }
+  
+  @Test
+  void shouldAddMNbenefitsSubmissionDate() throws Exception {
+    var image = getFileContentsAsByteArray("shiba+file.jpg");
+    var coverPage = getFileContentsAsByteArray("test-cover-pages.pdf");
+    var applicationId = "9870000123";
+   
+    ApplicationFile coverPageFile = new ApplicationFile(coverPage, "");
+    UploadedDocument uploadedDoc = new UploadedDocument("shiba+file.jpg", "", "", "", image.length);
+
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId(applicationId);
+    applicationData.setUploadedDocs(List.of(uploadedDoc));
+    applicationData.setFlow(FlowType.LATER_DOCS);
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .flow(FlowType.LATER_DOCS)
+        .completedAt(ZonedDateTime.parse("2023-03-22T13:48:39.213+00:00[America/Chicago]"))
+        .build();
+    List<UploadedDocument> uploadedDocumentList = List.of(uploadedDoc);
+    when(documentRepository.get(any())).thenReturn(image);
+    List<ApplicationFile> applicationFileList = pdfGenerator.generateCombinedUploadedDocument(uploadedDocumentList, application, coverPageFile.getFileBytes());
+    String text = null;
+    for(ApplicationFile af:applicationFileList) {
+     PDDocument doc = PDDocument.load(af.getFileBytes());
+     PDFTextStripper findPhrase = new PDFTextStripper();
+     text = findPhrase.getText(doc);
+    }
+    assertThat(text).contains("MNbenefits: 03/22/2023 08:48:39 AM");
+  }
+  
   
  
 }

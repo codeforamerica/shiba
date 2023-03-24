@@ -44,6 +44,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
@@ -431,7 +432,7 @@ class MnitDocumentConsumerTest {
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
 //        Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
 //        
-   // Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
+    //Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
    
 
     // Assert that converted file contents are as expected

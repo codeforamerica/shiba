@@ -5,9 +5,14 @@ import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +24,14 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
@@ -207,7 +215,8 @@ public class PdfGenerator implements FileGenerator {
 
     List<ApplicationFile> applicationFiles = new ArrayList<>();
     byte[] combinedPDF = coverPage;
-   
+    PDDocument overlayDoc = createDatePdfOverlay(application);
+    Overlay overlay = new Overlay();
     List<byte[]> combinedDocList = new ArrayList<>();
     for (UploadedDocument uDoc : uploadedDocuments) {
 
@@ -229,21 +238,29 @@ public class PdfGenerator implements FileGenerator {
           log.warn("Unsupported file-type: " + extension);
         }
         if (extension.equals("pdf")) {
-			try {
-				fileBytes = ImageUtility.compressImagesInPDF(fileBytes);
-			} catch (Exception e) {
-				log.error("Compress images in PDF failed: " + e.getMessage());
-			}
-			
-			try {
-				combinedPDF = addPageToPdf(combinedPDF, fileBytes);
-			} catch (Exception er) {
-				log.error("File not able to combine to pdf " + uDoc.getFilename());
-				combinedDocList.add(fileBytes);
-			}
+          try {
+            fileBytes = ImageUtility.compressImagesInPDF(fileBytes);
+          } catch (Exception e) {
+            log.error("Compress images in PDF failed: " + e.getMessage());
+          }
+          var fileBytesWithDate = addScannedDate(fileBytes, overlayDoc, uDoc, overlay);
+          try { 
+            
+            combinedPDF = addPageToPdf(combinedPDF, fileBytesWithDate);
+
+          } catch (Exception er) {
+            log.error("File not able to combine to pdf " + uDoc.getFilename());
+            combinedDocList.add(fileBytesWithDate);
+          }
         }
       }
-     
+
+    }
+    try {
+      overlayDoc.close();
+      overlay.close();
+    } catch (IOException e) {
+      log.error("Adding scanned date failed for application id = "+ application.getId());
     }
     //This makes sure duplicate files are not added twice in case of merger issue
     if(!combinedPDF.equals(coverPage)) {
@@ -259,8 +276,48 @@ public class PdfGenerator implements FileGenerator {
     return applicationFiles;
   }
   
-  
-  public List<ApplicationFile> generateForUploadedDocument(List<UploadedDocument> uploadedDocumentList, Application application, byte[] coverPage) {
+  private byte[] addScannedDate(byte[] fileBytes, PDDocument overlayDoc, UploadedDocument uDoc, Overlay overlay) {
+    try (PDDocument origDoc = PDDocument.load(fileBytes);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) { 
+      if (origDoc.getDocumentCatalog().getAcroForm() != null) {
+          origDoc.getDocumentCatalog().getAcroForm().flatten();
+      }
+      HashMap<Integer, String> overlayGuide = new HashMap<Integer, String>();
+      
+      overlay.setOverlayPosition(Overlay.Position.FOREGROUND);
+      overlay.setInputPDF(origDoc);
+      overlay.setAllPagesOverlayPDF(overlayDoc);
+      overlay.overlay(overlayGuide).save(outputStream);
+      origDoc.close();
+      fileBytes = outputStream.toByteArray();
+    }catch(Exception e) {
+      log.error("Could not add date to uploaded pdf = "+uDoc.getFilename());
+    }
+    return fileBytes;
+  }
+
+  private PDDocument createDatePdfOverlay(Application application) {
+    PDDocument overlayDoc = new PDDocument();
+    try {
+       PDPage page = new PDPage(PDRectangle.A4); 
+       overlayDoc.addPage(page); 
+       PDFont font = PDType1Font.COURIER_OBLIQUE;
+       PDPageContentStream contentStream = new PDPageContentStream(overlayDoc, page);
+       contentStream.beginText();
+       contentStream.setFont(font, 12); 
+       contentStream.newLineAtOffset(150, 785);
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+       contentStream.showText("MNbenefits: "+application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")).format(formatter)); 
+       contentStream.endText(); 
+       contentStream.close();
+    }catch(Exception er) {
+      log.error("Not able to create overlay pdf" + application.getId());
+    }
+     return overlayDoc;
+  }
+
+  public List<ApplicationFile> generateForUploadedDocument(
+      List<UploadedDocument> uploadedDocumentList, Application application, byte[] coverPage) {
     return generateCombinedUploadedDocument(uploadedDocumentList, application, coverPage,
         countyMap.get(application.getCounty()));
   }

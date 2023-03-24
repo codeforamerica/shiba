@@ -524,6 +524,25 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			assertPdfFieldEquals("PREVIOUS_STATE_4", "Illinois", caf);
 
 		}
+		
+		@Test
+        void shouldMapHHMemberMoreThan10() throws Exception {
+            fillInRequiredPages();
+            selectPrograms("SNAP");
+            fillOutHousemateInfoMoreThanFiveLessThanTen(12);
+            var caf = submitAndDownloadCaf();
+            assertPdfFieldEquals("FIRST_NAME_11", "householdMemberFirstName11", caf);
+            assertPdfFieldEquals("LAST_NAME_11", "householdMemberLastName11", caf);
+            assertPdfFieldEquals("OTHER_NAME_11", "houseHoldyMcMemberson11", caf);
+            assertPdfFieldEquals("FOOD_11", "Yes", caf);
+            assertPdfFieldEquals("RELATIONSHIP_11", "housemate", caf);
+            assertPdfFieldEquals("DATE_OF_BIRTH_11", "09/14/1950", caf);
+            assertPdfFieldEquals("SSN_11", "XXX-XX-XXXX", caf);
+            assertPdfFieldEquals("MARITAL_STATUS_11", "NEVER_MARRIED", caf);
+            assertPdfFieldEquals("SEX_11", "MALE", caf);
+            assertPdfFieldEquals("PREVIOUS_STATE_11", "Illinois", caf);
+
+        }
 
 		@Test
 		void shouldNotMapHHMemberLessThan5() throws Exception {
