@@ -28,6 +28,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STATE;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_STREET;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.MAILING_ZIPCODE;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.NO_PERMANENT_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SAME_MAILING_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_HOME_ADDRESS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.USE_ENRICHED_MAILING_ADDRESS;
@@ -86,8 +87,9 @@ public class MailingAddressStreetPreparer implements DocumentFieldPreparer {
       return createAddressInputsFromHomeAddress(pagesData);
     }
 
-    String usesEnriched = getFirstValue(pagesData, USE_ENRICHED_MAILING_ADDRESS);
-    if (usesEnriched == null) {
+    boolean noPermanentAddress = parseBoolean(getFirstValue(pagesData, NO_PERMANENT_ADDRESS));
+    String generalDeliveryCity = getFirstValue(pagesData, GENERAL_DELIVERY_CITY);
+    if (noPermanentAddress == true  && generalDeliveryCity != null) {
       // General delivery
       return createGeneralDeliveryAddressInputs(pagesData);
     }
