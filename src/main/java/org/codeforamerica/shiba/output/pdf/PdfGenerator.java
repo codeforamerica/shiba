@@ -3,15 +3,14 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -356,10 +355,14 @@ public class PdfGenerator implements FileGenerator {
       var extension = Utils.getFileType(filename);
       if(IMAGE_TYPES_TO_COMPRESS.contains(extension)) {
         ByteArrayOutputStream outputFile = new ByteArrayOutputStream();
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageFileBytes));
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageFileBytes));
         JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
+          BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(),
+              BufferedImage.TYPE_3BYTE_BGR);
+              ColorConvertOp op = new ColorConvertOp(null);
+              op.filter(image, img);
         jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        jpegParams.setCompressionQuality(0.50f);
+        jpegParams.setCompressionQuality(0.50f);        
         ImageWriter writer = getImageWriter();
         try (final ImageOutputStream stream = ImageIO.createImageOutputStream(outputFile)) {
           writer.setOutput(stream);
