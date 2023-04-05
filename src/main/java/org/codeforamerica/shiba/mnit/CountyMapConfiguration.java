@@ -103,7 +103,7 @@ public class CountyMapConfiguration {
   private final String DEV_EMAIL = "help+dev@mnbenefits.org";
 
   @Bean
-  @Profile({"default", "test", "dev", "atst"})
+  @Profile({"default", "test", "dev", "demo"})
   ServicingAgencyMap<CountyRoutingDestination> nonProdMapping() {
     initializeDefaultCountyMap();
     return countyMap;

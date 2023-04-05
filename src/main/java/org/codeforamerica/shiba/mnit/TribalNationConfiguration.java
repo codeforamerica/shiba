@@ -49,7 +49,7 @@ public class TribalNationConfiguration {
   }
 
   @Bean
-  @Profile("atst")
+  @Profile("demo")
   public ServicingAgencyMap<TribalNationRoutingDestination> demoTribalNations() {
     ServicingAgencyMap<TribalNationRoutingDestination> result = getDefaultTribalNations();
     addTribalNation(result,
