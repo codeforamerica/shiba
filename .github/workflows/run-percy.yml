@@ -46,6 +46,10 @@ jobs:
         run: percy exec -- ./gradlew clean test --tests org.codeforamerica.shiba.journeys.FullFlowJourneyTest.fullApplicationWithDocumentUploads
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      - name: Run healthcare renewal test and send to Percy
+        run: percy exec -- ./gradlew clean test --tests org.codeforamerica.shiba.journeys.HealthcareRenewalJourneyTest.healthcareRenewalFlow
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Announce on Slack
         if: ${{ always() }}
         uses: innocarpe/actions-slack@v1
