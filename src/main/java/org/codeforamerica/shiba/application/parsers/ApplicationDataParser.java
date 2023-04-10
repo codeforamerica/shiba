@@ -122,6 +122,8 @@ public class ApplicationDataParser {
     coordinatesMap.put(Field.IDENTIFY_COUNTY, new ParsingCoordinate("identifyCounty", "county"));
     coordinatesMap.put(Field.IDENTIFY_COUNTY_LATER_DOCS, new ParsingCoordinate("identifyCountyOrTribalNation", "county"));
     coordinatesMap.put(Field.IDENTIFY_TRIBAL_NATION_LATER_DOCS, new ParsingCoordinate("identifyCountyOrTribalNation", "tribalNation"));
+    coordinatesMap.put(Field.IDENTIFY_COUNTY_HEALTHCARE_RENEWAL, new ParsingCoordinate("healthcareRenewalUpload", "county"));
+    coordinatesMap.put(Field.IDENTIFY_TRIBAL_NATION_HEALTHCARE_RENEWAL, new ParsingCoordinate("healthcareRenewalUpload", "tribalNation"));
 
     coordinatesMap.put(Field.APPLICANT_ASSETS, new ParsingCoordinate("liquidAssetsSingle", "liquidAssets"));
     coordinatesMap.put(Field.HOUSEHOLD_ASSETS, new ParsingCoordinate("cashAmount", "cashAmount"));
@@ -349,6 +351,11 @@ public class ApplicationDataParser {
     coordinatesMap
         .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("matchInfo", "firstName"));
     coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("matchInfo", "lastName"));
+    
+    coordinatesMap.put(Field.MATCH_INFO_DOB, new ParsingCoordinate("healthcareRenewalMatchInfo", "dateOfBirth"));
+    coordinatesMap
+        .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("healthcareRenewalMatchInfo", "firstName"));
+    coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("healthcareRenewalMatchInfo", "lastName"));
 
     coordinatesMap.put(Field.EVERYONE_US_CITIZENS,
         new ParsingCoordinate("usCitizen", "isUsCitizen"));
@@ -482,7 +489,9 @@ public class ApplicationDataParser {
     IDENTIFY_COUNTY("Other"),
     IDENTIFY_COUNTY_LATER_DOCS("Other"),
     IDENTIFY_TRIBAL_NATION_LATER_DOCS,
-
+    IDENTIFY_COUNTY_HEALTHCARE_RENEWAL("Other"),
+    IDENTIFY_TRIBAL_NATION_HEALTHCARE_RENEWAL,
+    
     APPLICANT_ASSETS("0"),
     HOUSEHOLD_ASSETS("0"),
     INCOME("0"),

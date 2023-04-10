@@ -44,10 +44,10 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
-import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.FilenetWebServiceClient;
@@ -174,9 +174,9 @@ class MnitDocumentConsumerTest {
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, routingDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, routingDestination, application.getId(), XML, FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, pdfApplicationFile, routingDestination, CAF);
+    verify(mnitClient).send(application, xmlApplicationFile, routingDestination, XML);
   }
 
   @ParameterizedTest
@@ -204,11 +204,9 @@ class MnitDocumentConsumerTest {
     CountyRoutingDestination routingDestination = countyMap.get(expectedCounty);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(expectedCounty), application.getId(),
-        CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(expectedCounty), application.getId(),
-        XML, FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, pdfApplicationFile, countyMap.get(expectedCounty), CAF);
+    verify(mnitClient).send(application, xmlApplicationFile, countyMap.get(expectedCounty), XML);
   }
 
   @Test
@@ -230,11 +228,9 @@ class MnitDocumentConsumerTest {
         MilleLacsBandOfOjibwe);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, routingDestination,
-        application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlApplicationFile, routingDestination,
-        application.getId(), XML, FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, pdfApplicationFile, routingDestination, CAF);
+    verify(mnitClient).send(application, xmlApplicationFile, routingDestination, XML);
   }
 
   @Test
@@ -258,11 +254,9 @@ class MnitDocumentConsumerTest {
     CountyRoutingDestination olmstedRoutingDestination = countyMap.get(Olmsted);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, olmstedRoutingDestination);
     verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, olmstedRoutingDestination, application.getId(), CAF,
-        FULL);
-    verify(mnitClient).send(xmlApplicationFile, olmstedRoutingDestination, application.getId(), XML,
-        FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, pdfApplicationFile, olmstedRoutingDestination, CAF);
+    verify(mnitClient).send(application, xmlApplicationFile, olmstedRoutingDestination,  XML);
   }
 
   @Test
@@ -302,13 +296,13 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, nationDestination);
     verify(pdfGenerator).generate(application.getId(), CCAP, CASEWORKER, countyDestination);
     verify(xmlGenerator, times(2)).generate(application.getId(), CAF, CASEWORKER);
-    verify(mnitClient, times(5)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(nationCaf, nationDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, nationDestination, application.getId(), XML, FULL);
-    verify(mnitClient).send(countycaf, countyDestination, application.getId(), CAF, FULL);
-    verify(mnitClient).send(xmlFile, countyDestination, application.getId(), XML, FULL);
+    verify(mnitClient, times(5)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, nationCaf, nationDestination, CAF);
+    verify(mnitClient).send(application, xmlFile, nationDestination, XML);
+    verify(mnitClient).send(application, countycaf, countyDestination, CAF);
+    verify(mnitClient).send(application, xmlFile, countyDestination, XML);
     // CCAP never goes to Mille Lacs
-    verify(mnitClient).send(ccap, countyDestination, application.getId(), CCAP, FULL);
+    verify(mnitClient).send(application, ccap, countyDestination, CCAP);
   }
 
   @Test
@@ -330,11 +324,9 @@ class MnitDocumentConsumerTest {
     documentConsumer.processCafAndCcap(application);
 
     // Send CCAP and XML (but not CAF)
-    verify(mnitClient, times(2)).send(any(), any(), any(), any(), any());
-    verify(mnitClient).send(pdfApplicationFile, countyMap.get(Olmsted), application.getId(), CCAP,
-        FULL);
-    verify(mnitClient).send(xmlApplicationFile, countyMap.get(Olmsted), application.getId(), XML,
-        FULL);
+    verify(mnitClient, times(2)).send(any(), any(), any(), any());
+    verify(mnitClient).send(application, pdfApplicationFile, countyMap.get(Olmsted), CCAP);
+    verify(mnitClient).send(application, xmlApplicationFile, countyMap.get(Olmsted), XML);
   }
 
   @Test
@@ -362,8 +354,8 @@ class MnitDocumentConsumerTest {
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any(), any());
 
     doThrow(new RuntimeException()).when(mnitClient)
-        .send(any(), any(), any(), eq(CCAP), any());
-    doNothing().when(mnitClient).send(any(), any(), any(), eq(CAF), any());
+        .send(eq(application), any(), any(), eq(CCAP));
+    doNothing().when(mnitClient).send(eq(application), any(), any(), eq(CAF));
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP", "SNAP"))
@@ -391,7 +383,7 @@ class MnitDocumentConsumerTest {
     doReturn(testFileList).when(pdfGenerator)
         .generateCombinedUploadedDocument(any(), eq(application), any(), any());
     doThrow(new RuntimeException("Some mocked exception")).when(mnitClient)
-        .send(any(), any(), any(), eq(UPLOADED_DOC), any());
+        .send(eq(application), any(), any(), eq(UPLOADED_DOC));
 
     try {
       documentConsumer.processUploadedDocuments(application);
@@ -424,10 +416,10 @@ class MnitDocumentConsumerTest {
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
     verify(mnitClient, times(1))
-        .send(captor.capture(), eq(countyMap.get(Olmsted)), eq(application.getId()),
-            eq(UPLOADED_DOC), any());
-    verify(mnitClient, times(0)).send(any(), any(),
-        eq(application.getId()), eq(XML), any()); // XMLs only for Dakota
+        .send(eq(application), captor.capture(), eq(countyMap.get(Olmsted)),
+            eq(UPLOADED_DOC));
+    verify(mnitClient, times(0)).send(eq(application), any(), any(),
+        eq(XML)); // XMLs only for Dakota
 
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
 //        Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
@@ -439,12 +431,25 @@ class MnitDocumentConsumerTest {
     verifyGeneratedPdf(captor.getAllValues().get(0).getFileBytes(), "combined-pdf.pdf");
   }
 
-  @Test
-  void sendsXMLAndDocumentUploadsToDakota() throws IOException {
+  // There are two flows to consider in regards to sending XML for uploaded docs to Dakota County.
+  @ParameterizedTest
+  @CsvSource({
+      "identifyCountyOrTribalNation,LATER_DOCS",
+      "healthcareRenewalUpload,HEALTHCARE_RENEWAL"})
+  void sendsXMLAndDocumentUploadsToDakota(String pageName, String flowName) throws IOException {
+	// set the application-level attributes
+	FlowType flowType = FlowType.valueOf(flowName);
+	application.setFlow(flowType);
+	County county = County.Dakota;
+	application.setCounty(county);
+	
+	// set the applicationData-level attributes
+	// first, remove the "identifyCounty" page that is automatically created in the setup.
+	applicationData.getPagesData().remove("identifyCounty");
     new TestApplicationDataBuilder(applicationData)
-        .withPageData("identifyCounty", "county", "Dakota");
+        .withPageData(pageName, "county", "Dakota");
+    applicationData.setFlow(flowType);	
 
-    application.setFlow(LATER_DOCS);
     mockDocUpload("test-uploaded-pdf.pdf", "pdfS3FilePath", MediaType.APPLICATION_PDF_VALUE, "pdf");
     when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(0), eq("pdf"), any(), eq(1)))
         .thenReturn("pdf1of1.pdf");
@@ -454,11 +459,9 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-    verify(mnitClient).send(captor.capture(), eq(countyMap.get(Dakota)), eq(application.getId()),
-        eq(UPLOADED_DOC), any());
+    verify(mnitClient).send(eq(application), captor.capture(), eq(countyMap.get(Dakota)), eq(UPLOADED_DOC));
 
-    verify(mnitClient).send(eq(xmlApplicationFile), eq(countyMap.get(Dakota)),
-        eq(application.getId()), eq(XML), any());
+    verify(mnitClient).send(eq(application), eq(xmlApplicationFile), eq(countyMap.get(Dakota)), eq(XML));
   }
 
   @Test
@@ -480,7 +483,7 @@ class MnitDocumentConsumerTest {
 
     documentConsumer.processUploadedDocuments(application);
 
-    verify(mnitClient, never()).send(any(), any(), any(), any(), any());
+    verify(mnitClient, never()).send(any(), any(), any(), any());
   }
 
   @Test
@@ -513,8 +516,7 @@ class MnitDocumentConsumerTest {
     documentConsumer.processUploadedDocuments(application);
 
     ArgumentCaptor<ApplicationFile> captor = ArgumentCaptor.forClass(ApplicationFile.class);
-    verify(mnitClient).send(captor.capture(), eq(tribalNations.get(MilleLacsBandOfOjibwe)),
-        eq(application.getId()), eq(UPLOADED_DOC), eq(FULL));
+    verify(mnitClient).send(eq(application), captor.capture(), eq(tribalNations.get(MilleLacsBandOfOjibwe)), eq(UPLOADED_DOC));
     assertThat(captor.getValue().getFileName()).isEqualTo("MILLE_LACS_pdf.pdf");
   }
 

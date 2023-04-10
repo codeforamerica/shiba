@@ -56,6 +56,7 @@ public class ApplicationDataEncryptor implements Encryptor<ApplicationData> {
 
     setEncryptedSSNValue(encryptFunc, pagesData, "personalInfo");
     setEncryptedSSNValue(encryptFunc, pagesData, "matchInfo");
+    setEncryptedSSNValue(encryptFunc, pagesData, "healthcareRenewalMatchInfo");
 
     boolean hasHousehold = applicationData.getSubworkflows().containsKey("household");
     if (hasHousehold) {

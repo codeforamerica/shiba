@@ -29,6 +29,9 @@ public class DocumentListParser {
     if (applicationData.getFlow() != null && applicationData.getFlow().equals(FlowType.LATER_DOCS)) {
         documents.add(UPLOADED_DOC);
       }
+    if (applicationData.getFlow() != null && applicationData.getFlow().equals(FlowType.HEALTHCARE_RENEWAL)) {
+        documents.add(UPLOADED_DOC);
+      }
 
     return documents;
   }

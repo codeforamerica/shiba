@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.mnit;
 
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
+import static org.codeforamerica.shiba.application.FlowType.FULL;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.output.Document.CAF;
@@ -24,11 +25,15 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.dom.DOMResult;
+
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +97,8 @@ class FilenetWebServiceClientTest {
   private ApplicationStatusRepository applicationStatusRepository;
   @MockBean
   private RestTemplate restTemplate;
+  
+  private Application application;
   private CountyRoutingDestination olmsted;
   private CountyRoutingDestination hennepin;
   private String applicationId;
@@ -105,12 +112,19 @@ class FilenetWebServiceClientTest {
 
     mockWebServiceServer = MockWebServiceServer.createServer(webServiceTemplate);
     applicationId = "someId";
-
+    application = Application.builder()
+            .id("someId")
+            .flow(FULL)
+            .build();
+    
     when(applicationStatusRepository.find(eq(applicationId), eq(CAF), any(), eq(fileName))).thenReturn(
         new ApplicationStatus(applicationId, CAF, olmsted.getName(), SENDING, fileName, "")
     );
     when(applicationStatusRepository.find(applicationId, CAF, hennepin.getName(), fileName)).thenReturn(
         new ApplicationStatus(applicationId, CAF, hennepin.getName(), SENDING, fileName, "")
+    );
+    when(applicationStatusRepository.find(eq(applicationId), eq(Document.UPLOADED_DOC), any(), eq(fileName))).thenReturn(
+            new ApplicationStatus(applicationId, Document.UPLOADED_DOC, olmsted.getName(), SENDING, fileName, "")
     );
 
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
@@ -162,17 +176,68 @@ class FilenetWebServiceClientTest {
 
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
-
-    filenetWebServiceClient.send(
-        new ApplicationFile(fileContent.getBytes(), fileName),
-        olmsted, applicationId, Document.CAF, FlowType.FULL
-    );
+    
+	filenetWebServiceClient.send(application, new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+			Document.CAF);
 
     verify(applicationStatusRepository).createOrUpdate(applicationId, Document.CAF, olmsted.getName(),
         DELIVERED, fileName);
 
     mockWebServiceServer.verify();
   }
+  
+	@Test
+	void sendsTheHealthcareRenewalDocumentToFilenetAndSFTP() {
+		ApplicationData applicationData = new ApplicationData();
+		new TestApplicationDataBuilder(applicationData).withPageData("healthcareRenewalUpload", "county", "Olmsted")
+				.withPageData("healthcareRenewalMatchInfo", "caseNumber", "12345678").build();
+		application.setApplicationData(applicationData);
+		application.setFlow(FlowType.HEALTHCARE_RENEWAL);
+		ZonedDateTime completedAt = ZonedDateTime.of(LocalDateTime.of(2021, 6, 10, 1, 28), ZoneOffset.UTC);
+		application.setCompletedAt(completedAt);
+
+		mockWebServiceServer.expect(connectionTo(url))
+				.andExpect(xpath("//ns2:createDocument/ns2:repositoryId", namespaceMapping).evaluatesTo("Programs"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyBoolean[@propertyDefinitionId='Read']/ns3:value",
+						namespaceMapping).evaluatesTo(true))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='OriginalFileName']/ns3:value",
+						namespaceMapping).evaluatesTo("fileName"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='cmis:name']/ns3:value",
+						namespaceMapping).evaluatesTo("fileName"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='NPI']/ns3:value",
+						namespaceMapping).evaluatesTo("A000055800"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='Source']/ns3:value",
+						namespaceMapping).evaluatesTo("MNBenefits"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='CTYMBDocumentType']/ns3:value",
+						namespaceMapping).evaluatesTo("RENEWAL"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyDateTime[@propertyDefinitionId='DocumentDate']/ns3:value",
+						namespaceMapping).evaluatesTo("2021-06-10T01:28:00.000Z"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='CaseID']/ns3:value",
+						namespaceMapping).evaluatesTo("12345678"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyString[@propertyDefinitionId='ReferenceNumber']/ns3:value",
+						namespaceMapping).evaluatesTo("someId"))
+				.andExpect(xpath(
+						"//ns2:createDocument/ns2:properties/ns3:propertyId[@propertyDefinitionId='cmis:objectTypeId']/ns3:value",
+						namespaceMapping).evaluatesTo("CountyMailbox"))
+				.andRespond(withSoapEnvelope(successResponse));
+
+		filenetWebServiceClient.send(application, new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+				Document.UPLOADED_DOC);
+
+		verify(applicationStatusRepository).createOrUpdate(applicationId, Document.UPLOADED_DOC, olmsted.getName(),
+				DELIVERED, fileName);
+
+		mockWebServiceServer.verify();
+	}
 
   @Test
   void sendingTheDocumentToFilenetSavesTheFilenetId() {
@@ -182,10 +247,8 @@ class FilenetWebServiceClientTest {
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
-    filenetWebServiceClient.send(
-        new ApplicationFile(fileContent.getBytes(), fileName),
-        olmsted, applicationId, Document.CAF, FlowType.FULL
-    );
+	filenetWebServiceClient.send(application, new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+			Document.CAF);
 
     verify(applicationStatusRepository).updateFilenetId(applicationId, Document.CAF, olmsted.getName(),
         SENDING, fileName, filenetIdd);
@@ -199,17 +262,13 @@ class FilenetWebServiceClientTest {
   void sendsTheDocumentOnlyToSFTPIfAlreadyInFilenet() {
     when(applicationStatusRepository.find(applicationId, CAF, olmsted.getName(), fileName))
         .thenReturn(new ApplicationStatus(
-                applicationId, CAF, olmsted.getName(), SENDING, fileName,
-                "filenetId"
-            )
+                applicationId, CAF, olmsted.getName(), SENDING, fileName, filenetIdd )
         );
     Mockito.when(restTemplate.getForObject(sftpUploadUrl + "/" + filenetIdd, String.class))
         .thenReturn(routerResponse);
 
-    filenetWebServiceClient.send(
-        new ApplicationFile(fileContent.getBytes(), fileName),
-        olmsted, applicationId, Document.CAF, FlowType.FULL
-    );
+	filenetWebServiceClient.send(application, new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+			Document.CAF);
 
     mockWebServiceServer.verify();
   }
@@ -223,10 +282,8 @@ class FilenetWebServiceClientTest {
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(withSoapEnvelope(successResponse));
 
-    filenetWebServiceClient
-        .send(new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
-            applicationId,
-            Document.CAF, FlowType.FULL);
+	filenetWebServiceClient.send(application, new ApplicationFile(fileContent.getBytes(), fileName), olmsted,
+			Document.CAF);
 
     mockWebServiceServer.verify();
   }
@@ -252,8 +309,7 @@ class FilenetWebServiceClientTest {
 
     ApplicationFile applicationFile = new ApplicationFile(fileContent.getBytes(), fileName);
 
-    filenetWebServiceClient
-        .send(applicationFile, olmsted, applicationId, Document.CAF, FlowType.FULL);
+	filenetWebServiceClient.send(application, applicationFile, olmsted, Document.CAF);
 
     mockWebServiceServer.verify();
   }
@@ -298,9 +354,8 @@ class FilenetWebServiceClientTest {
     String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetIdd);
     Mockito.when(restTemplate.getForObject(routerRequest, String.class)).thenReturn(routerResponse);
 
-    filenetWebServiceClient.send(new ApplicationFile(
-        "whatever".getBytes(),
-        fileName), hennepin, applicationId, Document.CAF, FlowType.FULL);
+	filenetWebServiceClient.send(application, new ApplicationFile("whatever".getBytes(), fileName), hennepin,
+			Document.CAF);
 
     mockWebServiceServer.verify();
     Mockito.verify(restTemplate).getForObject(routerRequest, String.class);

@@ -132,10 +132,10 @@ public class MnitDocumentConsumer {
 	    List<RoutingDestination> routingDestinations = routingDecisionService
 	        .getRoutingDestinations(application.getApplicationData(), UPLOADED_DOC);
 	    
+	    FlowType flowType = application.getFlow();
 	    for (RoutingDestination routingDestination : routingDestinations) {
-	      
 	      boolean sendXMLToDakota = routingDestination.getName().equals(County.Dakota.name())
-	          && application.getFlow() == FlowType.LATER_DOCS;
+	          && (flowType == FlowType.LATER_DOCS || flowType == FlowType.HEALTHCARE_RENEWAL);
 
 	      if (sendXMLToDakota) {
 	        ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
@@ -170,8 +170,7 @@ public class MnitDocumentConsumer {
       applicationStatusRepository.createOrUpdate(application.getId(), document,
           routingDestination.getName(),
           SENDING, renamedFile.getFileName());
-      mnitClient.send(renamedFile, routingDestination, application.getId(), document,
-          application.getFlow());
+      mnitClient.send(application, renamedFile, routingDestination, document);
     } catch (Exception e) {
       applicationStatusRepository.createOrUpdate(application.getId(), document,
           routingDestination.getName(),

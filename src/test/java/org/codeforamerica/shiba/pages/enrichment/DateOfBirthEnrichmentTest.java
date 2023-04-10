@@ -20,6 +20,7 @@ public class DateOfBirthEnrichmentTest {
     applicationData = new TestApplicationDataBuilder()
         .withPageData("personalInfo", "dateOfBirth", List.of("01", "09", "1999"))
         .withPageData("matchInfo", "dateOfBirth", List.of("02", "10", "1999"))
+        .withPageData("healthcareRenewalMatchInfo", "dateOfBirth", List.of("02", "10", "1999"))
         .withHouseholdMember("Daria", "Agàta")
         .build();
   }

@@ -4,6 +4,7 @@ import static java.lang.Boolean.parseBoolean;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.codeforamerica.shiba.application.FlowType.HEALTHCARE_RENEWAL;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
@@ -52,6 +53,7 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.configurations.CityInfoConfiguration;
@@ -201,11 +203,16 @@ public class PageController {
   }
 
   @GetMapping("/errorTimeout")
-  String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId) {
-    if (submittedAppId.length() == 0) {
+  String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId,
+		  @CookieValue(value = "flow_type", defaultValue = "") String flowType, 
+		  @CookieValue(value = "page_name", defaultValue = "") String pageName) {
+    if(pageName.equals("healthcareRenewalUpload") || flowType.equals(FlowType.HEALTHCARE_RENEWAL.toString())) {
+    	return "healthcareRenewalErrorUploadTimeout";
+    }
+    else if (submittedAppId.length() == 0) {
       return "errorSessionTimeout";
-    } else {
-      return "errorUploadTimeout";
+    }else {
+    	 return "errorUploadTimeout";
     }
   }
 
@@ -253,6 +260,17 @@ public class PageController {
       HttpSession httpSession,
       Locale locale
   ) {
+	  // Temporary cookie indicating user page
+      Cookie pageNameCookie = new Cookie("page_name", pageName);
+      pageNameCookie.setPath("/");
+      pageNameCookie.setHttpOnly(true);
+      response.addCookie(pageNameCookie);
+      //to set flow on cookie
+      Cookie flowCookie = new Cookie("flow_type", applicationData.getFlow().toString());
+      flowCookie.setPath("/");
+      flowCookie.setHttpOnly(true);
+      response.addCookie(flowCookie);
+      
 
     var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
@@ -272,7 +290,7 @@ public class PageController {
       log.info(
           "documentSubmitConfirmation redirect back to uploadDocuments, no documents in uploadDocs list");
       return new ModelAndView(
-          String.format("redirect:/pages/%s", landmarkPagesConfiguration.getUploadDocumentsPage()));
+          String.format("redirect:/pages/%s", landmarkPagesConfiguration.getCorrectUploadDocumentPage(pageName)));
     }
 
     if (shouldRedirectToTerminalPage(pageName)) {
@@ -289,6 +307,12 @@ public class PageController {
       return new ModelAndView(
           String.format("redirect:/pages/%s",
               landmarkPagesConfiguration.getLaterDocsTerminalPage()));
+    }
+    
+    if (shouldRedirectToHealthcareRenewalTerminalPage(pageName)) {
+      return new ModelAndView(
+          String.format("redirect:/pages/%s",
+              landmarkPagesConfiguration.getHealthcareRenewalTerminalPage()));
     }
 
     if (shouldRedirectToLandingPage(pageName)) {
@@ -554,6 +578,16 @@ public class PageController {
     return !landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)
         && landmarkPagesConfiguration.isPostSubmitPage(pageName)
         && applicationData.getFlow() == LATER_DOCS
+        && hasSubmittedDocuments();
+  }
+  
+  private boolean shouldRedirectToHealthcareRenewalTerminalPage(String pageName) {
+    LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+        .getLandmarkPages();
+    // Documents have been submitted in later docs flow and applicant is attempting to navigate back to a previous page in this flow
+    return !landmarkPagesConfiguration.isHealthcareRenewalTerminalPage(pageName)
+        && landmarkPagesConfiguration.isPostSubmitPage(pageName)
+        && applicationData.getFlow() == HEALTHCARE_RENEWAL
         && hasSubmittedDocuments();
   }
 
@@ -923,7 +957,8 @@ public class PageController {
   ModelAndView submitDocuments(HttpSession httpSession) {
     Application application = applicationRepository.find(applicationData.getId());
     application.getApplicationData().setUploadedDocs(applicationData.getUploadedDocs());
-    if (applicationData.getFlow() == LATER_DOCS) {
+    
+    if (applicationData.getFlow() == LATER_DOCS || applicationData.getFlow() == HEALTHCARE_RENEWAL ) {
       application.setCompletedAtTime(clock);
     }
     applicationStatusRepository.getAndSetFileNames(application, UPLOADED_DOC);
@@ -953,6 +988,19 @@ public class PageController {
     applicationData.removeUploadedDoc(filename);
 
     return new ModelAndView("redirect:/pages/uploadDocuments");
+  }
+  
+  @SuppressWarnings("SpringMVCViewInspection")
+  @PostMapping("/healthcare-renewal-remove-upload/{filename}")
+  ModelAndView healthcareRenewalRemoveUpload(@PathVariable String filename) {
+    applicationData.getUploadedDocs().stream()
+        .filter(uploadedDocument -> uploadedDocument.getFilename().equals(filename))
+        .map(UploadedDocument::getS3Filepath)
+        .findFirst()
+        .ifPresent(documentRepository::delete);
+    applicationData.removeUploadedDoc(filename);
+
+    return new ModelAndView("redirect:/pages/healthcareRenewalUploadDocuments");
   }
 
   /*

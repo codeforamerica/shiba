@@ -17,10 +17,13 @@ import java.math.BigInteger;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
@@ -28,12 +31,15 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
+
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.filenetwsdl.CmisContentStreamType;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertiesType;
 import org.codeforamerica.shiba.filenetwsdl.CmisProperty;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertyBoolean;
+import org.codeforamerica.shiba.filenetwsdl.CmisPropertyDateTime;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertyId;
 import org.codeforamerica.shiba.filenetwsdl.CmisPropertyString;
 import org.codeforamerica.shiba.filenetwsdl.CreateDocument;
@@ -41,6 +47,7 @@ import org.codeforamerica.shiba.filenetwsdl.CreateDocumentResponse;
 import org.codeforamerica.shiba.filenetwsdl.ObjectFactory;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.data.InputData;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,10 +103,9 @@ public class FilenetWebServiceClient {
       ),
       listeners = {"esbRetryListener"}
   )
-  public void send(ApplicationFile applicationFile,
-      RoutingDestination routingDestination,
-      String applicationNumber,
-      Document applicationDocument, FlowType flowType) {
+  public void send(Application application, ApplicationFile applicationFile,
+      RoutingDestination routingDestination, Document applicationDocument) {
+    String applicationNumber = application.getId();
     String filenetId;
     filenetId = applicationStatusRepository.find(applicationNumber,
         applicationDocument,
@@ -114,8 +120,8 @@ public class FilenetWebServiceClient {
       MDC.put("applicationId", applicationNumber);
       CreateDocument createDocument = new CreateDocument();
       createDocument.setRepositoryId("Programs");
-      setPropertiesOnDocument(applicationFile, routingDestination, applicationNumber,
-          applicationDocument, flowType, createDocument);
+      setPropertiesOnDocument(application, applicationFile, routingDestination, applicationNumber,
+          applicationDocument, createDocument);
       setContentStreamOnDocument(applicationFile, createDocument);
 
       // Create the document in Filenet
@@ -163,28 +169,27 @@ public class FilenetWebServiceClient {
           SENDING, applicationFile.getFileName(), response.getObjectId());
     }
 
-    // Now route a copy of the document from Filenet to SFTP
-    String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetId);
-    log.info(String.format("Upload to SFTP request: %s", routerRequest));
-    String routerResponse = restTemplate.getForObject(routerRequest, String.class);
+    // Now route a copy of the document from Filenet to SFTP (unless it is from HEALTHCARE_RENEWAL)
+	if (!application.getFlow().equals(FlowType.HEALTHCARE_RENEWAL)) {
+		String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetId);
+		log.info(String.format("Upload to SFTP request: %s", routerRequest));
+		String routerResponse = restTemplate.getForObject(routerRequest, String.class);
 
-    log.info(String.format("Upload to SFTP response: %s", routerResponse));
-    JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
+		log.info(String.format("Upload to SFTP response: %s", routerResponse));
+		JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
 
-    // Throw exception if this isnt a successful response
-    String eMessage = String
-        .format("The MNIT Router did not respond with a \"Success\" message for %s",
-            filenetId);
-    if (jsonObject != null) {
-      JsonElement messageElement = jsonObject.get("message");
-      if (messageElement.isJsonNull()
-          || !messageElement.getAsString().equalsIgnoreCase("Success")) {
-        throw new IllegalStateException(eMessage);
-      }
-    } else {
-      throw new IllegalStateException(eMessage);
-    }
-
+		// Throw exception if this isnt a successful response
+		String eMessage = String.format("The MNIT Router did not respond with a \"Success\" message for %s", filenetId);
+		if (jsonObject != null) {
+			JsonElement messageElement = jsonObject.get("message");
+			if (messageElement.isJsonNull() || !messageElement.getAsString().equalsIgnoreCase("Success")) {
+				throw new IllegalStateException(eMessage);
+			}
+		} else {
+			throw new IllegalStateException(eMessage);
+		}
+	}
+    
     applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
         routingDestination.getName(),
         DELIVERED, applicationFile.getFileName());
@@ -192,16 +197,28 @@ public class FilenetWebServiceClient {
 
   @SuppressWarnings("unused")
   @Recover
-  public void logErrorToSentry(Exception e, ApplicationFile applicationFile,
-      RoutingDestination routingDestination,
-      String applicationNumber, Document applicationDocument, FlowType flowType) {
-    applicationStatusRepository.createOrUpdate(applicationNumber, applicationDocument,
+  public void logErrorToSentry(Exception e, Application application, ApplicationFile applicationFile,
+	      RoutingDestination routingDestination, Document applicationDocument) {
+    applicationStatusRepository.createOrUpdate(application.getId(), applicationDocument,
         routingDestination.getName(),
         DELIVERY_FAILED, applicationFile.getFileName());
     log.error("Application failed to send: " + applicationFile.getFileName(), e);
   }
 
-  private void setPropertiesOnDocument(ApplicationFile applicationFile,
+	private void setPropertiesOnDocument(Application application, ApplicationFile applicationFile,
+			RoutingDestination routingDestination, String applicationNumber, Document applicationDocument,
+			CreateDocument createDocument) {
+		FlowType flowType = application.getFlow();
+		if (flowType.equals(FlowType.HEALTHCARE_RENEWAL)) {
+			setPropertiesOnHealthcareRenewalDocument(application, applicationFile, routingDestination,
+					applicationNumber, applicationDocument, flowType, createDocument);
+		} else {
+			setPropertiesOnOlaDocument(applicationFile, routingDestination, applicationNumber, applicationDocument,
+					flowType, createDocument);
+		}
+	}
+
+  private void setPropertiesOnOlaDocument(ApplicationFile applicationFile,		  
       RoutingDestination routingDestination, String applicationNumber,
       Document applicationDocument, FlowType flowType,
       CreateDocument createDocument) {
@@ -221,7 +238,7 @@ public class FilenetWebServiceClient {
         generateDocumentDescription(applicationDocument, applicationNumber, flowType));
     CmisPropertyString source = createCmisPropertyString("Source", "MNITS");
     CmisPropertyString flow = createCmisPropertyString("Flow", "Inbound");
-    CmisPropertyId cmisObjectTypeId = createCmisPropertyId();
+    CmisPropertyId cmisObjectTypeId = createCmisPropertyId("MNITSMailbox");
 
     propertiesList
         .addAll(
@@ -229,6 +246,34 @@ public class FilenetWebServiceClient {
                 source, flow, cmisObjectTypeId, description));
     createDocument.setProperties(properties);
   }
+
+	private void setPropertiesOnHealthcareRenewalDocument(Application application, ApplicationFile applicationFile,
+			RoutingDestination routingDestination, String applicationNumber, Document applicationDocument,
+			FlowType flowType, CreateDocument createDocument) {
+		CmisPropertiesType properties = new CmisPropertiesType();
+		List<CmisProperty> propertiesList = properties.getProperty();
+
+		CmisPropertyBoolean read = createCmisPropertyBoolean();
+		CmisPropertyString originalFileName = createCmisPropertyString("OriginalFileName",
+				applicationFile.getFileName());
+		CmisPropertyString cmisName = createCmisPropertyString("cmis:name", applicationFile.getFileName());
+		CmisPropertyString fileType = createCmisPropertyString("CTYMBDocumentType", "RENEWAL");
+		CmisPropertyDateTime dateTime = createCmisPropertyDateTime("DocumentDate", application.getCompletedAt());
+		String caseNumber = "";
+		InputData inputData = application.getApplicationData().getPageData("healthcareRenewalMatchInfo").get("caseNumber");
+		if (inputData != null) {
+			caseNumber = inputData.getValue(0);
+		}
+		CmisPropertyString caseId = createCmisPropertyString("CaseID", caseNumber);
+		CmisPropertyString referenceNumber = createCmisPropertyString("ReferenceNumber", applicationNumber);
+		CmisPropertyString npi = createCmisPropertyString("NPI", routingDestination.getDhsProviderId());
+		CmisPropertyString source = createCmisPropertyString("Source", "MNBenefits");
+		CmisPropertyId cmisObjectTypeId = createCmisPropertyId("CountyMailbox");
+
+		propertiesList.addAll(List.of(read, originalFileName, cmisName, fileType, dateTime, caseId, referenceNumber,
+				npi, source, cmisObjectTypeId));
+		createDocument.setProperties(properties);
+	}
 
   @NotNull
   private CmisPropertyString createCmisPropertyString(String propertyDefinitionId,
@@ -248,11 +293,30 @@ public class FilenetWebServiceClient {
   }
 
   @NotNull
-  private CmisPropertyId createCmisPropertyId() {
+  private CmisPropertyId createCmisPropertyId(String value) {
     CmisPropertyId idProperty = new CmisPropertyId();
     idProperty.setPropertyDefinitionId("cmis:objectTypeId");
-    idProperty.getValue().add("MNITSMailbox");
+    idProperty.getValue().add(value);
     return idProperty;
+  }
+
+  @NotNull
+  private CmisPropertyDateTime createCmisPropertyDateTime(String id, ZonedDateTime value) {
+    CmisPropertyDateTime datetimeProperty = new CmisPropertyDateTime();
+    datetimeProperty.setPropertyDefinitionId(id);
+    // convert date/time to XMLGregorianCalendar type
+    List<XMLGregorianCalendar> datetime = datetimeProperty.getValue();
+    GregorianCalendar gregorianCalendar = GregorianCalendar.from(value);
+    XMLGregorianCalendar xmlGregorianCalendar = null;
+    try {
+    	xmlGregorianCalendar = DatatypeFactory
+            .newInstance()
+            .newXMLGregorianCalendar(gregorianCalendar);
+    } catch(Exception e) {
+    	log.error(String.format("Failed to convert ZonedDateTime %s to XMLGregorianCalendar", value.toString()), e);
+    }
+    datetime.add(xmlGregorianCalendar);
+    return datetimeProperty;
   }
 
   private void setContentStreamOnDocument(ApplicationFile applicationFile,

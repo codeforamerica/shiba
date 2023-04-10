@@ -208,6 +208,18 @@ pageDefinitions:
             condition:
               input: caseNumberInput
               matcher: NOT_EMPTY
+  - &healthCareCaseNumberPage
+    name: healthCareCaseNumberPage
+    pageTitle: case-number-page-title
+    inputs:
+      - name: caseNumberInput
+        type: TEXT
+        validators:
+          - validation: CASE_NUMBER_HC
+            errorMessageKey: error-message-key
+            condition:
+              input: caseNumberInput
+              matcher: NOT_EMPTY
   - &lastPage
     name: lastPage
     pageTitle: last-page-title
@@ -233,6 +245,10 @@ workflow:
       - pageName: lastPage
   caseNumberPage:
     pageConfiguration: *caseNumberPage
+    nextPages:
+      - pageName: lastPage
+  healthCareCaseNumberPage:
+    pageConfiguration: *healthCareCaseNumberPage
     nextPages:
       - pageName: lastPage
   statePage:

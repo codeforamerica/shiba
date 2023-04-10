@@ -5,5 +5,6 @@ public enum FlowType {
   FULL,
   MINIMUM,
   UNDETERMINED,
-  LATER_DOCS
+  LATER_DOCS,
+  HEALTHCARE_RENEWAL
 }

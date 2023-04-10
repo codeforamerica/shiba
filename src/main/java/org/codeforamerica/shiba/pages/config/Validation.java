@@ -43,6 +43,7 @@ public enum Validation {
   }),
   ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),
   CASE_NUMBER(strings -> String.join("", strings).matches("\\d{4,7}")),
+  CASE_NUMBER_HC(strings -> String.join("", strings).matches("\\d{4,8}")),
   STATE(strings -> Set
       .of("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
           "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",

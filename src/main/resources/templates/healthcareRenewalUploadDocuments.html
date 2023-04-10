@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab slab--shiba">
+    <div class="grid-ignore-mobile">
+      <div th:replace="fragments/cardHeader :: cardHeader"></div>
+      <main id="content" role="main" class="card spacing-above-35">
+        <h1 class="h2 text--centered" th:text="#{upload-documents.title}"></h1>
+        <div class="spacing-below-60">
+          <div id="dropzone">
+            <form action="/document-upload" class="dropzone needsclick" id="document-upload"
+                  method="post"
+                  enctype="multipart/form-data">
+              <div id="max-files-reached">
+                <div class='max-files spacing-below-35' id="max-files"
+                     th:text='#{upload-documents.maximum-number-of-files}'></div>
+              </div>
+              <div id="drag-and-drop-box"
+                   class="drag-and-drop-box spacing-below-35 spacing-above-35 grid"
+                   ondragenter="addDragBorder()" ondrop="removeDragBorder()"
+                   ondragleave="removeDragBorder()">
+                <h2 id="vertical-header-desktop"
+                    class="blue-label text--centered hide-on-mobile narrow-centered-text"
+                    th:text="#{upload-documents.add-your-files}"></h2>
+                <h2 id="vertical-header-mobile" class="blue-label text--centered hide-on-desktop"
+                    th:text="#{upload-documents.add-your-files}"></h2>
+                <div id="upload-button" class="dz-message text--centered">
+                  <button th:aria-label="#{upload-documents.add-your-files}" type="button"
+                          id="upload-button-inner"
+                          class="button dz-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="60px" viewBox="0 0 24 24"
+                         width="60px" fill="#FFFFFF">
+                      <path d="M0 0h24v24H0V0z" fill="none"/>
+                      <path stroke="white" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="grid--item width-two-thirds">
+                  <h2 id="horizontal-header-desktop"
+                      class="blue-label hide-on-mobile hidden spacing-below-5"
+                      th:text="#{upload-documents.add-your-files}"></h2>
+                  <h2 id="horizontal-header-mobile"
+                      class="blue-label hide-on-desktop hidden spacing-below-5 spacing-above-15"
+                      th:text="#{upload-documents.add-your-files}"></h2>
+                  <div id="number-of-uploaded-files" class="body-gray">
+                  </div>
+                </div>
+              </div>
+              <div id="upload-doc-div" class="spacing-below-25 hidden">
+                <p id="upload-doc-text">Uploaded documents</p>
+              </div>
+              <div id="file-preview-template">
+                <div class="preview-container"></div>
+              </div>
+
+              <div th:replace="fragments/docRecommendations :: docRecommendations"></div>
+            </form>
+
+            <div class="form-group">
+              <a type="button" class="button button--secondary hidden text--centered"
+                 id="submit-my-documents"
+                 th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+                 th:text="#{upload-documents.submit-my-documents}"></a>
+              <p class="text--error" aria-live="assertive" aria-atomic="true" hidden>
+                <i class="icon-warning"></i>
+                <span th:text="#{upload-documents.wait-for-upload-warning}"></span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+<script src="/dropzone.js"></script>
+<script th:inline="javascript">
+  Dropzone.autoDiscover = false;
+  var documentIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABGCAYAAACE0Gk0AAAFK0lEQVR4Xu2caVcTSRSG314SyEJQPIAsMucoihDmzJE1BBhnEZ35xzPjmU9ABAR/AThnFBBQQciedLrn3Epaw6Z9OxsTqr7kQ25XVz31VtWt5baSTiYsyOSIgCJhOeIkjCQs56wkLAYrCasusFKpFF5vbmJ/7x1My4KmqZz3VmRr5A3oHh3DI6Po6e2tKC/Ow67GrJOTE7xaX8PB/gG8Xi8URYFl1XNStZDNZtF+4yamIzO42dHBqbNrWzasbDaDtZUV7GxvIxgMNgAUTUsALCCRSKCzsxMzc3Pw+wOuITh9kA3r9dYmNtZforW1FaqiflEUVaDWqUy8pGbTMpGIx3Fn4DtEorPQdb2mJWDDii0t4mB/Dx6Pt85dj8RkQRGyKiYCZhQMpJJJDN5/gPHJKahq7cZONqznf/6BZCLxuRXtAmfS6RK8WknMgq57hKLLk6KqyGbSSKfTGJuYxPBIuGbqqggWtbRlWtB0HT6fT7RqoVCAUgNeiqLCMPLIZDJFVdkKUyDeSw1Ik8zM7JzolrVIbFh/P/8L8ZMTMXWbBRPpdAq9fX2YikTR0tKCXC5X1lGqV2RN17C3t4dX6y9Fg2iq9iVzhbqkKsrl8/sQnZ1HZ1dX9V5ud3vu2vAsrFQqKVoyOjcvxpBapg8f3mM1FoNhGNC0Mlil8YuUTgN+e/sNROfnxW81U0XKskwTyWRRWSR/j8dTzbKdy+vd7i421tdQMArnYJX6JqhMx8fH6OnpxeyPj8+NcZUUsCqw+vr7EIleAVglheXzOcTjcTwYeojpmWglfE5PJpV0Q1tZVwmWGPxphsxmQDP0D4/GEB79virAmk5ZdncUM2QyiVw2i8npiFBZpak5YRV9C+FSHH/6JFyK+cc/487AQEW8mhdWGbCjw0PhB/70yxN03LrlGlhzwyqNX+TRHH78KECRwtra2lwBa3pYREXViisL6pL9dwYQmYmi1edjA7sWsGxg+XweiXgC94eG8GhsnO0XXhtYtkuRz+VAftjDkTBGwqMXO7eXaO5awRLAFEXAorXkcDjMcimuHSzbDyP/K9TejidPf3M8dv2vYO3u7mBjbRXGZWvDr1T77KYgLcYDwQAWnv3enLBo33/1xTILFjmk1PW8Xg9UVfu8u0uw2kIh/LrwtDlhHR0d4p+tLZimKdZ/ThJt5ZDb8P5gX6wVaaOSNg6bHlY5HKdHb+JgwyxgeXFRnEgFAn4Bms4em1pZTpR0kQ2paCW2jO23b8SRGTmpEtYlNMkZXYktYWd7RyrrW4qTsL5FqOx/CUvCYhBgmEplSVgMAgxTqSwJi0GAYSqVJWExCDBMpbIkLAYBhqlUloTFIMAwlcqSsBgEGKZSWRIWgwDDVCpLwmIQYJhKZUlYDAIMU6ksCYtBgGF6pZRVrwgLBp9TpgTrxfISdncaeMhKgU71jN1xC4vuRVCc5Ns3/zbu+L6eUWFuQFHgK8VwUzz12kpMKMvn89fvrkN5cGY94w1dwbIg7ozSFSUK3iwYBhSVLhwVrxwFgkEsPKvhzb/GRbK6wUXPFC+z0VVuXdNPXWarOaxGxki7xXX2OfsSblf3bREn6TSx75Q2NPreaa0usitF7ttR+xQ+PD4xibv3Bh3nyoZ1Jb7r4Lh6pw3tj3XQ9yD6+vsxFYmgpeV0gPrXsmbDoswa/8UQPi0bFMVwd3V3YWxiCqFQiJWRK1j0hkZ+i4ZVw5JxoWBCVRR03+7B3cFB+P1+djauYbHf1AQPSFiMRpSwJCwGAYbpf7oLq5uJEmkZAAAAAElFTkSuQmCC";
+  var dataURL = "";
+  var isUploadComplete = true;
+  var fileTooBigMsg = [[#{upload-documents.this-file-is-too-large(${uploadDocMaxFileSize})}]];
+  var heicFilesNotAccepted = [[#{upload-documents.heic-files-not-accepted}]];
+  var docxFilesNotAccepted = [[#{upload-documents.MS-word-files-not-accepted}]];
+  var myDropZone;
+
+  function addDragBorder() {
+    var dragAndDropBox = document.getElementById("drag-and-drop-box");
+    dragAndDropBox.classList.add("drag-over");
+  }
+
+  function removeDragBorder() {
+    var dragAndDropBox = document.getElementById("drag-and-drop-box");
+    dragAndDropBox.classList.remove("drag-over");
+  }
+
+  function getFilenameComponents(element) {
+    var name = element.innerText;
+    var extIdx = name.lastIndexOf('.');
+    if (extIdx === -1) {
+      return [name, ""];
+    }
+
+    var extStr = name.slice(extIdx + 1, name.length);
+    if (element.scrollWidth <= element.clientWidth) {
+      extStr = "." + extStr;
+    }
+    return [name.slice(0, extIdx), extStr];
+  }
+
+  function onSubmit() {
+    if (!isUploadComplete) {
+      $('.form-group').addClass('form-group--error');
+      $('.text--error').show();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function showMaxFileMessage() {
+    var dragBox = document.getElementById("drag-and-drop-box");
+    dragBox.style.display = "none";
+    var maxFilesReached = document.getElementById("max-files");
+    maxFilesReached.style.display = "flex";
+  }
+
+  $('.text--error').hide();
+
+  function destroyerCreator(file) {
+    return function () {
+      myDropZone.emit('destroy', file);
+    }
+  }
+  
+  function doesAnyFileHaveError() {
+	if ($('#file').hasClass('form-group--error')) {
+      return true;
+	} 
+	else {
+	  return false;
+	}
+  }
+
+  function processDZQueueAfterThumbnailGeneration() {
+    var allUploadsHaveThumbnails = myDropZone.getQueuedFiles().every(
+        f => f.dataURL && f.dataURL.length > 0);
+    if (allUploadsHaveThumbnails) {
+      myDropZone.processQueue();
+    }
+  }
+
+  function showNumberOfAddedFiles() {
+    var numberOfAddedFiles = myDropZone.files.length;
+    var numberOfAddedFilesDiv = document.getElementById("number-of-uploaded-files");
+    var numberOfUploadsString = numberOfAddedFiles !== 1 ? `${numberOfAddedFiles} files added`
+        : `${numberOfAddedFiles} file added`;
+    numberOfAddedFilesDiv.innerHTML = numberOfUploadsString;
+  }
+
+  function setDefaultThumbnail(file) {
+    file.dataURL = documentIcon;
+    myDropZone.emit("thumbnail", file, documentIcon);
+  }
+
+  function prependAddedFile() {
+    var $previewsContainer = $('.preview-container')[0];
+    var $previews = $('.dz-preview');
+    var $lastPreviewInList = $previews[$previews.length - 1];
+    $previewsContainer.prepend($lastPreviewInList);
+  }
+
+  function updateUploadBoxLayout() {
+    var $dragAndDropBox = $('#drag-and-drop-box');
+    var $horizontalHeaderDesktop = $('#horizontal-header-desktop');
+    var $horizontalHeaderMobile = $('#horizontal-header-mobile');
+    var $verticalHeaderDesktop = $('#vertical-header-desktop');
+    var $verticalHeaderMobile = $('#vertical-header-mobile');
+    var $uploadButton = $('#upload-button');
+
+    $horizontalHeaderDesktop.removeClass('hidden');
+    $horizontalHeaderMobile.removeClass('hidden');
+    $verticalHeaderDesktop.addClass('hidden');
+    $verticalHeaderMobile.addClass('hidden');
+    $uploadButton.addClass('grid--item width-one-third');
+    $dragAndDropBox.addClass('drag-and-drop-box-compact');
+  }
+
+  function showUploadListHeaderOnUpload() {
+    var $uploadDocHeaderDiv = $('#upload-doc-div');
+    $uploadDocHeaderDiv.removeClass("hidden");
+  }
+
+  $("#document-upload").dropzone({
+    uploadMultiple: false,
+    previewsContainer: ".preview-container",
+    autoProcessQueue: false,
+    thumbnailMethod: "crop",
+    thumbnailWidth: 64,
+    thumbnailHeight: 60,
+    maxFiles: 20,
+    parallelUploads: 1,
+    timeout: 0,
+    maxFilesize: [[${uploadDocMaxFileSize}]],
+    dictFileTooBig: fileTooBigMsg,
+    acceptedFiles: ".jpeg,.jpg,.png,.gif,.pdf",
+    clickable: ".drag-and-drop-box",
+    previewTemplate: `
+            <div id="file" class="dz-preview dz-file-preview spacing-below-15">
+              <div class="dz-details grid">
+                <div class="grid__item width-one-sixth mobile-width-one-fourth doc-rectangle">
+                    <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                    <img class="dz-thumb" data-dz-thumbnail aria-hidden="true" />
+                </div>
+                <div class="grid__item width-five-sixths mobile-width-three-fourths">
+                    <div class="dz-filename"><div class="filename-text" data-dz-name></div></div>
+                    <div class="display-flex body-gray file-details">
+                        <div class="dz-size" data-dz-size></div>
+                        <span class="file-details-delimiter" aria-hidden="true">•</span>
+                        <a class="dz-remove" href="javascript:undefined;" ></a>
+                    </div>
+                </div>
+              </div>
+              <p class='text--error spacing-above-0' aria-live="assertive" aria-atomic="true"></p>
+            </div>`,
+    init: function () {
+      myDropZone = this;
+      var documents = [[${uploadedDocs}]];
+      if (documents.length >= this.options.maxFiles) {
+        showMaxFileMessage();
+      }
+
+      this.on('addedfile', function (file) {
+        if (myDropZone.files.length >= myDropZone.options.maxFiles) {
+          showMaxFileMessage();
+        }
+        var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
+        var fileNameComponents = getFilenameComponents(fileNameSpan);
+        var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+        var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
+
+        fileNameSpan.setAttribute('aria-label', fileNameSpan.innerText);
+        fileNameSpan.innerHTML = "<span class='filename-text-name' aria-hidden='true'>"
+            + fileNameComponents[0] + "</span>" +
+            "<span class='filename-text-ext' aria-hidden='true'>" + fileNameComponents[1]
+            + "</span>";
+
+        removeLink.onclick = destroyerCreator(file);
+        removeLink.innerText = [[#{general.cancel}]].toLowerCase();
+
+        thumbnail.classList.add("hidden");
+
+        isUploadComplete = false;
+
+        if (!file.type.includes("image")) {
+          setDefaultThumbnail(file);
+        }
+        $('#submit-my-documents').removeClass('hidden');
+        showNumberOfAddedFiles();
+        prependAddedFile();
+        updateUploadBoxLayout();
+        showUploadListHeaderOnUpload();
+      });
+
+      this.on("thumbnail", function (file, dataURL) {
+        setTimeout(function () {
+          processDZQueueAfterThumbnailGeneration()
+        }, 1);
+      });
+
+      this.on("sending", function (file, xhr, formData) {
+        var csrfToken = [[${_csrf.token}]];
+        formData.append("_csrf", csrfToken);
+        formData.append("dataURL", file.dataURL);
+        formData.append("type", file.type);
+      })
+
+      this.on('queuecomplete', function () {
+        isUploadComplete = true;
+        if (documents.length >= this.options.maxFiles) {
+          showMaxFileMessage();
+        }
+      });
+
+      this.on('maxfilesreached', function () {
+        showMaxFileMessage();
+      });
+
+      this.on('maxfilesexceeded', function () {
+        showMaxFileMessage();
+      });
+
+      this.on('success', function (file) {
+        var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+        var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
+        var fileName = file.name;
+
+        removeLink.onclick = undefined;
+        removeLink.setAttribute('href',
+            '/pages/healthcareRenewalUploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
+        removeLink.innerText = [[#{general.delete}]].toLowerCase();
+        thumbnail.classList.remove("hidden");
+        $('#submit-my-documents').removeClass("disabled");
+      });
+
+      // This lets dropzone know to process the queue after each file has completed
+      // Important for uploading multiple files at once
+      this.on("complete", function () {
+        processDZQueueAfterThumbnailGeneration();
+      })
+
+      // `destroy` is a custom event that we have defined, not something built into dropzone.
+      // This event is emitted when the client clicks cancel on a file that has not finished uploading.
+      this.on('destroy', function (file) {
+        myDropZone.removeFile(file);
+        showNumberOfAddedFiles()
+        if (!doesAnyFileHaveError()) {
+		  $('#submit-my-documents').removeClass("disabled");
+	    }
+      });
+      
+      this.on('processing', function (file) {
+       $('#submit-my-documents').addClass("disabled");
+      });
+
+      // Add all previously uploaded files to the list of uploads
+      $.each(documents, function (key, uploadedDocWithThumbnail) {
+        var doc = uploadedDocWithThumbnail.doc;
+        var mockFile = {name: doc.filename, size: doc.size, type: doc.type};
+        myDropZone.files.push(mockFile);
+        myDropZone.emit("addedfile", mockFile);
+        myDropZone.emit("thumbnail", mockFile, uploadedDocWithThumbnail.thumbnail);
+        myDropZone.emit("success", mockFile);
+        myDropZone.emit("complete", mockFile);
+      });
+    },
+    error: function (file, errorMessage, xhr) {
+      if (xhr && xhr.response) {
+        file.previewElement.getElementsByClassName("text--error")[0].innerText = xhr.response;
+      } else {
+        var message = errorMessage.error ? errorMessage.error : errorMessage;
+        
+        // special case error message for unsupported HEIC file type uploads
+        if (message.localeCompare(myDropZone.options.dictInvalidFileType) == 0 && file.name.toLocaleLowerCase().endsWith('.heic')) message = heicFilesNotAccepted;
+        file.previewElement.getElementsByClassName("text--error")[0].innerText = message;
+        
+        // special case error message for MS Word file type uploads
+        if (message.localeCompare(myDropZone.options.dictInvalidFileType) == 0 && (file.name.toLocaleLowerCase().endsWith('.doc') || file.name.toLocaleLowerCase().endsWith('.docx'))) message = docxFilesNotAccepted;
+        file.previewElement.getElementsByClassName("text--error")[0].innerText = message;
+      }
+
+      for (var i = 0; i < myDropZone.files.length; i++) {
+        if (myDropZone.files[i] === file) {
+          myDropZone.files.splice(i, 1);
+        }
+      }
+
+      if (myDropZone.files.length === 0 ) {
+        $('#submit-my-documents').addClass('hidden');
+      }
+
+      showNumberOfAddedFiles();
+
+      file.previewElement.classList.add("form-group--error");
+
+      var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
+      removeLink.onclick = destroyerCreator(file);
+      removeLink.innerText = [[#{general.remove}]].toLowerCase();
+      removeLink.classList.add("text--red");
+      
+      var filePreview = file.previewElement.getElementsByClassName("doc-rectangle")[0]
+      filePreview.innerHTML = "<svg class=\"margin-auto\" width=\"40\" height=\"47\" viewBox=\"0 0 40 47\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+          +
+          "<path d=\"M6.625 40.125H20.375L13.5 28.25L6.625 40.125ZM14.125 38.25H12.875V37H14.125V38.25ZM14.125 35.75H12.875V33.25H14.125V35.75Z\" fill=\"#D13F00\"/>\n"
+          +
+          "<path d=\"M26.6667 0H4.44444C3.2657 0 2.13524 0.550197 1.30175 1.52955C0.468252 2.50891 0 3.8372 0 5.22222V41.7778C0 43.1628 0.468252 44.4911 1.30175 45.4704C2.13524 46.4498 3.2657 47 4.44444 47H35.5556C36.7343 47 37.8648 46.4498 38.6983 45.4704C39.5317 44.4911 40 43.1628 40 41.7778V15.6667L26.6667 0ZM35.5556 41.7778H4.44444V5.22222H24.4444V18.2778H35.5556V41.7778Z\" fill=\"#D13F00\" fill-opacity=\"0.5\"/>\n"
+          +
+          "</svg>";
+    }
+  });
+</script>
+</body>
+</html>

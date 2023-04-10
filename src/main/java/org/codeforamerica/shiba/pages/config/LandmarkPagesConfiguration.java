@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import lombok.Data;
 
@@ -13,9 +14,10 @@ public class LandmarkPagesConfiguration {
   private String nextStepsPage;
   private String terminalPage;
   private String submitPage;
-  private String uploadDocumentsPage;
-  private String submitUploadedDocumentsPage;
+  private List<String> uploadDocumentsPage = new ArrayList<>();
+  private List<String> submitUploadedDocumentsPage = new ArrayList<>();
   private String laterDocsTerminalPage;
+  private String healthcareRenewalTerminalPage;
 
   public boolean isLandingPage(String pageName) {
     return landingPages.contains(pageName);
@@ -40,13 +42,25 @@ public class LandmarkPagesConfiguration {
   public boolean isLaterDocsTerminalPage(String pageName) {
     return pageName.equals(laterDocsTerminalPage);
   }
+  
+  public boolean isHealthcareRenewalTerminalPage(String pageName) {
+    return pageName.equals(healthcareRenewalTerminalPage);
+  }
 
   public boolean isUploadDocumentsPage(String pageName) {
-    return pageName.equals(uploadDocumentsPage);
+    return uploadDocumentsPage.contains(pageName);
   }
 
   public boolean isSubmitUploadedDocumentsPage(String pageName) {
-    return pageName.equals(submitUploadedDocumentsPage);
+    return submitUploadedDocumentsPage.contains(pageName);
+  }
+  
+  public String getCorrectUploadDocumentPage(String pageName) {
+	HashMap<String, String> map = new HashMap<>();
+	for(int i=0; i< submitUploadedDocumentsPage.size();i++) {
+		map.put(submitUploadedDocumentsPage.get(i), uploadDocumentsPage.get(i) );
+	}
+	return map.get(pageName);
   }
 
   public boolean isNextStepsPage(String pageName) {

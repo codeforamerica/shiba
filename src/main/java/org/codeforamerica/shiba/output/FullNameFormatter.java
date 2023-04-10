@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output;
 
 import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
+import static org.codeforamerica.shiba.application.FlowType.HEALTHCARE_RENEWAL;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +51,11 @@ public class FullNameFormatter {
 
 
   public static String getFullName(Application application) {
-    var pageName = application.getFlow() == LATER_DOCS ? "matchInfo" : "personalInfo";
+    var pageName = (application.getFlow() == LATER_DOCS) ? "matchInfo" : "personalInfo";
+    
+    if (application.getFlow() == HEALTHCARE_RENEWAL) {
+      pageName = "healthcareRenewalMatchInfo";
+    }
     return ofNullable(application.getApplicationData().getPagesData().getPage(pageName))
         .map(FullNameFormatter::getFullNameString)
         .orElse(null);

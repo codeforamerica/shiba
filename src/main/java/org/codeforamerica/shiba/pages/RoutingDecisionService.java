@@ -3,10 +3,10 @@ package org.codeforamerica.shiba.pages;
 import static org.codeforamerica.shiba.Program.*;
 import static org.codeforamerica.shiba.TribalNation.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
-import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_COUNTY_LATER_DOCS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_TRIBAL_NATION_LATER_DOCS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_TRIBAL_NATION_HEALTHCARE_RENEWAL;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
@@ -54,6 +54,9 @@ public class RoutingDecisionService {
     if (applicationData.getFlow() == FlowType.LATER_DOCS) {
 	    return getLaterDocsRoutingDestinations(applicationData, document);
     }
+    if (applicationData.getFlow() == FlowType.HEALTHCARE_RENEWAL) {
+	    return getLaterDocsRoutingDestinations(applicationData, document);
+    }
     Set<String> programs = applicationData.getApplicantAndHouseholdMemberPrograms();
     County county = CountyParser.parse(applicationData);
     String tribeName = getFirstValue(applicationData.getPagesData(), SELECTED_TRIBAL_NATION);
@@ -82,8 +85,14 @@ public class RoutingDecisionService {
     County county = CountyParser.parse(applicationData);
     RoutingDestination destination = countyRoutingDestinations.get(county);
     result.add(destination);
-    String tribalNationName =
-        getFirstValue(applicationData.getPagesData(), IDENTIFY_TRIBAL_NATION_LATER_DOCS);
+    
+    String tribalNationName = "";   
+    if (applicationData.getFlow().equals(FlowType.LATER_DOCS)) {
+        tribalNationName = getFirstValue(applicationData.getPagesData(), IDENTIFY_TRIBAL_NATION_LATER_DOCS);    	
+    }
+    if (applicationData.getFlow().equals(FlowType.HEALTHCARE_RENEWAL)) {
+        tribalNationName = getFirstValue(applicationData.getPagesData(), IDENTIFY_TRIBAL_NATION_HEALTHCARE_RENEWAL);    	
+    }
     if (tribalNationName != null && !tribalNationName.isEmpty()) {
       result.add(tribalNations.get(TribalNation.getFromName(tribalNationName)));
     }

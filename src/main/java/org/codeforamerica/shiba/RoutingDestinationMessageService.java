@@ -29,11 +29,13 @@ public class RoutingDestinationMessageService {
             .getPhoneNumber() + ")":
             rd.getName();
       }
-      String clientCounty = setCountyName(county, rd);
-      return withPhoneNumbers ? lms
-          .getMessage("general.county-and-phone", List.of(clientCounty, rd.getPhoneNumber())) :
-          lms.getMessage("general.county", List.of(clientCounty));
-
+      if (!county.equals(County.Other)) {
+	      String clientCounty = setCountyName(county, rd);
+	      return withPhoneNumbers ? lms
+	          .getMessage("general.county-and-phone", List.of(clientCounty, rd.getPhoneNumber())) :
+	          lms.getMessage("general.county", List.of(clientCounty));
+      }
+      return "";
     })
         .collect(Collectors.toList());
     return listToString(routingDestinationStrings, lms);

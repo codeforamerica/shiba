@@ -206,6 +206,14 @@ def laterDocsJourneyTest = tasks.register("laterDocsJourneyTest", Test) {
         }
 }
 
+def healthcareRenewalJourneyTest = tasks.register("healthcareRenewalJourneyTest", Test) {
+    Test task ->
+        task.useJUnitPlatform {
+            JUnitPlatformOptions options ->
+                options.includeTags("healthcareRenewalJourney")
+        }
+}
+
 def minimumFlowJourneyTest = tasks.register("minimumFlowJourneyTest", Test) {
     Test task ->
         task.useJUnitPlatform {

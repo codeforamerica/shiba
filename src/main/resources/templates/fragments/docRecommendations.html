@@ -19,13 +19,26 @@
 </div>
 
 <div th:fragment="docRecommendations"
-     th:if="${docRecommendations.size() == 0}">
+     th:if="${docRecommendations.size() == 0 && !applicationData.flow.equals(T(org.codeforamerica.shiba.application.FlowType).HEALTHCARE_RENEWAL)}">
   <div class="notice--success">
     <h2 class="h3" th:text="#{document-recommendation.caseworkers-most-commonly-request}"></h2>
     <ul class="grid__item spacing-above-25 left-justified-list">
       <li th:text="#{document-recommendation.id}"></li>
       <li th:text="#{document-recommendation.pay-stubs}"></li>
       <li th:text="#{document-recommendation.rent-receipts}"></li>
+    </ul>
+  </div>
+</div>
+
+<div th:fragment="docRecommendations"
+     th:if="${docRecommendations.size() == 0 && applicationData.flow.equals(T(org.codeforamerica.shiba.application.FlowType).HEALTHCARE_RENEWAL)}">
+  <div class="notice--success">
+    <h2 class="h3" th:text="#{document-recommendation.caseworkers-most-commonly-request}"></h2>
+    <ul class="grid__item spacing-above-25 left-justified-list">
+      <li th:text="#{document-recommendation.completed-healthcare-renewal}"></li>
+      <li th:text="#{document-recommendation.pay-stubs}"></li>
+      <li th:text="#{document-recommendation.bank-acc-statements}"></li>
+      <li th:text="#{document-recommendation.any-other-doc-asked-for}"></li>
     </ul>
   </div>
 </div>

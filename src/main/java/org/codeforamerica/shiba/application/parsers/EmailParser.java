@@ -15,6 +15,11 @@ public class EmailParser {
       return Optional.of(laterDocsEmail);
     }
 
+    String healthcareRenewalEmail = pagesData.getPageInputFirstValue("healthcareRenewalMatchInfo", "email");
+    if (isNotBlank(healthcareRenewalEmail)) {
+      return Optional.of(healthcareRenewalEmail);
+    }
+
     String regularFlowEmail = pagesData.getPageInputFirstValue("contactInfo", "email");
     if (isNotBlank(regularFlowEmail)) {
       return Optional.of(regularFlowEmail);

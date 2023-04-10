@@ -244,6 +244,19 @@ public class ValidationTest extends AbstractFrameworkTest {
       postExpectingFailureAndAssertErrorDisplaysForThatInput("caseNumberPage", "caseNumberInput",
           input);
     }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "123",
+        "123456789",
+        "abcdefg",
+        "1234-56",
+        "1234e67"
+    })
+    void shouldFailValidationForHealthCareUploadCaseNumberWhenValueIsNotFourToEightDigits(String input)
+        throws Exception {
+      postExpectingFailureAndAssertErrorDisplaysForThatInput("healthCareCaseNumberPage", "caseNumberInput", input);
+    }
 
     @Test
     void shouldNotFailValidationForCaseNumberWhenValueIsEmptyWhenReturningToPage()

@@ -48,6 +48,9 @@ public class UploadedDocumentsSubmittedListener extends ApplicationEventListener
     if (application.getFlow() == FlowType.LATER_DOCS) {
       sendLaterDocsConfirmationEmail(application, event.getLocale());
     }
+    if (application.getFlow() == FlowType.HEALTHCARE_RENEWAL) {
+        sendLaterDocsConfirmationEmail(application, event.getLocale());
+    }
     MDC.clear();
   }
 

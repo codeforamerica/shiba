@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{error-upload-timeout.title})"></div>
+<body>
+<div class="page-wrapper">
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab slab--shiba">
+    <div class="grid">
+      <main id="content" role="main" class="card spacing-above-35 text--centered">
+        <div th:replace="fragments/contextFragments :: errorDocClock"></div>
+        <h1 class="h2" th:text="#{error-upload-timeout.your-session-ended}"></h1>
+        <p th:utext="#{hc-error-upload-timeout.expired}"></p>
+        <p th:text="#{hc-error-upload-timeout.next}"></p>
+        <a class="button button--primary spacing-above-15" th:href="'/pages/healthcareRenewalUpload'"
+           th:text="#{error-upload-timeout.submit-documents}"></a>
+      </main>
+    </div>
+  </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

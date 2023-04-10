@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<body>
+<div class="page-wrapper">
+  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <section class="slab slab--shiba">
+    <div class="grid-ignore-mobile">
+      <div class="card spacing-above-0">
+
+        <div class="grid__item bottom-horizontal-line-dark-grey">
+          <div
+              th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
+          <h1 th:if="${!hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
+              th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
+          <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
+              th:text="|#{success.done-your-application-and-docs-have-been-submitted}|"></h1>
+
+          <!-- Routing Destination -->
+          <p class="spacing-below-35 spacing-above-15 text--help"
+             id="submission-date"
+             th:text="#{success.application-submitted-generic(${routingDestinationList}, ${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}"></p>
+              
+         <th:block th:if="${expeditedSnap.equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
+            <div class="notice--success">
+                <span id="snapExpeditedNotice" th:text="#{success.You-were-recommended-for-expedited-snap}"></span>
+            </div>
+         </th:block>
+        </div>
+
+        <div class="grid__item spacing-above-35">
+          <h2 class="h3" th:text="#{success.helpful-resources}"></h2>
+          <div class="grid-ignore-mobile">
+            <div
+                class="success-icons grid__item width-one-sixth spacing-above-5 spacing-below-0">
+              <div th:replace="fragments/icons/icon-download :: icon-download"></div>
+            </div>
+            <div class="grid__item width-five-sixths">
+              <div class="spacing-above-0 spacing-below-15"
+                   th:text="#{success.download-my-application}"></div>
+                <div class="spacing-below-10">
+                  <a class="link--subtle" th:href="@{/download}" id="download"
+                     th:text="#{success.download-your-application}"></a>
+                </div>
+            </div>
+          </div>
+
+          <div class="grid-ignore-mobile spacing-above-35 spacing-below-35">
+            <div class="success-icons grid__item width-one-sixth spacing-above-5">
+              <div th:replace="fragments/icons/icon-documents :: icon-documents"></div>
+            </div>
+            <div class="grid__item width-five-sixths">
+              <span th:utext="#{success.additional-documents}"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="healthcareCoverage"
+             class="grid-ignore-mobile spacing-below-35 spacing-above-35"
+             th:if="${doesNotHaveHealthcare && !isCertainPops}">
+          <h2 class="h3" th:text="#{success.apply-for-healthcare-coverage}"></h2>
+          <div class="success-icons grid__item width-one-sixth spacing-above-0 spacing-below-15">
+            <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
+          </div>
+          <div class="grid__item width-five-sixths">
+            <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
+          </div>
+        </div>
+        <div th:if="${sentiment == null}" id="feedbackButton">
+          <a class="button button--secondary spacing-below-0"
+             th:href="'/pages/'+${pageName}+'/navigation'">
+            <span th:text="#{success.give-us-feedback}"></span>
+            <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
+          </a>
+        </div>
+      </div>
+  </section>
+</div>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

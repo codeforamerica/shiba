@@ -583,6 +583,9 @@ class PageControllerTest {
 
     mockMvc.perform(get("/pages/documentSubmitConfirmation"))
         .andExpect(redirectedUrl("/pages/uploadDocuments"));
+    
+    mockMvc.perform(get("/pages/healthcareRenewalDocumentSubmitConfirmation"))
+    .andExpect(redirectedUrl("/pages/healthcareRenewalUploadDocuments"));
   }
 
 

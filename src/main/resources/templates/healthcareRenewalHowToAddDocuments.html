@@ -1,0 +1,14 @@
+<th:block th:fragment="healthcareRenewalHowToAddDocuments">
+    <h1 class="grid__item spacing-above-35 h2 spacing-below-25 spacing-above-0"
+        th:text="#{how-to-add-documents.title}"></h1>
+
+    <div class="grid__item text--centered">
+        <div th:replace="fragments/icons/icon-take-picture :: icon-take-picture"></div>
+    </div>
+    
+    <ul class="grid__item spacing-above-25 left-justified-list">
+        <li th:text="#{how-to-add-documents.take-photos}"></li>
+        <li th:text="#{how-to-add-documents.select-files}"></li>
+        <li th:text="#{how-to-add-documents.take-a-screenshot}"></li>
+    </ul>
+</th:block>

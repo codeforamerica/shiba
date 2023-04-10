@@ -58,5 +58,9 @@ landmarkPages:
     - firstPage
   terminalPage: terminalPage
   submitPage: secondPage
-  uploadDocumentsPage: uploadDocuments
-  submitUploadedDocumentsPage: documentSubmitConfirmation
+  uploadDocumentsPage: 
+    - uploadDocuments
+    - healthcareRenewalUploadDocuments
+  submitUploadedDocumentsPage: 
+    - documentSubmitConfirmation
+    - healthcareRenewalDocumentSubmitConfirmation

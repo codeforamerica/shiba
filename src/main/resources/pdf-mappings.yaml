@@ -21,6 +21,12 @@ mappings:
     phoneNumber: APPLICANT_PHONE_NUMBER
     email: APPLICANT_EMAIL
     caseNumber: CASE_NUMBER
+  healthcareRenewalMatchInfo:
+    dateOfBirth: DATE_OF_BIRTH
+    ssn: APPLICANT_SSN
+    phoneNumber: APPLICANT_PHONE_NUMBER
+    email: APPLICANT_EMAIL
+    caseNumber: CASE_NUMBER  
   applicantPrograms:
     CCAP: CCAP
     SNAP: FOOD

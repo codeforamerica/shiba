@@ -24,6 +24,7 @@ public class FilterConfig {
         "/groups/*",
         "/document-upload",
         "/remove-upload/*",
+        "/healthcare-renewal-remove-upload/*",
         "/submit",
         "/submit-feedback",
         "/submit-documents",

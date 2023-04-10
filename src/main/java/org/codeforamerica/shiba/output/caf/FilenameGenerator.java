@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.output.caf;
 
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.application.FlowType.HEALTHCARE_RENEWAL;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -71,20 +72,13 @@ public class FilenameGenerator {
 
   public String generateUploadedDocumentName(Application application, int index, String extension,
       RoutingDestination routingDestination, int size) {
+    
     index = index + 1;
     String dhsProviderId = routingDestination.getDhsProviderId();
     String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
         dhsProviderId);
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
-  
-  /*public String generateCombinedUploadedDocsName(Application application, String extension,
-      RoutingDestination routingDestination, int index, int size) {
-    String dhsProviderId = routingDestination.getDhsProviderId();
-    String prefix = getSharedApplicationPrefix(application, UPLOADED_DOC,
-        dhsProviderId);
-    return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
-  }*/
 
   public String generateXmlFilename(Application application) {
     String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
@@ -104,6 +98,10 @@ public class FilenameGenerator {
     boolean isHennepinUploadedDoc =
         document == UPLOADED_DOC && (application.getCounty() == County.Hennepin || application.getCounty() == County.Other);
     String fileSource = isHennepinUploadedDoc ? "DOC" : "MNB";
+    
+    if (application.getFlow() == HEALTHCARE_RENEWAL) {
+      fileSource = "RENEWAL";      
+    }
 
     ZonedDateTime completedAt = application.getCompletedAt();
     ZonedDateTime completedAtCentralTime;
@@ -117,7 +115,13 @@ public class FilenameGenerator {
     String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(completedAtCentralTime);
     String time = DateTimeFormatter.ofPattern("HHmmss").format(completedAtCentralTime);
     String id = application.getId();
-    return "%s_%s_%s_%s_%s_".formatted(dhsProviderId, fileSource, date, time, id);
+    
+    if (application.getFlow() == HEALTHCARE_RENEWAL) {
+      return "%s_%s_%s_%s_%s_HCRenewal_".formatted(dhsProviderId, fileSource, date, time, id);      
+    } else {
+      return "%s_%s_%s_%s_%s_".formatted(dhsProviderId, fileSource, date, time, id);
+      }
+    
   }
 
   private String getProgramCodes(Application application) {

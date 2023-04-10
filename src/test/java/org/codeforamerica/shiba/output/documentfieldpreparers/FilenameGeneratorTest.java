@@ -19,6 +19,7 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.mnit.TribalNationConfiguration;
@@ -47,7 +48,8 @@ class FilenameGeneratorTest {
   void setUp() {
     countyMap = new ServicingAgencyMap<>();
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .withApplicantPrograms(emptyList()).build();
+       .withApplicantPrograms(emptyList()) 
+        .build();
     defaultCountyRoutingDestination = new CountyRoutingDestination(Hennepin,
         "defaultCountyDhsProviderId", "defaultCountyEmail@example.com", "phoneNumber");
     countyMap.setDefaultValue(defaultCountyRoutingDestination);
@@ -73,6 +75,19 @@ class FilenameGeneratorTest {
         redLakeRoutingDestination);
     assertThat(fileName).contains(redLakeRoutingDestination.getDhsProviderId());
   }
+  
+	@Test
+	void shouldGenerateFilenameForHealthCareRenewal() {
+		ApplicationData applicationData = new TestApplicationDataBuilder().withUploadedDocs();
+		String applicationId = "randomNumber";
+		Application application = defaultApplicationBuilder.id(applicationId).flow(FlowType.HEALTHCARE_RENEWAL)
+				.applicationData(applicationData).build();
+		String countyFilename = filenameGenerator.generateUploadedDocumentName(application, 1, "pdf",
+				defaultCountyRoutingDestination);
+		assertThat(countyFilename).contains(defaultCountyRoutingDestination.getDhsProviderId());
+		assertThat(countyFilename).contains("HCRenewal");
+		assertThat(countyFilename).contains("doc2of2");
+	}
 
   @Test
   void shouldIncludeIdInFileNameForApplication() {
