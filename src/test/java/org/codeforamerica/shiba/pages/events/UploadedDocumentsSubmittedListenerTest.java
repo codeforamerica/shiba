@@ -79,4 +79,18 @@ class UploadedDocumentsSubmittedListenerTest {
 
     verify(emailClient).sendLaterDocsConfirmationEmail(application, applicationId, email, locale);
   }
+  
+  @Test
+  void shouldSendConfirmationEmailHealthcareRenewal() {
+    Application application = Application.builder().id(applicationId).flow(FlowType.HEALTHCARE_RENEWAL)
+        .build();
+    when(applicationRepository.find(eq(applicationId))).thenReturn(application);
+    String email = "confirmation email";
+    try (MockedStatic<EmailParser> mockEmailParser = Mockito.mockStatic(EmailParser.class)) {
+      mockEmailParser.when(() -> EmailParser.parse(any())).thenReturn(Optional.of(email));
+      uploadedDocumentsSubmittedListener.sendConfirmationEmail(event);
+    }
+
+    verify(emailClient).sendHealthcareRenewalConfirmationEmail(application, applicationId, email, locale);
+  }
 }

@@ -132,6 +132,14 @@ public class MailGunEmailClient implements EmailClient {
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
     log.info("later docs confirmation email sent");
   }
+  
+  @Override
+  public void sendHealthcareRenewalConfirmationEmail(Application application, String confirmationId, String recipientEmail, Locale locale) {
+    String subject = emailContentCreator.createClientHealthcareRenewalConfirmationEmailSubject(locale);
+    String body = emailContentCreator.createClientHealthcareRenewalConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
+    sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
+    log.info("health care renewal confirmation email sent");
+  }
 
   @Override
   public void resubmitFailedEmail(String recipientEmail, Document document,

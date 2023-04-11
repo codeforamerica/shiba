@@ -48,6 +48,12 @@ public class EmailContentCreator {
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_NUMBER = "later-docs.confirmation-email-number";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_LOOK_OUT_FOR = "later-docs.comfirmation-email-look-out-for";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_UPDATE = "later-docs.comfirmation-email-update";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_SUBJECT = "health-care-renewal.confirmation-email-subject";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_BODY = "health-care-renewal.confirmation-email-body";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_WE_RECEIVED = "health-care-renewal.confirmation-email-we-received";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_NUMBER = "health-care-renewal.confirmation-email-number";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_LOOK_OUT_FOR = "health-care-renewal.comfirmation-email-look-out-for";
+  private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_UPDATE = "health-care-renewal.comfirmation-email-update";
   private final static String RESUBMIT_EMAIL_BODY = "email.resubmit-email";
   private final MessageSource messageSource;
   private final String activeProfile;
@@ -221,9 +227,47 @@ public class EmailContentCreator {
             		content, confirmation, clientConfirmationLookOutFor, clientConfirmationUpdate);
     return wrapHtml(message);
   }
+  
+  public String createClientHealthcareRenewalConfirmationEmailBody(ApplicationData applicationData, String confirmationId, Locale locale) {
+	Application application = applicationRepository.find(applicationData.getId());
+    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+    String clientConfirmationEmailDocumentsReceived= lms.getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_WE_RECEIVED);
+    String clientConfirmationLookOutFor = lms.getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_LOOK_OUT_FOR);
+    String clientConfirmationUpdate = lms.getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_UPDATE);
+    
+    // Get all routing destinations for this document upload
+    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
+    DocumentListParser.parse(applicationData).forEach(doc -> {
+      List<RoutingDestination> routingDestinationsForThisDoc =
+          routingDecisionService.getRoutingDestinations(applicationData, doc);
+      routingDestinations.addAll(routingDestinationsForThisDoc);
+    });
+    ZonedDateTime submissionTime = application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE);
+    String formattedTime = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+            .format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
+        
+    // Generate human-readable list of routing destinations for success page
+    String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
+    		application.getCounty(),
+        true,
+        new ArrayList<>(routingDestinations));
+
+    String content = lms.getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_BODY,
+            List.of(finalDestinationList, formattedTime));
+    String confirmation = lms.getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_NUMBER,
+            List.of(applicationData.getId()));
+    String message = 
+            "<p>%s</p><p>%s</p><p>%s</p><p>%s</p><p>%s</p>".formatted(clientConfirmationEmailDocumentsReceived, 
+            		content, confirmation, clientConfirmationLookOutFor, clientConfirmationUpdate);
+    return wrapHtml(message);
+  }
 
   public String createClientLaterDocsConfirmationEmailSubject(Locale locale) {
     return getMessage(LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT, null, locale);
+  }
+  
+  public String createClientHealthcareRenewalConfirmationEmailSubject(Locale locale) {
+    return getMessage(HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_SUBJECT, null, locale);
   }
 
   public String createCaseworkerHTML() {

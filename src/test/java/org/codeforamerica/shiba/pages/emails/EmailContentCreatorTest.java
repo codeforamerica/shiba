@@ -220,6 +220,27 @@ class EmailContentCreatorTest {
                                                          +
                                                          "</body></html>");
   }
+  
+  @Test
+  void shouldCreateHealthCareRenewalConfirmationEmail() {
+    String healthcareRenewalConfirmationEmailSubject = emailContentCreator
+        .createClientHealthcareRenewalConfirmationEmailSubject(ENGLISH);
+    String healthcareRenewalConfirmationEmailBody = emailContentCreator
+        .createClientHealthcareRenewalConfirmationEmailBody(applicationData, "9870000123", ENGLISH);
+    assertThat(healthcareRenewalConfirmationEmailSubject).isEqualTo("We received documents for your Health Care Renewal");
+    assertThat(healthcareRenewalConfirmationEmailBody).isEqualTo("<html><body>" +
+                                                         "<p>We received documents for your Minnesota Health Care Programs Renewal.</p>"
+                                                         +
+                                                         "<p>Your documents were submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".</p>"
+                                                         +
+                                                         "<p>Document confirmation number: #9870000123</p>"
+                                                         +
+                                                         "<p>Look out for mail containing more information about your case. You may need to complete additional steps.</p>"
+                                                         +
+                                                         "<p>If you would like an update on your case, please call the county or Tribal Nation listed above.</p>"
+                                                         +
+                                                         "</body></html>");
+  }
 
   @ParameterizedTest
   @CsvSource(value = {

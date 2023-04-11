@@ -12,6 +12,7 @@ import org.apache.commons.validator.GenericValidator;
 /* Validation on an input field */
 public enum Validation {
   NONE(strings -> true),
+  SHOULD_BE_BLANK(strings -> String.join("", strings).isBlank()),
   NOT_BLANK(strings -> !String.join("", strings).isBlank()),
   NONE_BLANK(strings -> strings.stream().noneMatch(String::isBlank)),
   SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),

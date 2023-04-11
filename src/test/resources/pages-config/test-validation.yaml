@@ -43,6 +43,15 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: error-message-key
+  - &shouldbeBlankPage
+    name: shouldbeBlankPage
+    pageTitle: should-be-blank-page-title
+    inputs:
+      - name: shouldbeBlankInput
+        type: TEXT
+        validators:
+          - validation: SHOULD_BE_BLANK
+            errorMessageKey: error-message-key
   - &zipcodePage
     name: zipcodePage
     pageTitle: zip-code-page-title
@@ -237,6 +246,10 @@ workflow:
       - pageName: lastPage
   notBlankPage:
     pageConfiguration: *notBlankPage
+    nextPages:
+      - pageName: lastPage
+  shouldbeBlankPage:
+    pageConfiguration: *shouldbeBlankPage
     nextPages:
       - pageName: lastPage
   zipcodePage:

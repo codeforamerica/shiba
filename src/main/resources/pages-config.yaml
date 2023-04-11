@@ -4363,6 +4363,11 @@ pageDefinitions:
             condition: 
               input: tribalNation
               matcher: EMPTY
+          - validation: SHOULD_BE_BLANK
+            errorMessageKey: general.validation.blank
+            condition: 
+              input: tribalNation
+              matcher: NOT_EMPTY
         validationIcon: false
         options:
           selectableOptions:
@@ -4542,6 +4547,9 @@ pageDefinitions:
               messageKey: identify-county-wright
             - value: YellowMedicine
               messageKey: identify-county-yellow-medicine
+      - name: OR
+        type: CUSTOM
+        customInputFragment: orLabelFragment
       - name: tribalNation
         type: SELECT
         promptMessage:
@@ -4552,6 +4560,11 @@ pageDefinitions:
             condition: 
               input: county
               matcher: EMPTY
+          - validation: SHOULD_BE_BLANK
+            errorMessageKey: general.validation.select-county-tribe
+            condition: 
+              input: county
+              matcher: NOT_EMPTY
         options:
           selectableOptions:
             - value: ''

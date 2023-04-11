@@ -44,6 +44,11 @@ public interface EmailClient {
 		  String confirmationId,
 		  String recipientEmail, 
 		  Locale locale);
+  
+  void sendHealthcareRenewalConfirmationEmail(Application application, 
+		  String confirmationId,
+		  String recipientEmail, 
+		  Locale locale);
 
   void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application);

@@ -206,6 +206,17 @@ public class ValidationTest extends AbstractFrameworkTest {
       postExpectingFailureAndAssertErrorDisplaysForThatInput("notBlankPage", "notBlankInput",
           textInputValue);
     }
+    
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "value1",
+        "value2   ","  value3"
+    })
+    void shouldFailValidationForSHOULD_BE_BLANKWhenThereIsnotEmptyOrBlankInput(String textInputValue)
+        throws Exception {
+      postExpectingFailureAndAssertErrorDisplaysForThatInput("shouldbeBlankPage", "shouldbeBlankInput",
+          textInputValue);
+    }
 
     @Test
     void shouldPassValidationForNOT_BLANKWhenThereIsAtLeast1CharacterInput() throws Exception {
