@@ -33,3 +33,4 @@ workflow:
       - pageName: firstPage
 landmarkPages:
   landingPages: [ ]
+  healthcareRenewalLandingPage: healthcareRenewalUpload

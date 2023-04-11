@@ -24,3 +24,4 @@ landmarkPages:
     - testTerminalPage
   submitPage: firstPage
   terminalPage: testTerminalPage
+  healthcareRenewalLandingPage: healthcareRenewalUpload

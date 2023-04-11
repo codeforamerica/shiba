@@ -6912,6 +6912,7 @@ landmarkPages:
   terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   healthcareRenewalTerminalPage: healthcareRenewalDocumentsSent # the final page of the healthcare renewal flow
+  healthcareRenewalLandingPage: healthcareRenewalUpload
   submitPage: signThisApplication
   uploadDocumentsPage: 
     - uploadDocuments # the page where applicants upload documents

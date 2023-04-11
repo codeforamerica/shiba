@@ -87,3 +87,4 @@ workflow:
       - pageName: thirdPage
 landmarkPages:
   landingPages: [ ]
+  healthcareRenewalLandingPage: healthcareRenewalUpload

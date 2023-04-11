@@ -19,3 +19,4 @@ workflow:
       - pageName: yesNoQuestionPage
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

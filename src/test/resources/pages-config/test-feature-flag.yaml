@@ -75,3 +75,4 @@ workflow:
 pageGroups:
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

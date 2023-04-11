@@ -45,3 +45,4 @@ landmarkPages:
     - fourthPage
   terminalPage: fourthPage
   submitPage: thirdPage
+  healthcareRenewalLandingPage: healthcareRenewalUpload

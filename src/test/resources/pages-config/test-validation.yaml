@@ -320,3 +320,4 @@ workflow:
     pageConfiguration: *lastPage
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

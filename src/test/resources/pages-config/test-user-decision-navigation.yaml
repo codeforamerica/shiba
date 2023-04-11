@@ -62,3 +62,4 @@ workflow:
     pageConfiguration: *noAnswerPage
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

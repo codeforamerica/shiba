@@ -277,7 +277,7 @@ public class PageController {
     if (landmarkPagesConfiguration.isLandingPage(pageName)) {
       httpSession.invalidate();
     }
-
+   
     if (landmarkPagesConfiguration.isStartTimerPage(pageName)) {
       applicationData.setStartTimeOnce(clock.instant());
       if (!utmSource.isEmpty()) {
@@ -302,13 +302,20 @@ public class PageController {
       return new ModelAndView(
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getNextStepsPage()));
     }
-
-    if (shouldRedirectToLaterDocsTerminalPage(pageName)) {
+    
+   if (shouldRedirectToLaterDocsTerminalPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s",
               landmarkPagesConfiguration.getLaterDocsTerminalPage()));
     }
-    
+   
+   if (shouldRedirectToHealthcareRenewalLandingPage(pageName)) {
+       httpSession.invalidate();
+       return new ModelAndView(
+               String.format("redirect:/pages/%s",
+                   landmarkPagesConfiguration.getHealthcareRenewalLandingPage()));
+     }
+   
     if (shouldRedirectToHealthcareRenewalTerminalPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s",
@@ -590,6 +597,14 @@ public class PageController {
         && applicationData.getFlow() == HEALTHCARE_RENEWAL
         && hasSubmittedDocuments();
   }
+  
+  private boolean shouldRedirectToHealthcareRenewalLandingPage(String pageName) {
+	    LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+	        .getLandmarkPages();
+	    return landmarkPagesConfiguration.isHealthcareRenewalLandingPage(pageName)
+	        && applicationData.getFlow() == HEALTHCARE_RENEWAL
+	        && hasSubmittedDocuments();
+	  }
 
   @PostMapping("/groups/{groupName}/delete")
   RedirectView deleteGroup(@PathVariable String groupName, HttpSession httpSession) {

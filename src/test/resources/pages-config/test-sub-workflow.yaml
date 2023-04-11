@@ -145,3 +145,4 @@ pageGroups:
 landmarkPages:
   startTimerPages:
     - earlierPage
+  healthcareRenewalLandingPage: healthcareRenewalUpload

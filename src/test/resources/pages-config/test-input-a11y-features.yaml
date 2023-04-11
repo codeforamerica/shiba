@@ -11,3 +11,4 @@ workflow:
       pageConfiguration: *textAreaPage
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

@@ -107,7 +107,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      log.info("User session timed out on page: " + request.getRequestURL());
+      log.info("User session invalid on page: " + request.getRequestURL());
       errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
     }
 

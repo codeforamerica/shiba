@@ -224,3 +224,4 @@ pageGroups:
       - subworkflowPage
 landmarkPages:
   terminalPage:
+  healthcareRenewalLandingPage: healthcareRenewalUpload

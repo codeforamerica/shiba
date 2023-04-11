@@ -18,10 +18,15 @@ public class LandmarkPagesConfiguration {
   private List<String> submitUploadedDocumentsPage = new ArrayList<>();
   private String laterDocsTerminalPage;
   private String healthcareRenewalTerminalPage;
+  private String healthcareRenewalLandingPage;
 
   public boolean isLandingPage(String pageName) {
     return landingPages.contains(pageName);
   }
+  
+  public boolean isHealthcareRenewalLandingPage(String pageName) {
+	    return healthcareRenewalLandingPage.contains(pageName);
+	  }
 
   public boolean isTerminalPage(String pageName) {
     return pageName.equals(terminalPage);

@@ -20,3 +20,4 @@ workflow:
       - pageName: testEnrichmentPage
 landmarkPages:
   landingPages: [ ]
+  healthcareRenewalLandingPage: healthcareRenewalUpload

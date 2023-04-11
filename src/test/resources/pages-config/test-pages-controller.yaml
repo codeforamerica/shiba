@@ -58,6 +58,7 @@ landmarkPages:
     - firstPage
   terminalPage: terminalPage
   submitPage: secondPage
+  healthcareRenewalLandingPage: healthcareRenewalUpload
   uploadDocumentsPage: 
     - uploadDocuments
     - healthcareRenewalUploadDocuments
