@@ -233,9 +233,9 @@ class EmailContentCreatorTest {
                                                          +
                                                          "<p>Your documents were submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".</p>"
                                                          +
-                                                         "<p>Document confirmation number: #9870000123</p>"
+                                                         "<p>Document confirmation number: <b>#9870000123</b></p>"
                                                          +
-                                                         "<p>Look out for mail containing more information about your case. You may need to complete additional steps.</p>"
+                                                         "<p>Watch for mail containing more information about your case. You may need to complete additional steps.</p>"
                                                          +
                                                          "<p>If you would like an update on your case, please call the county or Tribal Nation listed above.</p>"
                                                          +
