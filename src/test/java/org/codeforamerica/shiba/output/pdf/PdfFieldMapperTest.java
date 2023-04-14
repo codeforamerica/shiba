@@ -52,6 +52,23 @@ class PdfFieldMapperTest {
   }
 
   @Test
+  void shouldMapBlankDateValueToBlankSimpleField( ) {
+	  String fieldName = "someName";
+	  String formInputName = "some-input";
+	  String pageName = "some-screen";
+	  
+	  Map<String, List<String>> configMap = Map.of(pageName + "." + formInputName, List.of(fieldName));
+
+	  DocumentField documentField = new DocumentField(pageName, formInputName,
+	  List.of("", "", ""), DocumentFieldType.DATE_VALUE);
+
+	  PdfFieldMapper subject = new PdfFieldMapper(configMap, emptyMap());
+	  List<PdfField> fields = subject.map(List.of(documentField));
+
+	  assertThat(fields).contains(new SimplePdfField(fieldName, ""));
+  }
+  
+  @Test
   void shouldNotMapInputsWithoutPdfFieldMappings() {
     String formInputName = "some-input";
     String pageName = "some-screen";
