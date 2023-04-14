@@ -106,7 +106,7 @@ dependencies {
     implementation("com.azure:azure-storage-blob:12.21.1")
     implementation("org.postgresql:postgresql")
     implementation("org.glassfish.jaxb:jaxb-runtime")
-    implementation("org.apache.pdfbox:pdfbox:2.0.27")
+    implementation("org.apache.pdfbox:pdfbox:2.0.28")
     implementation("org.apache.commons:commons-lang3")
     implementation("org.apache.commons:commons-text:1.10.0")
     implementation("org.jetbrains:annotations:24.0.1")
