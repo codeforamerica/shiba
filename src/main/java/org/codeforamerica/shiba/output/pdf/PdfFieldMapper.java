@@ -51,6 +51,9 @@ public class PdfFieldMapper {
 
   @NotNull
   private String getDateFormattedValue(DocumentField input) {
+	  if (input.getValue().contains("")) {
+		  return "";
+	  }
     return String.join("/", input.getValue());
   }
 
