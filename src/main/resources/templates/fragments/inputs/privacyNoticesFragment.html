@@ -1,0 +1,56 @@
+<!-- This is custom because we are using cityInfo configuration to display the list rather than manually adding them to pages-config or getting them from another page's datasource -->
+<div th:fragment="privacyNoticesFragment(input, data)" class="form-group">
+	<label class="form-question h2" th:for="${input.name}" th:id="${input.name + '-label'}"
+		th:utext="#{hc-privacy-notices.privacy-notices}">
+	</label>
+	<p class="spacing-above-10"
+       th:id="${input.name + '-help-message'}"
+       th:utext="#{hc-privacy-notices.please-review-the-privacy-notices-below-before-you-continue}"></p>
+	<div class="accordion legal-stuff-accordion " id="collection-of-your-private-data-accordion">
+		<button href="#" class="accordion__button" aria-expanded="true" aria-controls="a1">
+			<span th:text="#{hc-privacy-notices.collection-of-your-private-data}"></span>
+		</button>
+		<div id="a1" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
+			<div>
+				<p>
+					<span
+						th:utext="#{hc-privacy-notices.the-minnesota-department-of-human-services-DHS-collects}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.additionally-your-information-may-be-released}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.you-can-refuse-to-provide-this-information}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.the-DHS-notice-of-privacy-practices-contains-more}"></span>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="accordion legal-stuff-accordion" id="collection-of-your-social-security-number-accordion">
+		<button href="#" class="accordion__button" aria-expanded="true" aria-controls="a2">
+			<span th:text="#{hc-privacy-notices.collection-of-your-social-security-number}"></span>
+		</button>
+		<div id="a2" class="accordion__content textarea-readonly legal-stuff-window spacing-below-35">
+			<div>
+				<p>
+					<span
+						th:utext="#{hc-privacy-notices.DHS-is-required-by-law-to-collect-your-social-security-number}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.DHS-also-needs-your-SSN-to-verify-your-identity}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.more-details-including-a-list-of-circumstances}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hc-privacy-notices.what-are-your-rights-regarding-the-information}"></span>
+				</p>
+				<p>
+					<span th:utext="#{hd-privacy-notices.what-are-our-responsibilities}"></span>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

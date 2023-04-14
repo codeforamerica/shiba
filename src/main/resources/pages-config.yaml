@@ -4574,6 +4574,9 @@ pageDefinitions:
       - name: notice
         type: NOTICE
         noticeMessage: healthcare-Renewal-Upload.you-can-see-where-your-application
+      - name: privacyNotice
+        type: CUSTOM
+        customInputFragment: privacyNoticesFragment 
   - &healthcareRenewalMatchInfo
     name: healthcareRenewalMatchInfo
     headerKey: match-info-hc.match-docs-to-case
