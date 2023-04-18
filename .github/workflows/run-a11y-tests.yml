@@ -35,13 +35,23 @@ jobs:
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
-      - name: Announce on Slack
-        if: ${{ always() }}
-        uses: innocarpe/actions-slack@v1
+      - name: Announce Success on Teams
+        if: ${{ job.status == 'success' }}
+        uses: jdcargile/ms-teams-notification@v1.3
         with:
-          status: ${{ job.status }}
-          success_text: ':accessible_parrot: No accessibility issues here!'
-          failure_text: ':wheelchair: Accessibility check found issues!'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: Accessibility check, status - ${{ job.status }}
+          # color is green
+          notification-color: 008000
+          timezone: America/Chicago          
+      - name: Announce fail on Teams
+        if: ${{ job.status != 'success' }}
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: Accessibility check, status - ${{ job.status }}
+          # color is red
+          notification-color: ff0000
+          timezone: America/Chicago          
