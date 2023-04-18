@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.pdf;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.HEALTHCARE_RENEWAL;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
@@ -124,6 +125,13 @@ public class PdfFieldFillersConfiguration {
   ) {
     return new PDFBoxFieldFiller(List.of(coverPage));
   }
+  
+  @Bean
+  public PdfFieldFiller healthcareRenewalCoverPageFilter(
+      @Value("classpath:HCRenewal-document-cover-page.pdf") Resource coverPage
+  ) {
+    return new PDFBoxFieldFiller(List.of(coverPage));
+  }
 
   @Bean
   public Map<Recipient, Map<Document, PdfFieldFiller>> pdfFieldFillers(
@@ -131,12 +139,14 @@ public class PdfFieldFillersConfiguration {
       PdfFieldFiller clientCafFiller,
       PdfFieldFiller caseworkerCcapFiller,
       PdfFieldFiller clientCcapFiller,
-      PdfFieldFiller uploadedDocCoverPageFilter) {
+      PdfFieldFiller uploadedDocCoverPageFilter,
+      PdfFieldFiller healthcareRenewalCoverPageFilter) {
     return Map.of(
         CASEWORKER, Map.of(
             CAF, caseworkerCafFiller,
             CCAP, caseworkerCcapFiller,
-            UPLOADED_DOC, uploadedDocCoverPageFilter
+            UPLOADED_DOC, uploadedDocCoverPageFilter,
+            HEALTHCARE_RENEWAL, healthcareRenewalCoverPageFilter
         ),
         CLIENT, Map.of(
             CAF, clientCafFiller,

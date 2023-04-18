@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.output.pdf;
 
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
+import static org.codeforamerica.shiba.output.Document.HEALTHCARE_RENEWAL;
 import static org.codeforamerica.shiba.output.Recipient.CASEWORKER;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -36,6 +37,7 @@ import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
@@ -117,6 +119,9 @@ public class PdfGenerator implements FileGenerator {
   }
 
   public byte[] generateCoverPageForUploadedDocs(Application application) {
+	if (application.getFlow() == FlowType.HEALTHCARE_RENEWAL) {
+		return generate(application, HEALTHCARE_RENEWAL, CASEWORKER).getFileBytes();
+	}
     return generate(application, UPLOADED_DOC, CASEWORKER).getFileBytes();
   }
 
