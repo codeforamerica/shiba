@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.journeys;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,6 +21,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
      testPage.clickButton("Upload documents");
 
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
+    assertNotNull(testPage.findElementById("headerMNbenefits"));
 //    testPage.clickLink("Enter my zip code instead.");
 //    assertThat(driver.getTitle()).isEqualTo("Identify zip");
 //
@@ -47,6 +49,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
+    assertNotNull(testPage.findElementById("headerMNbenefits"));
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("ssn", "123456789");
@@ -57,6 +60,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     // should allow me to upload documents and those documents should be sent to the ESB
     assertThat(driver.getTitle()).isEqualTo("Upload documents");
+    assertNotNull(testPage.findElementById("headerMNbenefits"));
     assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
     uploadPdfFile();
@@ -69,6 +73,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickButton("Submit my documents");
     testPage.clickButton("Yes, submit and finish");
     assertThat(driver.getTitle()).isEqualTo("Documents Sent");
+    assertNotNull(testPage.findElementById("headerMNbenefits"));
     verify(pageEventPublisher).publish(any());
 
     // Assert that applicant can't resubmit docs at this point

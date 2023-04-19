@@ -1,7 +1,12 @@
 <!-- Standard page layout used by pages with "usingPageTemplateFragment=true" -->
 <body th:fragment="pageTemplateFragment(page, pageNameContext)">
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbar :: toolbar"></div>
+  <div th:if="${#strings.contains(page.name,'healthcareRenewal')}">
+  	<div th:replace="fragments/toolbarHealthcareRenewal :: toolbarHealthcareRenewal"></div>
+  </div>
+  <div th:unless="${#strings.contains(page.name,'healthcareRenewal')}">
+  	<div th:replace="fragments/toolbar :: toolbar"></div>
+  </div>
   <div th:replace="fragments/demoBanner :: demoBanner"></div>
   <section class="slab slab--shiba">
     <div class="grid">
