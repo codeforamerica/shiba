@@ -59,5 +59,10 @@
     </div>
   </section>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:if="${#strings.contains(page.name,'healthcareRenewal')}">
+  <div th:replace="fragments/footerHealthcareRenewal :: footerHealthcareRenewal"></div>
+</div>
+<div th:unless="${#strings.contains(page.name,'healthcareRenewal')}">
+  <div th:replace="fragments/footer :: footer"></div>
+</div>
 </body>

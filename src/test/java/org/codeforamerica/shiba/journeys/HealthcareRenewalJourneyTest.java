@@ -29,6 +29,7 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     navigateTo("healthcareRenewalUpload");
     assertThat(driver.getTitle()).isEqualTo("Health Care Renewal Document Upload");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
 
     // should allow me to enter personal info and continue the flow if my county is supported
     testPage.enter("county", "Select your county");
@@ -44,8 +45,9 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
-    // verify that the header is the health care renewal header
+    // verify that the header & footer are the health care renewal header & footer
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     // verify that the chat feature does not exist on the health care renewal header
     assertTrue(testPage.elementDoesNotExistById("intercom_custom_launcher"));
 
@@ -67,11 +69,13 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     testPage.enter("caseNumber", "12345678");
     testPage.clickContinue();
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     testPage.clickContinue();
 
     // should allow me to upload documents and those documents should be sent to the ESB
     assertThat(driver.getTitle()).isEqualTo("Upload documents");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
     uploadPdfFile();
@@ -79,6 +83,7 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     testPage.clickButton("Submit my documents");
     assertThat(driver.getTitle()).isEqualTo("Doc submit confirmation");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     testPage.clickButton("No, add more documents"); // Go back
     assertThat(driver.getTitle()).isEqualTo("Upload documents");
 
@@ -86,6 +91,7 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     testPage.clickButton("Yes, submit and finish");
     assertThat(driver.getTitle()).isEqualTo("Documents Sent");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     verify(pageEventPublisher).publish(any());
 
     // Assert that applicant can't resubmit docs at this point
@@ -99,6 +105,7 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     navigateTo("healthcareRenewalUpload");
     assertThat(driver.getTitle()).isEqualTo("Health Care Renewal Document Upload");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     
     WebElement selectedOption = testPage.getSelectedOption("county");
     assertThat(selectedOption.getText()).isEqualTo("Select your county");

@@ -24,6 +24,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
     assertNotNull(testPage.findElementById("headerMNbenefits"));
+    assertNotNull(testPage.findElementById("footerMNbenefits"));
 //    testPage.clickLink("Enter my zip code instead.");
 //    assertThat(driver.getTitle()).isEqualTo("Identify zip");
 //
@@ -51,9 +52,9 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
+    // verify that the header & footer are the MNbenefits header & footer
     assertNotNull(testPage.findElementById("headerMNbenefits"));
-    // verify that the header is the MNbenefits header
-    assertNotNull(testPage.findElementById("headerMNbenefits"));
+    assertNotNull(testPage.findElementById("footerMNbenefits"));
     // verify that the chat feature does exist on the MNbenefits header
     assertFalse(testPage.elementDoesNotExistById("intercom_custom_launcher"));
 
@@ -68,6 +69,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     // should allow me to upload documents and those documents should be sent to the ESB
     assertThat(driver.getTitle()).isEqualTo("Upload documents");
     assertNotNull(testPage.findElementById("headerMNbenefits"));
+    assertNotNull(testPage.findElementById("footerMNbenefits"));
     assertThat(driver.findElements(By.className("reveal")).size()).isEqualTo(0);
 
     uploadPdfFile();
@@ -81,6 +83,7 @@ public class LaterDocsJourneyTest extends JourneyTest {
     testPage.clickButton("Yes, submit and finish");
     assertThat(driver.getTitle()).isEqualTo("Documents Sent");
     assertNotNull(testPage.findElementById("headerMNbenefits"));
+    assertNotNull(testPage.findElementById("footerMNbenefits"));
     verify(pageEventPublisher).publish(any());
 
     // Assert that applicant can't resubmit docs at this point
