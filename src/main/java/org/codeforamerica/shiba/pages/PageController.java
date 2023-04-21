@@ -116,7 +116,7 @@ import net.coobird.thumbnailator.Thumbnails;
 public class PageController {
 
   private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
-  private static final int MAX_FILES_UPLOADED = 20;
+  private static final int MAX_FILES_UPLOADED = 50;
   private static final String VIRUS_STATUS_CODE = "418";
   private final ApplicationData applicationData;
   private final ApplicationConfiguration applicationConfiguration;
