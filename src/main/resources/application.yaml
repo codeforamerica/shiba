@@ -124,6 +124,7 @@ failed-resubmission:
     milliseconds: 0 # Run the process as soon the app first starts up
   lockAtLeastFor: 15m
   lockAtMostFor: 30m
+  isEnable: true
 
 in-progress-resubmission:
   interval:
@@ -132,6 +133,7 @@ in-progress-resubmission:
     milliseconds: 0 # Run the process as soon the app first starts up
   lockAtLeastFor: 15m
   lockAtMostFor: 30m
+  isEnable: true
 
 no-status-applications-resubmission:
   interval:
@@ -140,6 +142,7 @@ no-status-applications-resubmission:
     milliseconds: 0 # Run the process as soon the app first starts up
   lockAtLeastFor: 9m
   lockAtMostFor: 20m
+  isEnable: true
 
 demo: false
 
