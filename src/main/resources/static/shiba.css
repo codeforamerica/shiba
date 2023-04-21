@@ -786,6 +786,11 @@ input[type=number] {
   vertical-align: -15px;
 }
 
+.mn-healthcare-renewal-icon {
+  width: 54.69px;
+  vertical-align: middle;
+}
+
 .svg-button-icon__left {
   position: relative;
   top: 0.15em;

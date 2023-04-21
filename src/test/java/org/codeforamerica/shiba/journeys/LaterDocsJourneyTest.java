@@ -1,7 +1,9 @@
 package org.codeforamerica.shiba.journeys;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,6 +52,11 @@ public class LaterDocsJourneyTest extends JourneyTest {
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
     assertNotNull(testPage.findElementById("headerMNbenefits"));
+    // verify that the header is the MNbenefits header
+    assertNotNull(testPage.findElementById("headerMNbenefits"));
+    // verify that the chat feature does exist on the MNbenefits header
+    assertFalse(testPage.elementDoesNotExistById("intercom_custom_launcher"));
+
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("ssn", "123456789");

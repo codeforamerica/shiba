@@ -2,6 +2,8 @@ package org.codeforamerica.shiba.journeys;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,7 +44,15 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     assertThat(driver.getTitle()).isEqualTo("Match Info");
+    // verify that the header is the health care renewal header
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    // verify that the chat feature does not exist on the health care renewal header
+    assertTrue(testPage.elementDoesNotExistById("intercom_custom_launcher"));
+
+    testPage.clickLink("Renew my MN health care coverage");
+    assertThat(driver.getTitle()).isEqualTo("Renew my coverage / Minnesota Department of Human Services");
+    driver.navigate().back();
+    
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
     testPage.enter("ssn", "123456789");
