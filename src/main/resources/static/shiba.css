@@ -791,6 +791,10 @@ input[type=number] {
   vertical-align: middle;
 }
 
+.healthcare-renewal-toolbar-text {
+  padding-left: 8px;
+}
+
 .svg-button-icon__left {
   position: relative;
   top: 0.15em;
