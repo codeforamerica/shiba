@@ -532,11 +532,11 @@ public abstract class AbstractBasePageTest {
     uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_2));
     assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_2);
   }
-  
-  protected void uploadPDFVirusFile3() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_3));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_3);
-  }
+  //TODO EICAR_PDF_VIRUS_3 = "pdf-doc-vba-eicar-dropper.pdf"; is no longer recognized as a virus by clamav
+//  protected void uploadPDFVirusFile3() {
+//    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_3));
+//    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_3);
+//  }
 
   protected void getToDocumentUploadScreen() {
     testPage.clickButton("Apply now");
