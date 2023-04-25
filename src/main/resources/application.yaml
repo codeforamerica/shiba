@@ -90,7 +90,7 @@ feature-flag:
   show-delayed-processing-time-notice: on
   
 document-upload:
-  max-files-uploaded: 50
+  max-files-uploaded: 20
 
 smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 

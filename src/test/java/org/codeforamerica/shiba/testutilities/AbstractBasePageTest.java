@@ -205,16 +205,6 @@ public abstract class AbstractBasePageTest {
     testPage.enter("livedInMnWholeLife", "Yes");
     testPage.enter("moveToMnDate", "02/18/1776");
   }
-  
-  protected void fillOutMatchInfo() {
-    testPage.enter("firstName", "defaultFirstName");
-    testPage.enter("lastName", "defaultLastName");
-    testPage.enter("dateOfBirth", "01/12/1928");
-    testPage.enter("ssn", "123456789");
-    testPage.enter("phoneNumber", "234-567-8900");
-    testPage.enter("email", "default@mailnator.com");
-    testPage.enter("caseNumber", "1234567");
-  }
 
   protected void getToPersonalInfoScreen(List<String> programSelections) {
     testPage.clickButton("Apply now");
@@ -562,28 +552,6 @@ public abstract class AbstractBasePageTest {
     testPage.clickContinue();
   }
 
-  protected void getToLaterDocsUploadScreen() {
-    testPage.clickButton("Upload documents");
-    
-    testPage.enter("county", "Hennepin");
-    testPage.clickContinue();
-    
-    fillOutMatchInfo();
-    testPage.clickContinue();
-    
-    testPage.clickContinue();
-  }
-  
-  protected void getToHealthcareRenewalUploadScreen() {
-	navigateTo("healthcareRenewalUpload");
-	testPage.enter("county", "Hennepin");
-    testPage.clickContinue();
-    
-    fillOutMatchInfo();
-    testPage.clickContinue();
-    
-    testPage.clickContinue();
-  }
 
   protected String getAttributeForElementAtIndex(List<WebElement> elementList, int index,
       String attributeName) {
