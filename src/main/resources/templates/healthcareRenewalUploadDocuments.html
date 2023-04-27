@@ -17,7 +17,7 @@
                   enctype="multipart/form-data">
               <div id="max-files-reached">
                 <div class='max-files spacing-below-35' id="max-files"
-                     th:text='#{upload-documents.maximum-number-of-files}'></div>
+                     th:text='#{upload-documents.maximum-number-of-files-fifty}'></div>
               </div>
               <div id="drag-and-drop-box"
                    class="drag-and-drop-box spacing-below-35 spacing-above-35 grid"
@@ -203,7 +203,7 @@
     thumbnailMethod: "crop",
     thumbnailWidth: 64,
     thumbnailHeight: 60,
-    maxFiles: 20,
+    maxFiles: 50,
     parallelUploads: 1,
     timeout: 0,
     maxFilesize: [[${uploadDocMaxFileSize}]],
