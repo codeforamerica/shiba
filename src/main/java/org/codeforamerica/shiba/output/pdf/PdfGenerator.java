@@ -243,7 +243,7 @@ public class PdfGenerator implements FileGenerator {
         }
         if (extension.equals("pdf")) {
           try {
-            //fileBytes = ImageUtility.compressImagesInPDF(fileBytes);
+            fileBytes = ImageUtility.compressImagesInPDF(fileBytes);
           } catch (Exception e) {
             log.error("Compress images in PDF failed: " + e.getMessage());
           }
@@ -357,7 +357,7 @@ public class PdfGenerator implements FileGenerator {
   private byte[] convertImageToPdf(byte[] imageFileBytes, String filename) throws Exception {
     try (PDDocument doc = new PDDocument(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
      
-    	/*  var extension = Utils.getFileType(filename);
+      var extension = Utils.getFileType(filename);
       if(IMAGE_TYPES_TO_COMPRESS.contains(extension)) {
         ByteArrayOutputStream outputFile = new ByteArrayOutputStream();
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageFileBytes));
@@ -380,7 +380,7 @@ public class PdfGenerator implements FileGenerator {
         }
         imageFileBytes = outputFile.toByteArray();
         outputFile.close();
-      }*/
+      }
       var image = PDImageXObject.createFromByteArray(doc, imageFileBytes, filename);
       // Figure out page size
       var pageSize = PDRectangle.LETTER;

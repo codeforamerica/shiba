@@ -1,15 +1,11 @@
 <th:block th:fragment="healthcareRenewalDocumentSubmitConfirmation">
   <form id="page-form" th:action="@{/submit-documents/}" method="post">
-    <button type="submit" class="button button--primary spacing-above-35" id="form-doc-submit-button"
+    <button type="submit" class="button button--primary spacing-above-35" id="form-submit-button"
             th:text="#{document-submit-confirmation.yes-submit-and-finish}"></button>
-    <span id="wait-button" class="button button--primary spacing-above-35" 
-    		 style="display: none;">
-    		 <th:block th:text="#{document-submit-confirmation.yes-submit-and-wait}"></th:block>
-    		 <img src="/images/progress.gif" ></span>
   </form>
 
   <div>
-    <a class="button" id="add-more-doc"
+    <a class="button"
        th:href="'/pages/'+${pageName}+'/navigation?option=1'"
        th:text="#{document-submit-confirmation.no-add-more-documents}"></a>
   </div>

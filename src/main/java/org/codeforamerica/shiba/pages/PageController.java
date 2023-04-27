@@ -15,8 +15,6 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,10 +29,8 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,14 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.spi.IIORegistry;
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -58,10 +47,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.Program;
-import org.codeforamerica.shiba.ResubmissionService;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
-import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationFactory;
 import org.codeforamerica.shiba.application.ApplicationRepository;
@@ -74,7 +61,6 @@ import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.inputconditions.Condition;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
-import org.codeforamerica.shiba.output.CustomMultipartFile;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.Eligibility;
 import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
@@ -153,9 +139,6 @@ public class PageController {
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
   private final String clammitUrl;
-  private static final List<String> IMAGE_TYPES_TO_COMPRESS = List
-	      .of("jpg", "jpeg");
-  private static float imageQuality;
 
   public PageController(
       ApplicationConfiguration applicationConfiguration,
@@ -872,8 +855,6 @@ public class PageController {
           outputImage.flush();
           thumbFile.delete();
           Files.delete(paths);
-          byte[] compressedImage = compressImage(file.getBytes(), file.getOriginalFilename());
-          file = new CustomMultipartFile(compressedImage, file.getName(), file.getOriginalFilename(), file.getContentType());
         }
         documentRepository.upload(filePath, file);
         documentRepository.upload(thumbnailFilePath, dataURL);
@@ -889,52 +870,6 @@ public class PageController {
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
-  @Value("${image.quality}")
-  private void setIsEnableEmailResubmissionTask(float imgQuality) {
-	  imageQuality = imgQuality;
-  }
-  
-  private byte[] compressImage(byte[] imageFileBytes, String filename) throws IOException {
-	  var extension = Utils.getFileType(filename);
-	  if(IMAGE_TYPES_TO_COMPRESS.contains(extension)) {
-		  ByteArrayOutputStream outputFile = new ByteArrayOutputStream();
-	      BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageFileBytes));
-	      JPEGImageWriteParam jpegParams = new JPEGImageWriteParam(null);
-	        BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(),
-	            BufferedImage.TYPE_3BYTE_BGR);
-	            ColorConvertOp op = new ColorConvertOp(null);
-	            op.filter(image, img);
-	      jpegParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-	      jpegParams.setCompressionQuality(imageQuality);        
-	      ImageWriter writer = getImageWriter();
-	      try (final ImageOutputStream stream = ImageIO.createImageOutputStream(outputFile)) {
-	        writer.setOutput(stream);
-	        try {
-	          writer.write(null, new IIOImage(img, null, null), jpegParams);
-	        } finally {
-	          writer.dispose();
-	          stream.flush();
-	        }
-	      }
-	      imageFileBytes = outputFile.toByteArray();
-	      outputFile.close();
-	  }
-      return imageFileBytes;
-  }
-  
-  private static ImageWriter getImageWriter() throws IOException {
-	    IIORegistry registry = IIORegistry.getDefaultInstance();
-	    Iterator<ImageWriterSpi> services = registry.getServiceProviders(ImageWriterSpi.class, (provider) -> {
-	        if (provider instanceof ImageWriterSpi) {
-	            return Arrays.stream(((ImageWriterSpi) provider).getFormatNames()).anyMatch(formatName -> formatName.equalsIgnoreCase("JPEG"));
-	        }
-	        return false;
-	    }, true);
-	    ImageWriterSpi writerSpi = services.next();
-	    ImageWriter writer = writerSpi.createWriterInstance();
-	    return writer;
-	}
 
   private boolean hasSubmittedDocuments() {
     Application application;
