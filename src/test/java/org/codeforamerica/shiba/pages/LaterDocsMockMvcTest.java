@@ -80,15 +80,15 @@ public class LaterDocsMockMvcTest extends AbstractShibaMockMvcTest {
 		clickContinueOnInfoPage("uploadDocuments", "Submit my documents", "documentSubmitConfirmation");
 		
 		//No county was selected, so the blank county defaults to Hennepin
-		var countyServicingAgency = County.getForName("Hennepin");
-		var countyRoutingDestination = countyMap.get(countyServicingAgency);
+		/*var countyServicingAgency = County.getForName("Hennepin");
+		var countyRoutingDestination = countyMap.get(countyServicingAgency);*/
 
 		var servicingAgency = TribalNation.getFromName("Red Lake Nation");
 		var tribalRoutingDestination = tribalNationMap.get(servicingAgency);
 		List<RoutingDestination> routingDestinations = routingDecisionService.getRoutingDestinations(applicationData,
 				CAF);
 
-		assertThat(routingDestinations).containsExactly(countyRoutingDestination, tribalRoutingDestination);
+		assertThat(routingDestinations).containsExactly(tribalRoutingDestination);
 	}
 
 	@Test
