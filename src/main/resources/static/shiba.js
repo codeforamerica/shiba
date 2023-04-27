@@ -208,8 +208,13 @@ $(document).ready(function() {
 	$("#page-form").submit(function() {
 		var btn = $("#form-submit-button");
 		btn.addClass('button--disabled');
-		btn.prop('disabled', true)
-		return true;
+		btn.prop('disabled', true);
+		var docBtn = $("#form-doc-submit-button");
+		docBtn.prop('disabled', true);
+		docBtn.hide();
+		$("#wait-button").addClass('button--disabled').prop('disabled', true).show();
+		$("#add-more-doc").addClass('button--disabled').prop('disabled', true).css('pointer-events','none');
+		return false;
 	});
 	$("#prepare-to-apply-accordion").removeClass('accordion--is-closed');
 	handleAccordions();

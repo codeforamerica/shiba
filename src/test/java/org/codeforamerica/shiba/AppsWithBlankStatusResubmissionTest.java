@@ -24,9 +24,12 @@ import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.Status;
+import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
+import org.codeforamerica.shiba.pages.data.InputData;
+import org.codeforamerica.shiba.pages.data.PageData;
 import org.codeforamerica.shiba.pages.events.ApplicationSubmittedEvent;
 import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
@@ -250,6 +253,8 @@ class AppsWithBlankStatusResubmissionTest {
         new TestApplicationDataBuilder().build();
     applicationData.setId(id);
     applicationData.setFlow(LATER_DOCS);
+    applicationData.getPagesData().putIfAbsent("identifyCountyOrTribalNation", new PageData());
+    applicationData.getPageData("identifyCountyOrTribalNation").putIfAbsent("county", new InputData(List.of(county.name())));
     Application laterDocsApplication = Application.builder()
         .completedAt(completedAt) // important that this is completed!!!
         .county(county)

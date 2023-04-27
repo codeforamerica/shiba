@@ -146,4 +146,7 @@ no-status-applications-resubmission:
 
 demo: false
 
+image:
+  quality: 0.25f
+
   # added this line to test the mnbenefits/shiba repo

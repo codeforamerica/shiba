@@ -83,8 +83,10 @@ public class RoutingDecisionService {
   private List<RoutingDestination> getLaterDocsRoutingDestinations(ApplicationData applicationData, Document document) {
     List<RoutingDestination> result = new ArrayList<>();
     County county = CountyParser.parse(applicationData);
-    RoutingDestination destination = countyRoutingDestinations.get(county);
-    result.add(destination);
+    if(!county.equals(County.Other)) {//Stop sending document to default county
+	    RoutingDestination destination = countyRoutingDestinations.get(county);
+	    result.add(destination);
+    }
     
     String tribalNationName = "";   
     if (applicationData.getFlow().equals(FlowType.LATER_DOCS)) {

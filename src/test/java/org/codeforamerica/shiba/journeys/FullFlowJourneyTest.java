@@ -1032,7 +1032,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 0, "test-caf", "pdf",
         "0.4", "MB");
     assertFileDetailsAreCorrect(filenameTextElements, fileDetailsElements, 1, "shiba", "jpg",
-        "51.7", "KB");
+        "19.1", "KB");
   }
 
   private void assertFileDetailsAreCorrect(List<WebElement> filenameTextElements,
