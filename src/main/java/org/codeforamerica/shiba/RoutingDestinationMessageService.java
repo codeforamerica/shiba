@@ -30,7 +30,7 @@ public class RoutingDestinationMessageService {
             rd.getName();
       }
       if (!county.equals(County.Other)) {
-	      String clientCounty = setCountyName(county, rd);
+	      String clientCounty = rd.getName();
 	      return withPhoneNumbers ? lms
 	          .getMessage("general.county-and-phone", List.of(clientCounty, rd.getPhoneNumber())) :
 	          lms.getMessage("general.county", List.of(clientCounty));
@@ -39,13 +39,5 @@ public class RoutingDestinationMessageService {
     })
         .collect(Collectors.toList());
     return listToString(routingDestinationStrings, lms);
-  }
-
-  private String setCountyName(County county, RoutingDestination routingDestination) {
-    String clientCounty = routingDestination.getName();
-    if (county == County.Other) {
-      clientCounty = County.Hennepin.toString();
-    }
-    return clientCounty;
   }
 }
