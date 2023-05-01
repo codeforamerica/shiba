@@ -212,7 +212,7 @@ $(document).ready(function() {
 		var docBtn = $("#form-doc-submit-button");
 		docBtn.prop('disabled', true);
 		docBtn.hide();
-		$("#wait-button").addClass('button--disabled').prop('disabled', true).show();
+		$("#wait-button").addClass('button--disabled').prop('disabled', true).css('opacity','0.7').show();
 		$("#add-more-doc").addClass('button--disabled').prop('disabled', true).css('pointer-events','none');
 		return true;
 	});
