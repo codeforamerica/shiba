@@ -233,6 +233,35 @@ class PdfGeneratorTest {
     assertThat(text).contains("MNbenefits: 03/22/2023 08:48:39 AM");
   }
   
+  @Test
+  void shouldAddMNbenefitsSubmissionDateToEncryptedPdf() throws Exception {
+    var image = getFileContentsAsByteArray("shiba+file_encrypted_pdf.pdf");
+    var coverPage = getFileContentsAsByteArray("test-cover-pages.pdf");
+    var applicationId = "9870000123";
+   
+    ApplicationFile coverPageFile = new ApplicationFile(coverPage, "");
+    UploadedDocument uploadedDoc = new UploadedDocument("shiba+file_encrypted_pdf.pdf", "", "", "", image.length);
+
+    ApplicationData applicationData = new ApplicationData();
+    applicationData.setId(applicationId);
+    applicationData.setUploadedDocs(List.of(uploadedDoc));
+    applicationData.setFlow(FlowType.LATER_DOCS);
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .flow(FlowType.LATER_DOCS)
+        .completedAt(ZonedDateTime.parse("2023-03-22T13:48:39.213+00:00[America/Chicago]"))
+        .build();
+    List<UploadedDocument> uploadedDocumentList = List.of(uploadedDoc);
+    when(documentRepository.get(any())).thenReturn(image);
+    List<ApplicationFile> applicationFileList = pdfGenerator.generateCombinedUploadedDocument(uploadedDocumentList, application, coverPageFile.getFileBytes());
+    String text = null;
+    for(ApplicationFile af:applicationFileList) {
+     PDDocument doc = PDDocument.load(af.getFileBytes());
+     PDFTextStripper findPhrase = new PDFTextStripper();
+     text = findPhrase.getText(doc);
+    }
+    assertThat(text).contains("MNbenefits: 03/22/2023 08:48:39 AM");
+  }
   
  
 }

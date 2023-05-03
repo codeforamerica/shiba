@@ -267,6 +267,9 @@ public class PdfGenerator implements FileGenerator {
       if (origDoc.getDocumentCatalog().getAcroForm() != null) {
           origDoc.getDocumentCatalog().getAcroForm().flatten();
       }
+      if(origDoc.isEncrypted()) {
+    	  origDoc.setAllSecurityToBeRemoved(true);
+      }
       HashMap<Integer, String> overlayGuide = new HashMap<Integer, String>();
       
       overlay.setOverlayPosition(Overlay.Position.FOREGROUND);
@@ -276,7 +279,7 @@ public class PdfGenerator implements FileGenerator {
       origDoc.close();
       fileBytes = outputStream.toByteArray();
     }catch(Exception e) {
-      log.error("Could not add date to uploaded pdf = "+uDoc.getFilename());
+      log.error(e.getMessage()+". Could not add date to uploaded pdf = "+uDoc.getFilename());
     }
     return fileBytes;
   }
