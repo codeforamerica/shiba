@@ -475,7 +475,7 @@ public class PageController {
               ccapExpeditedEligibility, locale));
     }
 
-    if (landmarkPagesConfiguration.isTerminalPage(pageName)) {
+    if (landmarkPagesConfiguration.isTerminalPage(pageName) || landmarkPagesConfiguration.isHealthcareRenewalTerminalPage(pageName)) {
       Application application = applicationRepository.find(applicationData.getId());
       model.put("documents", DocumentListParser.parse(application.getApplicationData()));
       model.put("hasUploadDocuments", !applicationData.getUploadedDocs().isEmpty());

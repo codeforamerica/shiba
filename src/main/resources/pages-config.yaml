@@ -4686,7 +4686,7 @@ pageDefinitions:
     name: healthcareRenewalDocumentsSent
     pageTitle: documentsSent.title
     contextFragment: icon-documents-sent
-    headerKey: documentsSent.great-your-documents-are-being-sent
+    headerKey: hc-documentsSent.great-weve-received-your-docs
     hasPrimaryButton: false
 workflow:
   landing:

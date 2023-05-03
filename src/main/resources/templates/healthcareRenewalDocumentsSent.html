@@ -1,8 +1,43 @@
 <div th:fragment="healthcareRenewalDocumentsSent">
-    <h2 id="application-id" class="spacing-below-15 h3"
-        th:text="|#{success.confirmation-number}: ${applicationId}|"></h2>
-    <p th:text="#{documentsSent.it-may-take-up-to}"></p>
-    <p th:text="#{hc-documentsSent.call-your-county}"></p>
-    <p class="spacing-below-35"><a href="https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG" target="_blank"
-                                   rel="noopener noreferrer" th:text="#{documentsSent.find-your-countys-phone}"></a></p>
+
+	<!-- Routing Destination -->
+	<p class="spacing-below-25 spacing-above-15 text--help"
+		th:text="#{success.hc-renewal-submitted-generic(${routingDestinationList},
+		${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}">
+	</p>
+	
+	<h2 class="spacing-below-25 h3"
+	    th:text="|#{success.confirmation-number} ${applicationId}|">
+	</h2>
+	    
+	<div class="grid__item bottom-horizontal-line-dark-grey"> </div>
+
+    <h2 class="h3" th:text="#{success.hc-renewal-whats-next}"></h2>
+  
+  	<div class="grid-ignore-mobile">  	
+    	<div class="success-icons grid__item width-one-sixth spacing-above-5">
+      		<div th:replace="fragments/icons/icon-secondary-schedule :: icon-secondary-schedule"></div>
+    	</div>  	
+    	<div class="grid__item width-five-sixths">
+    		<span th:utext="#{sucesss.hc-renewal-county-process}"></span>
+      	</div>
+  	</div>
+  
+  	<div class="grid-ignore-mobile spacing-above-35 spacing-below-35">
+    	<div class="success-icons grid__item width-one-sixth spacing-above-5">
+      		<div th:replace="fragments/icons/icon-secondary-mail :: icon-secondary-mail"></div>
+    	</div>
+    	<div class="grid__item width-five-sixths">
+      		<span th:utext="#{sucesss.hc-renewal-watch-mail}"></span>
+    	</div>
+  	</div>
+         
+	<div class="grid__item bottom-horizontal-line-dark-grey"> </div>
+        
+    <div class="grid-ignore-mobile spacing-below-35 spacing-above-35">
+    	<h2 class="h3" th:text="#{sucesss.hc-renewal-learn-more}"></h2>
+        <p th:utext="#{sucesss.hc-renewal-faq}"></p>                                             
+    	<p th:text="#{sucesss.hc-renewal-update-on-your-case}"></p>
+    </div>
+                                       
 </div>
