@@ -70,6 +70,7 @@ class PageTemplateTest {
         "aSubtleLinkTargetPage",
         cardFooterTextKey,
         true,
+        false,
         "context-frag",
         alertBox
     );

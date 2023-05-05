@@ -63,6 +63,12 @@ public class PageConfiguration {
    * @see #primaryButtonTextKey
    */
   private Boolean hasPrimaryButton = true;
+  
+  /**
+   * boolean on whether to have a go back navigation link.
+   *
+   */
+  private Boolean excludeGoBack = false;
 
   /**
    * Additional content displayed at the top of the page card. Usually an image.

@@ -2117,6 +2117,7 @@ pageDefinitions:
     contextFragment: icon-documents-sent
     headerKey: documentsSent.great-your-documents-are-being-sent
     hasPrimaryButton: false
+    excludeGoBack: true
   - &disability
     name: disability
     pageTitle: disability.title
@@ -4688,6 +4689,7 @@ pageDefinitions:
     contextFragment: icon-documents-sent
     headerKey: hc-documentsSent.great-weve-received-your-docs
     hasPrimaryButton: false
+    excludeGoBack: true
 workflow:
   landing:
     pageConfiguration: *landing

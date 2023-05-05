@@ -187,6 +187,7 @@ public class PagesData extends HashMap<String, PageData> {
         pageWorkflowConfiguration.getSubtleLinkTargetPage(),
         resolve(featureFlags, pageWorkflowConfiguration, pageConfiguration.getCardFooterTextKey()),
         pageConfiguration.getHasPrimaryButton(),
+        pageConfiguration.getExcludeGoBack(),
         pageConfiguration.getContextFragment(),
         pageConfiguration.getAlertBox()
     );

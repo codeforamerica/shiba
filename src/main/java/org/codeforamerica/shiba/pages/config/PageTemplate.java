@@ -17,6 +17,7 @@ public class PageTemplate {
   String subtleLinkTargetPage;
   String cardFooterTextKey;
   Boolean hasPrimaryButton;
+  Boolean excludeGoBack;
   String contextFragment;
   AlertBox alertBox;
 

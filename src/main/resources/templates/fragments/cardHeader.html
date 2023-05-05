@@ -10,7 +10,9 @@
         <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
       </div>
     </div>
-    <div th:replace="fragments/goBack :: goBackLink"></div>
+    <th:block th:if="not ${page.excludeGoBack}">
+    	<div th:replace="fragments/goBack :: goBackLink"></div>
+    </th:block>
   </div>
 </div>
 </body>
