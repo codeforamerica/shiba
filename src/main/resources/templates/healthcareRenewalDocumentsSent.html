@@ -6,10 +6,10 @@
 		${T(java.time.format.DateTimeFormatter).ofPattern('MMMM d, yyyy', #locale).format(submissionTime)})}">
 	</p>
 	
-	<h2 class="spacing-below-25 h3"
-	    th:text="|#{success.confirmation-number} ${applicationId}|">
-	</h2>
-	    
+	<div class="spacing-below-35">
+      	<h2 class="h3" th:text="|#{success.confirmation-number} ${applicationId}|">	</h2>
+    </div>
+		    
 	<div class="grid__item bottom-horizontal-line-dark-grey"> </div>
 
     <h2 class="h3" th:text="#{success.hc-renewal-whats-next}"></h2>
