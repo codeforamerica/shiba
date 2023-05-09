@@ -129,13 +129,14 @@ public class XmlGeneratorIntegrationTest {
         .newSchema(onlineApplicationSchema.getFile())
         .newValidator();
     assertThatCode(() -> schemaValidator.validate(new DOMSource(document)))
-        .doesNotThrowAnyException();
+        .doesNotThrowAnyException();   
   }
 
   @Test
   void shouldMapPersonalInfoForRegularFlow() {
     ApplicationData applicationData = new TestApplicationDataBuilder()
-        .withPersonalInfo().build();
+        .withPersonalInfo()
+        .withPageData("additionalInfo","caseNumber","123456").build();
     Application application = Application.builder()
         .id("someId")
         .completedAt(ZonedDateTime.now(clock))
@@ -166,6 +167,9 @@ public class XmlGeneratorIntegrationTest {
                         <ns4:DOB>10/04/2020</ns4:DOB>
                         <ns4:Relationship>Self</ns4:Relationship>
         """);
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
+        <ns4:CaseNumber>123456</ns4:CaseNumber>
+        """);
   }
 
   @Test
@@ -174,6 +178,7 @@ public class XmlGeneratorIntegrationTest {
         .withPageData("matchInfo", "firstName", "Judy")
         .withPageData("matchInfo", "lastName", "Garland")
         .withPageData("matchInfo", "dateOfBirth", List.of("06", "10", "1922"))
+        .withPageData("matchInfo", "caseNumber", "123456")
         .build();
     Application application = Application.builder()
         .id("someId")
@@ -201,6 +206,9 @@ public class XmlGeneratorIntegrationTest {
                         <ns4:LastName>Garland</ns4:LastName>
                         <ns4:DOB>06/10/1922</ns4:DOB>
                         <ns4:Relationship>Self</ns4:Relationship>
+        """);
+    assertThat(xmlFile).containsIgnoringWhitespaces("""
+        <ns4:CaseNumber>123456</ns4:CaseNumber>
         """);
   }
 

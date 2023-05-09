@@ -4,6 +4,7 @@ xml:
       firstName: PERSONALINFO_FIRSTNAME
       lastName: PERSONALINFO_LASTNAME
       dateOfBirth: PERSONALINFO_DATE_OF_BIRTH
+      caseNumber: CASE_NUMBER
     healthcareRenewalMatchInfo:
       firstName: PERSONALINFO_FIRSTNAME
       lastName: PERSONALINFO_LASTNAME
@@ -150,6 +151,8 @@ xml:
     employee:
       selfEmployed: SELF_EMPLOYED
       grossMonthlyIncome: GROSS_MONTHLY_INCOME
+    additionalInfo:
+      caseNumber: CASE_NUMBER
     nonPagesData:
       applicationId: APPLICATION_ID
       completedDate: COMPLETED_DATE

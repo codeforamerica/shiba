@@ -7,6 +7,7 @@
            xmlns:io4="http://dhs.state.mn.us/2011/03/01/BaseApplication">
     <io4:ApplicationID>{{APPLICATION_ID}}</io4:ApplicationID>
     <io4:SubmitDate>{{COMPLETED_DATE_TIME}}</io4:SubmitDate>
+    <ns4:CaseNumber>{{CASE_NUMBER}}</ns4:CaseNumber>
     <ns4:FilledBy>Self</ns4:FilledBy>
     <ns4:ContactInfo>
         <ns4:HomelessInd>{{CONTACTINFO_HOMELESS}}</ns4:HomelessInd>
