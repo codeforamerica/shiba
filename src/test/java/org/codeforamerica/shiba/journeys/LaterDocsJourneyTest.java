@@ -42,11 +42,18 @@ public class LaterDocsJourneyTest extends JourneyTest {
 //    // should direct me to email docs to my county if my county is not supported
 //    navigateTo("identifyCounty");
 
-    // should allow me to enter personal info and continue the flow if my county is supported
     testPage.enter("county", "Select your county");
     testPage.enter("tribalNation", "Select a Tribal Nation");
     testPage.clickContinue();
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");
+    // make sure that White Earth Nation routing logic is working
+    // White Earth Nation shouldn't be allowed unless the county is also blank
+    testPage.enter("county", "Hennepin");
+    testPage.enter("tribalNation", "White Earth Nation");
+    testPage.clickContinue();
+    assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
+            "Choose EITHER your county OR White Earth Nation, but not both. See instructions below.");
+    // should allow me to enter personal info and continue the flow if my county is supported
     testPage.enter("county", "Hennepin");
     testPage.enter("tribalNation", "Red Lake Nation");
     testPage.clickContinue();
