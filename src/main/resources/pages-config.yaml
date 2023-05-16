@@ -1791,11 +1791,6 @@ pageDefinitions:
             condition: 
               input: tribalNation
               matcher: EMPTY
-          - validation: SHOULD_BE_BLANK
-            errorMessageKey: general.validation.select-county-tribe
-            condition: 
-              input: tribalNation
-              value: "White Earth Nation"
         validationIcon: false
         options:
           selectableOptions:
@@ -1985,11 +1980,6 @@ pageDefinitions:
             condition: 
               input: county
               matcher: EMPTY
-          - validation: IS_NOT_WEN
-            errorMessageKey: general.validation.select-county-tribe-later-docs
-            condition:
-              input: county
-              matcher: NOT_EMPTY
         options:
           selectableOptions:
             - value: ''

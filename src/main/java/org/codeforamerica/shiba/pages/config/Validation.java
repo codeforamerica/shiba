@@ -13,7 +13,6 @@ import org.apache.commons.validator.GenericValidator;
 public enum Validation {
   NONE(strings -> true),
   SHOULD_BE_BLANK(strings -> String.join("", strings).isBlank()),
-  IS_NOT_WEN(strings -> !String.join("", strings).contains("White Earth Nation")),
   NOT_BLANK(strings -> !String.join("", strings).isBlank()),
   NONE_BLANK(strings -> strings.stream().noneMatch(String::isBlank)),
   SELECT_AT_LEAST_ONE(strings -> strings.size() > 0),
