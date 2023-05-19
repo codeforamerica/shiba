@@ -61,12 +61,6 @@ public abstract class AbstractBasePageTest {
   private static final String UPLOADED_JPG_FILE_NAME = "shiba+file.jpg";
   private static final String UPLOADED_PDF_NAME = "test-caf.pdf";
   private static final String XFA_PDF_NAME = "xfa-invoice-example.pdf";
-  private static final String EICAR_GIF_VIRUS = "EICAR.gif";
-  private static final String EICAR_JPG_VIRUS = "EICAR.jpg";
-  private static final String EICAR_PNG_VIRUS = "EICAR.png";
-  private static final String EICAR_PDF_VIRUS_1 = "EICAR.pdf";
-  private static final String EICAR_PDF_VIRUS_2 = "eicar-adobe-acrobat-attachment.pdf";
-  private static final String EICAR_PDF_VIRUS_3 = "pdf-doc-vba-eicar-dropper.pdf";
   private static final String PASSWORD_PROTECTED_PDF = "password-protected.pdf";
   private static final String UPLOAD_RIFF_WITH_RENAMED_JPG_EXTENSION = "RiffSavedAsJPGTestDoc.jpg";
   @Autowired
@@ -508,35 +502,10 @@ public abstract class AbstractBasePageTest {
     assertThat(driver.findElement(By.id("document-upload")).getText()).contains(UPLOADED_PDF_NAME);
   }
   
-  protected void uploadGIFVirusFile() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_GIF_VIRUS));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_GIF_VIRUS);
+  protected void uploadVirusFile(String testFileName) {
+    uploadFile(TestUtils.getAbsoluteFilepathString(testFileName));
+    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(testFileName);
   }
-  
-  protected void uploadJPGVirusFile() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_JPG_VIRUS));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_JPG_VIRUS);
-  }
-  
-  protected void uploadPNGVirusFile() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PNG_VIRUS));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PNG_VIRUS);
-  }
-  
-  protected void uploadPDFVirusFile1() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_1));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_1);
-  }
-  
-  protected void uploadPDFVirusFile2() {
-    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_2));
-    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_2);
-  }
-  //TODO EICAR_PDF_VIRUS_3 = "pdf-doc-vba-eicar-dropper.pdf"; is no longer recognized as a virus by clamav
-//  protected void uploadPDFVirusFile3() {
-//    uploadFile(TestUtils.getAbsoluteFilepathString(EICAR_PDF_VIRUS_3));
-//    assertThat(driver.findElement(By.id("document-upload")).getText()).contains(EICAR_PDF_VIRUS_3);
-//  }
 
   protected void getToDocumentUploadScreen() {
     testPage.clickButton("Apply now");

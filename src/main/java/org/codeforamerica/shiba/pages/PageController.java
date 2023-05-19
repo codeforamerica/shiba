@@ -977,7 +977,7 @@ public class PageController {
 		try {
 			var client = HttpClient.newHttpClient();
 			var request = HttpRequest.newBuilder(URI.create(clammitUrl))
-					.header("Content-Type", "text/plain; charset=UTF-8")
+					.header("Content-Type", "application/x-www-form-urlencoded")
 					.POST(BodyPublishers.ofByteArray(file.getBytes())).build();
 
 			var response = client.send(request, BodyHandlers.ofString());

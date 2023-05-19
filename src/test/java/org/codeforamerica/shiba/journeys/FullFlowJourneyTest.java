@@ -17,6 +17,7 @@ import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -930,6 +931,10 @@ public class FullFlowJourneyTest extends JourneyTest {
 	    testPage.enter("livedInMnWholeLife", "No");
 	    testPage.enter("relationship", "My spouse (e.g. wife, husband)");
 	    testPage.enter("programs", "None");
+	    // This javascript scrolls the page to the bottom.  Shouldn't be necessary but without
+	    // the scroll clickContinue doesn't seem to advance to the next page.
+	    JavascriptExecutor js = ((JavascriptExecutor) driver);
+	    js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
 	    testPage.clickContinue();
   }
   

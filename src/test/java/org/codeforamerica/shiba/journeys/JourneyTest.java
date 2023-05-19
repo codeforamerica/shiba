@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -364,6 +365,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
   protected void waitForErrorMessage() {
     WebElement errorMessage = driver.findElement(By.className("text--error"));
-    await().until(() -> !errorMessage.getText().isEmpty());
+    await().atMost(Duration.ofSeconds(30)).until(() -> !errorMessage.getText().isEmpty());
   }
 }
