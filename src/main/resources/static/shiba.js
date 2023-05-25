@@ -142,28 +142,38 @@ var preCheckContactInfo = (function() {
 		init: function() {
 			var phoneInputTextBox = document.getElementById('phoneNumber');
 			var emailInputTextBox = document.getElementById('email');
+			var textCheckbox = document.getElementById('TEXT');
+			var emailCheckbox = document.getElementById('EMAIL');
+			
+			textCheckbox.disabled = true;
+			emailCheckbox.disabled = true;
+			
 			if (phoneInputTextBox !== null) {
 				phoneInputTextBox.addEventListener('input', function() {
-					var textCheckbox = document.getElementById('TEXT');
+					
 					if (phoneInputTextBox.value.length > 0 && !textCheckbox.checked) {
 						textCheckbox.checked = true;
+						textCheckbox.disabled = false;
 						document.querySelector('label[for="TEXT"]').classList.add('is-selected');
 					}
-					if (phoneInputTextBox.value.length === 0 && textCheckbox.checked) {
+					if (phoneInputTextBox.value.length === 0) {
 						textCheckbox.checked = false;
+						textCheckbox.disabled = true;
 						document.querySelector('label[for="TEXT"]').classList.remove('is-selected');
 					}
 				});
 			}
 			if (emailInputTextBox !== null) {
 				emailInputTextBox.addEventListener('input', function() {
-					var emailCheckbox = document.getElementById('EMAIL');
+					
 					if (emailInputTextBox.value.length > 0 && !emailCheckbox.checked) {
 						emailCheckbox.checked = true;
+						emailCheckbox.disabled = false;
 						document.querySelector('label[for="EMAIL"]').classList.add('is-selected');
 					}
-					if (emailInputTextBox.value.length === 0 && emailCheckbox.checked) {
+					if (emailInputTextBox.value.length === 0) {
 						emailCheckbox.checked = false;
+						emailCheckbox.disabled = true;
 						document.querySelector('label[for="EMAIL"]').classList.remove('is-selected');
 					}
 				});
