@@ -145,8 +145,13 @@ var preCheckContactInfo = (function() {
 			var textCheckbox = document.getElementById('TEXT');
 			var emailCheckbox = document.getElementById('EMAIL');
 			
+			if (phoneInputTextBox.value.length === 0) {
 			textCheckbox.disabled = true;
+			}
+			
+			if (emailInputTextBox.value.length === 0) {
 			emailCheckbox.disabled = true;
+			}
 			
 			if (phoneInputTextBox !== null) {
 				phoneInputTextBox.addEventListener('input', function() {
