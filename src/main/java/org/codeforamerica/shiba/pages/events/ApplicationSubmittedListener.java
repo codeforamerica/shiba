@@ -2,15 +2,20 @@ package org.codeforamerica.shiba.pages.events;
 
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Locale;
+
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -19,13 +24,18 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.pages.rest.CommunicationClient;
 import org.slf4j.MDC;
+import com.google.gson.JsonObject;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -37,6 +47,9 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
   private final FeatureFlagConfiguration featureFlags;
+  private final RoutingDecisionService routingDecisionService;
+  private final CommunicationClient communicationClient;
+
 
   public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
       ApplicationRepository applicationRepository,
@@ -45,7 +58,9 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
       FeatureFlagConfiguration featureFlagConfiguration,
-      MonitoringService monitoringService) {
+      MonitoringService monitoringService,
+      RoutingDecisionService routingDecisionService,
+      CommunicationClient communicationClient) {
     super(applicationRepository, monitoringService);
     this.mnitDocumentConsumer = mnitDocumentConsumer;
     this.emailClient = emailClient;
@@ -53,6 +68,8 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.pdfGenerator = pdfGenerator;
     this.featureFlags = featureFlagConfiguration;
+    this.routingDecisionService = routingDecisionService;
+    this.communicationClient = communicationClient;
   }
 
   @Async
@@ -99,4 +116,42 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
     });
     MDC.clear();
   }
+  
+	@Async
+	@EventListener
+	/**
+	 * The method consumes the ApplicationSubmittedEvent and makes a REST call to comm-hub endpoint. 
+	 * The method offloads communication responsibility to the comm-hub. 
+	 * @param event
+	 */
+	public void notifyApplicationSubmission(ApplicationSubmittedEvent event) {
+
+		Application application = getApplicationFromEvent(event);
+		ApplicationData applicationData = application.getApplicationData();
+		
+		MDC.put("applicationId", application.getId());
+
+		ZonedDateTime completedAt = application.getCompletedAt();
+		String completedAtTime = completedAt.format(DateTimeFormatter.ofPattern("MMM d uuuu, hh:mm:ss", Locale.US));
+
+		County county = application.getCounty();
+		RoutingDestination countyRoutingDestination = routingDecisionService.getRoutingDestinationByName(county.name());
+
+		JsonObject appJsonObject = new JsonObject();
+		appJsonObject.addProperty("appId", applicationData.getId());
+		appJsonObject.addProperty("firstName", ContactInfoParser.firstName(applicationData));
+		appJsonObject.addProperty("phoneNumber", ContactInfoParser.phoneNumber(applicationData).replaceAll("[^0-9]", ""));
+		appJsonObject.addProperty("email", ContactInfoParser.email(applicationData));
+		appJsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
+		appJsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
+		appJsonObject.addProperty("completed-dt", completedAtTime);
+		appJsonObject.addProperty("county", countyRoutingDestination.getName());
+		appJsonObject.addProperty("countyPhoneNumber", countyRoutingDestination.getPhoneNumber());
+
+		communicationClient.send(appJsonObject);
+		
+		MDC.clear();
+		
+	}
+  
 }

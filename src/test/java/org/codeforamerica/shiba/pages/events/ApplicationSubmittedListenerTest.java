@@ -1,20 +1,28 @@
 package org.codeforamerica.shiba.pages.events;
 
+import static org.codeforamerica.shiba.County.Ramsey;
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.MnitDocumentConsumer;
@@ -23,11 +31,13 @@ import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
+import org.codeforamerica.shiba.pages.RoutingDecisionService;
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
+import org.codeforamerica.shiba.pages.rest.CommunicationClient;
 import org.codeforamerica.shiba.testutilities.PagesDataBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -35,6 +45,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContextHolder;
+
+import com.google.gson.JsonObject;
 
 class ApplicationSubmittedListenerTest {
 
@@ -49,11 +61,13 @@ class ApplicationSubmittedListenerTest {
   FeatureFlagConfiguration featureFlagConfiguration = mock(FeatureFlagConfiguration.class);
   MonitoringService monitoringService = mock(MonitoringService.class);
   ApplicationSubmittedListener applicationSubmittedListener;
+  RoutingDecisionService routingDecisionService = mock(RoutingDecisionService.class);
+  CommunicationClient communicationClient = mock(CommunicationClient.class);
 
   @BeforeEach
   void setUp() {
     LocaleContextHolder.setLocale(Locale.ENGLISH);
-
+    when(routingDecisionService.getRoutingDestinationByName("Ramsey")).thenReturn(new CountyRoutingDestination(Ramsey, "DPI", "email", "(651)555-5555"));
     applicationSubmittedListener = new ApplicationSubmittedListener(
         mnitDocumentConsumer,
         applicationRepository,
@@ -62,8 +76,70 @@ class ApplicationSubmittedListenerTest {
         ccapExpeditedEligibilityDecider,
         pdfGenerator,
         featureFlagConfiguration,
-        monitoringService);
+        monitoringService, 
+        routingDecisionService, 
+        communicationClient
+        );
   }
+  
+	@Nested
+	class SendTextToCommHub{
+
+		@Test
+		void confirmTextMessageNotSentWhenDisabled() {
+			String applicationId = "applicationId";
+			ApplicationData applicationData = mock(ApplicationData.class);
+			when(applicationData.getPagesData())
+			.thenReturn(new PagesDataBuilder()
+					.withPageData("contactInfo", "phoneOrEmail", "TEXT")
+					.withPageData("identifyCounty", "county", "Ramsey")
+					.withPageData("contactInfo", "phoneNumber", "(651)555-5555")
+					.withPageData("personalInfo", "firstName", "FirstName").build());
+			String appIdFromDb = "id";
+			JsonObject jsonObject = new JsonObject();
+			Application application = Application.builder().id(appIdFromDb).completedAt(ZonedDateTime.now())
+					.county(Ramsey)
+					.applicationData(applicationData).build();
+			when(applicationRepository.find(applicationId)).thenReturn(application);
+			ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId", applicationId, null,
+					Locale.ENGLISH);
+			when(communicationClient.isEnabled()).thenReturn(false);
+			applicationSubmittedListener.notifyApplicationSubmission(event);  
+			verify(communicationClient, never()).send(jsonObject);
+		}
+
+		@Test
+		void shouldSendConfirmationRestCallForSubmittedApplication() {
+			ZonedDateTime dateTime = ZonedDateTime.now();
+			String applicationId = "applicationId";
+			ApplicationData applicationData = mock(ApplicationData.class);
+			when(applicationData.getOriginalCounty()).thenReturn("Ramsey");
+			when(applicationData.getId()).thenReturn(applicationId);
+			when(applicationData.getPagesData())
+					.thenReturn(new PagesDataBuilder().withPageData("contactInfo", "phoneOrEmail", "TEXT")
+							.withPageData("identifyCounty", "county", "Ramsey")
+							.withPageData("contactInfo", "phoneNumber", "(651)555-5555")
+							.withPageData("personalInfo", "firstName", "FirstName").build());
+			Application application = Application.builder().id(applicationId).county(County.Ramsey)
+					.completedAt(dateTime).applicationData(applicationData).build();
+			ApplicationSubmittedEvent  event = new ApplicationSubmittedEvent("someSessionId", applicationId, null, Locale.ENGLISH);
+			when(applicationSubmittedListener.getApplicationFromEvent(event)).thenReturn(application);
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("appId", applicationData.getId());
+			jsonObject.addProperty("firstName", ContactInfoParser.firstName(applicationData));
+			jsonObject.addProperty("phoneNumber", ContactInfoParser.phoneNumber(applicationData).replaceAll("[^0-9]", ""));
+			jsonObject.addProperty("email", ContactInfoParser.email(applicationData));
+			jsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
+			jsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
+			jsonObject.addProperty("completed-dt", dateTime.format( DateTimeFormatter.ofPattern("MMM d uuuu, hh:mm:ss", Locale.US))); 
+			jsonObject.addProperty("county", "Ramsey");
+			jsonObject.addProperty("countyPhoneNumber", "(651)555-5555");
+			when(communicationClient.isEnabled()).thenReturn(true);
+			applicationSubmittedListener.notifyApplicationSubmission(event);
+			verify(communicationClient, times(1)).send(jsonObject);
+		}
+	}
+
 
   @Nested
   class sendApplicationToMNIT {

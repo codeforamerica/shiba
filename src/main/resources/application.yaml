@@ -53,6 +53,11 @@ sentry:
 client:
   keystore: src/main/resources/keystore-non-prod.jks
   truststore: src/main/resources/truststore-non-prod.jks
+  
+comm-hub:
+  url: ${COMM_HUB_URL}
+  enabled: false
+   
 
 mnit-filenet:
   username: ${MNIT-FILENET_USERNAME}
