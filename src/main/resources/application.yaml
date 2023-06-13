@@ -55,7 +55,7 @@ client:
   truststore: src/main/resources/truststore-non-prod.jks
   
 comm-hub:
-  url: ${COMM_HUB_URL}
+  url: https://surveys-mn-benefits-non-prod.apps.gj1k10ie.centralus.aroapp.io/mnb-confirmation
   enabled: false
    
 
