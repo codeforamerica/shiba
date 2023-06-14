@@ -26,6 +26,16 @@ public class ContactInfoParser {
         .getPageInputFirstValue("contactInfo", "email");
   }
   
+  public static String writtenLanguagePref(ApplicationData applicationData) {
+    return applicationData.getPagesData()
+        .getPageInputFirstValue("languagePreferences", "writtenLanguage");
+  }
+  
+  public static String spokenLanguagePref(ApplicationData applicationData) {
+    return applicationData.getPagesData()
+        .getPageInputFirstValue("languagePreferences", "spokenLanguage");
+  }
+  
   public static String firstName(ApplicationData applicationData) {
         return applicationData.getPagesData()
             .getPageInputFirstValue("personalInfo", "firstName");

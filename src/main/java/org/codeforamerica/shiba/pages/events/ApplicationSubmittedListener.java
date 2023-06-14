@@ -132,7 +132,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 		MDC.put("applicationId", application.getId());
 
 		ZonedDateTime completedAt = application.getCompletedAt();
-		String completedAtTime = completedAt.format(DateTimeFormatter.ofPattern("MMM d uuuu, hh:mm:ss", Locale.US));
+		String completedAtTime = completedAt.format(DateTimeFormatter.ofPattern("MMM d, uuuu, hh:mm:ss", Locale.US));
 
 		County county = application.getCounty();
 		RoutingDestination countyRoutingDestination = routingDecisionService.getRoutingDestinationByName(county.name());
@@ -144,10 +144,12 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 		appJsonObject.addProperty("email", ContactInfoParser.email(applicationData));
 		appJsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
 		appJsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
+		appJsonObject.addProperty("writtenLangPref", ContactInfoParser.writtenLanguagePref(applicationData));
+        appJsonObject.addProperty("spokenLangPref", ContactInfoParser.spokenLanguagePref(applicationData));
 		appJsonObject.addProperty("completed-dt", completedAtTime);
 		appJsonObject.addProperty("county", countyRoutingDestination.getName());
 		appJsonObject.addProperty("countyPhoneNumber", countyRoutingDestination.getPhoneNumber());
-
+		
 		communicationClient.send(appJsonObject);
 		
 		MDC.clear();

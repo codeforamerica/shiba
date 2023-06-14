@@ -119,6 +119,8 @@ class ApplicationSubmittedListenerTest {
 					.thenReturn(new PagesDataBuilder().withPageData("contactInfo", "phoneOrEmail", "TEXT")
 							.withPageData("identifyCounty", "county", "Ramsey")
 							.withPageData("contactInfo", "phoneNumber", "(651)555-5555")
+							.withPageData("languagePreferences", "spokenLanguage", "English")
+							.withPageData("languagePreferences", "writtenLanguage", "English")
 							.withPageData("personalInfo", "firstName", "FirstName").build());
 			Application application = Application.builder().id(applicationId).county(County.Ramsey)
 					.completedAt(dateTime).applicationData(applicationData).build();
@@ -131,7 +133,9 @@ class ApplicationSubmittedListenerTest {
 			jsonObject.addProperty("email", ContactInfoParser.email(applicationData));
 			jsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
 			jsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
-			jsonObject.addProperty("completed-dt", dateTime.format( DateTimeFormatter.ofPattern("MMM d uuuu, hh:mm:ss", Locale.US))); 
+			jsonObject.addProperty("writtenLangPref", ContactInfoParser.writtenLanguagePref(applicationData));
+			jsonObject.addProperty("spokenLangPref", ContactInfoParser.spokenLanguagePref(applicationData));
+			jsonObject.addProperty("completed-dt", dateTime.format( DateTimeFormatter.ofPattern("MMM d, uuuu, hh:mm:ss", Locale.US))); 
 			jsonObject.addProperty("county", "Ramsey");
 			jsonObject.addProperty("countyPhoneNumber", "(651)555-5555");
 			when(communicationClient.isEnabled()).thenReturn(true);
