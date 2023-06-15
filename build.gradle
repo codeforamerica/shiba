@@ -128,7 +128,7 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
-    implementation("ch.qos.logback:logback-parent:1.4.7"){
+    implementation("ch.qos.logback:logback-parent:1.4.8"){
          exclude group: "ch.qos.logback", module: "logback-classic"
     }
     implementation("ch.qos.logback:logback-classic:1.2.10")
