@@ -133,7 +133,7 @@ public class CountyMapConfiguration {
     updateCounty(CrowWing, "cwcss@crowwing.us", "A000018300");
     updateCounty(Dakota, "EEARIGAppResearch@CO.DAKOTA.MN.US", "1427127620");
     updateCounty(Dodge, "OSS@MNPrairie.org", "A000020500");
-    updateCounty(Douglas, "dcss@co.douglass.mn.us", "A000021300");
+    updateCounty(Douglas, "dcss@co.douglas.mn.us", "A000021300");
     updateCounty(Faribault, "lea.silverthorn@fmchs.com ", "A000022100");
     updateCounty(Fillmore, "SS-FAX@co.fillmore.mn.us", "1437228236");
     updateCounty(Freeborn, "im.dhs@co.freeborn.mn.us", "A000024800");
@@ -233,7 +233,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Fillmore, "1437228236", "507-765-2175");
     addCountyDefaults(Freeborn, "A000024800", "507-377-5400");
     addCountyDefaults(Goodhue, "A000025600", "651-385-3200");
-    addCountyDefaults(Grant, "A000061200", "320-634-7758");
+    addCountyDefaults(Grant, "A000061200", "320-634-7755");
     addCountyDefaults(Hennepin, "A000027200", "612-596-1300", new Address(
         "100 S 1st St", "Minneapolis", "MN", "55401", "",
         Hennepin.toString()
@@ -271,7 +271,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Pine, "A000058200", "320-591-1570");
     addCountyDefaults(Pipestone, "A000059100", "507-825-6720");
     addCountyDefaults(Polk, "A000060400", "877-281-3127");
-    addCountyDefaults(Pope, "A000061200", "320-634-7758");
+    addCountyDefaults(Pope, "A000061200", "320-634-7755");
     addCountyDefaults(Ramsey, "1811055957", "651-266-4444");
     addCountyDefaults(RedLake, "A000063900", "877-294-0846");
     addCountyDefaults(Redwood, "A000064700", "888-234-1292");
