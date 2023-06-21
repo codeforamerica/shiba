@@ -219,7 +219,11 @@ $(document).ready(function() {
 	hasError.init();
 	followUpQuestion.init();
 	noneOfTheAbove.init();
-	preCheckContactInfo.init();
+	
+	var pathname = window.location.pathname;
+	if("/pages/contactInfo" === pathname){
+		preCheckContactInfo.init();
+	}
 	$("#page-form").submit(function() {
 		var btn = $("#form-submit-button");
 		btn.addClass('button--disabled');
