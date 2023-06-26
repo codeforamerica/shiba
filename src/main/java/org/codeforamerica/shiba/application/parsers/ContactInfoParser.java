@@ -39,5 +39,11 @@ public class ContactInfoParser {
   public static String firstName(ApplicationData applicationData) {
         return applicationData.getPagesData()
             .getPageInputFirstValue("personalInfo", "firstName");
-      }
+  }
+  
+  public static String lastName(ApplicationData applicationData) {
+    return applicationData.getPagesData()
+        .getPageInputFirstValue("personalInfo", "lastName");
+  }
+  
 }

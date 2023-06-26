@@ -9,9 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -94,6 +93,7 @@ class ApplicationSubmittedListenerTest {
 					.withPageData("contactInfo", "phoneOrEmail", "TEXT")
 					.withPageData("identifyCounty", "county", "Ramsey")
 					.withPageData("contactInfo", "phoneNumber", "(651)555-5555")
+					.withPageData("personalInfo", "lastName", "LastName")
 					.withPageData("personalInfo", "firstName", "FirstName").build());
 			String appIdFromDb = "id";
 			JsonObject jsonObject = new JsonObject();
@@ -121,6 +121,7 @@ class ApplicationSubmittedListenerTest {
 							.withPageData("contactInfo", "phoneNumber", "(651)555-5555")
 							.withPageData("languagePreferences", "spokenLanguage", "English")
 							.withPageData("languagePreferences", "writtenLanguage", "English")
+							.withPageData("personalInfo", "lastName", "LastName")
 							.withPageData("personalInfo", "firstName", "FirstName").build());
 			Application application = Application.builder().id(applicationId).county(County.Ramsey)
 					.completedAt(dateTime).applicationData(applicationData).build();
@@ -128,14 +129,16 @@ class ApplicationSubmittedListenerTest {
 			when(applicationSubmittedListener.getApplicationFromEvent(event)).thenReturn(application);
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty("appId", applicationData.getId());
+			jsonObject.addProperty("expedited", applicationData.getExpeditedEligibility().toString());
 			jsonObject.addProperty("firstName", ContactInfoParser.firstName(applicationData));
+			jsonObject.addProperty("lastName", ContactInfoParser.lastName(applicationData));
 			jsonObject.addProperty("phoneNumber", ContactInfoParser.phoneNumber(applicationData).replaceAll("[^0-9]", ""));
 			jsonObject.addProperty("email", ContactInfoParser.email(applicationData));
 			jsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
 			jsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
 			jsonObject.addProperty("writtenLangPref", ContactInfoParser.writtenLanguagePref(applicationData));
 			jsonObject.addProperty("spokenLangPref", ContactInfoParser.spokenLanguagePref(applicationData));
-			jsonObject.addProperty("completed-dt", dateTime.format( DateTimeFormatter.ofPattern("MMM d, uuuu, hh:mm:ss", Locale.US))); 
+			jsonObject.addProperty("completed-dt", Timestamp.valueOf(dateTime.toLocalDateTime()).toString()); 
 			jsonObject.addProperty("county", "Ramsey");
 			jsonObject.addProperty("countyPhoneNumber", "(651)555-5555");
 			when(communicationClient.isEnabled()).thenReturn(true);

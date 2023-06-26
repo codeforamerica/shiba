@@ -1,13 +1,9 @@
 package org.codeforamerica.shiba.pages.events;
 
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -131,22 +127,23 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 		
 		MDC.put("applicationId", application.getId());
 
-		ZonedDateTime completedAt = application.getCompletedAt();
-		String completedAtTime = completedAt.format(DateTimeFormatter.ofPattern("MMM d, uuuu, hh:mm:ss", Locale.US));
+        Timestamp completedAt = Timestamp.valueOf(application.getCompletedAt().toLocalDateTime());
 
 		County county = application.getCounty();
 		RoutingDestination countyRoutingDestination = routingDecisionService.getRoutingDestinationByName(county.name());
 
 		JsonObject appJsonObject = new JsonObject();
 		appJsonObject.addProperty("appId", applicationData.getId());
+		appJsonObject.addProperty("expedited", applicationData.getExpeditedEligibility().toString());
 		appJsonObject.addProperty("firstName", ContactInfoParser.firstName(applicationData));
+		appJsonObject.addProperty("lastName", ContactInfoParser.lastName(applicationData));
 		appJsonObject.addProperty("phoneNumber", ContactInfoParser.phoneNumber(applicationData).replaceAll("[^0-9]", ""));
 		appJsonObject.addProperty("email", ContactInfoParser.email(applicationData));
 		appJsonObject.addProperty("opt-status-sms", ContactInfoParser.optedIntoTEXT(applicationData));
 		appJsonObject.addProperty("opt-status-email", ContactInfoParser.optedIntoEmailCommunications(applicationData));
 		appJsonObject.addProperty("writtenLangPref", ContactInfoParser.writtenLanguagePref(applicationData));
         appJsonObject.addProperty("spokenLangPref", ContactInfoParser.spokenLanguagePref(applicationData));
-		appJsonObject.addProperty("completed-dt", completedAtTime);
+		appJsonObject.addProperty("completed-dt", completedAt.toString());
 		appJsonObject.addProperty("county", countyRoutingDestination.getName());
 		appJsonObject.addProperty("countyPhoneNumber", countyRoutingDestination.getPhoneNumber());
 		
