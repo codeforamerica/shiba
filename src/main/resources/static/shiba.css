@@ -239,6 +239,16 @@ html {
 	border-color: black;
 }
 
+.next-steps-accordion{
+	background-color: #E9F6FF; 
+	border-color: #003964;
+}
+
+.next-steps-alt-accordion{
+	background-color: #EEFFE6; 
+	border-color: #008060;
+}
+
 .textarea-readonly::-webkit-scrollbar {
   -webkit-appearance: none;
 }

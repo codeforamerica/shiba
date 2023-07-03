@@ -442,6 +442,13 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Assert that applicant can't resubmit docs at this point
     navigateTo("uploadDocuments");
     assertThat(driver.getTitle()).isEqualTo("Your next steps");
+    
+    // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
+    List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
+    if (pageElements.isEmpty()) {
+        assertThat(driver.findElement(By.id("next-steps-accordion"))).isNotNull();
+    }
+
     navigateTo("documentSubmitConfirmation");
     assertThat(driver.getTitle()).isEqualTo("Your next steps");
     // Assert that the Delayed Processing Time Notice is displayed on the nextSteps page.

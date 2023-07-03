@@ -93,6 +93,7 @@ feature-flag:
   certain-pops: on
   submit-via-api: on
   show-delayed-processing-time-notice: on
+  enhanced-next-steps: on
   
 document-upload:
   max-files-uploaded: 50

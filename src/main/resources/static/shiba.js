@@ -236,6 +236,7 @@ $(document).ready(function() {
 		return true;
 	});
 	$("#prepare-to-apply-accordion").removeClass('accordion--is-closed');
+	$("#next-steps-accordion").removeClass('accordion--is-closed');
 	handleAccordions();
 	handleReveals();
 });
