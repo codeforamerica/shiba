@@ -2,7 +2,7 @@
      th:with="contactEmail=${data.getPageInputFirstValue('contactInfo', 'email')},
               enhanced-next-steps=1">
   <div class="grid__item spacing-below-15">
-    <div th:replace="fragments/icons/icon-next-steps :: icon-next-steps"></div>
+    <div th:replace="fragments/icons/icon-next-steps-filled :: icon-next-steps-filled"></div>
   </div>
   <div class="grid__item">
     <h1 class="h2 spacing-below-35 spacing-above-0" th:text="#{next-steps.title}"></h1>
@@ -30,9 +30,10 @@
 		<div class="grid__item">
         	<p class="spacing-below-35 spacing-above-0" th:text="#{next-steps.open-each-step}"></p>
     	</div>
-		<div class="accordion next-steps-alt-accordion spacing-below-20" id="next-steps-accordion">
-			<button href="#" class="accordion__button" aria-expanded="true" aria-controls="a1">
-				<div id="process-step-4" class="grid__item width-twelve-twelfths">
+    	<!-- design requires the first accordion to appear closed (i.e., have no expanded text) and have the +/- hidden -->
+		<div class="accordion next-steps-alt-accordion hidden-accordion spacing-below-20" id="next-steps-accordion">
+			<button href="#" class="accordion__button hidden-accordion__button" aria-expanded="false" aria-controls="a1">
+				<div id="process-step-1" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-three-twelfths">
 						<div class="shift-content-right">
 							<div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
@@ -43,19 +44,11 @@
 					</div>
 				</div>
 			</button>
-			<div class="accordion__content" id="a1">
-				<p class="text-25 spacing-below-15">
-					<span th:text="#{next-steps.step-1-content-a}"></span>
-				</p>
-				<p class="text-25 spacing-below-15">
-					<span th:text="#{next-steps.step-1-content-b}"></span>
-				</p>
-			</div>
 		</div>
 	
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button href="#" class="accordion__button" aria-expanded="false" aria-controls="a2">
-				<div id="process-step-4" class="grid__item width-twelve-twelfths">
+				<div id="process-step-2" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-three-twelfths">
 						<div class="shift-content-right">
 							<div th:replace="fragments/icons/icon-process-upload-documents :: icon-process-upload-documents"></div>
@@ -78,7 +71,7 @@
 	
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button href="#" class="accordion__button" aria-expanded="false" aria-controls="a3">
-				<div id="process-step-4" class="grid__item width-twelve-twelfths">
+				<div id="process-step-3" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-three-twelfths">
 						<div class="shift-content-right">
 							<div th:replace="fragments/icons/icon-process-application-review :: icon-process-application-review"></div>

@@ -242,11 +242,15 @@ html {
 .next-steps-accordion{
 	background-color: #E9F6FF; 
 	border-color: #003964;
+	font-size: 1.9rem;
+	padding-left: 10px;
 }
 
 .next-steps-alt-accordion{
 	background-color: #EEFFE6; 
 	border-color: #008060;
+	font-size: 1.9rem;
+	padding-left: 10px;
 }
 
 .textarea-readonly::-webkit-scrollbar {
@@ -1672,6 +1676,9 @@ legend.form-question {
 }
 .accordion--is-closed .accordion__button:after{
     background-image: url(/images/icon_accordion_open.svg);
+}
+.hidden-accordion .hidden-accordion__button:after{
+    background-image: url(/images/icon_accordion_hidden.svg);
 }
 
 .feedback-sentiment-group {
