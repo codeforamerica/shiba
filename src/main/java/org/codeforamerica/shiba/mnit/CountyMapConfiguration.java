@@ -215,7 +215,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Benton, "1174697148", "800-530-6254");
     addCountyDefaults(BigStone, "A000006000", "320-839-2555");
     addCountyDefaults(BlueEarth, "A000007800", "507-304-4335");
-    addCountyDefaults(Brown, "A000008600", "800-450-8246");
+    addCountyDefaults(Brown, "A000008600", "507-359-6500");
     addCountyDefaults(Carlton, "1003921875", "800-642-9082");
     addCountyDefaults(Carver, "A000010800", "952-361-1600");
     addCountyDefaults(Cass, "1760489769", "218-547-1340");
@@ -276,10 +276,10 @@ public class CountyMapConfiguration {
     addCountyDefaults(RedLake, "A000063900", "877-294-0846");
     addCountyDefaults(Redwood, "A000064700", "888-234-1292");
     addCountyDefaults(Renville, "M000065500", "320-523-2202");
-    addCountyDefaults(Rice, "M000066300", "507-332-6115");
+    addCountyDefaults(Rice, "M000066300", "507-332-5995");
     addCountyDefaults(Rock, "M000067100", "507-283-5070");
     addCountyDefaults(Roseau, "A000068000", "866-255-2932");
-    addCountyDefaults(Scott, "A000070100", "952-496-8686");
+    addCountyDefaults(Scott, "A000070100", "952-445-7751");
     addCountyDefaults(Sherburne, "1447381660", "800-433-5239");
     addCountyDefaults(Sibley, "A000072800", "507-237-4000");
     addCountyDefaults(Stearns, "A000073600", "800-450-3663");
