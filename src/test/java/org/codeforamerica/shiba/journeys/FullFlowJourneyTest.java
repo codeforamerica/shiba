@@ -459,6 +459,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(successPage.findElementById("submission-date").getText()).contains(
         "Your application was submitted to Chisago County (888-234-1246) and Mille Lacs Band of Ojibwe (320-532-7407) on January 1, 2020.");
     applicationId = downloadPdfs();
+    assertThat(successPage.findElementById("confirmation-number").getText()).contains("Confirmation # " + applicationId);
 
     // CCAP fields
     assertCcapFieldEquals("APPLICATION_ID", applicationId);
