@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,11 +19,14 @@ import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.caf.CcapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.pages.data.Subworkflows;
+import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.testutilities.AbstractPageControllerTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,7 +35,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class NextStepsContentServiceTest extends AbstractPageControllerTest {
-
+  
   @SuppressWarnings("unused")
   private static Stream<Arguments> successMessageTestCases() {
     return Stream.of(
@@ -161,9 +165,11 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     when(applicationRepository.find(any())).thenReturn(application);
   }
 
+
   @SuppressWarnings("unused")
   @ParameterizedTest(name = "{0}")
   @MethodSource("org.codeforamerica.shiba.pages.NextStepsContentServiceTest#successMessageTestCases")
+  @Disabled("This test is disabled because it requires feature-flag.enhanced-next-steps: off. Remove test in final implementation.")
   void displaysCorrectSuccessMessageForApplicantPrograms(String testName, List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
       CcapExpeditedEligibility ccapExpeditedEligibility, List<String> expectedMessages)
@@ -176,6 +182,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   }
 
   @Test
+  @Disabled("This test is disabled because it requires feature-flag.enhanced-next-steps: off. Remove test in final implementation.")
   void displaysCorrectSuccessMessageForHouseholdMemberPrograms() throws Exception {
     new TestApplicationDataBuilder(applicationData)
         .withApplicantPrograms(List.of("SNAP"))
@@ -187,6 +194,40 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
         "Within 24 hours, expect a call from your county or Tribal Nation about your food assistance application.",
         "In the next 7-10 days, expect to get a letter in the mail from your county or Tribal Nation about your housing and emergency assistance application. The letter will explain your next steps.",
         "If you don't hear from your county or Tribal Nation within 7 days or want an update on your case, please call your county or Tribal Nation.");
+    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
+  }
+
+  @Test
+  /**
+   * Tests the message generated for the "Upload documents" accordion when no documents have been uploaded.
+   * @throws Exception
+   */
+  void displaysCorrectUploadDocumentsAccordionMessageWhenNoDocumentsUploaded() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+
+	applicationData.setUploadedDocs(Collections.emptyList());
+    List<String> expectedMessages = List.of(
+    		"This is placeholder copy for an applicant who has not uploaded documents with their application. This copy will describe the need to upload required documents as part of the application. This copy will tell applicants to return to our homepage to upload documents. This is a placeholder text link MNbenefits.mn.gov. This copy will mention the 30 day time limit for submitting documents.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
+    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
+    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
+  }
+
+  @Test
+  /**
+   * Tests the message generated for the "Upload documents" accordion when one or more documents have been uploaded.
+   * @throws Exception
+   */
+  void displaysCorrectUploadDocumentsAccordionMessageWhenADocumentIsUploaded() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+
+	UploadedDocument uploadedDocument = new UploadedDocument("paystub.pdf", "1000000001/aaaaaaaa-1111-2222-bbbb-cccccccccccc",
+			                            "1000000001/thumbnail-aaaaaaaa-1111-2222-bbbb-cccccccccccc", "application/pdf",	25000);
+	applicationData.setUploadedDocs(List.of(uploadedDocument));
+    List<String> expectedMessages = List.of(
+    		"This is placeholder copy for an applicant who has already uploaded documents This copy will explain that an applicant can return to MNbenefits.mn.gov to upload additional documents.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
+    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
 
@@ -204,17 +245,22 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
       throws Exception {
     when(snapExpeditedEligibilityDecider.decide(any())).thenReturn(snapExpeditedEligibility);
     when(ccapExpeditedEligibilityDecider.decide(any())).thenReturn(ccapExpeditedEligibility);
-
+    
     ResultActions resultActions = mockMvc.perform(
             get("/pages/nextSteps").session(new MockHttpSession()))
         .andExpect(status().isOk());
     FormPage formPage = new FormPage(resultActions);
     
     // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
+    //        This is logic to handle the accordion nextSteps messages.
     if (formPage.getElementById("next-steps-accordion") != null ) {
-    	assert(true);
+    	Element spanElement = formPage.getElementById("span-a2");
+    	Elements pElements = spanElement.getElementsByTag("p");
+    	String spanText = pElements.text();
+    	assertThat(spanText).isEqualTo(expectedMessages.get(0));
     	return;
     }
+    
     List<String> nextStepSections = formPage.getElementsByClassName("next-step-section").stream()
         .map(Element::text).collect(Collectors.toList());
 

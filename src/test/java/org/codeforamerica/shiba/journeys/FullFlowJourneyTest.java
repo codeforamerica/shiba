@@ -446,7 +446,13 @@ public class FullFlowJourneyTest extends JourneyTest {
     // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
     List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
     if (pageElements.isEmpty()) {
+    	// Verify the existence of the "Apply once" accordion
         assertThat(driver.findElement(By.id("next-steps-accordion"))).isNotNull();
+        // Verify the text in the expanded "Upload documents" accordion
+        testPage.clickElementById("button-a2");
+        String spanText = testPage.getElementText("span-a2");
+    	assertThat(spanText).contains("This is placeholder copy for an applicant who has already uploaded documents\n"
+    			+ "This copy will explain that an applicant can return to MNbenefits.mn.gov to upload additional documents.");
     }
 
     navigateTo("documentSubmitConfirmation");

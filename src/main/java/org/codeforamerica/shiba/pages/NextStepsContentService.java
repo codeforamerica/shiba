@@ -76,6 +76,54 @@ public class NextStepsContentService {
 
     return messages;
   }
+  
+  public String getNextStepsForDocumentUpload(boolean isDocumentUploaded,
+	      Locale locale) {
+	   
+	    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+	    String messages = new String();
+
+	    // No document uploaded
+	    if (!isDocumentUploaded) {
+	      messages = lms.getMessage("next-steps.no-document-upload-message");
+	    }
+	    // Document uploaded
+	    if (isDocumentUploaded) {
+		      messages = lms.getMessage("next-steps.document-upload-message");
+		    }
+	    return messages;
+	  }
+  
+	  /**
+	   * This method determines the message that is displayed in the open "Allow time
+	   * for review accordion" based on the parameters provided.
+	   * 
+	   * @param programs                 - the programs that have been applied for
+	   * @param snapExpeditedEligibility - the object that determine whether or not
+	   *                                 the applicant is eligible for expedited SNAP
+	   * @param ccapExpeditedEligibility - the object that determine whether or not
+	   *                                 the applicant is eligible for expedited CCAP
+	   * @param locale                   - language locale
+	   * @return - String, the string that is displayed with the "Allow time for
+	   *         review accordion" is opened.
+	   */
+	  public String getNextStepsAllowTimeForReview(List<String> programs,
+	  	  SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility,
+	  	  Locale locale) {
+
+	  	LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+	  	String allowTimeForReviewMessage = "<p>default getNextStepsAllowTimeForReview message</p>";
+
+	  	if (snapExpeditedEligibility!=null && snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE)) { // case #1 has expedited SNAP
+	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-expedited-snap");
+	  	} else if (ccapExpeditedEligibility!=null && ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE)) { // case #2 has expedited CCAP
+	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-expedited-ccap");
+	  	} else { // case #3 has no expedited programs
+	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-not-expedited");
+	  	}
+
+	  	return allowTimeForReviewMessage;
+	  }
 
   private List<String> getNonExpeditedPrograms(
       List<String> programAcronyms,
