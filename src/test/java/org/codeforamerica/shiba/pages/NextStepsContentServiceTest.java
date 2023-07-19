@@ -207,7 +207,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
 	applicationData.setUploadedDocs(Collections.emptyList());
     List<String> expectedMessages = List.of(
-    		"This is placeholder copy for an applicant who has not uploaded documents with their application. This copy will describe the need to upload required documents as part of the application. This copy will tell applicants to return to our homepage to upload documents. This is a placeholder text link MNbenefits.mn.gov. This copy will mention the 30 day time limit for submitting documents.");
+    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -225,7 +225,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 			                            "1000000001/thumbnail-aaaaaaaa-1111-2222-bbbb-cccccccccccc", "application/pdf",	25000);
 	applicationData.setUploadedDocs(List.of(uploadedDocument));
     List<String> expectedMessages = List.of(
-    		"This is placeholder copy for an applicant who has already uploaded documents This copy will explain that an applicant can return to MNbenefits.mn.gov to upload additional documents.");
+    		"We received the documents you uploaded with your application. If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);

@@ -451,8 +451,8 @@ public class FullFlowJourneyTest extends JourneyTest {
         // Verify the text in the expanded "Upload documents" accordion
         testPage.clickElementById("button-a2");
         String spanText = testPage.getElementText("span-a2");
-    	assertThat(spanText).contains("This is placeholder copy for an applicant who has already uploaded documents\n"
-    			+ "This copy will explain that an applicant can return to MNbenefits.mn.gov to upload additional documents.");
+    	assertThat(spanText).contains("We received the documents you uploaded with your application.\n"
+    			+ "If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
     }
 
     navigateTo("documentSubmitConfirmation");
