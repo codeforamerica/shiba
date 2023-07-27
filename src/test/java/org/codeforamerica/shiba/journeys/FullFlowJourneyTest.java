@@ -453,6 +453,12 @@ public class FullFlowJourneyTest extends JourneyTest {
         String spanText = testPage.getElementText("span-a2");
     	assertThat(spanText).contains("We received the documents you uploaded with your application.\n"
     			+ "If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
+        // Verify the text in the expanded "Allow time for review" accordion
+        testPage.clickElementById("button-a3");
+        spanText = testPage.getElementText("span-a3");
+    	assertThat(spanText).contains("Please allow time for your application to be reviewed!\n"
+    			+ "Your application includes expedited SNAP, you will be contacted soon.\n"
+    			+ "Do not submit a duplicate application, it just increases the volume and slows down processing time.");
     }
 
     navigateTo("documentSubmitConfirmation");

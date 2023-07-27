@@ -96,7 +96,12 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Finish Application
-    applicationId = signApplicationAndDownloadApplicationZipFiles(signature);
+    applicationId = signApplicationAndDownloadApplicationZipFiles(signature,
+    		"You did not upload documents with your application today.\n"
+    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    		"Please allow time for your application to be reviewed!\n"
+    		+ "It takes awhile, counties and Tribal Nations are receiving an unusually high volume of applications.\n"
+    		+ "Do not submit a duplicate application, it just increases the volume and slows down processing time.");
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
 
     // PDF assertions
@@ -178,7 +183,12 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
 
     // Finish Application
-    applicationId = signApplicationAndDownloadApplicationZipFiles(signature);
+    applicationId = signApplicationAndDownloadApplicationZipFiles(signature,
+    		"You did not upload documents with your application today.\n"
+    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    		"Please allow time for your application to be reviewed!\n"
+    		+ "Your application includes expedited SNAP, you will be contacted soon.\n"
+    		+ "Do not submit a duplicate application, it just increases the volume and slows down processing time.");
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("snapExpeditedNotice").getText()).contains(
         "You were recommended for expedited food assistance (SNAP).");

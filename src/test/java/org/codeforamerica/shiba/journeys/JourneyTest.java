@@ -6,7 +6,6 @@ import static org.awaitility.Awaitility.await;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.CERTAIN_POPS;
-import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,7 +43,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -110,7 +108,8 @@ abstract class JourneyTest extends AbstractBasePageTest {
 	    TestUtils.assertPdfFieldEquals(fieldName, expectedVal, certainPops);
   }
 
-  protected String signApplicationAndDownloadApplicationZipFiles(String signature) {
+  protected String signApplicationAndDownloadApplicationZipFiles(String signature,
+		  String nextStepsUploadDocumentsMessage, String nextStepsAllowTimeMessage) {
     testPage.enter("applicantSignature", signature);
     testPage.clickButton("Submit");
     testPage.clickContinue();
@@ -121,6 +120,25 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.clickButton("Finish application");
 
     // Next steps screen
+    // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
+    List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
+    if (pageElements.isEmpty()) {
+    	// Verify the existence of the "Apply once" accordion
+        assertThat(driver.findElement(By.id("next-steps-accordion"))).isNotNull();
+        // Verify the text in the expanded "Upload documents" accordion
+        if (nextStepsUploadDocumentsMessage != null) {
+	        testPage.clickElementById("button-a2");
+	        String spanText = testPage.getElementText("span-a2");
+	    	assertThat(spanText).contains(nextStepsUploadDocumentsMessage);
+        }
+        // Verify the text in the expanded "Allow time for review" accordion
+        if (nextStepsAllowTimeMessage != null) {
+	        testPage.clickElementById("button-a3");
+	        String spanText = testPage.getElementText("span-a3");
+	    	assertThat(spanText).contains(nextStepsAllowTimeMessage);
+        }
+    }
+    
     testPage.clickContinue();
     return downloadPdfs();
   }
