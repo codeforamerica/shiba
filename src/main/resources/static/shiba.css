@@ -1476,6 +1476,12 @@ legend.form-question {
     margin-right: 2.3576520234%;
     width: 14.7019566472%;
   }
+    .grid-ignore-mobile .width-one-fifth {
+    float: left;
+    display: block;
+    margin-right: 2.3576520234%;
+    width: 10.7019566472%;
+  }
 
   .grid-ignore-mobile .width-one-sixth:last-child {
     margin-right: 0;

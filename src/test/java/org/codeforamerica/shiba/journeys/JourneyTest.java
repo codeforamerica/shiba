@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.UploadDocumentConfiguration;
 import org.codeforamerica.shiba.application.FlowType;
@@ -108,8 +110,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
 	    TestUtils.assertPdfFieldEquals(fieldName, expectedVal, certainPops);
   }
 
-  protected String signApplicationAndDownloadApplicationZipFiles(String signature,
-		  String nextStepsUploadDocumentsMessage, String nextStepsAllowTimeMessage) {
+  protected String signApplicationAndDownloadApplicationZipFiles(String signature,List<String> expectedMessages) {
     testPage.enter("applicantSignature", signature);
     testPage.clickButton("Submit");
     testPage.clickContinue();
@@ -122,21 +123,11 @@ abstract class JourneyTest extends AbstractBasePageTest {
     // Next steps screen
     // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
     List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
+    testPage.clickElementById("button-a2");
+    testPage.clickElementById("button-a3");
     if (pageElements.isEmpty()) {
-    	// Verify the existence of the "Apply once" accordion
-        assertThat(driver.findElement(By.id("next-steps-accordion"))).isNotNull();
-        // Verify the text in the expanded "Upload documents" accordion
-        if (nextStepsUploadDocumentsMessage != null) {
-	        testPage.clickElementById("button-a2");
-	        String spanText = testPage.getElementText("span-a2");
-	    	assertThat(spanText).contains(nextStepsUploadDocumentsMessage);
-        }
-        // Verify the text in the expanded "Allow time for review" accordion
-        if (nextStepsAllowTimeMessage != null) {
-	        testPage.clickElementById("button-a3");
-	        String spanText = testPage.getElementText("span-a3");
-	    	assertThat(spanText).contains(nextStepsAllowTimeMessage);
-        }
+    	List<String> nextStepSections = driver.findElements(By.className("next-step-section")).stream().map(WebElement::getText).collect(Collectors.toList());
+    	assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
     }
     
     testPage.clickContinue();

@@ -49,5 +49,6 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-expedited-snap", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-expedited-ccap", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-not-expedited", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.allow-time-for-review-header", Locale.ENGLISH, "some message");
 	}
 }

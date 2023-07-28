@@ -147,7 +147,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
         )
     );
   }
-
+  
   @BeforeEach
   void setUp() {
     applicationData.setStartTimeOnce(Instant.now());
@@ -209,7 +209,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(Collections.emptyList());
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-			"It takes awhile, counties and Tribal Nations are receiving an unusually high volume of applications. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
+    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -228,7 +228,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(List.of(uploadedDocument));
     List<String> expectedMessages = List.of(
     		"We received the documents you uploaded with your application. If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-			"It takes awhile, counties and Tribal Nations are receiving an unusually high volume of applications. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
+    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -236,35 +236,49 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
   
   @Test
   /**
-   * Tests the message generated for the "Allow time for review" accordion when snapExpeditedEligibility and ccapExpeditedEligibility are both false.
+   * Tests the message generated for the "Expedited SNAP" accordion without documents uploaded.
    * @throws Exception
    */
-  void displaysCorrectAllowTimeForReviewAccordionMessageWhenNoExpeditedPrograms() throws Exception {
-	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP", "CCAP", "CASH"));
-    List<UploadedDocument> uploadDocumuments = new ArrayList<UploadedDocument>();
-	applicationData.setUploadedDocs(uploadDocumuments);
+  void displaysCorrectReviewAccordionMessageWhenSNAPExpedited() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+	
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"It takes awhile, counties and Tribal Nations are receiving an unusually high volume of applications. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
-    var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
-    var ccapExpeditedEligibility = CcapExpeditedEligibility.NOT_ELIGIBLE;
+    		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
+    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
   
   @Test
   /**
-   * Tests the message generated for the "Allow time for review" accordion when snapExpeditedEligibility and ccapExpeditedEligibility are both true.  When SNAP is expedited it doesn't matter whether or not CCAP is expedited. 
+   * Tests the message generated for the "Expedited CCAP" accordion without documents uploaded.
    * @throws Exception
    */
-  void displaysCorrectAllowTimeForReviewAccordionMessageWhenExpeditedSnap() throws Exception {
-	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP", "CCAP", "CASH"));
-    List<UploadedDocument> uploadDocumuments = new ArrayList<UploadedDocument>();
-	applicationData.setUploadedDocs(uploadDocumuments);
+  void displaysCorrectReviewAccordionMessageWhenCCAPExpedited() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+	
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Your application includes expedited SNAP, you will be contacted soon. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
-    var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
+    		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
+    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
+  }
+  
+  @Test
+  /**
+   * Tests the message generated for the "Other programs not expedited" accordion without documents uploaded.
+   * @throws Exception
+   */
+  void displaysCorrectReviewAccordionMessageWhenForOtherPrograms() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+	
+    List<String> expectedMessages = List.of(
+    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
+    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
   
@@ -279,45 +293,12 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(uploadDocumuments);
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Your application includes expedited SNAP, you will be contacted soon. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
+    		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
   
-  @Test
-  /**
-   * Tests the message generated for the "Allow time for review" accordion when snapExpeditedEligibility is true and ccapExpeditedEligibility is false. 
-   * @throws Exception
-   */
-  void displaysCorrectAllowTimeForReviewAccordionMessageWhenSnapExpedited() throws Exception {
-	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP", "CCAP", "CASH"));
-    List<UploadedDocument> uploadDocumuments = new ArrayList<UploadedDocument>();
-	applicationData.setUploadedDocs(uploadDocumuments);
-    List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Your application includes expedited SNAP, you will be contacted soon. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
-    var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
-    var ccapExpeditedEligibility = CcapExpeditedEligibility.NOT_ELIGIBLE;
-    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
-  }
-  
-  @Test
-  /**
-   * Tests the message generated for the "Allow time for review" accordion when ccapExpeditedEligibility is true and snapExpeditedEligibility is false. 
-   * @throws Exception
-   */
-  void displaysCorrectAllowTimeForReviewAccordionMessageWhenCcapExpedited() throws Exception {
-	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP", "CCAP", "CASH"));
-    List<UploadedDocument> uploadDocumuments = new ArrayList<UploadedDocument>();
-	applicationData.setUploadedDocs(uploadDocumuments);
-    List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Your application includes expedited CCAP, you will be contacted soon. Do not submit a duplicate application, it just increases the volume and slows down processing time.");
-    var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
-    var ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
-    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
-  }
 
   private void setSubworkflows(Subworkflows subworkflows) {
     applicationData.setSubworkflows(subworkflows);
@@ -338,26 +319,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
             get("/pages/nextSteps").session(new MockHttpSession()))
         .andExpect(status().isOk());
     FormPage formPage = new FormPage(resultActions);
-    
-    // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
-    //        This is logic to handle the accordion nextSteps messages.
-    if (formPage.getElementById("next-steps-accordion") != null ) {
-    	Element spanElement = formPage.getElementById("span-a2");
-    	Elements pElements = spanElement.getElementsByTag("p");
-    	String spanText = pElements.text();
-    	assertThat(spanText).isEqualTo(expectedMessages.get(0));
-
-    	spanElement = formPage.getElementById("span-a3");
-    	pElements = spanElement.getElementsByTag("p");
-    	spanText = pElements.text();
-    	assertThat(spanText).isEqualTo(expectedMessages.get(1));
-    	
-    	return;
-    }
-    
     List<String> nextStepSections = formPage.getElementsByClassName("next-step-section").stream()
         .map(Element::text).collect(Collectors.toList());
-
     assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
   }
 }

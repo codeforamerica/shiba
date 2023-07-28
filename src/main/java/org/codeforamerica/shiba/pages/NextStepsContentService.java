@@ -107,22 +107,31 @@ public class NextStepsContentService {
 	   * @return - String, the string that is displayed with the "Allow time for
 	   *         review accordion" is opened.
 	   */
-	  public String getNextStepsAllowTimeForReview(List<String> programs,
+	  public List<NextStepSection> getNextStepsAllowTimeForReview(List<String> programs,
 	  	  SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility,
 	  	  Locale locale) {
 
 	  	LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-	  	String allowTimeForReviewMessage = "<p>default getNextStepsAllowTimeForReview message</p>";
+	  	List<NextStepSection> messages = new ArrayList<>();
 
 	  	if (snapExpeditedEligibility!=null && snapExpeditedEligibility.equals(SnapExpeditedEligibility.ELIGIBLE)) { // case #1 has expedited SNAP
-	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-expedited-snap");
+	  		messages.add(new NextStepSection(PHONE_ICON,
+		  	          lms.getMessage("next-steps.allow-time-for-review-expedited-snap"),
+		  	          lms.getMessage("next-steps.allow-time-for-review-header"))
+		  	      );
 	  	} else if (ccapExpeditedEligibility!=null && ccapExpeditedEligibility.equals(CcapExpeditedEligibility.ELIGIBLE)) { // case #2 has expedited CCAP
-	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-expedited-ccap");
+	  		messages.add(new NextStepSection(PHONE_ICON,
+	  	          lms.getMessage("next-steps.allow-time-for-review-expedited-ccap"),
+	  	          lms.getMessage("next-steps.allow-time-for-review-header"))
+	  	      );
 	  	} else { // case #3 has no expedited programs
-	  	  allowTimeForReviewMessage = lms.getMessage("next-steps.allow-time-for-review-not-expedited");
+	  		messages.add(new NextStepSection(PHONE_ICON,
+		  	          lms.getMessage("next-steps.allow-time-for-review-not-expedited"),
+		  	          lms.getMessage("next-steps.allow-time-for-review-header"))
+		  	      );
 	  	}
 
-	  	return allowTimeForReviewMessage;
+	  	return messages;
 	  }
 
   private List<String> getNonExpeditedPrograms(

@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
@@ -192,20 +194,15 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     // Next steps screen
     // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
     List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
+    testPage.clickElementById("button-a2");
+    testPage.clickElementById("button-a3");
     if (pageElements.isEmpty()) {
-    	// Verify the existence of the "Apply once" accordion
-        assertThat(driver.findElement(By.id("next-steps-accordion"))).isNotNull();
-        // Verify the text in the expanded "Upload documents" accordion
-        testPage.clickElementById("button-a2");
-        String spanText = testPage.getElementText("span-a2");
-    	assertThat(spanText).contains("You did not upload documents with your application today.\n"
-    			+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
-        // Verify the text in the expanded "Allow time for review" accordion
-        testPage.clickElementById("button-a3");
-        spanText = testPage.getElementText("span-a3");
-    	assertThat(spanText).contains("Please allow time for your application to be reviewed!\n"
-    			+ "Your application includes expedited CCAP, you will be contacted soon.\n"
-    			+ "Do not submit a duplicate application, it just increases the volume and slows down processing time.");
+    	 List<String> expectedMessages = List.of(
+    	    		"You did not upload documents with your application today.\n"
+    	    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    	    		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.");
+    	 List<String> nextStepSections = driver.findElements(By.className("next-step-section")).stream().map(WebElement::getText).collect(Collectors.toList());
+     	assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
     }
 
     testPage.clickContinue();// nextSteps
