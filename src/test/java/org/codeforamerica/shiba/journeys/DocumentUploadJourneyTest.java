@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Tag;
@@ -273,4 +274,51 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     assertThat(driver.findElement(By.id("max-files")).getText()).contains(
         "You have uploaded the maximum number of files (50). You will have the opportunity to share more with a caseworker later.");
   }
+  
+	/**
+	 * This test verifies: 1.) When multiple files with the same name are uploaded
+	 * the name is modified to make the file name unique. 2.) We can delete a
+	 * specific file that has been renamed.
+	 */
+	@Test
+	void shouldDisplayUniqueNamesForUploadFilesWithTheSameName() {
+		getToLaterDocsUploadScreen();
+
+		// Upload the same file 3 times
+		uploadJpgFile(); // shiba+file.jpg
+		uploadJpgFile(); // becomes "(1) shiba+file.jpg", we will delete this one later
+		uploadPdfFile(); // test-caf.pdf, mix in a file with a different name
+		uploadJpgFile(); // becomes "(2) shiba+file.jpg"
+
+		assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).isEqualTo("4 files added");
+
+		List<WebElement> webElements = driver.findElements(By.id("file"));
+		assert (webElements.size() == 4);
+		ArrayList<String> fileNames = new ArrayList<String>();
+		WebElement anchor = null;
+		for (WebElement webElement : webElements) {
+			String fileName = webElement.findElement(By.className("filename-text")).getText();
+			// Look for the second file uploaded, we will delete it later.
+			if (fileName.compareTo("(1) shiba+file.jpg") == 0) {
+				anchor = webElement.findElement(By.tagName("a"));
+			}
+			fileNames.add(fileName);
+		}
+		assertThat(fileNames
+				.containsAll(List.of("(2) shiba+file.jpg", "(1) shiba+file.jpg", "shiba+file.jpg", "test-caf.pdf")));
+
+		// Delete the second file uploaded.
+		anchor.click();
+		// Click the confirmation
+		driver.findElement(By.id("form-submit-button")).click();
+		assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).isEqualTo("3 files added");
+
+		webElements = driver.findElements(By.id("file"));
+		assert (webElements.size() == 3);
+		fileNames = new ArrayList<String>();
+		for (WebElement webElement : webElements) {
+			fileNames.add(webElement.findElement(By.className("filename-text")).getText());
+		}
+		assertThat(fileNames.containsAll(List.of("(2) shiba+file.jpg", "shiba+file.jpg", "test-caf.pdf")));
+	}
 }

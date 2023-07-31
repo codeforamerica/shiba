@@ -228,6 +228,34 @@
               </div>
               <p class='text--error spacing-above-0' aria-live="assertive" aria-atomic="true"></p>
             </div>`,
+    renameFile: function(file) {
+	    // Make every upload file name unique by prepending a sequence (e.g., fn.png, (1) fn.png, (2) fn.png ...)
+	    // Note: the myDropZone.files list does not contain the file object passed to this function. 
+	    let newName = file.name;
+	    let sequence = 1;
+        let i = 0;
+        let uploadedFiles = myDropZone.files;
+        while (i < uploadedFiles.length) {
+	      let existingFileName = uploadedFiles[i].name;
+	      // Compare to the existing file's newName if it has one
+	      if (typeof uploadedFiles[i].newName !== 'undefined') {
+		    existingFileName = uploadedFiles[i].newName;
+		  }
+	      // Match?  then increment the sequence and start over
+	      if (newName == existingFileName) {
+		    newName = '(' + sequence + ') ' + file.name;
+		    sequence++;
+		    i=0;
+          } else {
+            i++;
+          }
+        }
+        // Only set the file's newName when the file name actually needs to change
+        if (newName != file.name) {	    
+	      file.newName = newName;
+	    }
+        return newName;
+    },
     init: function () {
       myDropZone = this;
       var documents = [[${uploadedDocs}]];
@@ -239,6 +267,13 @@
         if (myDropZone.files.length >= myDropZone.options.maxFiles) {
           showMaxFileMessage();
         }
+        
+        // if the file has been renamed we have some updates to make
+        if (typeof file.newName !== 'undefined') {
+          file.name=file.newName;
+          file.previewElement.getElementsByClassName('filename-text')[0].innerText = file.newName;
+        }
+		
         var fileNameSpan = file.previewElement.getElementsByClassName('filename-text')[0];
         var fileNameComponents = getFilenameComponents(fileNameSpan);
         var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
@@ -298,8 +333,12 @@
       this.on('success', function (file) {
         var removeLink = file.previewElement.getElementsByClassName("dz-remove")[0];
         var thumbnail = file.previewElement.getElementsByClassName("dz-thumb")[0];
-        var fileName = file.name;
-
+        var fileName = file.name;        
+        // if the file has been renamed we have some updates to make
+        if (typeof file.newName !== 'undefined') {
+          fileName=file.newName;
+        }
+        
         removeLink.onclick = undefined;
         removeLink.setAttribute('href',
             '/pages/uploadDocumentsDeleteWarningPage?filename=' + encodeURIComponent(fileName));
