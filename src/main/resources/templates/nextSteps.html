@@ -79,13 +79,13 @@
 			</button>
 			<div class="accordion__content" id="a3">
 				<th:block th:each="msg: ${nextStepsAllowTimeForReview}">
-					<div class="grid-ignore-mobile spacing-below-35">
-						<p class="text-25" th:utext="${msg.title()}"></p>
+					<div class="grid-ignore-mobile">
+						<p class="text-25 spacing-below-15" th:utext="${msg.title()}"></p>
 						<div class="success-icons grid__item width-one-fifth">
 							<div th:replace="__${msg.icon()}__" class="success-icons text--centered width-one-whole"></div>
 						</div>
-						<p th:if="${msg.icon()!=''}" class="grid__item  width-five-sixths next-step-section" th:utext="${msg.message()}"></p>
-						<p th:if="${msg.icon()==''}" class="grid__item  next-step-section" th:utext="${msg.message()}"></p>
+						<p th:if="${msg.icon()!=''}" class="grid__item  width-five-sixths next-step-section spacing-below-15" th:utext="${msg.message()}"></p>
+						<p th:if="${msg.icon()==''}" class="grid__item  next-step-section spacing-below-15" th:utext="${msg.message()}"></p>
 					</div>
 				</th:block>
 			</div>
