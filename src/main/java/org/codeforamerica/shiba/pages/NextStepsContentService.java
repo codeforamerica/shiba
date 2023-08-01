@@ -125,7 +125,7 @@ public class NextStepsContentService {
 	  	          lms.getMessage("next-steps.allow-time-for-review-header"))
 	  	      );
 	  	} else { // case #3 has no expedited programs
-	  		messages.add(new NextStepSection(PHONE_ICON,
+	  		messages.add(new NextStepSection("",
 		  	          lms.getMessage("next-steps.allow-time-for-review-not-expedited"),
 		  	          lms.getMessage("next-steps.allow-time-for-review-header"))
 		  	      );

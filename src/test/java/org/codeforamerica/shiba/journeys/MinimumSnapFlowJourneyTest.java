@@ -97,7 +97,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today.\n"
     		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps.\n\n"
+    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps.\n\n"
     		+ "The time it takes to review applications can vary.");
     // Finish Application
     applicationId = signApplicationAndDownloadApplicationZipFiles(signature,expectedMessages);

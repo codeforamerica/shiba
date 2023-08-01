@@ -209,7 +209,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(Collections.emptyList());
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
+    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -228,7 +228,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(List.of(uploadedDocument));
     List<String> expectedMessages = List.of(
     		"We received the documents you uploaded with your application. If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
+    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -276,7 +276,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	
     List<String> expectedMessages = List.of(
     		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect a phone call or letter in the mail from an eligibility worker with information about your next steps. The time it takes to review applications can vary.");
+    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
