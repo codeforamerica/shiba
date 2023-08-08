@@ -243,7 +243,7 @@ html {
 	background-color: #E9F6FF; 
 	border-color: #003964;
 	font-size: 1.9rem;
-	padding-left: 10px;
+	padding-left: 15px;
 }
 
 .next-steps-alt-accordion{
@@ -251,6 +251,23 @@ html {
 	border-color: #008060;
 	font-size: 1.9rem;
 	padding-left: 10px;
+}
+
+.next-steps-text{
+	font-size: 1.9rem;
+	line-height: 2.5rem;
+}
+
+.grid .width-twenty-percent{
+	float:left;
+	display:block;
+	margin-right:2.3576520234%;
+	min-width: 65px;
+	width: 20%;
+}
+
+.margin-bottom-0{
+	margin-bottom: 0;
 }
 
 .textarea-readonly::-webkit-scrollbar {
@@ -1514,7 +1531,7 @@ legend.form-question {
     display: block;
 	margin-right: 2%;
 	width: 25%;
-	min-width: 100px;
+	min-width: 65px;
   }
    .width-one-twelfths {
     float: left;
@@ -1705,9 +1722,20 @@ legend.form-question {
   opacity: 0;
 }
 
+.text-normal {
+	font-weight: normal;
+}
+
 .text-bold {
 	font-weight: bold;
 }
+
+.width-nine-twelfths{
+	float:left;
+	display:block;
+	/*margin-right:2.3576520234%;*/
+	width:75%
+} 
 
 .delayed-processing-time-notice-box {
   width: 100%;

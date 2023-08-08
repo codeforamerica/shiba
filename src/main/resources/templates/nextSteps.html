@@ -5,7 +5,7 @@
     <div th:replace="fragments/icons/icon-next-steps-filled :: icon-next-steps-filled"></div>
   </div>
   <div class="grid__item">
-    <h1 class="h2 spacing-below-35 spacing-above-0" th:text="#{next-steps.title}"></h1>
+    <h1 class="h2 spacing-below-15 spacing-above-0" th:text="#{next-steps.title}"></h1>
   </div>
   
   <div class="grid__item width-one-whole spacing-below-25 text--small">
@@ -28,20 +28,24 @@
     <!-- new nextSteps content -->
     <div th:if="${@environment.getProperty('feature-flag.enhanced-next-steps')}">
 		<div class="grid__item">
-        	<p class="spacing-below-35 spacing-above-0" th:text="#{next-steps.open-each-step}"></p>
+        	<p class="spacing-below-35 next-steps-text spacing-above-0" th:text="#{next-steps.open-each-step}"></p>
     	</div>
     	<!-- design requires the first accordion to appear closed (i.e., have no expanded text) and have the +/- hidden -->
 		<div class="accordion next-steps-alt-accordion hidden-accordion spacing-below-20" id="next-steps-accordion">
 			<button href="#" class="accordion__button hidden-accordion__button" aria-expanded="false" aria-controls="a1">
 				<div id="process-step-1" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-three-twelfths">
-						<div class="shift-content-right">
+					<div class="grid__item width-twenty-percent spacing-above-10">
+						<div>
 							<div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
 						</div>
 					</div>
-					<div class="grid__item width-seven-twelfths spacing-above-15">
-						<p class="form-card__body-text" th:utext="#{next-steps.step-1}"></p>
-					</div>
+					<div class="grid__item width-two-thirds spacing-above-10">
+						<div class="margin-bottom-0">
+							<div th:utext="#{next-steps.step-1}"></div>
+							<div th:utext="#{next-steps.step-1-apply-once}"></div>
+							<div class="text-normal" th:utext="#{next-steps.step-1-completed}"></div>
+						</div>
+					</div> 
 				</div>
 			</button>
 		</div>
@@ -49,13 +53,16 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a2" href="#" class="accordion__button" aria-expanded="false" aria-controls="a2">
 				<div id="process-step-2" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-three-twelfths">
-						<div class="shift-content-right">
-							<div th:replace="fragments/icons/icon-process-upload-documents :: icon-process-upload-documents"></div>
+					<div class="grid__item width-twenty-percent spacing-above-10">
+						<div>
+							<div th:replace="fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents"></div>
 						</div>
 					</div>
-					<div class="grid__item width-seven-twelfths spacing-above-25">
-						<p class="form-card__body-text" th:utext="#{next-steps.step-2}"></p>
+					<div class="grid__item width-two-thirds spacing-above-10">
+						<div class="margin-bottom-0" >
+							<div th:utext="#{next-steps.step-2}"></div>
+							<div th:utext="#{next-steps.step-2-upload-your-documents}"></div>
+						</div>
 					</div>
 				</div>
 			</button>
@@ -67,13 +74,13 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a3" href="#" class="accordion__button" aria-expanded="false" aria-controls="a3">
 				<div id="process-step-3" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-three-twelfths">
-						<div class="shift-content-right">
-							<div th:replace="fragments/icons/icon-process-application-review :: icon-process-application-review"></div>
+					<div class="grid__item width-twenty-percent spacing-above-10">
+						<div>
+							<div th:replace="fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review"></div>
 						</div>
 					</div>
-					<div class="grid__item width-seven-twelfths spacing-above-25">
-						<p class="form-card__body-text" th:utext="#{next-steps.allow-time-for-review}"></p>
+					<div class="grid__item width-two-thirds spacing-above-10">
+						<p class="margin-bottom-0" th:utext="#{next-steps.allow-time-for-review}"></p>
 					</div>
 				</div>
 			</button>
@@ -94,13 +101,13 @@
 		<div class="accordion next-steps-accordion spacing-below-60">
 			<button id="button-a4" href="#" class="accordion__button" aria-expanded="false" aria-controls="a4">
 				<div id="process-step-4" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-three-twelfths">
-						<div class="shift-content-right">
-							<div th:replace="fragments/icons/icon-process-interview :: icon-process-interview"></div>
+					<div class="grid__item width-twenty-percent spacing-above-10">
+						<div>
+							<div th:replace="fragments/icons/icon-next-steps-interview :: icon-next-steps-interview"></div>
 						</div>
 					</div>
-					<div class="grid__item width-seven-twelfths spacing-above-25">
-						<p class="form-card__body-text" th:utext="#{next-steps.step-4}"></p>
+					<div class="grid__item width-two-thirds spacing-above-10">
+						<p class="margin-bottom-0" th:utext="#{next-steps.step-4}"></p>
 					</div>
 				</div>
 			</button>
