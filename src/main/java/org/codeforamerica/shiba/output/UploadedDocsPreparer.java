@@ -2,13 +2,11 @@ package org.codeforamerica.shiba.output;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class UploadedDocsPreparer {
 

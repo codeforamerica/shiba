@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body>
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
+    <div th:replace="~{fragments/toolbar :: toolbar}" ></div>
+    <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
     <section class="slab slab--shiba">
         <div class="grid-ignore-mobile">
-            <div th:replace="fragments/cardHeader :: cardHeader"></div>
+            <div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
             <main id="content" role="main" class="card spacing-above-35">
-                <div th:replace="fragments/icons/icon-upload-documents :: icon-upload-documents"></div>
+                <div th:replace="~{fragments/icons/icon-upload-documents :: icon-upload-documents}"></div>
                 <th:block th:if="${docRecommendations.size() == 0}" >
 					 <h1 class="h2" th:text="#{document-recommendation.caseworker-may-ask-you}"></h1>
 					 <p class="spacing-below-35">
@@ -22,7 +22,7 @@
 	                    <span th:text="#{document-recommendation.you-have-30-days}"></span>
                 	</p>
 				</th:block>
-                <div th:replace="fragments/docRecommendations :: docRecommendations"></div>
+                <div th:replace="~{fragments/docRecommendations :: docRecommendations}"></div>
                 <div class="spacing-above-60">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
                        th:text="#{document-recommendation.upload-documents-now}"></a>
@@ -35,7 +35,7 @@
         </div>
     </section>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 <script th:inline="javascript">
     $(function() {
         $('.reveal').removeClass('is-hiding-content');

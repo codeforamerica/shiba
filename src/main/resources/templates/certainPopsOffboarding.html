@@ -2,7 +2,7 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="certainPopsOffboarding">
   <div class="grid__item spacing-below-15">
-    <div th:replace="fragments/contextFragments :: certainPopsOffboardingFragment"></div>
+    <div th:replace="~{fragments/contextFragments :: certainPopsOffboardingFragment}"></div>
   </div>
   <div class="grid__item">
     <h1 class="h2 spacing-below-35 spacing-above-0"
@@ -13,7 +13,7 @@
     <p th:utext="#{certain-pops-offboarding.visit-our-faq}"></p>
   </div>
   <div class="grid__item spacing-below-15">
-    <div th:replace="fragments/continue :: continue"></div>
+    <div th:replace="~{fragments/continue :: continue}"></div>
   </div>
 </div>
 </html>

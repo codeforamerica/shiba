@@ -7,5 +7,5 @@
        'adding-documents.how-to-submit-docs-now-or-later',
        'adding-documents.how-to-add-docs'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-documents', ${step}, 'adding-documents.adding-documents', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="~{milestoneTemplate :: milestoneTemplate('milestone-documents', ${step}, 'adding-documents.adding-documents', ${contentHeaders}, ${contentItems})}"></div>
 </div>

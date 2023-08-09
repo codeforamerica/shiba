@@ -2,18 +2,18 @@
 <body th:fragment="pageTemplateFragment(page, pageNameContext)">
 <div class="page-wrapper">
   <div th:if="${#strings.contains(page.name,'healthcareRenewal')}">
-  	<div th:replace="fragments/toolbarHealthcareRenewal :: toolbarHealthcareRenewal"></div>
+  	<div th:replace="~{fragments/toolbarHealthcareRenewal :: toolbarHealthcareRenewal}"></div>
   </div>
   <div th:unless="${#strings.contains(page.name,'healthcareRenewal')}">
-  	<div th:replace="fragments/toolbar :: toolbar"></div>
+  	<div th:replace="~{fragments/toolbar :: toolbar}"></div>
   </div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
   <section class="slab slab--shiba">
     <div class="grid">
-      <div th:replace="fragments/cardHeader :: cardHeader"></div>
+      <div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
       <main id="content" role="main" class="card spacing-above-35">
         <th:block th:if="${page.contextFragment != null}">
-          <div th:replace="'fragments/contextFragments' :: ${page.contextFragment}"></div>
+          <div th:replace="~{'fragments/contextFragments' :: ${page.contextFragment}}"></div>
         </th:block>
         <div th:if="${page.hasHeader()}" class="grid__item spacing-above-35 spacing-below-35">
           <h1 id="page-header" class="h2" th:utext="#{${page.headerKey}}"></h1>
@@ -22,7 +22,7 @@
              th:utext="#{${page.headerHelpMessageKey}}"></p>
         </div>
         <th:block th:if="${pageNameContext != null}">
-          <div th:replace="${pageNameContext} :: ${pageNameContext}"></div>
+          <div th:replace="~{${pageNameContext} :: ${pageNameContext}}"></div>
         </th:block>
 
         <div class="grid__item spacing-below-60">
@@ -32,7 +32,7 @@
                 method="post" th:action="@{${postTo}}">
             <div th:each="input: ${page.inputs}">
               <div
-                  th:replace="'fragments/inputs/input-with-followups' :: input-with-followups(${input}, ${data})"></div>
+                  th:replace="~{'fragments/inputs/input-with-followups' :: input-with-followups(${input}, ${data})}"></div>
             </div>
             <p th:if="${page.hasCardFooterTextKey()}" id="card-footer" class="spacing-below-60 spacing-above-minus-25"
                th:text="#{${page.cardFooterTextKey}}"></p>
@@ -41,7 +41,7 @@
                     type="submit"
                     th:text="#{${page.primaryButtonTextKey}}"></button>
             <th:block th:if="${page.hasAlertBox()}">
-              <div th:replace="fragments/alertBox :: alertBox(${page})"></div>
+              <div th:replace="~{fragments/alertBox :: alertBox(${page})}"></div>
             </th:block>
           </form>
 
@@ -60,9 +60,9 @@
   </section>
 </div>
 <div th:if="${#strings.contains(page.name,'healthcareRenewal')}">
-  <div th:replace="fragments/footerHealthcareRenewal :: footerHealthcareRenewal"></div>
+  <div th:replace="~{fragments/footerHealthcareRenewal :: footerHealthcareRenewal}"></div>
 </div>
 <div th:unless="${#strings.contains(page.name,'healthcareRenewal')}">
-  <div th:replace="fragments/footer :: footer"></div>
+  <div th:replace="~{fragments/footer :: footer}"></div>
 </div>
 </body>

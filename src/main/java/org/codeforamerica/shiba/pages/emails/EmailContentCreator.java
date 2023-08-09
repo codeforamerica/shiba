@@ -56,6 +56,7 @@ public class EmailContentCreator {
   private final static String HEALTH_CARE_RENEWAL_CONFIRMATION_EMAIL_UPDATE = "health-care-renewal.comfirmation-email-update";
   private final static String RESUBMIT_EMAIL_BODY = "email.resubmit-email";
   private final MessageSource messageSource;
+  @SuppressWarnings("unused") //needed for tests
   private final String activeProfile;
   private final NextStepsContentService nextStepsContentService;
   private final DocRecommendationMessageService docRecommendationMessageService;

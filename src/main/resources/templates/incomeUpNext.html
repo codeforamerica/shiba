@@ -1,12 +1,12 @@
 <div th:fragment="incomeUpNext">
     <div class="grid__item text--centered spacing-below-15">
-        <div th:replace="fragments/contextFragments :: icon-checkbox"></div>
+        <div th:replace="~{fragments/contextFragments :: icon-checkbox}"></div>
     </div>
     <div class="grid__item text--centered">
         <h1 class="h2 spacing-below-60 spacing-above-0"
             th:text="#{income-up-next.got-it-youre-almost-done-with-the-income-section}"></h1>
     </div>
     <div class="grid__item text--centered spacing-below-15">
-        <div th:replace="fragments/continue :: continue"></div>
+        <div th:replace="~{fragments/continue :: continue}"></div>
     </div>
 </div>

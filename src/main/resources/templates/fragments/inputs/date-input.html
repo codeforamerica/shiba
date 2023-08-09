@@ -9,7 +9,7 @@
               hasHelpMessage=${input.helpMessageKey != null},
               needsAriaLabel=${input.needsAriaLabel()}">
     <fieldset class="date-input">
-        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+        <div th:replace="~{fragments/form-question-prompt :: formQuestionPrompt(${input})}"></div>
         <p class="text--help">
             <label th:for="${input.name}+'-month'"
                    th:id="${input.name}+'-month-label'"
@@ -47,6 +47,6 @@
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
                         aria-invalid=${hasError}"/>
     </fieldset>
-    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+    <div th:replace="~{fragments/inputErrorFragment :: validationError(${data}, ${input})}"></div>
 </div>
 </html>

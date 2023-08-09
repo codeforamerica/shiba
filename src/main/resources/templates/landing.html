@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body class="locale-en" id="landing-page">
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbar :: toolbar"></div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
-  <div th:replace="fragments/ebtScamAlert :: ebtScamAlert"></div>
+  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
+  <div th:replace="~{fragments/ebtScamAlert :: ebtScamAlert}"></div>
   <main id="content" role="main">
     <section class="slab slab--white padding-top-1rem padding-bottom-3rem">
       <div class="grid">
         <div class="grid__item width-one-whole spacing-above-15"
             th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
-            <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
+            <div th:replace="~{fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice}"></div>
         </div>
         <div class="grid__item width-one-half">
             <div class="spacing-above-35">
@@ -29,14 +29,14 @@
           <a class="button button--primary spacing-above-25"
              th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${#locale.language}" lang="en">
             <span lang="en" th:text="#{landing.apply-now}"></span>
-             <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
+             <div th:replace="~{fragments/icons/icon-arrow :: icon-arrow}"></div>
           </a>
           <!--Add button to apply now in Spanish-->
           <div th:with="otherLocale=${#locale.toString().equals('en') ? 'es' : 'en'}" class="spacing-above-45">
             <a class="button button--small button-width"
                th:href="'/pages/'+${pageName}+'/navigation?lang=' + ${otherLocale}" lang="es" >
               <span lang="es" th:text="#{landing.apply-now-espanol}"></span>
-              <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
+              <div th:replace="~{fragments/icons/icon-arrow-black :: icon-arrow-black}"></div>
             </a>
           </div>
          </div>
@@ -49,7 +49,7 @@
        </div>
     </section>
     <section class="slab padding-bottom-3rem slab--minnesota-light-blue">
-        <div th:replace="fragments/alreadyAppliedHomePage :: alreadyAppliedHomePage"></div>
+        <div th:replace="~{fragments/alreadyAppliedHomePage :: alreadyAppliedHomePage}"></div>
     </section>
 	<section class="slab slab--white">
 		<div id="process-steps" class="grid">
@@ -58,7 +58,7 @@
 			<div id="process-step-1" class="grid__item width-twelve-twelfths">
 				<div class="grid__item width-three-twelfths">
 					<div class="shift-content-right">
-						<div th:replace="fragments/icons/icon-process-apply-online :: icon-process-apply-online"></div>
+						<div th:replace="~{fragments/icons/icon-process-apply-online :: icon-process-apply-online}"></div>
 					</div>
 				</div>
 				<div class="grid__item width-eight-twelfths">
@@ -70,7 +70,7 @@
 			<div id="process-step-2" class="grid__item width-twelve-twelfths">
 				<div class="grid__item width-three-twelfths">
 					<div class="shift-content-right">
-						<div th:replace="fragments/icons/icon-process-upload-documents :: icon-process-upload-documents">
+						<div th:replace="~{fragments/icons/icon-process-upload-documents :: icon-process-upload-documents}">
 						</div>
 					</div>
 				</div>
@@ -84,7 +84,7 @@
 				<div class="grid__item width-three-twelfths">
 					<div class="shift-content-right">
 						<div
-							th:replace="fragments/icons/icon-process-application-review :: icon-process-application-review">
+							th:replace="~{fragments/icons/icon-process-application-review :: icon-process-application-review}">
 						</div>
 					</div>
 				</div>
@@ -97,7 +97,7 @@
 			<div id="process-step-4" class="grid__item width-twelve-twelfths">
 				<div class="grid__item width-three-twelfths">
 					<div class="shift-content-right">
-						<div th:replace="fragments/icons/icon-process-interview :: icon-process-interview"></div>
+						<div th:replace="~{fragments/icons/icon-process-interview :: icon-process-interview}"></div>
 					</div>
 				</div>
 				<div class="grid__item width-eight-twelfths">
@@ -162,6 +162,6 @@
     </section>
   </main>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

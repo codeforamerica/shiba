@@ -2,9 +2,9 @@
 <!-- edited with XMLSpy v2011 rel. 3 (http://www.altova.com) by Minnesota Dept of Human Services (Minnesota Dept of Human 
 	Services) -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:base="http://dhs.state.mn.us/2011/03/01/BaseApplication"
-	xmlns:model="http://dhs.state.mn.us/2011/03/01/OnlineApplication" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:model="http://dhs.state.mn.us/2011/03/01/OnlineApplication" xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://dhs.state.mn.us/2011/03/01/OnlineApplication"
-	elementFormDefault="qualified" attributeFormDefault="unqualified" jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	elementFormDefault="qualified" attributeFormDefault="unqualified" jaxb:version="3.0" jaxb:extensionBindingPrefixes="xjc">
 	<xsd:annotation>
 		<xsd:appinfo>
 			<jaxb:schemaBindings>

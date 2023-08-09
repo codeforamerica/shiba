@@ -15,7 +15,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,7 +34,6 @@ import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
@@ -80,8 +78,7 @@ class ResubmissionServiceTest {
         Olmsted, new CountyRoutingDestination(Olmsted, "dpi2", OLMSTED_EMAIL, "phoneNumber")
     ));
     ServicingAgencyMap<TribalNationRoutingDestination> tribalNations = new TribalNationConfiguration().localTribalNations();
-    routingDecisionService = new RoutingDecisionService(tribalNations, countyMap, mock(
-        FeatureFlagConfiguration.class));
+    routingDecisionService = new RoutingDecisionService(tribalNations, countyMap);
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
         pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher);
   }

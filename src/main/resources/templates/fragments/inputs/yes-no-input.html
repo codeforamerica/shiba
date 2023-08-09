@@ -10,7 +10,7 @@
                                      promptMessageFragment=${hasPromptMessageFragment ? ' ' + input.promptMessage.getPromptMessageFragmentName() : ''},
                                      promptMessageKey=${hasPromptMessageKey ? ' ' + input.promptMessage.getPromptMessageKey() : ''}">
         <div class="spacing-below-60">
-            <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+            <div th:replace="~{fragments/form-question-prompt :: formQuestionPrompt(${input})}"></div>
             <p class="text--help"
                th:if="${input.helpMessageKey != null}"
                th:text="#{${input.helpMessageKey}}"></p>

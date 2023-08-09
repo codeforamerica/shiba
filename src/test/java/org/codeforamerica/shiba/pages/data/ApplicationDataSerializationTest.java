@@ -11,7 +11,6 @@ import static org.codeforamerica.shiba.testutilities.TestUtils.getFileContentsAs
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -32,7 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = NONE)
+@SpringBootTest
 @ActiveProfiles("test")
 class ApplicationDataSerializationTest {
 

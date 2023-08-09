@@ -1457,7 +1457,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			postExpectingSuccess("retroactiveCoverageTimePeriod", Map.of(
 			    "retroactiveCoverageNumberMonths",List.of("1", "2" ),
 			    "retroactiveCoverageMap",List.of("applicant",jimHalpertId)));
-			//TODO new -->
+
 			postExpectingSuccess("employmentStatus", "areYouWorking", "true");
 			addSelfEmployedJob(getApplicantFullNameAndId(), "someEmployerName");
 			addSelfEmployedJob(getJimFullNameAndId(), "someEmployerName");

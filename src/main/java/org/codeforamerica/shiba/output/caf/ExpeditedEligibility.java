@@ -5,6 +5,7 @@ public enum ExpeditedEligibility {
 	  CCAP("CCAP"),
 	  UNDETERMINED("UNDETERMINED");
 	
+	@SuppressWarnings("unused")
 	private final String displayName;
 
 	ExpeditedEligibility(String displayName) {

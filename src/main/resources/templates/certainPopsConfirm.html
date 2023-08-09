@@ -2,14 +2,14 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="certainPopsConfirm">
   <div class="grid__item spacing-below-15 text--centered">
-    <div th:replace="fragments/contextFragments :: icon-checkbox"></div>
+    <div th:replace="~{fragments/contextFragments :: icon-checkbox}"></div>
   </div>
   <div class="grid__item">
     <h1 class="h2 spacing-below-35 spacing-above-0 text--centered"
         th:text="#{certain-pops-confirm.we-added-health-care}"></h1>
   </div>
   <div class="grid__item spacing-below-15 text--centered">
-    <div th:replace="fragments/continue :: continue"></div>
+    <div th:replace="~{fragments/continue :: continue}"></div>
   </div>
 </div>
 </html>

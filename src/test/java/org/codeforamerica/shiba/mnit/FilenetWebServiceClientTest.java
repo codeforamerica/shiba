@@ -23,7 +23,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import javax.xml.soap.SOAPException;
+
 import javax.xml.transform.dom.DOMResult;
 
 import org.codeforamerica.shiba.application.Application;
@@ -54,6 +54,8 @@ import org.springframework.ws.test.client.MockWebServiceServer;
 import org.springframework.xml.namespace.SimpleNamespaceContext;
 import org.springframework.xml.transform.StringSource;
 import org.w3c.dom.Node;
+
+import jakarta.xml.soap.SOAPException;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -276,8 +278,7 @@ class FilenetWebServiceClientTest {
   @Test
   void sendingDocumentRetriesIfSOAPExceptionIsThrown() {
     mockWebServiceServer.expect(connectionTo(url))
-        .andRespond(withException(
-            new RuntimeException(new SOAPException("soap exception ahhh"))));
+        .andRespond(withException(new RuntimeException(new SOAPException("soap exception ahhh"))));
 
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(withSoapEnvelope(successResponse));
@@ -291,8 +292,7 @@ class FilenetWebServiceClientTest {
   @Test
   void sendingDocumentRecoveryReportsLastErrorIfSOAPExceptionIsThrown3Times() {
     mockWebServiceServer.expect(connectionTo(url))
-        .andRespond(
-            withException(new RuntimeException(new SOAPException("initial failure"))));
+        .andRespond(withException(new RuntimeException(new SOAPException("initial failure"))));
 
     mockWebServiceServer.expect(connectionTo(url))
         .andRespond(
@@ -322,8 +322,7 @@ class FilenetWebServiceClientTest {
 
     mockWebServiceServer.expect(connectionTo(url))
         .andExpect((uri, request) -> {
-          Node soapHeaderNode = extractHeaderNodeFromSoapMessage(
-              (SaajSoapMessage) request);
+          Node soapHeaderNode = extractHeaderNodeFromSoapMessage((SaajSoapMessage) request);
           SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
           namespaceContext.bindNamespaceUri("wsse",
               "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
@@ -362,7 +361,7 @@ class FilenetWebServiceClientTest {
   }
 
   private Node extractHeaderNodeFromSoapMessage(SaajSoapMessage request) {
-    DOMResult domResult = (DOMResult) request.getSoapHeader().getResult();
+	DOMResult domResult = (DOMResult) request.getSoapHeader().getResult();
     return domResult.getNode();
   }
 

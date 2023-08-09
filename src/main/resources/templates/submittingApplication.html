@@ -7,5 +7,5 @@
        'submitting-application.getting-help-with-benefits',
        'submitting-application.agreeing-to-terms'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-application', ${step}, 'submitting-application.submitting-your-application', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="~{milestoneTemplate :: milestoneTemplate('milestone-application', ${step}, 'submitting-application.submitting-your-application', ${contentHeaders}, ${contentItems})}"></div>
 </div>

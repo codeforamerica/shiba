@@ -7,7 +7,6 @@ import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.TribalNation.MilleLacsBandOfOjibwe;
 import static org.codeforamerica.shiba.TribalNation.UpperSioux;
 import static org.codeforamerica.shiba.application.FlowType.FULL;
-import static org.codeforamerica.shiba.application.FlowType.LATER_DOCS;
 import static org.codeforamerica.shiba.application.Status.DELIVERY_FAILED;
 import static org.codeforamerica.shiba.application.Status.SENDING;
 import static org.codeforamerica.shiba.application.Status.UNDELIVERABLE;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,7 +42,6 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
-import org.codeforamerica.shiba.Utils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
@@ -82,7 +79,7 @@ import org.springframework.test.context.ContextConfiguration;
 import de.redsix.pdfcompare.PdfComparator;
 
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = NONE)
+@SpringBootTest
 @ContextConfiguration(classes = {NonSessionScopedApplicationData.class})
 @Tag("db")
 class MnitDocumentConsumerTest {
@@ -425,7 +422,7 @@ class MnitDocumentConsumerTest {
     // Uncomment the following lines to regenerate the test files (useful if the files or cover page have changed)
 //        Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/shiba+file.pdf");
 //        
-   // Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
+    //Utils.writeByteArrayToFile(captor.getAllValues().get(0).getFileBytes(), "src/test/resources/combined-pdf.pdf");
    
 
     // Assert that converted file contents are as expected

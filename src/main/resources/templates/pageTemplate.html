@@ -1,5 +1,5 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
-<body th:replace="fragments/pageTemplateFragment :: pageTemplateFragment(${page}, ${pageNameContext})"></body>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
+<body th:replace="~{fragments/pageTemplateFragment :: pageTemplateFragment(${page}, ${pageNameContext})}"></body>
 </html>

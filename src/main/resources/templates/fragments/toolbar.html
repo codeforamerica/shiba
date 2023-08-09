@@ -17,7 +17,7 @@
                         class="button__icon--left icon-insert_comment"></i>Chat
                 </a>
             </div>
-            <select th:replace="fragments/localeSelect :: localeSelect"></select>
+            <select th:replace="~{fragments/localeSelect :: localeSelect}"></select>
             <script th:inline="javascript" th:with="lang=${#locale.toString()}">
                 window.intercomSettings = {
                     app_id: "dje5ebi4",

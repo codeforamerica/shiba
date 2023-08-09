@@ -25,7 +25,7 @@
   <th:block
       th:if="${input.promptMessage != null && input.promptMessage.promptMessageFragmentName != null}">
     <div th:id="${input.promptMessage.promptMessageFragmentName}"
-        th:replace="|fragments/promptMessageFragments/${input.promptMessage.promptMessageFragmentName}| :: ${input.promptMessage.promptMessageFragmentName}"></div>
+        th:replace="~{|fragments/promptMessageFragments/${input.promptMessage.promptMessageFragmentName}| :: ${input.promptMessage.promptMessageFragmentName}}"></div>
   </th:block>
 </th:block>
 </body>

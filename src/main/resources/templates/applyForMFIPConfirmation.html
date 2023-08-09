@@ -1,12 +1,12 @@
 <div th:fragment="applyForMFIPConfirmation">
   <div class="grid__item text--centered spacing-below-15">
-    <div th:replace="fragments/contextFragments :: icon-checkbox"></div>
+    <div th:replace="~{fragments/contextFragments :: icon-checkbox}"></div>
   </div>
   <div class="grid__item text--centered">
     <h1 class="h2 spacing-below-60 spacing-above-0"
         th:text="#{apply-for-mfip-confirmation.header}"></h1>
   </div>
   <div class="grid__item text--centered spacing-below-15">
-    <div th:replace="fragments/continue :: continue"></div>
+    <div th:replace="~{fragments/continue :: continue}"></div>
   </div>
 </div>

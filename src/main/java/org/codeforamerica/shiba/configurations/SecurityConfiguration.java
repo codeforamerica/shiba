@@ -1,121 +1,112 @@
 package org.codeforamerica.shiba.configurations;
 
 import java.io.IOException;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
-  @Autowired
-  private ShibaInvalidSessionStrategy shibaInvalidSessionStrategy;
+	@Autowired
+	private ShibaInvalidSessionStrategy shibaInvalidSessionStrategy;
+	
+	@Autowired 
+	private HandlerMappingIntrospector handlerMappingIntrospector;
+	
+	@Bean
+	public MvcRequestMatcher.Builder mvc() {
+		return new MvcRequestMatcher.Builder(handlerMappingIntrospector);
+	}
 
-  public static final List<String> ADMIN_EMAILS = List.of(
-      "john.bisek@state.mn.us",
-      "eric.m.johnson@state.mn.us",
-      "taylor.johnson@state.mn.us",
-      "touhid.khan@state.mn.us",
-      "william.prew@state.mn.us",
-      "ramesh.shakya@state.mn.us",
-      "marlene.merwarth@state.mn.us",
-      "ryan.b.smith@state.mn.us",
-      "michael.hauck@state.mn.us",
-      "bernadette.shearer@state.mn.us"
-  );
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+		return authConfiguration.getAuthenticationManager();
+	}
+	 
+	@Bean
+	@SuppressWarnings("removal")
+	@Order(1)
+	public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+		EmailAuthorizationManager eam = new EmailAuthorizationManager();
 
-  @Override
-  protected AuthenticationManager authenticationManager() throws Exception {
-    return super.authenticationManager();
-  }
+		http.authorizeHttpRequests(r -> {
+			r.requestMatchers(mvc.pattern("/pages/*"),
+					mvc.pattern("/groups/*"),
+					mvc.pattern("/document-upload"),
+					mvc.pattern("/remove-upload/*"),
+					mvc.pattern("/submit"),
+					mvc.pattern("/submit-feedback"),
+					mvc.pattern("/submit-documents")
+					)
+			.permitAll();
+			try {
+				r.requestMatchers(mvc.pattern("/download/??????????"),
+						mvc.pattern("/resend-confirmation-email/??????????"))
+				.access(eam)
+				.anyRequest()
+				.permitAll()
+				.and()
+				.oauth2Login();
+			} catch (Exception e) {
+				log.error("OAuth2 Error", e);
+			}
 
+		});
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests(r ->
-            r.antMatchers(
-                    "/download/??????????",
-                    "/resend-confirmation-email/??????????")
-                .access("isAuthenticated() and @emailBasedAccessDecider.check(authentication)"))
-        .oauth2Login();
+		http
+		.headers()
+		.httpStrictTransportSecurity()
+		.requestMatcher(AnyRequestMatcher.INSTANCE)
+		.includeSubDomains(true)
+		.maxAgeInSeconds(31536000);
 
-    http.headers()
-        .httpStrictTransportSecurity()
-        .includeSubDomains(true)
-        .maxAgeInSeconds(31536000);
+		http.sessionManagement(session -> session.invalidSessionStrategy(this.shibaInvalidSessionStrategy));
+		http.sessionManagement(management -> management.sessionConcurrency(
+				concurrency -> concurrency.expiredSessionStrategy(this.shibaInvalidSessionStrategy)));
+		return http.build();
+	}
 
-    http.sessionManagement(session -> session.invalidSessionStrategy(this.shibaInvalidSessionStrategy));
-    http.sessionManagement().sessionConcurrency(concurrency -> concurrency.expiredSessionStrategy(this.shibaInvalidSessionStrategy));
-  }
+	@Component
+	public static class ShibaInvalidSessionStrategy
+			implements InvalidSessionStrategy, SessionInformationExpiredStrategy {
+		final private SimpleRedirectInvalidSessionStrategy errorRedirectInvalidSessionStrategy;
 
-  @Bean
-  public EmailBasedAccessDecider emailBasedAccessDecider() {
-    return new EmailBasedAccessDecider();
-  }
+		public ShibaInvalidSessionStrategy(@Value("${server.servlet.session.timeout-url}") String timeoutUrl) {
+			errorRedirectInvalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(timeoutUrl);
+		}
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+		@Override
+		public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
+				throws IOException {
+			log.info("User session invalid on page: " + request.getRequestURL());
+			errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
+		}
 
-  public static class EmailBasedAccessDecider {
-
-    public boolean check(Authentication authentication) {
-      
-      var principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
-      var email = principal.getAttributes().get("email");
-      boolean isAuthorized = email != null && ADMIN_EMAILS.contains(email.toString().toLowerCase());
-      
-      if (isAuthorized) {
-        log.info(String.format("Admin login for %s is authorized", email));
-      } else {
-        log.warn(String.format("Admin login for %s is not authorized", email));
-      }
-      return isAuthorized;
-    }
-  }
-
-
-  @Component
-  public static class ShibaInvalidSessionStrategy implements InvalidSessionStrategy, SessionInformationExpiredStrategy {
-    final private SimpleRedirectInvalidSessionStrategy errorRedirectInvalidSessionStrategy;
-
-    public ShibaInvalidSessionStrategy(@Value("${server.servlet.session.timeout-url}") String timeoutUrl) {
-      errorRedirectInvalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(timeoutUrl);
-    }
-
-    @Override
-    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      log.info("User session invalid on page: " + request.getRequestURL());
-      errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
-    }
-
-    @Override
-    public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException {
-      log.info("User session timed out on page: " + event.getRequest().getRequestURL());
-      errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(event.getRequest(), event.getResponse());
-    }
-  }
+		@Override
+		public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException {
+			log.info("User session timed out on page: " + event.getRequest().getRequestURL());
+			errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(event.getRequest(), event.getResponse());
+		}
+	}
 
 }

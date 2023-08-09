@@ -5,13 +5,13 @@
      showCheckbox=${!input.name.equals('sameMailingAddress') || pageDatasources.get('homeAddress').get('isHomeless') == null || pageDatasources.get('homeAddress').get('isHomeless').value.isEmpty()},
      isChecked=${showCheckbox && !data.get(input.name).value.isEmpty()}">
   <div th:if="${showCheckbox}">
-    <div th:replace="'fragments/inputs/checkbox-input' :: checkbox-input(${input}, ${data})"></div>
+    <div th:replace="~{'fragments/inputs/checkbox-input' :: checkbox-input(${input}, ${data})}"></div>
   </div>
   <div th:class="${isChecked} ? 'hide' : ''" id="address-questions">
     <th:block th:each="followUp: ${input.followUps}">
       <div class="spacing-above-60">
         <div
-            th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+            th:replace="~{'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})}"></div>
       </div>
     </th:block>
   </div>

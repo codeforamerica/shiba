@@ -131,7 +131,6 @@ class PdfGeneratorTest {
         documentRepository,
         preparers,
         fileNameGenerator,
-        featureFlags,
         countyMap);
     when(applicationRepository.find(applicationId)).thenReturn(application);
   }

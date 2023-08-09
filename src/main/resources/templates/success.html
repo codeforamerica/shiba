@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body>
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbar :: toolbar"></div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
   <section class="slab slab--shiba">
     <div class="grid-ignore-mobile">
       <div class="card spacing-above-0">
 
         <div class="grid__item bottom-horizontal-line-dark-grey">
           <div
-              th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
+              th:replace="~{fragments/icons/icon-submission-success :: icon-submission-success}"></div>
           <h1 th:if="${!hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
               th:text="|#{success.done-your-application-has-been-submitted}|"></h1>
           <h1 th:if="${hasUploadDocuments}" class="h2 spacing-below-0 spacing-above-10"
@@ -27,18 +27,17 @@
                 <span id="snapExpeditedNotice" th:text="#{success.You-were-recommended-for-expedited-snap}"></span>
             </div>
          </th:block>
-         
+                 
          <div class="spacing-below-35">
       		<h2 id="confirmation-number" class="h3" th:text="|#{success.confirmation-number} ${applicationId}|">	</h2>
     	 </div>
-        </div>
-
+    	</div>
         <div class="grid__item spacing-above-35">
           <h2 class="h3" th:text="#{success.helpful-resources}"></h2>
           <div class="grid-ignore-mobile">
             <div
                 class="success-icons grid__item width-one-sixth spacing-above-5 spacing-below-0">
-              <div th:replace="fragments/icons/icon-download :: icon-download"></div>
+              <div th:replace="~{fragments/icons/icon-download :: icon-download}"></div>
             </div>
             <div class="grid__item width-five-sixths">
               <div class="spacing-above-0 spacing-below-15"
@@ -52,7 +51,7 @@
 
           <div class="grid-ignore-mobile spacing-above-35 spacing-below-35">
             <div class="success-icons grid__item width-one-sixth spacing-above-5">
-              <div th:replace="fragments/icons/icon-documents :: icon-documents"></div>
+              <div th:replace="~{fragments/icons/icon-documents :: icon-documents}"></div>
             </div>
             <div class="grid__item width-five-sixths">
               <span th:utext="#{success.additional-documents}"></span>
@@ -65,7 +64,7 @@
              th:if="${doesNotHaveHealthcare && !isCertainPops}">
           <h2 class="h3" th:text="#{success.apply-for-healthcare-coverage}"></h2>
           <div class="success-icons grid__item width-one-sixth spacing-above-0 spacing-below-15">
-            <div th:replace="fragments/icons/icon-healthcare :: icon-healthcare"></div>
+            <div th:replace="~{fragments/icons/icon-healthcare :: icon-healthcare}"></div>
           </div>
           <div class="grid__item width-five-sixths">
             <div th:utext="#{success.healthcare}" class="width-five-sixths"></div>
@@ -75,12 +74,12 @@
           <a class="button button--secondary spacing-below-0"
              th:href="'/pages/'+${pageName}+'/navigation'">
             <span th:text="#{success.give-us-feedback}"></span>
-            <div th:replace="fragments/icons/icon-arrow-black :: icon-arrow-black"></div>
+            <div th:replace="~{fragments/icons/icon-arrow-black :: icon-arrow-black}"></div>
           </a>
         </div>
       </div>
   </section>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

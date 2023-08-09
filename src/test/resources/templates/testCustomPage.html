@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body>
 <p>This is a custom page that doesn't conform to the standard page template</p>
 <a class="button button--primary spacing-below-0"

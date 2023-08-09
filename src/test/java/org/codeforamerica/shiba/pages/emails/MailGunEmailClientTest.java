@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
@@ -62,7 +61,7 @@ import com.github.tomakehurst.wiremock.matching.MultipartValuePattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 
 @SuppressWarnings("unchecked")
-@SpringBootTest(webEnvironment = NONE, properties = {
+@SpringBootTest(properties = {
     "spring.profiles.active=test"
 })
 @ActiveProfiles("test")

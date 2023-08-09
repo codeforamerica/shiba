@@ -9,29 +9,16 @@ import static org.codeforamerica.shiba.output.Document.CCAP;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.codeforamerica.shiba.output.Document.XML;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.sun.xml.messaging.saaj.soap.name.NameImpl;
 import java.math.BigInteger;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.GregorianCalendar;
 import java.util.List;
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBElement;
+
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.soap.SOAPHeaderElement;
-import javax.xml.soap.SOAPMessage;
-import lombok.extern.slf4j.Slf4j;
-
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -61,6 +48,22 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.sun.xml.messaging.saaj.soap.name.NameImpl;
+
+import jakarta.activation.DataHandler;
+import jakarta.mail.util.ByteArrayDataSource;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.soap.Name;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPHeader;
+import jakarta.xml.soap.SOAPHeaderElement;
+import jakarta.xml.soap.SOAPMessage;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -92,9 +95,10 @@ public class FilenetWebServiceClient {
     this.sftpUploadUrl = sftpUploadUrl;
     this.applicationStatusRepository = applicationStatusRepository;
   }
-
+  
   @Retryable(
-      value = {Exception.class},
+      retryFor = {Exception.class},
+      maxAttempts = 4,
       maxAttemptsExpression = "#{${mnit-filenet.max-attempts}}",
       backoff = @Backoff(
           delayExpression = "#{${mnit-filenet.delay}}",
@@ -124,49 +128,58 @@ public class FilenetWebServiceClient {
           applicationDocument, createDocument);
       setContentStreamOnDocument(applicationFile, createDocument);
 
-      // Create the document in Filenet
-      CreateDocumentResponse response = (CreateDocumentResponse) filenetWebServiceTemplate
-          .marshalSendAndReceive(createDocument, message -> {
-            SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
-            try {
-              SOAPHeader soapHeader = soapMessage.getSOAPHeader();
-              QName securityQName = new QName(
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                  "Security", "wsse");
-              QName timestampQName = new QName(
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
-                  "Timestamp", "wsu");
-              SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
+      // send the document to Filenet
+      CreateDocumentResponse response = null;
+	try {
+		response = (CreateDocumentResponse) filenetWebServiceTemplate
+		      .marshalSendAndReceive(createDocument, message -> {
+		        SOAPMessage soapMessage = ((SaajSoapMessage) message).getSaajMessage();
+		        try {
+		          SOAPHeader soapHeader = (SOAPHeader) soapMessage.getSOAPHeader();
+		          QName securityQName = new QName(
+		              "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+		              "Security", "wsse");
+		          QName timestampQName = new QName(
+		              "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd",
+		              "Timestamp", "wsu");
+		          SOAPHeaderElement securityElement = soapHeader.addHeaderElement(securityQName);
 
-              SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
-              SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
-              ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
-              createdElement.setTextContent(
-                  createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
-              SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
-              expiresElement
-                  .setTextContent(
-                      createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
+		          SOAPElement timestampElement = securityElement.addChildElement(timestampQName);
+		          SOAPElement createdElement = timestampElement.addChildElement("Created", "wsu");
+		          ZonedDateTime createdTimestamp = ZonedDateTime.now(clock);
+		          createdElement.setTextContent(
+		              createdTimestamp.format(DateTimeFormatter.ISO_INSTANT));
+		          SOAPElement expiresElement = timestampElement.addChildElement("Expires", "wsu");
+		          expiresElement
+		              .setTextContent(
+		                  createdTimestamp.plusMinutes(5).format(DateTimeFormatter.ISO_INSTANT));
 
-              SOAPElement usernameTokenElement = securityElement
-                  .addChildElement("UsernameToken", "wsse");
-              SOAPElement usernameElement = usernameTokenElement
-                  .addChildElement("Username", "wsse");
-              usernameElement.setTextContent(username);
-              SOAPElement passwordElement = usernameTokenElement
-                  .addChildElement("Password", "wsse");
-              passwordElement.addAttribute(NameImpl.createFromUnqualifiedName("Type"),
-                  "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-              passwordElement.setTextContent(password);
-            } catch (SOAPException e) {
-              throw new IllegalStateException(e);
-            }
-          });
+		          SOAPElement usernameTokenElement = securityElement
+		              .addChildElement("UsernameToken", "wsse");
+		          SOAPElement usernameElement = usernameTokenElement
+		              .addChildElement("Username", "wsse");
+		          usernameElement.setTextContent(username);
+		          SOAPElement passwordElement = usernameTokenElement.addChildElement("Password", "wsse");
+		          passwordElement.addAttribute((Name) NameImpl.createFromUnqualifiedName("Type"),
+		              "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
+		          passwordElement.setTextContent(password);
+		        } catch (SOAPException e) {
+		        	log.error("Filenet SOAP Error", e);
+		          throw new IllegalStateException(e);
+		        }catch (Exception e) {
+		        	log.error("Filenet WS Error", e);
+		        }
+		      });
+	} catch (Exception e) {
+		// I/O error: Connection reset by peer errors need to be sent to logs
+		log.error("ESB Error", e);
+	}
+
       // Save filenetId so we can retry only sending to SFTP
       filenetId = response.getObjectId();
       applicationStatusRepository.updateFilenetId(applicationNumber, applicationDocument,
           routingDestination.getName(),
-          SENDING, applicationFile.getFileName(), response.getObjectId());
+          SENDING, applicationFile.getFileName(), filenetId);
     }
 
     // Now route a copy of the document from Filenet to SFTP (unless it is from HEALTHCARE_RENEWAL)
@@ -224,7 +237,6 @@ public class FilenetWebServiceClient {
       CreateDocument createDocument) {
     CmisPropertiesType properties = new CmisPropertiesType();
     List<CmisProperty> propertiesList = properties.getProperty();
-
     CmisPropertyBoolean read = createCmisPropertyBoolean();
     CmisPropertyString originalFileName = createCmisPropertyString("OriginalFileName",
         applicationFile.getFileName());
@@ -332,12 +344,11 @@ public class FilenetWebServiceClient {
 
     CmisContentStreamType contentStream = new CmisContentStreamType();
     contentStream.setLength(BigInteger.ZERO);
-    contentStream.setStream(new DataHandler(new ByteArrayDataSource(applicationFile.getFileBytes(),
-        mimeType)));
-
+    jakarta.mail.util.ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(applicationFile.getFileBytes(), mimeType);
+    DataHandler dataHandler = new DataHandler(byteArrayDataSource);
+    contentStream.setStream(dataHandler);
     ObjectFactory ob = new ObjectFactory();
-    JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(
-        contentStream);
+    JAXBElement<CmisContentStreamType> jaxbContentStream = ob.createCreateDocumentContentStream(contentStream);
     jaxbContentStream.getValue().setMimeType(mimeType);
     createDocument.setContentStream(jaxbContentStream);
   }

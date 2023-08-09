@@ -130,7 +130,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
-    log.info("later docs confirmation email sent");
+    log.info("later docs confirmation email sent for confirmationId " + confirmationId);
   }
   
   @Override
@@ -138,7 +138,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = emailContentCreator.createClientHealthcareRenewalConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientHealthcareRenewalConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
-    log.info("health care renewal confirmation email sent");
+    log.info("health care renewal confirmation email sent for confirmationId " + confirmationId);
   }
 
   @Override

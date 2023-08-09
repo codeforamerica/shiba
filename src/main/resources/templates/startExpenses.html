@@ -7,5 +7,5 @@
        'start-expenses.savings',
        'start-expenses.assets'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-money-and-cards', ${step}, 'start-expenses.expenses-and-deductions', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="~{milestoneTemplate :: milestoneTemplate('milestone-money-and-cards', ${step}, 'start-expenses.expenses-and-deductions', ${contentHeaders}, ${contentItems})}"></div>
 </div>

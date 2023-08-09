@@ -2,14 +2,14 @@
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <th:block
         th:with="qualified=${expeditedSnap.equals(T(org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility).ELIGIBLE)}">
-    <div th:replace="fragments/head :: head(#{${qualified} ? 'snap-expedited-determination.qualified-title' : 'snap-expedited-determination.denied-title'})"></div>
+    <div th:replace="~{fragments/head :: head(#{${qualified} ? 'snap-expedited-determination.qualified-title' : 'snap-expedited-determination.denied-title'})}"></div>
     <body>
     <div class="page-wrapper">
-        <div th:replace="fragments/toolbar :: toolbar"></div>
-        <div th:replace="fragments/demoBanner :: demoBanner"></div>
+        <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+        <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
         <section class="slab slab--shiba">
             <div class="grid">
-                <div th:replace="fragments/cardHeader :: cardHeader"></div>
+                <div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
                 <main id="content" role="main" class="card spacing-above-35">
                     <h1 class="h2"
                         th:text="#{${qualified} ? 'snap-expedited-determination.qualified-header':'snap-expedited-determination.denied-header'}"></h1>
@@ -21,7 +21,7 @@
             </div>
         </section>
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
     </body>
 </th:block>
 </html>

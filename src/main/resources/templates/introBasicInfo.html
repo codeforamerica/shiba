@@ -6,5 +6,5 @@
        'intro-basic-info.contact-info',
        'intro-basic-info.living-situation'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-person', '1', 'intro-basic-info.getting-to-know-you', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="~{milestoneTemplate :: milestoneTemplate('milestone-person', '1', 'intro-basic-info.getting-to-know-you', ${contentHeaders}, ${contentItems})}"></div>
 </div>

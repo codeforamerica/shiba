@@ -2,15 +2,16 @@ package org.codeforamerica.shiba;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.MaskedSerializer;
@@ -20,11 +21,16 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * SessionLogFilter writes a number of things to the Sentry logs:
+ * applicationId, clientIP, sessionId, httpRequestURL, email of user who is logged in with OAuth2
+ */
 @Component
 @Slf4j
 public class SessionLogFilter implements Filter {
 
   private final MonitoringService monitoringService;
+  // ORIGINAL COMMENT:
   // Note that this object mapper cannot be autowired as we register a custom serializer with it that
   // we do not want to use in the rest of the app
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -32,11 +38,13 @@ public class SessionLogFilter implements Filter {
   private String clientIP;
 
   public SessionLogFilter(MonitoringService monitoringService) {
+	  //MonitoringService class type: org.codeforamerica.shiba.SentryClient
     this.monitoringService = monitoringService;
   }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
+	  // filterConfig class type is a org.apache.catalina.core.ApplicationFilterConfig
     applicationData = (ApplicationData) WebApplicationContextUtils.
         getRequiredWebApplicationContext(filterConfig.getServletContext())
         .getBean("applicationData");
@@ -49,8 +57,7 @@ public class SessionLogFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     HttpServletRequest httpReq = (HttpServletRequest) request;
-
-    // Don't create a new session in logging and create a "unique" id for expired sessions for tracking
+    //ORIGINAL COMMENT: Don't create a new session in logging and create a "unique" id for expired sessions for tracking
     String sessionId = httpReq.getSession(false) != null ?
             httpReq.getSession(false).getId() :  "expired : " + System.currentTimeMillis();
 	String url = String.valueOf(httpReq.getRequestURL());

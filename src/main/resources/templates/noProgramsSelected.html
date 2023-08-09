@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body>
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbar :: toolbar"></div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
   <section class="slab slab--shiba">
     <div class="grid">
       <main id="content" role="main" class="card spacing-above-35 text--centered">
-        <div th:replace="fragments/contextFragments :: noProgramsContextFragment"></div>
+        <div th:replace="~{fragments/contextFragments :: noProgramsContextFragment}"></div>
         <h1 class="h2" th:text="#{no-programs-selected.you-did-not-select-any-programs}"></h1>
         <p th:text="#{no-programs-selected.go-back-and-make-sure}"></p>
         <a class="button button--primary"
@@ -19,6 +19,6 @@
     </div>
   </section>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

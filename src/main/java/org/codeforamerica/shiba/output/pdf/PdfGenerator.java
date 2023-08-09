@@ -37,7 +37,6 @@ import org.codeforamerica.shiba.output.Recipient;
 import org.codeforamerica.shiba.output.caf.FilenameGenerator;
 import org.codeforamerica.shiba.output.documentfieldpreparers.DocumentFieldPreparers;
 import org.codeforamerica.shiba.output.xml.FileGenerator;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.UploadedDocument;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -60,7 +59,6 @@ public class PdfGenerator implements FileGenerator {
   private final DocumentRepository documentRepository;
   private final DocumentFieldPreparers preparers;
   private final FilenameGenerator fileNameGenerator;
-  private final FeatureFlagConfiguration featureFlags;
   private final ServicingAgencyMap<CountyRoutingDestination> countyMap;
   
 
@@ -73,7 +71,6 @@ public class PdfGenerator implements FileGenerator {
       DocumentRepository documentRepository,
       DocumentFieldPreparers preparers,
       FilenameGenerator fileNameGenerator,
-      FeatureFlagConfiguration featureFlagConfiguration,
       ServicingAgencyMap<CountyRoutingDestination> countyMap
   ) {
     this.pdfFieldMapper = pdfFieldMapper;
@@ -82,7 +79,6 @@ public class PdfGenerator implements FileGenerator {
     this.documentRepository = documentRepository;
     this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
-    this.featureFlags = featureFlagConfiguration;
     this.pdfFieldWithCAFHHSuppFillersMap = pdfFieldWithCAFHHSuppFillers;
     this.pdfFieldWithCAFHHSuppFillersMap2 = pdfFieldWithCAFHHSuppFillers2;
     this.pdfResourcesCertainPops = pdfResourcesCertainPops;

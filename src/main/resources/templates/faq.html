@@ -11,15 +11,15 @@
 </head>
 <body class="locale-en" id="faq">
 <div class="page-wrapper">
-    <div th:replace="fragments/toolbar :: toolbar" ></div>
-    <div th:replace="fragments/demoBanner :: demoBanner"></div>
+    <div th:replace="~{fragments/toolbar :: toolbar}" ></div>
+    <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
     <section class="slab slab--shiba">
         <div class="grid">
             <div class="grid__item">
                 <h1 class="spacing-below-35" th:text="#{faq.frequently-asked-questions}"></h1>
                 <a class="button button--primary spacing-below-0" th:href="'/pages/landing/navigation'" lang="en">
                     <span th:text="#{landing.apply-now}"></span>
-                    <div th:replace="fragments/icons/icon-arrow :: icon-arrow"></div>
+                    <div th:replace="~{fragments/icons/icon-arrow :: icon-arrow}"></div>
                 </a>
             </div>
         </div>
@@ -127,6 +127,6 @@
     mixpanel.track('PAGE_VIEW');
 
 </script>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

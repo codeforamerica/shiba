@@ -15,5 +15,5 @@
       </th:block>
     </select>
   </div>
-  <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+  <div th:replace="~{fragments/inputErrorFragment :: validationError(${data}, ${input})}"></div>
 </div>

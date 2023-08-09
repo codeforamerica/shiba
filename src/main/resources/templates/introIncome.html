@@ -7,5 +7,5 @@
        'intro-income.unearned-income',
        'intro-income.recent-income-changes'} }">
   <div
-      th:replace="milestoneTemplate :: milestoneTemplate('milestone-income', ${step}, 'intro-income.income-and-employment', ${contentHeaders}, ${contentItems})"></div>
+      th:replace="~{milestoneTemplate :: milestoneTemplate('milestone-income', ${step}, 'intro-income.income-and-employment', ${contentHeaders}, ${contentItems})}"></div>
 </div>

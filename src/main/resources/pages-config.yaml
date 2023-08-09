@@ -2618,8 +2618,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeSSorRSDI
         followUps:
           - name: socialSecurityAmount
             type: MONEY
@@ -2652,8 +2650,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeSSI
         followUps:
           - name: supplementalSecurityIncomeAmount
             type: MONEY
@@ -2686,8 +2682,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeVeteransBenefits
         followUps:
           - name: veteransBenefitsAmount
             type: MONEY
@@ -2720,8 +2714,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeUnemployment
         followUps:
           - name: unemploymentAmount
             type: MONEY
@@ -2754,8 +2746,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeWorkersComp
         followUps:
           - name: workersCompensationAmount
             type: MONEY
@@ -2788,8 +2778,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeRetirement
         followUps:
           - name: retirementAmount
             type: MONEY
@@ -2822,8 +2810,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeChildOrSpousalSupport
         followUps:
           - name: childOrSpousalSupportAmount
             type: MONEY
@@ -2856,8 +2842,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeTribalPayment
         followUps:
           - name: tribalPaymentsAmount
             type: MONEY
@@ -3070,8 +3054,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeBenefitsPrograms
         followUps:
           - name: benefitsAmount
             type: MONEY
@@ -3103,8 +3085,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeInsurancePayments
         followUps:
           - name: insurancePaymentsAmount
             type: MONEY
@@ -3136,8 +3116,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeContractForDeed
         followUps:
           - name: contractForDeedAmount
             type: MONEY
@@ -3169,8 +3147,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeTrustMoney
         followUps:
           - name: trustMoneyAmount
             type: MONEY
@@ -3202,8 +3178,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeHealthcareReimbursement
         followUps:
           - name: healthCareReimbursementAmount
             type: MONEY
@@ -3235,8 +3209,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeInterestDividends
         followUps:
           - name: interestDividendsAmount
             type: MONEY
@@ -3268,8 +3240,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeRental
         followUps:
           - name: rentalIncomeAmount
             type: MONEY
@@ -3301,8 +3271,6 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
-        followUpValues:
-          - monthlyIncomeOtherPayments
         followUps:
           - name: otherPaymentsAmount
             type: MONEY

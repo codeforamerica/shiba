@@ -13,9 +13,9 @@
   targetNamespace="http://docs.oasis-open.org/ns/cmis/messaging/200908/"
   xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/"
   xmlns:cmism="http://docs.oasis-open.org/ns/cmis/messaging/200908/"
-  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" version="1.0"
+  xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb" version="1.0"
   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.1"
+  jaxb:extensionBindingPrefixes="xjc" jaxb:version="3.0"
   elementFormDefault="qualified">
 
   <xs:import schemaLocation="CMIS-Core.xsd"

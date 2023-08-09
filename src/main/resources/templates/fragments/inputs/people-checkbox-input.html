@@ -4,7 +4,7 @@
      th:with="inputData=${data.get(input.name)},formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
      class="form-group">
     <div class="spacing-above-35 form-group" th:classappend="${!inputData.valid(data)} ? 'form-group--error' : ''">
-        <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+        <div th:replace="~{fragments/form-question-prompt :: formQuestionPrompt(${input})}"></div>
         <div role="group" aria-labelledby="page-header" th:remove="${!page.isSingleCheckboxOrRadioInputPage()}? tag">
             <p class="text--help"
                th:if="${input.helpMessageKey != null}"
@@ -30,7 +30,7 @@
                        th:checked="${inputData.value.contains('NONE_OF_THE_ABOVE')}">
                 <span th:text="#{parent-not-at-home.none-of-the-children-have-parents-living-outside-the-home}"></span>
             </label>
-            <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+            <div th:replace="~{fragments/inputErrorFragment :: validationError(${data}, ${input})}"></div>
         </div>
     </div>
 </div>

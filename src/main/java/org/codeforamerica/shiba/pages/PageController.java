@@ -50,10 +50,6 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -109,6 +105,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -120,6 +117,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import mobi.openddr.classifier.model.Device;
 import net.coobird.thumbnailator.Thumbnails;
@@ -221,15 +222,21 @@ public class PageController {
 
   @GetMapping("/errorTimeout")
   String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId,
-		  @CookieValue(value = "flow_type", defaultValue = "") String flowType, 
-		  @CookieValue(value = "page_name", defaultValue = "") String pageName) {
+		  @CookieValue(value = "flow_type", defaultValue = "") String flowType,
+		  @CookieValue(value = "page_name", defaultValue = "") String pageName,
+		  HttpServletResponse httpResponse) {
     if(pageName.equals("healthcareRenewalUpload") || flowType.equals(FlowType.HEALTHCARE_RENEWAL.toString())) {
     	return "healthcareRenewalErrorUploadTimeout";
     }
     else if (submittedAppId.length() == 0) {
-      return "errorSessionTimeout";
+        return "errorSessionTimeout";
     }else {
-    	 return "errorUploadTimeout";
+    	// clear the cookie value so we don't keep getting upload timeouts
+        Cookie submitCookie = new Cookie("application_id", "");
+        submitCookie.setPath("/");
+        submitCookie.setHttpOnly(true);
+        httpResponse.addCookie(submitCookie);
+    	return "errorUploadTimeout";
     }
   }
 
@@ -533,6 +540,7 @@ public class PageController {
 
       if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
         model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
+        model.put("subworkflowsNext", (!pageWorkflow.getSubworkflows(applicationData).keySet().isEmpty())?pageWorkflow.getSubworkflows(applicationData).keySet().iterator().next():"") ;
         if (isNotBlank(iterationIndex)) {
           var iterationData = pageWorkflow.getSubworkflows(applicationData)
               .get(pageWorkflow.getAppliesToGroup())
@@ -1107,4 +1115,21 @@ public class PageController {
     return new ModelAndView(
         String.format("redirect:/pages/%s/navigation?option=%s", pageName, option));
   }
+  
+  @ModelAttribute("sessionIDModelAttribute")
+  public String sessionIDModelAttribute(final HttpServletRequest request) {
+	  if (request.getSession() != null) {
+		  return request.getSession().getId();
+	  }
+      return null;
+  }
+  
+  @ModelAttribute("sessionExistsModelAttribute")
+  public String sessionExistsModelAttribute(final HttpServletRequest request) {
+	  if (request.getSession() != null) {
+		  return "true";
+	  }
+	  else return "false";
+  }
+  
 }

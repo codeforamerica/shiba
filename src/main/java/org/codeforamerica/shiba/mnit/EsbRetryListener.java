@@ -1,16 +1,23 @@
 package org.codeforamerica.shiba.mnit;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
-import org.springframework.retry.listener.RetryListenerSupport;
+import org.springframework.retry.RetryListener;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Before Spring Boot 3, this class originally extends RetryListenerSupport, but RetryListenerSupport
+ * has been deprecated in favor of the default implementations in {@link RetryListener}
+ * Apparently the only reason this class exists is to log retry attempts.
+ */
 
 @Slf4j
 @Component
-public class EsbRetryListener extends RetryListenerSupport {
+public class EsbRetryListener implements RetryListener{
 
   private final String maxAttempts;
 
@@ -23,7 +30,6 @@ public class EsbRetryListener extends RetryListenerSupport {
       RetryCallback<T, E> callback, Throwable throwable) {
     log.info("ESB Retry closing for: " + MDC.get("applicationFile") + ", Retries Attempted: {} ",
         context.getRetryCount());
-    super.close(context, callback, throwable);
   }
 
   @Override
@@ -37,7 +43,5 @@ public class EsbRetryListener extends RetryListenerSupport {
           "ESB Retry Unsuccessful for: " + MDC.get("applicationFile") + ". Retries Attempted: {} ",
           context.getRetryCount());
     }
-
-    super.onError(context, callback, throwable);
   }
 }

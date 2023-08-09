@@ -12,8 +12,8 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
   elementFormDefault="qualified" targetNamespace="http://docs.oasis-open.org/ns/cmis/core/200908/"
   xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.1"
+  xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc" jaxb:version="3.0"
   xmlns:cmis="http://docs.oasis-open.org/ns/cmis/core/200908/" version="1.0">
 
   <!--  enums -->

@@ -7,11 +7,11 @@
     <div th:if="${page.pageTitle} != '' and #{${page.pageTitle}} == ${#messages.msg('next-steps.title')}">
       <div class="reduce-spacing-above-35 spacing-below-15"
         th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
-        <div th:replace="fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice"></div>
+        <div th:replace="~{fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice}"></div>
       </div>
     </div>
     <th:block th:if="not ${page.excludeGoBack}">
-    	<div th:replace="fragments/goBack :: goBackLink"></div>
+    	<div th:replace="~{fragments/goBack :: goBackLink}"></div>
     </th:block>
   </div>
 </div>

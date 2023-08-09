@@ -8,7 +8,8 @@ import com.google.crypto.tink.Aead;
 import com.google.crypto.tink.CleartextKeysetHandle;
 import com.google.crypto.tink.JsonKeysetReader;
 import com.google.crypto.tink.aead.AeadConfig;
-import org.apache.commons.codec.binary.Hex;
+import com.google.crypto.tink.subtle.Hex;
+
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
@@ -79,7 +80,7 @@ public class V23__UnencryptApplicationData extends BaseJavaMigration {
 
         public String encryptString(String data) {
             try {
-                return new String(Hex.encodeHex(aead.encrypt(data.getBytes(), null)));
+                return new String(Hex.encode(aead.encrypt(data.getBytes(), null)));
             } catch (GeneralSecurityException e) {
                 throw new RuntimeException(e);
             }

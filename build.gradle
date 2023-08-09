@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.7.14"
+    id("org.springframework.boot") version "3.1.2"
     id("io.spring.dependency-management") version "1.1.2"
     id("java")
     id("com.github.jk1.dependency-license-report") version "2.5"
@@ -9,6 +9,10 @@ plugins {
 group = "org.codeforamerica"
 version = "0.0.1-SNAPSHOT"
 sourceCompatibility = "17"
+
+tasks.withType(Jar){
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 configurations {
     compileOnly {
@@ -23,7 +27,9 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/milestone" }
+    maven { 
+    	url "https://repo.spring.io/milestone" 
+    }
 }
 
 task genJaxbFilenet {
@@ -57,6 +63,7 @@ task genJaxbFilenet {
             }
 
             copy(todir: classesDir) {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
                 fileset(dir: sourcesDir, erroronmissingdir: false) {
                     exclude(name: "**/*.java")
                 }
@@ -72,82 +79,78 @@ dependencyManagement {
 }
 
 dependencies {
-    modules {
-        module("javax.activation:activation") {
-            replacedBy("jakarta.activation:jakarta.activation-api", "Use jakarta instead of javax")
-        }
-        module("org.apache.commons:commons-email") {
-            replacedBy("com.sun.mail:jakarta.mail", "Use jakarta instead of apache")
-        }
-    }
-
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    // jaxb WS libraries -->
     implementation(files(genJaxbFilenet.classesDir).builtBy(genJaxbFilenet))
     jaxb(
-            'org.glassfish.jaxb:jaxb-runtime',
-            'org.glassfish.jaxb:jaxb-xjc',
-            'org.glassfish.jaxb:jaxb-jxc'
+           "org.glassfish.jaxb:jaxb-runtime",
+           "org.glassfish.jaxb:jaxb-xjc",
+           "org.glassfish.jaxb:jaxb-jxc"
     )
-
-    compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    annotationProcessor("org.projectlombok:lombok")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    implementation("org.springframework.session:spring-session-jdbc")
-    implementation("io.sentry:sentry-spring-boot-starter:6.26.0")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.apache.logging.log4j:log4j-api:2.20.0")
-    implementation("org.apache.logging.log4j:log4j-to-slf4j:2.20.0")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-web-services") {
-        exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
-    }
-
-    implementation("com.azure:azure-storage-blob:12.23.0")
-    implementation("org.postgresql:postgresql")
-    implementation("org.glassfish.jaxb:jaxb-runtime")
-    implementation("org.apache.pdfbox:pdfbox:2.0.29")
-    implementation("org.apache.commons:commons-lang3")
-    implementation("org.apache.commons:commons-text:1.10.0")
-    implementation("org.jetbrains:annotations:24.0.1")
-    implementation("commons-validator:commons-validator:1.7")
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-    implementation("org.apache.httpcomponents:httpclient")
-    implementation("io.sentry:sentry-logback:6.26.0")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation("com.google.crypto.tink:tink:1.10.0")
-    implementation("org.flywaydb:flyway-core:9.19.4")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("com.mixpanel:mixpanel-java:1.5.2")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("com.sun.activation:jakarta.activation")
+   
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.3")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api-parent:4.0.0")
+    implementation("jakarta.activation:jakarta.activation-api:2.1.2")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
+    implementation("jakarta.mail:jakarta.mail-api:2.1.2")
     implementation("org.apache.commons:commons-email:1.5")
-    implementation("org.springframework:spring-aspects")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("org.springframework.retry:spring-retry")
-    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
-    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
-    implementation("ch.qos.logback:logback-parent:1.4.8"){
-         exclude group: "ch.qos.logback", module: "logback-classic"
-    }
-    implementation("ch.qos.logback:logback-classic:1.2.10")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.3")
-    implementation("net.javacrumbs.shedlock:shedlock-spring:5.6.0")
-    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.6.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
+    // end of jaxb WS libraries
+    
+    implementation("org.apache.commons:commons-lang3:3.13.0")
+    implementation("org.apache.commons:commons-text:1.10.0")
+    implementation("org.apache.httpcomponents.core5:httpcore5:5.2.2")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5-fluent:5.2.1")
+    implementation("org.apache.pdfbox:pdfbox:2.0.29")
+
+    implementation("org.springframework:spring-aspects")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.ws:spring-ws-core")
+    implementation("org.springframework.session:spring-session-core:3.1.1")
+    implementation("org.springframework.session:spring-session-jdbc:3.1.1")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.2")
+    //webflux is needed even though it is reactive, not servlet. Used by MailGun and SmartyStreet
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-web-services:3.1.2") {
+    	exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
+    }
+    
+     //logging -->
+    implementation("org.slf4j:slf4j-api:2.0.7")
+    implementation("io.sentry:sentry-spring-boot-starter:6.27.0")
+    implementation("io.sentry:sentry-logback:6.27.0")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
+    implementation("ch.qos.logback:logback-classic:1.4.8")
+    implementation("ch.qos.logback:logback-core:1.4.8")
+    implementation("ch.qos.logback:logback-parent:1.4.8")
+   
+    implementation("com.google.code.findbugs:jsr305:3.0.2")
+    implementation("com.google.crypto.tink:tink:1.10.0")
+    implementation("com.azure:azure-storage-blob:12.23.0")
+    implementation("org.postgresql:postgresql")
+    implementation("org.jetbrains:annotations:24.0.1")
+    implementation("commons-validator:commons-validator:1.7")
+    implementation("org.flywaydb:flyway-core:9.21.1")
+    implementation("com.mixpanel:mixpanel-java:1.5.2")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:5.6.0")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.6.0")
     implementation("net.coobird:thumbnailator:0.4.20")
     implementation("mobi.openddr.client:openddr-classifier-client:1.4.1")
     implementation("mobi.openddr:openddr-data:1.34")
-    implementation("com.google.guava:guava:32.1.1-jre")
-    
-    implementation("org.springframework.ws:spring-ws-core")
-    jaxb(
-            "org.glassfish.jaxb:jaxb-runtime",
-            "org.glassfish.jaxb:jaxb-xjc",
-            "org.glassfish.jaxb:jaxb-jxc"
-    )
+    implementation("com.google.guava:guava:32.1.2-jre")
 
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
@@ -157,11 +160,11 @@ dependencies {
         exclude group: "org.junit.vintage", module: "junit-vintage-engine"
         exclude group: "com.vaadin.external.google", module: "android-json"
     }
-    testImplementation("com.h2database:h2")
+    testImplementation("com.h2database:h2:2.2.220")
     testImplementation("org.awaitility:awaitility")
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-    testImplementation("org.mockito:mockito-inline")
-    testImplementation("io.github.bonigarcia:webdrivermanager:5.3.1")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("io.github.bonigarcia:webdrivermanager:5.4.1")
     testImplementation("org.springframework.ws:spring-ws-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.percy:percy-java-selenium:1.3.2")

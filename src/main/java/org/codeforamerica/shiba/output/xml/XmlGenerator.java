@@ -24,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class XmlGenerator implements FileGenerator {
 
@@ -55,7 +57,10 @@ public class XmlGenerator implements FileGenerator {
     Application application = applicationRepository.find(applicationId);
     List<DocumentField> documentFields = preparers.prepareDocumentFields(application, null,
         recipient);
-
+    /*
+     * Putting this regex outside of the try block so it can be recorded if errors occur.
+     */
+    String regex = null;
     try {
       List<DocumentField> nonEmptyDocumentFields = documentFields.stream()
           .filter(input -> !input.getValue().isEmpty())
@@ -69,10 +74,13 @@ public class XmlGenerator implements FileGenerator {
       }
 
       String contentsAfterReplacement;
+      
+      //try with resources ensures the input stream is closed at the end of the try statement
       try (InputStream xmlConfigInputStream = xmlConfiguration.getInputStream()) {
         String partiallyReplacedContent = new String(xmlConfigInputStream.readAllBytes());
+        
         for (XmlEntry entry : xmlEntries) {
-          String regex = getTokenRegex(entry.xmlToken());
+          regex = getTokenRegex(entry.xmlToken());
           String replacement = entry.escapedInputValue();
           partiallyReplacedContent = partiallyReplacedContent.replaceAll(regex, replacement);
         }
@@ -84,9 +92,14 @@ public class XmlGenerator implements FileGenerator {
       byte[] fileContent = finishedXML.getBytes();
       String filename = fileNameGenerator.generateXmlFilename(application);
       return new ApplicationFile(fileContent, filename);
-    } catch (IOException e) {
-      // TODO never, ever, ever convert a checked exception to a runtime exception
-      throw new RuntimeException(e);
+    } catch (IOException ioe) {
+      // TODO never, ever, ever convert a checked exception to a runtime exception (original comment)
+    	// Lots of opinions, don't know why they did this, but no way to recover, so let it throw RTE?
+    	log.error("XML Generator IOException for ApplicationID " + applicationId, ioe);
+      throw new RuntimeException(ioe);
+    }catch (Exception e) {
+    	log.error("Xml Generator Exception for ApplicationID " + applicationId + "  regex " + regex, e);
+    	throw new RuntimeException(e);
     }
   }
 

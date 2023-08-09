@@ -11,9 +11,9 @@
     <div class="h4 spacing-above-15"
          th:text="#{upload-documents.based-on-your-answers}"></div>
     <th:block th:each="docRec: ${docRecommendations}">
-      <div th:replace="fragments/docRecommendations :: docRecommendationFragment(${docRec.icon},
+      <div th:replace="~{fragments/docRecommendations :: docRecommendationFragment(${docRec.icon},
                                                 ${docRec.title},
-                                                ${docRec.explanation})"></div>
+                                                ${docRec.explanation})}"></div>
     </th:block>
   </div>
 </div>
@@ -47,7 +47,7 @@
 <div th:fragment="docRecommendationFragment(icon_path, rec_title, rec_explanation)"
      class="doc-rec grid-ignore-mobile spacing-below-60">
   <div class="success-icons grid__item width-one-whole spacing-below-15 doc-rec-icon">
-    <div th:replace="__${icon_path}__" class="success-icons width-one-whole"></div>
+    <div th:replace="~{__${icon_path}__}" class="success-icons width-one-whole"></div>
     <h3 class="h4 spacing-above-15 doc-rec-reveal-header" th:text="${rec_title}"></h3>
   </div>
   <div th:text="${rec_explanation}"></div>

@@ -2,7 +2,7 @@
      th:with="contactEmail=${data.getPageInputFirstValue('contactInfo', 'email')},
               enhanced-next-steps=1">
   <div class="grid__item spacing-below-15">
-    <div th:replace="fragments/icons/icon-next-steps-filled :: icon-next-steps-filled"></div>
+    <div th:replace="~{fragments/icons/icon-next-steps-filled :: icon-next-steps-filled}"></div>
   </div>
   <div class="grid__item">
     <h1 class="h2 spacing-below-15 spacing-above-0" th:text="#{next-steps.title}"></h1>
@@ -16,7 +16,7 @@
       <th:block th:each="msg: ${nextStepSections}">
         <div class="grid-ignore-mobile notice--shiba spacing-below-35">
           <div class="success-icons grid__item width-one-sixth">
-            <div th:replace="__${msg.icon()}__"
+            <div th:replace="~{__${msg.icon()}__}"
                  class="success-icons text--centered width-one-whole"></div>
           </div>
           <p class="grid__item width-five-sixths next-step-section"
@@ -36,7 +36,7 @@
 				<div id="process-step-1" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-twenty-percent spacing-above-10">
 						<div>
-							<div th:replace="fragments/icons/icon-submission-success :: icon-submission-success"></div>
+							<div th:replace="~{fragments/icons/icon-submission-success :: icon-submission-success}"></div>
 						</div>
 					</div>
 					<div class="grid__item width-two-thirds spacing-above-10">
@@ -54,9 +54,7 @@
 			<button id="button-a2" href="#" class="accordion__button" aria-expanded="false" aria-controls="a2">
 				<div id="process-step-2" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div>
-							<div th:replace="fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents"></div>
-						</div>
+							<div th:replace="~{fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents}"></div>
 					</div>
 					<div class="grid__item width-two-thirds spacing-above-10">
 						<div class="margin-bottom-0" >
@@ -75,9 +73,8 @@
 			<button id="button-a3" href="#" class="accordion__button" aria-expanded="false" aria-controls="a3">
 				<div id="process-step-3" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div>
-							<div th:replace="fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review"></div>
-						</div>
+							<div th:replace="~{fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review}"></div>
+						
 					</div>
 					<div class="grid__item width-two-thirds spacing-above-10">
 						<p class="margin-bottom-0" th:utext="#{next-steps.allow-time-for-review}"></p>
@@ -102,9 +99,7 @@
 			<button id="button-a4" href="#" class="accordion__button" aria-expanded="false" aria-controls="a4">
 				<div id="process-step-4" class="grid__item width-twelve-twelfths">
 					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div>
-							<div th:replace="fragments/icons/icon-next-steps-interview :: icon-next-steps-interview"></div>
-						</div>
+							<div th:replace="~{fragments/icons/icon-next-steps-interview :: icon-next-steps-interview}"></div>
 					</div>
 					<div class="grid__item width-two-thirds spacing-above-10">
 						<p class="margin-bottom-0" th:utext="#{next-steps.step-4}"></p>
@@ -124,7 +119,7 @@
     
   </div>
   
-  <div th:replace="fragments/continue :: continue"></div>
+  <div th:replace="~{fragments/continue :: continue}"></div>
   <p class="text--green" th:if="${contactEmail != null && !contactEmail.isEmpty()}">
     <i class="icon-check_circle"></i>
     <span

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{error.title})"></div>
+<div th:replace="~{fragments/head :: head(#{error.title})}"></div>
 <body>
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbar :: toolbar"></div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
   <section class="slab slab--shiba">
     <div class="grid">
       <main id="content" role="main" class="card spacing-above-35 text--centered">
-        <div th:replace="fragments/icons/icon-404 :: icon-404"></div>
+        <div th:replace="~{fragments/icons/icon-404 :: icon-404}"></div>
         <h1 class="h2" th:text="#{error.something-went-wrong}"></h1>
         <p th:text="#{error.something-went-wrong-on-our-end}"></p>
         <a class="button button--primary spacing-above-15" th:href="'/pages/landing'"
@@ -17,6 +17,6 @@
     </div>
   </section>
 </div>
-<div th:replace="fragments/footer :: footer"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

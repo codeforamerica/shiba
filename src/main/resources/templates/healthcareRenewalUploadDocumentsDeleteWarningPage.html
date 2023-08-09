@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body th:with="filename=${param.filename}">
 <div class="page-wrapper">
-  <div th:replace="fragments/toolbarHealthcareRenewal :: toolbarHealthcareRenewal"></div>
-  <div th:replace="fragments/demoBanner :: demoBanner"></div>
+  <div th:replace="~{fragments/toolbarHealthcareRenewal :: toolbarHealthcareRenewal}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
   <section class="slab slab--shiba">
     <div class="grid">
-      <div th:replace="fragments/cardHeader :: cardHeader"></div>
+      <div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
       <main id="content" role="main" class="card spacing-above-35">
         <div class="grid__item spacing-above-35 spacing-below-60">
-          <div th:replace="fragments/icons/icon-delete-document :: icon-delete-document"></div>
+          <div th:replace="~{fragments/icons/icon-delete-document :: icon-delete-document}"></div>
           <h1 class="long-file-name h2" th:text="#{${page.headerKey}(${filename})}"></h1>
           <h2 th:text="#{warning-page.is-that-ok}"></h2>
         </div>
@@ -27,6 +27,6 @@
     </div>
   </section>
 </div>
-<div th:replace="fragments/footerHealthcareRenewal :: footerHealthcareRenewal"></div>
+<div th:replace="~{fragments/footerHealthcareRenewal :: footerHealthcareRenewal}"></div>
 </body>
 </html>

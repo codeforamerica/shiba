@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head(#{${page.pageTitle}})"></div>
+<div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
 <body>
 <div class="spacing-below-15 spacing-above-35">
   <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'">
@@ -9,7 +9,7 @@
 </div>
 <div th:text="${groupName}"></div>
 <div>
-  <form method="post" th:action="'/groups/'+${subworkflows.keySet().iterator().next()}+'/delete'">
+  <form method="post" th:action="'/groups/'+${subworkflowsNext}+'/delete'">
     <button class="button" type="submit">
       Yes, start again
     </button>

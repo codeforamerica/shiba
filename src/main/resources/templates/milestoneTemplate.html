@@ -1,6 +1,6 @@
 <div th:fragment="milestoneTemplate(iconName, step, headerKey, contentHeaderKeys, contentItems)">
   <div class="grid__item spacing-above-35 text--centered">
-    <div th:replace="|fragments/icons/${iconName}| :: ${iconName}"></div>
+    <div th:replace="~{|fragments/icons/${iconName}| :: ${iconName}}"></div>
     <p id="milestone-step" class="text--help spacing-below-10"
        th:text="#{general.step(${step}, ${totalMilestones})}"></p>
     <h1 class="h2 spacing-below-35 spacing-above-0"
@@ -20,6 +20,6 @@
   </div>
 
   <div class="text--centered">
-    <div th:replace="fragments/continue :: continue"></div>
+    <div th:replace="~{fragments/continue :: continue}"></div>
   </div>
 </div>

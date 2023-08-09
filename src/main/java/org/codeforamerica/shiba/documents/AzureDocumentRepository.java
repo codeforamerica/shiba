@@ -37,7 +37,7 @@ public class AzureDocumentRepository implements DocumentRepository {
 
     try {
       log.info("Checking for filepath " + filepath + " in Azure.");
-      blobClient.download(byteArrayOutputStream);
+      blobClient.downloadStream(byteArrayOutputStream);
       return byteArrayOutputStream.toByteArray();
     } catch (Exception ex) {
       log.error("File at filepath " + filepath + " cannot be found in Azure.");

@@ -4,24 +4,24 @@
 <!--/* input either has followups or does NOT have followups */-->
   <div th:if="${!input.hasFollowUps()}">
     <div
-        th:replace="'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+        th:replace="~{'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})}"></div>
   </div>
   <div th:if="${input.hasFollowUps()}">
   <div class="question-with-follow-up" th:if="${!input.hasCustomFollowUps()}">
     <div class="question-with-follow-up__question">
       <div
-          th:replace="'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+          th:replace="~{'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})}"></div>
     </div>
     <div class="question-with-follow-up__follow-up" th:id="|${input.name}-follow-up|">
       <th:block th:each="followUp: ${input.followUps}">
         <div
-            th:replace="'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})"></div>
+            th:replace="~{'fragments/inputs/'+__${followUp.fragment()}__ :: __${followUp.fragment()}__(${followUp}, ${data})}"></div>
       </th:block>
     </div>
   </div>
-  <div th:if="${input.hasCustomFollowUps()}">
+  <div th:if="~{${input.hasCustomFollowUps()}}">
       <div
-        th:replace="'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})"></div>
+        th:replace="~{'fragments/inputs/'+__${input.fragment()}__ :: __${input.fragment()}__(${input}, ${data})}"></div>
   </div>
   </div>
 </th:block>

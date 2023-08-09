@@ -30,6 +30,6 @@
         </th:block>
       </fieldset>
     </div>
-    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+    <div th:replace="~{fragments/inputErrorFragment :: validationError(${data}, ${input})}"></div>
   </div>
 </th:block>

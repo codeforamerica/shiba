@@ -26,7 +26,7 @@
         th:with="useEnrichedInput=${data.get('homeAddressValidation').get('useEnrichedAddress')},
                          useEnriched=${useEnrichedInput != null && useEnrichedInput.value.contains('true')}">
       <div
-          th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')"></div>
+          th:replace="~{fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'homeAddress')}"></div>
     </th:block>
     <p class="spacing-below-0 spacing-above-10 italic"
        th:if="${!data.get('homeAddress').get('isHomeless').value.isEmpty()}"
@@ -51,7 +51,7 @@
       <th:block
           th:if="${!sameMailingAddress && data.getPageInputFirstValue('mailingAddress', 'streetAddress') != null}">
         <div
-            th:replace="fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')"></div>
+            th:replace="~{fragments/reviewAddressFragment :: reviewAddressFragment(${data}, ${useEnriched}, 'mailingAddress')}"></div>
       </th:block>
       <th:block
           th:if="${ noPermanentAddress && data.getPageInputFirstValue('cityForGeneralDelivery', 'whatIsTheCity') != null}">

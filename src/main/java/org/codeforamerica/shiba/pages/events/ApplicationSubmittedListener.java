@@ -1,6 +1,7 @@
 package org.codeforamerica.shiba.pages.events;
 
 import static org.codeforamerica.shiba.output.Recipient.CLIENT;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import com.google.gson.JsonObject;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -5,7 +5,7 @@
                                                                                                        hasError=${!data.isValid() && !inputData.valid(data)},
                                                                                                        hasHelpMessage=${input.helpMessageKey != null},
                                                                                                        needsAriaLabel=${input.needsAriaLabel()}">
-    <div th:replace="fragments/form-question-prompt :: formQuestionPrompt(${input})"></div>
+    <div th:replace="~{fragments/form-question-prompt :: formQuestionPrompt(${input})}"></div>
     <p class="text--help"
        th:id="${input.name + '-help-message'}"
        th:if="${hasHelpMessage}"
@@ -133,6 +133,6 @@
         </div>
 
     </th:block>
-    <div th:replace="fragments/inputErrorFragment :: validationError(${data}, ${input})"></div>
+    <div th:replace="~{fragments/inputErrorFragment :: validationError(${data}, ${input})}"></div>
 </div>
 </html>

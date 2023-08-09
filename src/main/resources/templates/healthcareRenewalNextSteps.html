@@ -1,7 +1,7 @@
 <div th:fragment="healthcareRenewalNextSteps"
      th:with="contactEmail=${data.getPageInputFirstValue('contactInfo', 'email')}">
   <div class="grid__item spacing-below-15">
-    <div th:replace="fragments/icons/icon-next-steps :: icon-next-steps"></div>
+    <div th:replace="~{fragments/icons/icon-next-steps :: icon-next-steps}"></div>
   </div>
   <div class="grid__item">
     <h1 class="h2 spacing-below-35 spacing-above-0" th:text="#{next-steps.title}"></h1>

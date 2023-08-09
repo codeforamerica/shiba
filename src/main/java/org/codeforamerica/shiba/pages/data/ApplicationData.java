@@ -40,10 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Data
-@Slf4j
 public class ApplicationData implements Serializable {
 
   @Serial

@@ -23,8 +23,8 @@ public class CityInfoConfigurationFactory implements FactoryBean<CityInfoConfigu
     loaderOptions.setAllowDuplicateKeys(false);
     loaderOptions.setMaxAliasesForCollections(Integer.MAX_VALUE);
     loaderOptions.setAllowRecursiveKeys(true);
-
-    Yaml yaml = new Yaml(new Constructor(CityInfoConfiguration.class), new Representer(),
+    DumperOptions options = new DumperOptions();
+    Yaml yaml = new Yaml(new Constructor(CityInfoConfiguration.class), new Representer(options),
         new DumperOptions(), loaderOptions);
     return yaml.load(classPathResource.getInputStream());
   }

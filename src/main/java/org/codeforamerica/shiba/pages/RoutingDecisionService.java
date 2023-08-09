@@ -23,7 +23,6 @@ import org.codeforamerica.shiba.application.parsers.CountyParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PagesData;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,8 @@ public class RoutingDecisionService {
   private final ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
   private final ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations;
   public RoutingDecisionService(ServicingAgencyMap<TribalNationRoutingDestination> tribalNations,
-      @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations,
-      FeatureFlagConfiguration featureFlagConfiguration) {
+			@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") ServicingAgencyMap<CountyRoutingDestination> countyRoutingDestinations
+			) {
     this.tribalNations = tribalNations;
     this.countyRoutingDestinations = countyRoutingDestinations;
   }

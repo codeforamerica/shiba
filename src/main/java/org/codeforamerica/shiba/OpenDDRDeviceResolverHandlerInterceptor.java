@@ -1,11 +1,9 @@
 package org.codeforamerica.shiba;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import mobi.openddr.classifier.model.Device;
-
 import org.springframework.web.servlet.HandlerInterceptor;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import mobi.openddr.classifier.Classifier;
 import mobi.openddr.classifier.loader.LoaderOption;
 
