@@ -128,14 +128,14 @@ dependencies {
     
      //logging -->
     implementation("org.slf4j:slf4j-api:2.0.7")
-    implementation("io.sentry:sentry-spring-boot-starter:6.27.0")
-    implementation("io.sentry:sentry-logback:6.27.0")
+    implementation("io.sentry:sentry-spring-boot-starter:6.28.0")
+    implementation("io.sentry:sentry-logback:6.28.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
     implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
-    implementation("ch.qos.logback:logback-classic:1.4.8")
-    implementation("ch.qos.logback:logback-core:1.4.8")
-    implementation("ch.qos.logback:logback-parent:1.4.8")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("ch.qos.logback:logback-core:1.4.11")
+    implementation("ch.qos.logback:logback-parent:1.4.11")
    
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("com.google.crypto.tink:tink:1.10.0")
