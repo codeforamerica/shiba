@@ -86,7 +86,7 @@
 					<div class="grid-ignore-mobile">
 						<p class="text-25 spacing-below-15" th:utext="${msg.title()}"></p>
 						<div class="success-icons grid__item width-one-fifth">
-							<div th:replace="__${msg.icon()}__" class="success-icons text--centered width-one-whole"></div>
+							<div th:replace="~{__${msg.icon()}__}" class="success-icons text--centered width-one-whole"></div>
 						</div>
 						<p th:if="${msg.icon()!=''}" class="grid__item  width-five-sixths next-step-section spacing-below-15" th:utext="${msg.message()}"></p>
 						<p th:if="${msg.icon()==''}" class="grid__item  next-step-section spacing-below-15" th:utext="${msg.message()}"></p>
