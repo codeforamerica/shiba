@@ -81,6 +81,9 @@ class ResubmissionServiceTest {
     routingDecisionService = new RoutingDecisionService(tribalNations, countyMap);
     resubmissionService = new ResubmissionService(applicationRepository, emailClient,
         pdfGenerator, routingDecisionService, applicationStatusRepository, pageEventPublisher);
+    resubmissionService.setIsEnableEmailResubmissionTask(true);
+    resubmissionService.setIsEnableEsbResubmissionTask(true);
+    resubmissionService.setIsEnableNoStatusEsbResubmissionTask(true);
   }
 
   @Test
