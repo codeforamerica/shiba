@@ -28,7 +28,8 @@ public class EmailAuthorizationManager implements AuthorizationManager<RequestAu
 		      "ramesh.shakya@state.mn.us",
 		      "marlene.merwarth@state.mn.us",
 		      "ryan.b.smith@state.mn.us",
-		      "michael.hauck@state.mn.us"
+		      "michael.hauck@state.mn.us",
+		      "bernadette.shearer@state.mn.us"
 		  );
 
 			@Override
