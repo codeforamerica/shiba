@@ -43,12 +43,16 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
 		staticMessageSource.addMessage("success.food-support", Locale.ENGLISH, "");
 		staticMessageSource.addMessage("success.contact-promise", Locale.ENGLISH, "");
 		staticMessageSource.addMessage("success.contact-promise-header", Locale.ENGLISH, "");
-		staticMessageSource.addMessage("next-steps.no-document-upload-message", Locale.ENGLISH, "some message");
-		staticMessageSource.addMessage("next-steps.document-upload-message", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.no-document-upload-message-1", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.no-document-upload-message-2", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.document-upload-message-1", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.document-upload-message-2", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-expedited-snap", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-expedited-ccap", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-not-expedited", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-header", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.complete-an-interview-1", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("next-steps.complete-an-interview-2", Locale.ENGLISH, "some message");
 	}
 }

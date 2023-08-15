@@ -480,9 +480,13 @@ public class PageController {
       model.put("nextStepSections", nextStepsContentService
           .getNextSteps(new ArrayList<>(programs), snapExpeditedEligibility,
               ccapExpeditedEligibility, locale));
-      model.put("nextStepDocumentUpload", nextStepsContentService.getNextStepsForDocumentUpload(!applicationData.getUploadedDocs().isEmpty(), locale));
+      model.put("nextStepsDocumentUpload", nextStepsContentService
+              .getNextStepsForDocumentUpload(!applicationData.getUploadedDocs().isEmpty(), locale));
       model.put("nextStepsAllowTimeForReview", nextStepsContentService
               .getNextStepsAllowTimeForReview(new ArrayList<>(programs), snapExpeditedEligibility,
+                  ccapExpeditedEligibility, locale));
+      model.put("nextStepsCompleteAnInterview", nextStepsContentService
+              .getNextStepsCompleteAnInterview(new ArrayList<>(programs), snapExpeditedEligibility,
                   ccapExpeditedEligibility, locale));
       }
 

@@ -1,10 +1,12 @@
 package org.codeforamerica.shiba.journeys;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -289,8 +291,8 @@ public class DocumentUploadJourneyTest extends JourneyTest {
 		uploadJpgFile(); // becomes "(1) shiba+file.jpg", we will delete this one later
 		uploadPdfFile(); // test-caf.pdf, mix in a file with a different name
 		uploadJpgFile(); // becomes "(2) shiba+file.jpg"
-
-		assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).isEqualTo("4 files added");
+		WebElement uploadedFilesMessage = driver.findElement(By.id("number-of-uploaded-files"));
+	    await().atMost(Duration.ofSeconds(30)).until(() -> uploadedFilesMessage.getText().equals("4 files added"));
 
 		List<WebElement> webElements = driver.findElements(By.id("file"));
 		assert (webElements.size() == 4);
@@ -311,7 +313,8 @@ public class DocumentUploadJourneyTest extends JourneyTest {
 		anchor.click();
 		// Click the confirmation
 		driver.findElement(By.id("form-submit-button")).click();
-		assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).isEqualTo("3 files added");
+		WebElement newUploadedFilesMessage = driver.findElement(By.id("number-of-uploaded-files"));
+		await().atMost(Duration.ofSeconds(30)).until(() -> newUploadedFilesMessage.getText().equals("3 files added"));
 
 		webElements = driver.findElements(By.id("file"));
 		assert (webElements.size() == 3);

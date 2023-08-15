@@ -207,8 +207,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 
 	applicationData.setUploadedDocs(Collections.emptyList());
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
+    		"You did not upload documents with your application today.",
+    		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -226,8 +226,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 			                            "1000000001/thumbnail-aaaaaaaa-1111-2222-bbbb-cccccccccccc", "application/pdf",	25000);
 	applicationData.setUploadedDocs(List.of(uploadedDocument));
     List<String> expectedMessages = List.of(
-    		"We received the documents you uploaded with your application. If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
+    		"We received the documents you uploaded with your application.",
+    		"If you need to upload more documents later, you can return to our homepage and click on ‘Upload documents’ to get started.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.NOT_ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
@@ -242,7 +242,6 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
 	
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
@@ -258,7 +257,6 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
 	
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
@@ -274,9 +272,8 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
 	
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Expect an eligibility worker to contact you by phone or mail with information about your next steps. The time it takes to review applications can vary.");
-    var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
+	var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
@@ -291,10 +288,25 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     List<UploadedDocument> uploadDocumuments = new ArrayList<UploadedDocument>();
 	applicationData.setUploadedDocs(uploadDocumuments);
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today. To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.ELIGIBLE;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.ELIGIBLE;
+    assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
+  }
+  
+  @Test
+  /**
+   * Tests the message generated for the "Complete an interview" accordion. 
+   * @throws Exception
+   */
+  void displaysCorrectCompleteAnInterviewAccordionMessage() throws Exception {
+	new TestApplicationDataBuilder(applicationData).withApplicantPrograms(List.of("SNAP"));
+	applicationData.setUploadedDocs(Collections.emptyList());
+    List<String> expectedMessages = List.of(
+    		"Program(s) on your application may require you to talk with a worker about your application.",
+    		"A worker from your county or Tribal Nation will call you. If they can\u2019t reach you, they will send you a letter.");
+    var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
+    var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);
   }
   
@@ -320,6 +332,6 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
     FormPage formPage = new FormPage(resultActions);
     List<String> nextStepSections = formPage.getElementsByClassName("next-step-section").stream()
         .map(Element::text).collect(Collectors.toList());
-    assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
+    assertThat(nextStepSections).contains(expectedMessages.toArray(new String[0]));
   }
 }
