@@ -95,10 +95,13 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.enter("drugFelony", NO.getDisplayValue());
     testPage.clickContinue();
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today.\n"
-    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    		"You did not upload documents with your application today.",
+    		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Expect an eligibility worker to contact you by phone or mail with information about your next steps.\n\n"
-    		+ "The time it takes to review applications can vary.");
+    		+ "The time it takes to review applications can vary.",
+	 		"Program(s) on your application may require you to talk with a worker about your application.",
+	 		"A worker from your county or Tribal Nation will call you. If they can\u2019t reach you, they will send you a letter.");
+
     // Finish Application
     applicationId = signApplicationAndDownloadApplicationZipFiles(signature,expectedMessages);
     assertApplicationSubmittedEventWasPublished(applicationId, MINIMUM, 1);
@@ -183,9 +186,12 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
 
     // Finish Application
     List<String> expectedMessages = List.of(
-    		"You did not upload documents with your application today.\n"
-    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.");
+    		"You did not upload documents with your application today.",
+    		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.",
+	 		"Program(s) on your application may require you to talk with a worker about your application.",
+	 		"A worker from your county or Tribal Nation will call you. If they can\u2019t reach you, they will send you a letter.");
+
     applicationId = signApplicationAndDownloadApplicationZipFiles(signature, expectedMessages);
     SuccessPage successPage = new SuccessPage(driver);
     assertThat(successPage.findElementById("snapExpeditedNotice").getText()).contains(

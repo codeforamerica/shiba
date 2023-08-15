@@ -121,10 +121,10 @@ abstract class JourneyTest extends AbstractBasePageTest {
     testPage.clickButton("Finish application");
 
     // Next steps screen
-    // TODO:  Fix this conditional logic once the enhanced nextSteps page is fully implemented.
     List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
     testPage.clickElementById("button-a2");
     testPage.clickElementById("button-a3");
+    testPage.clickElementById("button-a4");
     if (pageElements.isEmpty()) {
     	List<String> nextStepSections = driver.findElements(By.className("next-step-section")).stream().map(WebElement::getText).collect(Collectors.toList());
     	assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));

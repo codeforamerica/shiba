@@ -77,20 +77,24 @@ public class NextStepsContentService {
     return messages;
   }
   
-  public String getNextStepsForDocumentUpload(boolean isDocumentUploaded,
+  public List<NextStepSection> getNextStepsForDocumentUpload(boolean isDocumentUploaded,
 	      Locale locale) {
 	   
 	    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-	    String messages = new String();
+	    List<NextStepSection> messages = new ArrayList<NextStepSection>();
 
 	    // No document uploaded
 	    if (!isDocumentUploaded) {
-	      messages = lms.getMessage("next-steps.no-document-upload-message");
+		  messages.add(new NextStepSection("", lms.getMessage("next-steps.no-document-upload-message-1"), ""));
+		  messages.add(new NextStepSection("", lms.getMessage("next-steps.no-document-upload-message-2"), ""));
+
 	    }
 	    // Document uploaded
 	    if (isDocumentUploaded) {
-		      messages = lms.getMessage("next-steps.document-upload-message");
+		      messages.add(new NextStepSection("", lms.getMessage("next-steps.document-upload-message-1"), ""));
+		      messages.add(new NextStepSection("", lms.getMessage("next-steps.document-upload-message-2"), ""));
 		    }
+	    
 	    return messages;
 	  }
   
@@ -104,7 +108,7 @@ public class NextStepsContentService {
 	   * @param ccapExpeditedEligibility - the object that determine whether or not
 	   *                                 the applicant is eligible for expedited CCAP
 	   * @param locale                   - language locale
-	   * @return - String, the string that is displayed with the "Allow time for
+	   * @return - String, the string that is displayed when the "Allow time for
 	   *         review accordion" is opened.
 	   */
 	  public List<NextStepSection> getNextStepsAllowTimeForReview(List<String> programs,
@@ -131,6 +135,31 @@ public class NextStepsContentService {
 		  	      );
 	  	}
 
+	  	return messages;
+	  }
+	  
+	  /**
+	   * This method determines the message that is displayed in the open "Complete an interview accordion"
+	   *    based on the parameters provided.
+	   * 
+	   * @param programs                 - the programs that have been applied for
+	   * @param snapExpeditedEligibility - the object that determine whether or not
+	   *                                 the applicant is eligible for expedited SNAP
+	   * @param ccapExpeditedEligibility - the object that determine whether or not
+	   *                                 the applicant is eligible for expedited CCAP
+	   * @param locale                   - language locale
+	   * @return - String, the string that is displayed when the "Complete an interview
+	   *         accordion" is opened.
+	   */
+	  public List<NextStepSection> getNextStepsCompleteAnInterview(List<String> programs,
+	  	  SnapExpeditedEligibility snapExpeditedEligibility, CcapExpeditedEligibility ccapExpeditedEligibility,
+	  	  Locale locale) {
+	
+	  	LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
+	  	List<NextStepSection> messages = new ArrayList<NextStepSection>();
+	  	messages.add(new NextStepSection("", lms.getMessage("next-steps.complete-an-interview-1"), ""));
+	  	messages.add(new NextStepSection("", lms.getMessage("next-steps.complete-an-interview-2"), ""));
+	
 	  	return messages;
 	  }
 

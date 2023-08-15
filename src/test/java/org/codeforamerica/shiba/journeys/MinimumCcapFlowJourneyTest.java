@@ -196,13 +196,16 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     List<WebElement> pageElements = driver.findElements(By.id("original-next-steps"));
     testPage.clickElementById("button-a2");
     testPage.clickElementById("button-a3");
+    testPage.clickElementById("button-a4");
     if (pageElements.isEmpty()) {
     	 List<String> expectedMessages = List.of(
-    	    		"You did not upload documents with your application today.\n"
-    	    		+ "To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
-    	    		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.");
+    	    		"You did not upload documents with your application today.",
+    	    		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
+    	    		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.",
+			 		"Program(s) on your application may require you to talk with a worker about your application.",
+			 		"A worker from your county or Tribal Nation will call you. If they can\u2019t reach you, they will send you a letter.");
     	 List<String> nextStepSections = driver.findElements(By.className("next-step-section")).stream().map(WebElement::getText).collect(Collectors.toList());
-     	assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
+     	 assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
     }
 
     testPage.clickContinue();// nextSteps
