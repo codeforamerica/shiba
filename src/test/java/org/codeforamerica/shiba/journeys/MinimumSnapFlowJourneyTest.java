@@ -61,9 +61,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(testPage.getTitle()).isEqualTo("General Delivery address");
     String generalDeliveryText = testPage.getElementText("general-delivery");
     assertThat(generalDeliveryText).contains("General Delivery");
-    assertThat(generalDeliveryText).contains("Main Post Office.");
-    assertThat(generalDeliveryText).contains("100 S 1st St");
-    assertThat(generalDeliveryText).contains("Minneapolis, MN 55401");
     testPage.clickContinue();
 
     // Contact
@@ -73,7 +70,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertThat(driver.findElement(By.id("homeAddress-address_message")).getText())
         .isEqualTo("No permanent address");
     assertThat(testPage.findElementById("generalDelivery_streetAddress").getText())
-        .isEqualTo("100 S 1st St");
+        .isEqualTo("Ada, MN");
 
     testPage.clickLink("Submit an incomplete application now with only the above information.");
 
@@ -119,11 +116,11 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_HOME_CITY", "");
     assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
     assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "");
-    assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "100 S 1st St");
+    assertCafFieldEquals("APPLICANT_MAILING_STREET_ADDRESS", "General Delivery");
     assertCafFieldEquals("APPLICANT_MAILING_APT_NUMBER", "");
-    assertCafFieldEquals("APPLICANT_MAILING_CITY", "Minneapolis");
+    assertCafFieldEquals("APPLICANT_MAILING_CITY", "Ada");
     assertCafFieldEquals("APPLICANT_MAILING_STATE", "MN");
-    assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "55401");
+    assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "56510-9999");
   }
 
   @Test

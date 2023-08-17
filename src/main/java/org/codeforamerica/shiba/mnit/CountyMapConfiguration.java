@@ -234,10 +234,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Freeborn, "A000024800", "507-377-5400");
     addCountyDefaults(Goodhue, "A000025600", "651-385-3200");
     addCountyDefaults(Grant, "A000061200", "218-685-8200");
-    addCountyDefaults(Hennepin, "A000027200", "612-596-1300", new Address(
-        "100 S 1st St", "Minneapolis", "MN", "55401", "",
-        Hennepin.toString()
-    ));
+    addCountyDefaults(Hennepin, "A000027200", "612-596-1300");
     addCountyDefaults(Houston, "A000028100", "507-725-5811");
     addCountyDefaults(Hubbard, "A000029900", "877-450-1451");
     addCountyDefaults(Isanti, "A000030200", "763-689-1711");

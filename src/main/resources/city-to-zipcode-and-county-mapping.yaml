@@ -1229,7 +1229,7 @@ cityToZipAndCountyMapping:
     zipcode: "56354"
     county: Douglas
   Minneapolis:
-    zipcode: "55401"
+    zipcode: "55440"
     county: Hennepin
   Minneota:
     zipcode: "56264"
