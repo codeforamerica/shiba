@@ -23,6 +23,7 @@ import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.FullNameFormatter;
@@ -67,8 +68,9 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     var householdMemberInputs = getHouseholdMembers(application);
     var countyInstructionsInput = getCountyInstructions(application, recipient, document);
     var utmSourceInput = getUtmSource(application, document);
+    var documentDestinations = getDocumentDestinations(application, recipient, document);
     return combineCoverPageInputs(programsInput, fullNameInput, countyInstructionsInput,
-        utmSourceInput, householdMemberInputs, tribalAffiliationInput);
+        utmSourceInput, householdMemberInputs, tribalAffiliationInput, documentDestinations);
   }
 
   @Nullable
@@ -87,13 +89,14 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   private List<DocumentField> combineCoverPageInputs(DocumentField programsInput,
       DocumentField fullNameInput, DocumentField countyInstructionsInput,
       DocumentField utmSourceInput, List<DocumentField> householdMemberInputs,
-      DocumentField tribalAffiliationInput) {
+      DocumentField tribalAffiliationInput, DocumentField documentDestinationsInput) {
     var everythingExceptHouseholdMembers = new ArrayList<DocumentField>();
     everythingExceptHouseholdMembers.add(programsInput);
     everythingExceptHouseholdMembers.add(fullNameInput);
     everythingExceptHouseholdMembers.add(tribalAffiliationInput);
     everythingExceptHouseholdMembers.add(countyInstructionsInput);
     everythingExceptHouseholdMembers.add(utmSourceInput);
+    everythingExceptHouseholdMembers.add(documentDestinationsInput);
     everythingExceptHouseholdMembers.addAll(householdMemberInputs);
     return everythingExceptHouseholdMembers.stream().filter(Objects::nonNull).toList();
   }
@@ -169,5 +172,14 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     var countyInstructions = lms.getMessage(messageCode, coverPageMessageStrings);
 
     return new DocumentField("coverPage", "countyInstructions", countyInstructions, SINGLE_VALUE);
+  }
+  
+  private DocumentField getDocumentDestinations(Application application, Recipient recipient, Document document) {
+	List<RoutingDestination> routingDestinations = routingDecisionService
+			.getRoutingDestinations(application.getApplicationData(), document);
+	Locale locale = LocaleContextHolder.getLocale();
+	String destinations = routingDestinationMessageService.generatePhrase(locale, application.getCounty(), false, routingDestinations);
+
+	return new DocumentField("coverPage", "documentDestinations", destinations, SINGLE_VALUE);
   }
 }

@@ -385,6 +385,9 @@ public class ApplicationDataParser {
         new ParsingCoordinate("retroactiveCoverageTimePeriod", "retroactiveCoverageMap"));
     coordinatesMap.put(Field.RETROACTIVE_COVERAGE_MONTH,
         new ParsingCoordinate("retroactiveCoverageTimePeriod", "retroactiveCoverageNumberMonths"));
+    
+    coordinatesMap.put(Field.DOCUMENT_DESTINATIONS,
+            new ParsingCoordinate("coverPage", "documentDestinations"));
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -627,7 +630,8 @@ public class ApplicationDataParser {
     RETROACTIVE_COVERAGE_SOURCE,
     RETROACTIVE_TIME_INDIVIDUAL,
     RETROACTIVE_COVERAGE_MAP,
-    RETROACTIVE_COVERAGE_MONTH;
+    RETROACTIVE_COVERAGE_MONTH,
+	DOCUMENT_DESTINATIONS;
     
     @Getter
     private final String defaultValue;

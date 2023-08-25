@@ -332,4 +332,30 @@ class CoverPagePreparerTest {
             DocumentFieldType.SINGLE_VALUE
         ));
   }
+
+  @Test
+  void laterDocsCoverPageShouldIncludeDestinations() {
+    Application application = Application.builder()
+            .id("someId")
+            .completedAt(ZonedDateTime.now())
+            .applicationData(applicationData)
+            .timeToComplete(null)
+            .flow(FlowType.LATER_DOCS)
+            .build();
+    
+    when(routingDestinationMessageService.generatePhrase(any(), any(), anyBoolean(), any())).thenReturn("to infinity and beyond...");
+
+    List<DocumentField> documentFields = preparer
+        .prepareDocumentFields(application, Document.UPLOADED_DOC, Recipient.CASEWORKER);
+
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "documentDestinations",
+            "to infinity and beyond...",
+            DocumentFieldType.SINGLE_VALUE
+        ));
+
+  }
+  
 }

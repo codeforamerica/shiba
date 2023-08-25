@@ -382,6 +382,7 @@ mappings:
     countyInstructions: COUNTY_INSTRUCTIONS
     fullName: FULL_NAME
     tribal: TRIBAL_NATION
+    documentDestinations: DOCUMENT_DESTINATIONS
   incomePerPayPeriod:
     incomePerPayPeriod: INCOME_PER_PAY_PERIOD
   nonSelfEmployment_incomePerPayPeriod:
