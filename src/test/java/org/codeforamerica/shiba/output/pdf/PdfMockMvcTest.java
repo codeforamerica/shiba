@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.Program;
+import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.pages.data.InputData;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
@@ -607,6 +609,27 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 
 			var caf = submitAndDownloadCaf();
 			assertPdfFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED", caf);
+		}
+
+		/**
+		 * Verify that the county instructions on the cover page contains the correct list of document destinations.
+		 * This test case verifies multiple destinations for the CAF and a single destination for the CCAP.
+		 * This test case uses Tribal TANF for a resident of Hennepin County and a member of Mille Lacs Band of Ojibwe.
+		 * @throws Exception
+		 */
+		@Test
+		void countyInstructionsShouldIncludeMultipleDestinationsForCafAndSingleDestinationForCcap() throws Exception {
+			// setup() selects SNAP, CASH and CCAP 
+			addHouseholdMembersWithProgram("None"); // Tribal TANF requires a household
+
+			postExpectingSuccess("selectTheTribe", "selectedTribe", "Mille Lacs Band of Ojibwe");
+			postExpectingSuccess("applyForTribalTANF", "applyForTribalTANF", "true");
+
+		    submitApplication();
+		    PDAcroForm caf = downloadCaseWorkerPDF(applicationData.getId(), Document.CAF);
+		    assertPdfFieldContains("COUNTY_INSTRUCTIONS", "MNbenefits sent this application to Mille Lacs Band of Ojibwe and Hennepin County.", caf);
+		    PDAcroForm ccap = downloadCaseWorkerPDF(applicationData.getId(), Document.CCAP);
+		    assertPdfFieldContains("COUNTY_INSTRUCTIONS", "MNbenefits sent this application to Hennepin County.", ccap);
 		}
 
 		@Nested
