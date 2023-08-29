@@ -287,11 +287,13 @@ public class PageController {
 	  // Temporary cookie indicating user page
       Cookie pageNameCookie = new Cookie("page_name", pageName);
       pageNameCookie.setPath("/");
+      pageNameCookie.setSecure(true);
       pageNameCookie.setHttpOnly(true);
       response.addCookie(pageNameCookie);
       //to set flow on cookie
       Cookie flowCookie = new Cookie("flow_type", applicationData.getFlow().toString());
       flowCookie.setPath("/");
+      flowCookie.setSecure(true);
       flowCookie.setHttpOnly(true);
       response.addCookie(flowCookie);
       
