@@ -346,6 +346,10 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected PDAcroForm downloadCertainPopsCaseWorkerPDF(String applicationId) throws Exception {
+	  return downloadCaseWorkerPDF(applicationId, Document.CERTAIN_POPS);
+  }
+  
+  protected PDAcroForm downloadCaseWorkerPDF(String applicationId, Document document) throws Exception {
     var zipBytes = mockMvc.perform(get("/download/" + applicationId)
             .with(oauth2Login().attributes(attrs -> attrs.put("email", ADMIN_EMAIL)))
             .session(session))
@@ -355,7 +359,7 @@ public class AbstractShibaMockMvcTest {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipBytes);
     ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
     List<File> zippedFiles = unzip(zipFile);
-    File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CERTAIN_POPS)).toList().get(0);
+    File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(document)).toList().get(0);
     return PDDocument.load(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
   }
 
