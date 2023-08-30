@@ -78,7 +78,8 @@ public class SecurityConfiguration {
 		.httpStrictTransportSecurity()
 		.requestMatcher(AnyRequestMatcher.INSTANCE)
 		.includeSubDomains(true)
-		.maxAgeInSeconds(31536000);
+		.maxAgeInSeconds(31536000)
+		.preload(true);
 
 		http.sessionManagement(session -> session.invalidSessionStrategy(this.shibaInvalidSessionStrategy));
 		http.sessionManagement(management -> management.sessionConcurrency(
