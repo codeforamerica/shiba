@@ -42,7 +42,7 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.output.Document;
@@ -304,19 +304,19 @@ public class AbstractShibaMockMvcTest {
     ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
     List<File> zippedFiles = unzip(zipFile);
     File cafFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CAF)).toList().get(0);
-    return PDDocument.load(FileUtils.readFileToByteArray(cafFile)).getDocumentCatalog().getAcroForm();
+    return Loader.loadPDF(FileUtils.readFileToByteArray(cafFile)).getDocumentCatalog().getAcroForm();
   }
 
   protected PDAcroForm downloadCcapClientPDF() throws Exception {
     List<File> zippedFiles = getZippedFiles();
     File ccapFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CCAP)).toList().get(0);
-    return PDDocument.load(FileUtils.readFileToByteArray(ccapFile)).getDocumentCatalog().getAcroForm();
+    return Loader.loadPDF(FileUtils.readFileToByteArray(ccapFile)).getDocumentCatalog().getAcroForm();
   }
   
   protected PDAcroForm downloadCertainPopsClientPDF() throws Exception {
     List<File> zippedFiles = getZippedFiles();
     File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(CERTAIN_POPS)).toList().get(0);
-    return PDDocument.load(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
+    return Loader.loadPDF(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
   }
 
   private List<File> getZippedFiles() throws Exception {
@@ -360,7 +360,7 @@ public class AbstractShibaMockMvcTest {
     ZipInputStream zipFile = new ZipInputStream(byteArrayInputStream);
     List<File> zippedFiles = unzip(zipFile);
     File certainPopsFile = zippedFiles.stream().filter(file -> getDocumentType(file).equals(document)).toList().get(0);
-    return PDDocument.load(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
+    return Loader.loadPDF(FileUtils.readFileToByteArray(certainPopsFile)).getDocumentCatalog().getAcroForm();
   }
 
   protected Document getDocumentType(File file) {

@@ -16,6 +16,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.codeforamerica.shiba.ServicingAgencyMap;
@@ -225,7 +227,7 @@ class PdfGeneratorTest {
     List<ApplicationFile> applicationFileList = pdfGenerator.generateCombinedUploadedDocument(uploadedDocumentList, application, coverPageFile.getFileBytes());
     String text = null;
     for(ApplicationFile af:applicationFileList) {
-     PDDocument doc = PDDocument.load(af.getFileBytes());
+     PDDocument doc = Loader.loadPDF(af.getFileBytes());
      PDFTextStripper findPhrase = new PDFTextStripper();
      text = findPhrase.getText(doc);
     }
@@ -255,7 +257,7 @@ class PdfGeneratorTest {
     List<ApplicationFile> applicationFileList = pdfGenerator.generateCombinedUploadedDocument(uploadedDocumentList, application, coverPageFile.getFileBytes());
     String text = null;
     for(ApplicationFile af:applicationFileList) {
-     PDDocument doc = PDDocument.load(af.getFileBytes());
+     PDDocument doc = Loader.loadPDF(af.getFileBytes());
      PDFTextStripper findPhrase = new PDFTextStripper();
      text = findPhrase.getText(doc);
     }

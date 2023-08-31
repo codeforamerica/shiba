@@ -50,6 +50,8 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -1022,7 +1024,7 @@ public class PageController {
     
     if (type.contains("pdf")) {
       // Return an error response if this is an pdf we can't work with
-      try (var pdfFile = PDDocument.load(file.getBytes())) {
+      try (var pdfFile = Loader.loadPDF(file.getBytes())) {
         var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
         if (acroForm != null && acroForm.xfaIsDynamic()) {
           return new ResponseEntity<>(

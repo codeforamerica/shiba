@@ -103,9 +103,6 @@ smarty-street-url: "https://us-street.api.smartystreets.com/street-address"
 encryption-key: ${ENCRYPTION_KEY}
 logging:
   level:
-    org.apache.pdfbox.multipdf: off
-    org.apache.pdfbox.cos: ERROR
-    org.apache.pdfbox.pdmodel.font: ERROR
     org.springframework.web: ERROR
     org.springframework.ws.client.MessageTracing.sent: DEBUG
     org.springframework.ws.server.MessageTracing.sent: DEBUG

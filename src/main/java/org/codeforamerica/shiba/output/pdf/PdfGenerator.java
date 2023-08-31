@@ -13,14 +13,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.Utils;
@@ -258,7 +260,7 @@ public class PdfGenerator implements FileGenerator {
   }
   
   private byte[] addScannedDate(byte[] fileBytes, PDDocument overlayDoc, UploadedDocument uDoc, Overlay overlay) {
-    try (PDDocument origDoc = PDDocument.load(fileBytes);
+    try (PDDocument origDoc = Loader.loadPDF(fileBytes);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) { 
       if (origDoc.getDocumentCatalog().getAcroForm() != null) {
           origDoc.getDocumentCatalog().getAcroForm().flatten();
@@ -285,7 +287,7 @@ public class PdfGenerator implements FileGenerator {
     try {
        PDPage page = new PDPage(PDRectangle.A4); 
        overlayDoc.addPage(page); 
-       PDFont font = PDType1Font.COURIER_OBLIQUE;
+       PDType1Font font = new PDType1Font(Standard14Fonts.FontName.COURIER_OBLIQUE);
        PDPageContentStream contentStream = new PDPageContentStream(overlayDoc, page);
        contentStream.beginText();
        contentStream.setFont(font, 12); 
@@ -315,8 +317,8 @@ public class PdfGenerator implements FileGenerator {
    */
   public byte[] addPageToPdf(byte[] mainPage, byte[] addPage) {
     PDFMergerUtility merger = new PDFMergerUtility();
-    try (PDDocument mainPageDoc = PDDocument.load(mainPage);
-        PDDocument addedPageDoc = PDDocument.load(addPage);
+    try (PDDocument mainPageDoc = Loader.loadPDF(mainPage);
+    	PDDocument addedPageDoc = Loader.loadPDF(addPage);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
       
         mainPageDoc.getDocumentCatalog().setDocumentOutline(null);

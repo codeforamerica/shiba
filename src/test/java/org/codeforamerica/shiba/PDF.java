@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 public class PDF {
 
@@ -61,8 +62,8 @@ public class PDF {
       PDPageContentStream contentStream = new PDPageContentStream(document, page);
    
       contentStream.beginText(); 
-   
-      contentStream.setFont(PDType1Font.HELVETICA, 12);
+      PDType1Font font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+      contentStream.setFont(font, 12);
       contentStream.newLineAtOffset(250, 750);
       contentStream.showText("Hello World");
    

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
@@ -65,7 +67,7 @@ public class PDFBoxFieldFiller implements PdfFieldFiller {
   @NotNull
   private PDDocument fillOutPdfs(Collection<PdfField> fields, Resource pdfResource) {
     try {
-      PDDocument loadedDoc = PDDocument.load(pdfResource.getInputStream());
+      PDDocument loadedDoc = Loader.loadPDF(pdfResource.getInputStream().readAllBytes());
       loadedDoc.getDocumentCatalog().setDocumentOutline(null);//Removes bookmarks
       PDAcroForm acroForm = loadedDoc.getDocumentCatalog().getAcroForm();
       acroForm.setNeedAppearances(true);

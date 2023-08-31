@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -32,7 +33,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 public class ImageUtility {
 
 	public static byte[] compressImagesInPDF(byte[] imageBytes) throws IOException {
-		final PDDocument doc = PDDocument.load(imageBytes);
+		final PDDocument doc = Loader.loadPDF(imageBytes);
 		final PDPageTree pages = doc.getPages();
 		final ImageWriter imgWriter;
 		final ImageWriteParam iwp;

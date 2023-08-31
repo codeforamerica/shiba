@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -80,7 +82,7 @@ class PDFBoxFieldFillerTest {
     Path path = Files.createTempDirectory("");
     File file = new File(path.toFile(), "test-caf.pdf");
     Files.write(file.toPath(), applicationFile.getFileBytes());
-    PDDocument pdDocument = PDDocument.load(file);
+    PDDocument pdDocument = Loader.loadPDF(file);
 
     assertThat(pdDocument.getNumberOfPages()).isEqualTo(21);
   }
@@ -111,7 +113,7 @@ class PDFBoxFieldFillerTest {
     File file = new File(path.toFile(), "test-caf.pdf");
     Files.write(file.toPath(), applicationFile.getFileBytes());
 
-    PDDocument pdDocument = PDDocument.load(file);
+    PDDocument pdDocument = Loader.loadPDF(file);
     return pdDocument.getDocumentCatalog().getAcroForm();
   }
 }

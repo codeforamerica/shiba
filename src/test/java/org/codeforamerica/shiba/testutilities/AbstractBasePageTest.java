@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.codeforamerica.shiba.DocumentRepositoryTestConfig;
 import org.codeforamerica.shiba.output.Document;
@@ -96,7 +96,7 @@ public abstract class AbstractBasePageTest {
         .filter(file -> file.getName().endsWith(".pdf")).sorted((f1,f2)-> Long.compare(f2.lastModified(), f1.lastModified()))
         .collect(Collectors.toMap(this::getDocumentType, pdfFile -> {
           try {
-            return PDDocument.load(pdfFile).getDocumentCatalog().getAcroForm();
+            return Loader.loadPDF(pdfFile).getDocumentCatalog().getAcroForm();
           } catch (IOException e) {
             throw new IllegalStateException(e);
           }
