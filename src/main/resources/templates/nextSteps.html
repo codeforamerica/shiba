@@ -37,7 +37,6 @@
 					<div class="grid__item width-twenty-percent spacing-above-10">
 						<div>
 							<div th:replace="~{fragments/icons/icon-submission-success :: icon-submission-success}"></div>
-					        <p></p>
 						</div>
 					</div>
 					<div class="grid__item width-two-thirds spacing-above-10">
@@ -54,16 +53,19 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a2" href="#" class="accordion__button" aria-expanded="false" aria-controls="a2">
 				<div id="process-step-2" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div th:replace="~{fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents}"></div>
-					    <p></p>
-					</div>
-					<div class="grid__item width-two-thirds spacing-above-10">
-						<div class="margin-bottom-0" >
-							<div th:utext="#{next-steps.step-2}"></div>
-							<div th:utext="#{next-steps.step-2-upload-your-documents}"></div>
-						</div>
-					</div>
+					<table class="spacing-above-10 spacing-below-0" >
+						<tr class="spacing-above-10">
+							<th class="grid__item width-twenty-percent">
+							    <div th:replace="~{fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents}"></div>
+			 				</th>
+			 				<th class="grid__item width-two-thirds">
+								<div class="margin-bottom-0" >
+									<div th:utext="#{next-steps.step-2}"></div>
+									<div th:utext="#{next-steps.step-2-upload-your-documents}"></div>
+								</div>
+							</th>
+						</tr>
+					</table>
 				</div>
 			</button>
 				<div class="accordion__content" id="a2">
@@ -78,13 +80,16 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a3" href="#" class="accordion__button" aria-expanded="false" aria-controls="a3">
 				<div id="process-step-3" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-twenty-percent spacing-above-10">
-					    <div th:replace="~{fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review}"></div>
-					    <p></p>
- 					</div>
-					<div class="grid__item width-two-thirds spacing-above-10">
-						<p class="margin-bottom-0" th:utext="#{next-steps.allow-time-for-review}"></p>
-					</div>
+					<table class="spacing-above-10 spacing-below-0">
+						<tr class="spacing-above-10">
+							<th class="grid__item width-twenty-percent">
+							    <div th:replace="~{fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review}"></div>
+			 				</th>
+			 				<th class="grid__item width-two-thirds">
+								<p class="margin-bottom-0" th:utext="#{next-steps.allow-time-for-review}"></p>
+							</th>
+						</tr>
+					</table>
 				</div>
 			</button>
 			<div class="accordion__content" id="a3">
@@ -104,13 +109,16 @@
 		<div class="accordion next-steps-accordion spacing-below-60">
 			<button id="button-a4" href="#" class="accordion__button" aria-expanded="false" aria-controls="a4">
 				<div id="process-step-4" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div th:replace="~{fragments/icons/icon-next-steps-interview :: icon-next-steps-interview}"></div>
-					    <p></p>
-					</div>
-					<div class="grid__item width-two-thirds spacing-above-10">
-						<p class="margin-bottom-0" th:utext="#{next-steps.step-4}"></p>
-					</div>
+					<table class="spacing-above-10 spacing-below-0">
+						<tr class="spacing-above-10">
+							<th class="grid__item width-twenty-percent">
+							    <div th:replace="~{fragments/icons/icon-next-steps-interview :: icon-next-steps-interview}"></div>
+			 				</th>
+			 				<th class="grid__item width-two-thirds">
+								<p class="margin-bottom-0" th:utext="#{next-steps.step-4}"></p>
+							</th>
+						</tr>
+					</table>
 				</div>
 			</button>
 			<div class="accordion__content" id="a4">

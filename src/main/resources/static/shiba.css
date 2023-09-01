@@ -654,6 +654,10 @@ input[id='sad']:checked + .feedback-buttons {
   margin-top: 45px;
 }
 
+.spacing-below-0 {
+  margin-bottom: 0px;
+}
+
 .padding-left-20 {
   padding-left: 20px;
 }
