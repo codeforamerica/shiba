@@ -34,18 +34,22 @@
 		<div class="accordion next-steps-alt-accordion hidden-accordion spacing-below-20" id="next-steps-accordion">
 			<button href="#" class="accordion__button hidden-accordion__button" aria-expanded="false" aria-controls="a1">
 				<div id="process-step-1" class="grid__item width-twelve-twelfths">
-					<div class="grid__item width-twenty-percent spacing-above-10">
-						<div>
-							<div th:replace="~{fragments/icons/icon-submission-success :: icon-submission-success}"></div>
-						</div>
-					</div>
-					<div class="grid__item width-two-thirds spacing-above-10">
-						<div class="margin-bottom-0">
-							<div th:utext="#{next-steps.step-1}"></div>
-							<div th:utext="#{next-steps.step-1-apply-once}"></div>
-							<div class="text-normal" th:utext="#{next-steps.step-1-completed}"></div>
-						</div>
-					</div> 
+					<table class="spacing-above-10 spacing-below-0 width-twelve-twelfths" >
+					  <tbody class="width-twelve-twelfths">
+						<tr class="width-twelve-twelfths">
+							<th class="width-twenty-percent">
+							    <div th:replace="~{fragments/icons/icon-submission-success :: icon-submission-success}"></div>
+			 				</th>
+			 				<th>
+								<div class="margin-bottom-0" >
+									<div th:utext="#{next-steps.step-1}"></div>
+									<div th:utext="#{next-steps.step-1-apply-once}"></div>
+									<div class="text-normal" th:utext="#{next-steps.step-1-completed}"></div>
+								</div>
+							</th>
+						</tr>
+					  </tbody>
+					</table>
 				</div>
 			</button>
 		</div>
@@ -53,18 +57,20 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a2" href="#" class="accordion__button" aria-expanded="false" aria-controls="a2">
 				<div id="process-step-2" class="grid__item width-twelve-twelfths">
-					<table class="spacing-above-10 spacing-below-0" >
-						<tr class="spacing-above-10">
-							<th class="grid__item width-twenty-percent">
+					<table class="spacing-above-10 spacing-below-0 width-twelve-twelfths" >
+					  <tbody class="width-twelve-twelfths">
+						<tr class="width-twelve-twelfths">
+							<th class="width-twenty-percent">
 							    <div th:replace="~{fragments/icons/icon-next-steps-upload-documents :: icon-next-steps-upload-documents}"></div>
 			 				</th>
-			 				<th class="grid__item width-two-thirds">
+			 				<th>
 								<div class="margin-bottom-0" >
 									<div th:utext="#{next-steps.step-2}"></div>
 									<div th:utext="#{next-steps.step-2-upload-your-documents}"></div>
 								</div>
 							</th>
 						</tr>
+					  </tbody>
 					</table>
 				</div>
 			</button>
@@ -80,15 +86,17 @@
 		<div class="accordion next-steps-accordion spacing-below-20">
 			<button id="button-a3" href="#" class="accordion__button" aria-expanded="false" aria-controls="a3">
 				<div id="process-step-3" class="grid__item width-twelve-twelfths">
-					<table class="spacing-above-10 spacing-below-0">
-						<tr class="spacing-above-10">
-							<th class="grid__item width-twenty-percent">
+					<table class="spacing-above-10 spacing-below-0 width-twelve-twelfths">
+					  <tbody class="width-twelve-twelfths">
+						<tr class="width-twelve-twelfths">
+							<th class="width-twenty-percent">
 							    <div th:replace="~{fragments/icons/icon-next-steps-application-review :: icon-next-steps-application-review}"></div>
 			 				</th>
-			 				<th class="grid__item width-two-thirds">
+			 				<th>
 								<p class="margin-bottom-0" th:utext="#{next-steps.allow-time-for-review}"></p>
 							</th>
 						</tr>
+					  </tbody>
 					</table>
 				</div>
 			</button>
@@ -109,15 +117,17 @@
 		<div class="accordion next-steps-accordion spacing-below-60">
 			<button id="button-a4" href="#" class="accordion__button" aria-expanded="false" aria-controls="a4">
 				<div id="process-step-4" class="grid__item width-twelve-twelfths">
-					<table class="spacing-above-10 spacing-below-0">
-						<tr class="spacing-above-10">
-							<th class="grid__item width-twenty-percent">
+					<table class="spacing-above-10 spacing-below-0 width-twelve-twelfths">
+					  <tbody class="width-twelve-twelfths">
+						<tr class="width-twelve-twelfths">
+							<th class="width-twenty-percent">
 							    <div th:replace="~{fragments/icons/icon-next-steps-interview :: icon-next-steps-interview}"></div>
 			 				</th>
-			 				<th class="grid__item width-two-thirds">
+			 				<th>
 								<p class="margin-bottom-0" th:utext="#{next-steps.step-4}"></p>
 							</th>
 						</tr>
+					  </tbody>
 					</table>
 				</div>
 			</button>
