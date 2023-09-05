@@ -160,7 +160,7 @@ dependencies {
         exclude group: "org.junit.vintage", module: "junit-vintage-engine"
         exclude group: "com.vaadin.external.google", module: "android-json"
     }
-    testImplementation("com.h2database:h2:2.2.220")
+    testImplementation("com.h2database:h2:2.2.222")
     testImplementation("org.awaitility:awaitility")
     testImplementation("com.github.tomakehurst:wiremock-standalone:3.0.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
