@@ -1993,19 +1993,6 @@ pageDefinitions:
       - name: notice
         type: NOTICE
         noticeMessage: identify-county.you-can-see-where-your-application
-  #    subtleLinkTextKey: identify-county.enter-my-zip-code-instead
-  - &identifyZipcode
-    name: identifyZipcode
-    headerKey: identify-zipcode.what-is-your-zip-code
-    pageTitle: identify-zipcode.title
-    contextFragment: countyContextFragment
-    inputs:
-      - name: zipCode
-        type: TEXT
-        validators:
-          - validation: ZIPCODE
-            errorMessageKey: general.validation.make-sure-to-enter-a-zip-code-with-5-digits
-    subtleLinkTextKey: identify-zipcode.select-my-county-instead
   - &matchInfo
     name: matchInfo
     headerKey: match-info.match-docs-to-app
@@ -2093,12 +2080,6 @@ pageDefinitions:
         promptMessage:
           promptMessageKey: match-info.case-number-if-you-have-it
         helpMessageKey: match-info.recommended-but-not-required
-  - &emailDocsToYourCounty
-    name: emailDocsToYourCounty
-    pageTitle: email-docs-to-your-county.title
-    contextFragment: email-docs-to-your-county-context-fragment
-    headerKey: email-docs-to-your-county.header
-    hasPrimaryButton: false
   - &nextSteps
     name: nextSteps
     pageTitle: next-steps.title
@@ -4667,7 +4648,6 @@ workflow:
     pageConfiguration: *identifyCounty
     nextPages:
       - pageName: prepareToApply
-    subtleLinkTargetPage: identifyZipcodeBeforeApplying
 # We are navigating directly from later docs button on the landing page to here:
   identifyCountyOrTribalNation:
     pageConfiguration: *identifyCountyOrTribalNation
@@ -4679,38 +4659,12 @@ workflow:
     nextPages:
       - pageName: matchInfo
         flow: LATER_DOCS
-    subtleLinkTargetPage: identifyZipcode
-  identifyZipcode:
-    pageConfiguration: *identifyZipcode
-    enrichment: zipcodeToCountyEnrichment
-    nextPages:
-      - pageName: matchInfo
-        flow: LATER_DOCS
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          matcher: DOES_NOT_CONTAIN
-          value: Other
-      - pageName: emailDocsToYourCounty
-        flow: LATER_DOCS
-    subtleLinkTargetPage: identifyCounty
   matchInfo:
     pageConfiguration: *matchInfo
     enrichment: matchInfoDateOfBirthEnrichment
     nextPages:
       - pageName: howToAddDocuments
         flow: LATER_DOCS
-  identifyZipcodeBeforeApplying:
-    pageConfiguration: *identifyZipcode
-    enrichment: zipcodeToCountyEnrichment
-    nextPages:
-      - pageName: prepareToApply
-        condition:
-          pageName: identifyZipcode
-          input: mappedCounty
-          matcher: DOES_NOT_CONTAIN
-          value: Other
-    subtleLinkTargetPage: identifyCountyBeforeApplying
   prepareToApply:
     pageConfiguration: *prepareToApply
     nextPages:
@@ -6735,12 +6689,6 @@ workflow:
         pageName: householdMemberInfo
         optional: "true"
       - pageName: medicalExpenses
-
-
-  emailDocsToYourCounty:
-    pageConfiguration: *emailDocsToYourCounty
-    datasources:
-      - pageName: identifyCounty
   nextSteps:
     pageConfiguration: *nextSteps
     nextPages:
