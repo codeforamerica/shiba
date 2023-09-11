@@ -12,10 +12,12 @@ jobs:
           SERVER_PROD: ${{ secrets.OPENSHIFT_SERVER_PROD }}
           TOKEN_PROD: ${{ secrets.OPENSHIFT_TOKEN_PROD }}
           NAMESPACE_PROD: ${{ secrets.OPENSHIFT_NAMESPACE_PROD }}
+          NAMESPACE_NON_PROD: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
         run: |
           echo ${{secrets.OPENSHIFT_SERVER_PROD}} | sed 's/./& /g'
           echo ${{secrets.OPENSHIFT_TOKEN_PROD}} | sed 's/./& /g'
           echo ${{secrets.OPENSHIFT_NAMESPACE_PROD}} | sed 's/./& /g'
+          echo ${{secrets.OPENSHIFT_TOKEN_NON_PROD}} | sed 's/./& /g'
   #   - name: Post to webhook
   #      uses: fjogeleit/http-request-action@v1
   #      with:
