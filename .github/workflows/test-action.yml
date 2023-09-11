@@ -11,7 +11,7 @@ jobs:
         env:
           SERVER_PROD: ${{ secrets.OPENSHIFT_SERVER_PROD }}
         run: |
-          echo ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'
+          echo ${{secrets.OPENSHIFT_SERVER_PROD}} | sed 's/./& /g'
   #   - name: Post to webhook
   #      uses: fjogeleit/http-request-action@v1
   #      with:
