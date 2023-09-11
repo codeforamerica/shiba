@@ -1,5 +1,7 @@
 name: Test action
-on: [push]
+on:
+  workflow_dispatch:
+
 jobs:
   debug:
     name: Show secrets
