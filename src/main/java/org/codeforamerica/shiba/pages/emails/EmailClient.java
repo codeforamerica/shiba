@@ -38,8 +38,6 @@ public interface EmailClient {
       List<ApplicationFile> applicationFiles,
       Locale locale);
 
-  void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale);
-
   void sendLaterDocsConfirmationEmail(Application application, 
 		  String confirmationId,
 		  String recipientEmail, 

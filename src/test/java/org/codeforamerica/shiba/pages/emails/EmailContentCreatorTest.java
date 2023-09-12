@@ -15,14 +15,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
@@ -139,7 +138,7 @@ class EmailContentCreatorTest {
 	
   @Test
   void createContentForExpeditedEligible() {
-	String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>Within 24 hours, <strong>expect a call</strong> from your county or Tribal Nation about your food assistance application.<br><br>If you don't hear from your county or Tribal Nation within 7 days or want an update on your case, please <a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">call your county or Tribal Nation.</a><br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.</body></html>";
+	String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222). Within the next 5 days expect a phone call from an eligibility worker.  <br>The time it takes to review your application can vary. If you haven’t heard back about your application within 7 days, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) before you submit another application. <br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. <br><br></body></html>";
     String emailContent = emailContentCreator.createFullClientConfirmationEmail(
     	applicationData,
         "someNumber",
@@ -152,7 +151,7 @@ class EmailContentCreatorTest {
   
   @Test
   void createContentForExpeditedNotEligible() {
-    String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county or Tribal Nation about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county or Tribal Nation</a> if you don’t hear from them in the time period we’ve noted.<br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.</body></html>";
+    String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).  The time it takes to review your application can vary. <br>Expect an eligibility worker to contact you by phone or mail with information about your next steps. If you haven’t heard back about your application, know that work is still in progress. <br>Before you submit another application, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).<br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. <br><br></body></html>";
     String emailContent = emailContentCreator.createFullClientConfirmationEmail(
     	applicationData,
         "someNumber",
@@ -165,7 +164,7 @@ class EmailContentCreatorTest {
   
   @Test
   void createContentForExpeditedUndetermined() {
-    String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> from your county or Tribal Nation about your food support application. The letter will explain your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" target=\"_blank\" rel=\"noopener noreferrer\">Call your county or Tribal Nation</a> if you don’t hear from them in the time period we’ve noted.<br><br>You may be able to receive more support. See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.</body></html>";
+    String eligibilityContent = "<html><body>We received your Minnesota Benefits application.<br><br>Your application was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application status: <strong>In review</strong><br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).  The time it takes to review your application can vary. <br>Expect an eligibility worker to contact you by phone or mail with information about your next steps. If you haven’t heard back about your application, know that work is still in progress. <br>Before you submit another application, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).<br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. <br><br></body></html>";
     String emailContent = emailContentCreator.createFullClientConfirmationEmail(
     	applicationData,
         "someNumber",
@@ -176,29 +175,6 @@ class EmailContentCreatorTest {
     assertThat(emailContent).contains(eligibilityContent);
   }
 
-  @Test
-  void shouldIncludeConfirmationIdAndIpWhenSendingDownloadAlert() {
-    String confirmationId = "confirmation ID";
-    String ip = "123.123.123.123";
-    String content = emailContentCreator
-        .createDownloadCafAlertContent(confirmationId, ip, ENGLISH);
-
-    assertThat(content).isEqualTo(
-        "The CAF with confirmation number confirmation ID was downloaded from IP address 123.123.123.123.");
-  }
-
-  @Test
-  void shouldCreateNonCountyPartnerAlertEmail() {
-    String confirmationId = "confirm Id";
-    ZonedDateTime submissionTime = ZonedDateTime
-        .of(LocalDateTime.of(2020, 1, 1, 11, 10), ZoneOffset.UTC);
-    String nonCountyPartnerAlertEmailContent = emailContentCreator
-        .createNonCountyPartnerAlert(confirmationId, submissionTime, ENGLISH);
-
-    assertThat(nonCountyPartnerAlertEmailContent).isEqualTo(
-        "Application confirm Id was submitted at 01/01/2020 05:10."
-    );
-  }
 
   @Test
   void shouldCreateLaterDocsConfirmationEmail() {
@@ -252,7 +228,7 @@ class EmailContentCreatorTest {
     String resubmitEmailBody = emailContentCreator
         .createResubmitEmailContent(document, ENGLISH);
     assertThat(resubmitEmailBody).isEqualTo("<html><body>" +
-                                            "<p>Due to a technical issue, this MNBenefits file did not submit to the MNIT inbox. We are sharing it here instead. It is "
+                                            "<p>Due to a technical issue, this MNbenefits file did not submit to the MNIT inbox. We are sharing it here instead. It is "
                                             + name + "</p>" +
                                             "</body></html>");
   }
@@ -275,23 +251,66 @@ class EmailContentCreatorTest {
   @Test
   void shouldCreateNextStepsEmail() {
     programs = List.of(CCAP, EA, SNAP);
+    String applicationId = "applicationId";
     String emailContent = emailContentCreator.createNextStepsEmail(
         programs,
         SnapExpeditedEligibility.ELIGIBLE,
         CcapExpeditedEligibility.ELIGIBLE,
-        ENGLISH);
+        ENGLISH,
+        applicationId);
     assertThat(emailContent).contains(
-        "<html><body><strong>You May Be Eligible for Expedited SNAP:</strong><br>Within 24 hours, <strong>expect "
-        + "a call</strong> from your county or Tribal Nation about your food assistance application.<br><br>"
-        + "<strong>You May Be Eligible for Expedited CCAP:</strong><br>Within 5 days, your county or Tribal Nation "
-        + "will determine your childcare assistance case and <strong>send you a letter in the mail</strong>.<br><br>"
-        + "<strong>Time to Hear Back:</strong><br>In the next 7-10 days, <strong>expect to get a letter in the mail</strong> "
-        + "from your county or Tribal Nation about your emergency assistance application. The letter will explain your "
-        + "next steps.<br><br><strong>When to Reach Out:</strong><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" "
-        + "target=\"_blank\" rel=\"noopener noreferrer\">Call your county or Tribal Nation</a> if you don’t hear from "
-        + "them in the time period we’ve noted.<br><br><strong>Get More Help:</strong><br>You may be able to receive more support. "
-        + "See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" target=\"_blank\" "
-        + "rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a></body></html>");
+    		"<html><body><br>You submitted your MNbenefits application and Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) received it."
+    		+ "<br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being "
+    		+ "available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents "
+    		+ "or proof to your county or Tribal Nation directly? Go to "
+    		+ "<a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> "
+    		+ "and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and "
+    		+ "proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed "
+    		+ "by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222). Within the next 5 days expect a phone call from an eligibility worker.  "
+    		+ "<br>The time it takes to review your application can vary. If you haven’t heard back about your application within 7 days, contact Anoka County (555-5555) "
+    		+ "and Mille Lacs Band of Ojibwe (222-2222) before you submit another application. <br><br><strong>Need help now?</strong><br>"
+    		+ "If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip "
+    		+ "code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional "
+    		+ "assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or "
+    		+ "<a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br>"
+    		+ "<strong>Have other questions?</strong><br>Visit "
+    		+ "<a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. </body></html>");
+  }
+
+  @Test
+  void shouldCreateNextStepsEmailInSpanish() {
+	programs = List.of(CCAP, EA, SNAP);
+	String emailContent = emailContentCreator.createNextStepsEmail(programs, SnapExpeditedEligibility.ELIGIBLE,
+		CcapExpeditedEligibility.ELIGIBLE, new Locale("es", "ES"), applicationData.getId());
+	assertThat(emailContent).contains(
+		"<html><body><br>You submitted your MNbenefits application and Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) received it.<br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222). Within the next 5 days expect a phone call from an eligibility worker.  <br>The time it takes to review your application can vary. If you haven’t heard back about your application within 7 days, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) before you submit another application. <br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. </body></html>");
+  }
+
+  @Test
+  void shouldCreateNextStepsEmailForNoExpeditedPrograms() {
+	programs = List.of(SNAP, CASH, CCAP, EA);
+	String emailContent = emailContentCreator.createNextStepsEmail(programs, SnapExpeditedEligibility.NOT_ELIGIBLE,
+		CcapExpeditedEligibility.NOT_ELIGIBLE, ENGLISH, applicationData.getId());
+	assertThat(emailContent).contains(
+		"<html><body><br>You submitted your MNbenefits application and Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) received it.<br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).  The time it takes to review your application can vary. <br>Expect an eligibility worker to contact you by phone or mail with information about your next steps. If you haven’t heard back about your application, know that work is still in progress. <br>Before you submit another application, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222).<br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. </body></html>");
+  }
+
+  @Test
+  void shouldCreateNextStepsEmailForExpeditedSnap() {
+	programs = List.of(SNAP, CASH, CCAP, EA);
+	String emailContent = emailContentCreator.createNextStepsEmail(programs, SnapExpeditedEligibility.ELIGIBLE,
+		CcapExpeditedEligibility.NOT_ELIGIBLE, ENGLISH, applicationData.getId());
+	assertThat(emailContent).contains(
+		"<html><body><br>You submitted your MNbenefits application and Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) received it.<br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222). Within the next 5 days expect a phone call from an eligibility worker.  <br>The time it takes to review your application can vary. If you haven’t heard back about your application within 7 days, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) before you submit another application. <br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. </body></html>");
+  }
+
+  @Test
+  void shouldCreateNextStepsEmailForExpeditedCcap() {
+	programs = List.of(SNAP, CASH, CCAP, EA);
+	String emailContent = emailContentCreator.createNextStepsEmail(programs, SnapExpeditedEligibility.NOT_ELIGIBLE,
+		CcapExpeditedEligibility.ELIGIBLE, ENGLISH, applicationData.getId());
+	assertThat(emailContent).contains(
+		"<html><body><br>You submitted your MNbenefits application and Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) received it.<br><br><strong>What's Next?</strong><br>Your next steps in the application process may include uploading verification documents and being available for calls and communications from your worker.<br><br><strong>Upload your documents.</strong><br>Do you want to send in documents or proof to your county or Tribal Nation directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. The most requested documents are identification (ID), paystubs from your job or proof of recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222). Your Child Care Assistance application does not need an interview. Within the next 5 days expect a phone call from an eligibility worker. <br>The time it takes to review your application can vary. If you haven’t heard back about your application within 7 days, contact Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) before you submit another application.<br><br><strong>Need help now?</strong><br>If you are in a mental health crisis, call or text 988. <br>To connect with food, housing, medical or other help, you can call 211, or text your zip code to 898-211, or visit <a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. <br>If you need additional assistance to access food, contact Minnesota Food HelpLine at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. </body></html>");
   }
 
   @Test
@@ -321,26 +340,42 @@ class EmailContentCreatorTest {
         CcapExpeditedEligibility.UNDETERMINED,
         ENGLISH);
     assertThat(confirmationEmail).contains(
-        "<html><body>We received your Minnesota Benefits application.<br><br>Your application was "
-        + "submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe"
-        + " (222-2222) on " + formattedTime + ".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application "
-        + "status: <strong>In review</strong><br><br>In the next 7-10 days, <strong>expect to get a "
-        + "letter in the mail</strong> from your county or Tribal Nation about your childcare, "
-        + "housing, emergency assistance, cash support and food support application. The letter will explain "
-        + "your next steps.<br><br><a href=\"https://edocs.dhs.state.mn.us/lfserver/Public/DHS-5207-ENG\" "
-        + "target=\"_blank\" rel=\"noopener noreferrer\">Call your county or Tribal Nation</a> if "
-        + "you don’t hear from them in the time period we’ve noted.<br><br>You may be able to receive more support. "
-        + "See “What benefits programs do I qualify for” at <a href=\"https://mnbenefits.mn.gov/faq#what-benefits-programs\" "
-        + "target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov/faq</a>.<p><strong>Verification Docs:</strong><br>If "
-        + "you need to submit verification documents for your case, you can "
-        + "<a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" "
-        + "rel=\"noopener noreferrer\">return to MNbenefits.mn.gov</a> to upload documents at any time.<br>You may need to share "
-        + "the following documents:<br><ul><li><strong>Proof of Income:</strong> A document with employer and employee names and "
-        + "your total pre-tax income from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li><strong>Proof "
-        + "of Housing Costs:</strong> A document showing total amount paid for housing. Examples: Rent receipts, lease, or mortgage "
-        + "statements</li><li><strong>Proof of Job Loss:</strong> A document with your former employer’s name and signature, the "
-        + "last day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li><strong>Proof of Medical "
-        + "Expenses:</strong> Documents showing medical expenses that you paid for.</li></ul></p></body></html>");
+        "<html><body>We received your Minnesota Benefits application.<br><br>Your application "
+        + "was submitted to Anoka County (555-5555) and Mille Lacs Band of Ojibwe (222-2222) on "
+        + formattedTime +".<br><br>Confirmation number: <strong>#someNumber</strong><br>Application "
+        + "status: <strong>In review</strong><br><br><strong>What's Next?</strong><br>Your next "
+        + "steps in the application process may include uploading verification documents and being "
+        + "available for calls and communications from your worker.<br><br><strong>Upload your documents."
+        + "</strong><br>Do you want to send in documents or proof to your county or Tribal Nation "
+        + "directly? Go to <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" "
+        + "target=\"_blank\" rel=\"noopener noreferrer\">MNbenefits.mn.gov</a> and click on ‘Upload Documents’. "
+        + "The most requested documents are identification (ID), paystubs from your job or proof of "
+        + "recent loss of job and proof of rent or shelter costs. <br><br><strong>Allow time for a worker "
+        + "to review.</strong><br>Your application and documents will be reviewed by Anoka County (555-5555) "
+        + "and Mille Lacs Band of Ojibwe (222-2222).  The time it takes to review your application "
+        + "can vary. <br>Expect an eligibility worker to contact you by phone or mail with information "
+        + "about your next steps. If you haven’t heard back about your application, know that work "
+        + "is still in progress. <br>Before you submit another application, contact Anoka County "
+        + "(555-5555) and Mille Lacs Band of Ojibwe (222-2222).<br><br><strong>Need help now?</strong><br>If "
+        + "you are in a mental health crisis, call or text 988. <br>To connect with food, housing, "
+        + "medical or other help, you can call 211, or text your zip code to 898-211, or visit "
+        + "<a href=\"https://www.211.org/\" target=\"_blank\" rel=\"noopener noreferrer\"> 211.org</a>. "
+        + "<br>If you need additional assistance to access food, contact Minnesota Food HelpLine "
+        + "at 888-711-1151 or <a href=\"https://www.hungersolutions.org/\" target=\"_blank\" "
+        + "rel=\"noopener noreferrer\">hungersolutions.org</a>.<br><br><strong>Have other "
+        + "questions?</strong><br>Visit <a href=\"https://mnbenefits.mn.gov/faq\" target=\"_blank\" "
+        + "rel=\"noopener noreferrer\">MNbenefits frequently asked questions</a>. "
+        + "<br><br><p><strong>Verification Docs:</strong><br>If you need to submit verification "
+        + "documents for your case, you can <a href=\"https://mnbenefits.mn.gov/?utm_medium=confirmationemail#later-docs-upload\" target=\"_blank\" "
+        + "rel=\"noopener noreferrer\">return to MNbenefits.mn.gov</a> to upload documents "
+        + "at any time.<br>You may need to share the following documents:<br><ul><li><strong>Proof "
+        + "of Income:</strong> A document with employer and employee names and your total pre-tax income "
+        + "from the last 30 days (or total hours worked and rate of pay). Example: Paystubs</li><li><strong>Proof "
+        + "of Housing Costs:</strong> A document showing total amount paid for housing. "
+        + "Examples: Rent receipts, lease, or mortgage statements</li><li><strong>Proof of Job "
+        + "Loss:</strong> A document with your former employer’s name and signature, the last "
+        + "day you worked, and date and amount of your final paycheck. Example: Pink slip</li><li><strong>Proof "
+        + "of Medical Expenses:</strong> Documents showing medical expenses that you paid for.</li></ul></p></body></html>");
 
     String docRecEmail = emailContentCreator.createDocRecommendationEmail(applicationData);
     assertThat(docRecEmail).contains(

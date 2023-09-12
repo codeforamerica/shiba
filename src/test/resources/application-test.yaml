@@ -16,8 +16,6 @@ client:
   truststore-password: changeit
   
 sender-email: sender@email.org
-security-email: security@email.org
-audit-email: audit@email.org
 
 smarty-street-auth-id: someId
 smarty-street-auth-token: someToken

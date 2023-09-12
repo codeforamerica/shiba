@@ -479,10 +479,18 @@ public class PageController {
     model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
 
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
+		// Get all routing destinations for this application
+	    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
+	    DocumentListParser.parse(applicationData).forEach(doc -> {
+	      List<RoutingDestination> routingDestinationsForThisDoc =
+	          routingDecisionService.getRoutingDestinations(applicationData, doc);
+	      routingDestinations.addAll(routingDestinationsForThisDoc);
+	    });
+    	
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale));
       model.put("nextStepSections", nextStepsContentService
-          .getNextSteps(new ArrayList<>(programs), snapExpeditedEligibility,
+          .createSectionsForNextStepsPage(new ArrayList<>(programs), snapExpeditedEligibility,
               ccapExpeditedEligibility, locale));
       model.put("nextStepsDocumentUpload", nextStepsContentService
               .getNextStepsForDocumentUpload(!applicationData.getUploadedDocs().isEmpty(), locale));

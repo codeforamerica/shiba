@@ -6735,13 +6735,7 @@ workflow:
   healthcareRenewalDocumentSubmitConfirmation:
     pageConfiguration: *healthcareRenewalDocumentSubmitConfirmation
     nextPages:
-      - pageName: healthcareRenewalNextSteps
       - pageName: healthcareRenewalUploadDocuments
-      
-  healthcareRenewalNextSteps:
-    pageConfiguration: *nextSteps
-    nextPages:
-      - pageName: healthcareRenewalSuccess
       
   healthcareRenewalSuccess:
     pageConfiguration: *success

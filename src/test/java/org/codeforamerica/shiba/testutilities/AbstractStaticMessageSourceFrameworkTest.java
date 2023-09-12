@@ -27,6 +27,7 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
 		staticMessageSource.addMessage("general.inputs.yes", Locale.ENGLISH, "Yes");
 		staticMessageSource.addMessage("general.inputs.no", Locale.ENGLISH, "No");
 		staticMessageSource.addMessage("general.county-and-phone", Locale.ENGLISH, "somethin");
+		staticMessageSource.addMessage("general.county", Locale.ENGLISH, "someCounty");
 		staticMessageSource.addMessage("general.and", Locale.ENGLISH, "and");
 		staticMessageSource.addMessage("dummy-page-title", Locale.ENGLISH, dummyPageTitle);
 		staticMessageSource.addMessage("generic.footer", Locale.ENGLISH, "footer");
@@ -54,5 +55,18 @@ public class AbstractStaticMessageSourceFrameworkTest extends AbstractShibaMockM
 		staticMessageSource.addMessage("next-steps.allow-time-for-review-header", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.complete-an-interview-1", Locale.ENGLISH, "some message");
 		staticMessageSource.addMessage("next-steps.complete-an-interview-2", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.you-submitted", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.whats-next", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.do-you-want-to-send-in-documents", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.upload-your-documents", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.SNAP-expedited", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.allow-time-for-a-worker", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.your-next-steps", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.not-expedited", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.allow-time-for-a-worker", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.mental-health-crisis", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.need-help-now", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.visit-faqs", Locale.ENGLISH, "some message");
+		staticMessageSource.addMessage("email.have-other-questions", Locale.ENGLISH, "some message");
 	}
 }

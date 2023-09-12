@@ -33,8 +33,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class MailGunEmailClient implements EmailClient {
 
   private final String senderEmail;
-  private final String securityEmail;
-  private final String auditEmail;
   private final String mailGunApiKey;
   private final EmailContentCreator emailContentCreator;
   private final WebClient webClient;
@@ -42,8 +40,6 @@ public class MailGunEmailClient implements EmailClient {
   private final MessageSource messageSource;
 
   public MailGunEmailClient(@Value("${sender-email}") String senderEmail,
-      @Value("${security-email}") String securityEmail,
-      @Value("${audit-email}") String auditEmail,
       @Value("${mail-gun.url}") String mailGunUrl,
       @Value("${mail-gun.api-key}") String mailGunApiKey,
       EmailContentCreator emailContentCreator,
@@ -51,8 +47,6 @@ public class MailGunEmailClient implements EmailClient {
       MessageSource messageSource
   ) {
     this.senderEmail = senderEmail;
-    this.securityEmail = securityEmail;
-    this.auditEmail = auditEmail;
     this.mailGunApiKey = mailGunApiKey;
     this.emailContentCreator = emailContentCreator;
     this.webClient = WebClient.builder().baseUrl(mailGunUrl).build();
@@ -113,17 +107,12 @@ public class MailGunEmailClient implements EmailClient {
         programs,
         snapExpeditedEligibility,
         ccapExpeditedEligibility,
-        locale);
+        locale,
+        applicationId);
     sendEmail(subject, senderEmail, recipientEmail, emailContent, emptyList());
     log.info("Next steps email sent for " + applicationId);
   }
 
-  @Override
-  public void sendDownloadCafAlertEmail(String confirmationId, String ip, Locale locale) {
-    var emailBody = emailContentCreator.createDownloadCafAlertContent(confirmationId, ip, locale);
-    sendEmailFromFormData("Caseworker CAF downloaded", securityEmail, auditEmail, emailBody);
-    log.info("Download CAF Alert Email sent for " + confirmationId);
-  }
 
   @Override
   public void sendLaterDocsConfirmationEmail(Application application, String confirmationId, String recipientEmail, Locale locale) {

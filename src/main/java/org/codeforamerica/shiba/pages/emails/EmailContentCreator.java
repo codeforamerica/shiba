@@ -99,21 +99,28 @@ public class EmailContentCreator {
       routingDestinations.addAll(routingDestinationsForThisDoc);
     });
     
-    // Generate human-readable list of routing destinations for success page
-    String finalDestinationList = routingDestinationMessageService.generatePhrase(locale,
+    // Generate human-readable list of routing destinations with phone numbers for success page
+    String finalDestinationListPhone = routingDestinationMessageService.generatePhrase(locale,
         application.getCounty(),
         true,
         new ArrayList<>(routingDestinations));
     
-    String nextSteps = nextStepsContentService
-        .getNextSteps(programs, snapExpeditedEligibility, ccapExpeditedEligibility, locale).stream()
-        .map(NextStepSection::message)
-        .collect(Collectors.joining("<br><br>"));
-
-    var additionalSupport = lms.getMessage(ADDITIONAL_SUPPORT);
+    // Generate human-readable list of routing destinations with phone numbers for success page
+    String finalDestinationListNoPhone = routingDestinationMessageService.generatePhrase(locale,
+        application.getCounty(),
+        false,
+        new ArrayList<>(routingDestinations));
+    
+    var sections = nextStepsContentService.createNextStepsForFullConfirmationEmail(programs, snapExpeditedEligibility,
+            ccapExpeditedEligibility, locale, finalDestinationListPhone, finalDestinationListNoPhone);
+    
+    String nextStepsContent = sections.stream()
+            .map(nextStepSection -> nextStepSection.title() + "<br>"
+                + nextStepSection.message())
+            .collect(Collectors.joining("<br><br>"));
     
     String content = lms.getMessage(CLIENT_BODY,
-        List.of(confirmationId, "<br><br>" + nextSteps, additionalSupport, finalDestinationList, formattedTime));
+        List.of(confirmationId, "<br><br>" + nextStepsContent, "", finalDestinationListPhone, formattedTime));
 
     String docRecs = getDocumentRecommendations(applicationData, locale, lms,
         CONFIRMATION_EMAIL_DOC_RECS);
@@ -179,16 +186,36 @@ public class EmailContentCreator {
 
   public String createNextStepsEmail(List<String> programs,
       SnapExpeditedEligibility snapExpeditedEligibility,
-      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale) {
-    LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
-    var sections = nextStepsContentService.getNextSteps(programs, snapExpeditedEligibility,
-        ccapExpeditedEligibility, locale);
-
-    sections.add(new NextStepSection("", lms.getMessage(ADDITIONAL_SUPPORT),
-        lms.getMessage("email.you-may-be-able-to-receive-more-support-header")));
+      CcapExpeditedEligibility ccapExpeditedEligibility, Locale locale,
+      String applicationID) {
+    Application application = applicationRepository.find(applicationID);
+    ApplicationData applicationData = application.getApplicationData();
+    
+    // Get all routing destinations for this application
+    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
+    DocumentListParser.parse(applicationData).forEach(doc -> {
+      List<RoutingDestination> routingDestinationsForThisDoc =
+          routingDecisionService.getRoutingDestinations(applicationData, doc);
+      routingDestinations.addAll(routingDestinationsForThisDoc);
+    });
+    
+    // Generate human-readable list of routing destinations with phone numbers for success page
+    String finalDestinationListPhone = routingDestinationMessageService.generatePhrase(locale,
+        application.getCounty(),
+        true,
+        new ArrayList<>(routingDestinations));
+    
+    // Generate human-readable list of routing destinations with phone numbers for success page
+    String finalDestinationListNoPhone = routingDestinationMessageService.generatePhrase(locale,
+        application.getCounty(),
+        false,
+        new ArrayList<>(routingDestinations));
+    
+    var sections = nextStepsContentService.createNextStepsForEmail(programs, snapExpeditedEligibility,
+        ccapExpeditedEligibility, locale, finalDestinationListPhone, finalDestinationListNoPhone);
 
     String content = sections.stream()
-        .map(nextStepSection -> "<strong>" + nextStepSection.title() + ":</strong><br>"
+        .map(nextStepSection -> nextStepSection.title() + "<br>"
             + nextStepSection.message())
         .collect(Collectors.joining("<br><br>"));
 
@@ -276,16 +303,6 @@ public class EmailContentCreator {
         "<p>This application was submitted on behalf of a client.</p><p>Please keep the file pages in the order they appear in the file; intake workers will be looking for the cover page in front of the CAF.</p>");
   }
 
-  public String createDownloadCafAlertContent(String confirmationId, String ip, Locale locale) {
-    return getMessage(DOWNLOAD_CAF_ALERT, List.of(confirmationId, ip), locale);
-  }
-
-  public String createNonCountyPartnerAlert(String confirmationId, ZonedDateTime submissionTime,
-      Locale locale) {
-    String formattedTime = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm")
-        .format(submissionTime.withZoneSameInstant(ZoneId.of("America/Chicago")));
-    return getMessage(NON_COUNTY_PARTNER_ALERT, List.of(confirmationId, formattedTime), locale);
-  }
 
   public String createResubmitEmailContent(Document document, Locale locale) {
     String documentType = switch (document) {
@@ -299,16 +316,6 @@ public class EmailContentCreator {
     return wrapHtml("<p>" + messageBody + "</p>");
   }
 
-  public String createHennepinDocUploadsHTML(Map<String, String> args) {
-    return wrapHtml("<p>These are documents that a client uploaded to MNbenefits.mn.gov.</p>" +
-        "<p><b>Name:</b> " + args.get("name") + "</p>" +
-        "<p><b>DOB:</b> " + args.get("dob") + "</p>" +
-        "<p><b>Last 4 digits of SSN:</b> " + args.get("last4SSN") + "</p>" +
-        "<p><b>Phone Number:</b> " + args.get("phoneNumber") + "</p>" +
-        "<p><b>E-mail:</b> " + args.get("email") + "</p>" +
-        "<p>Fields that are blank were not shared by the client in their application.</p>" +
-        "<p>Please reach out to help@mnbenefits.org for support.</p>");
-  }
 
   private String getMessage(String snapExpeditedWaitTime, @Nullable List<String> args,
       Locale locale) {
