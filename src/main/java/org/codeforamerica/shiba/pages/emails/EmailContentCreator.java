@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import org.codeforamerica.shiba.pages.DocRecommendationMessageService;
 import org.codeforamerica.shiba.pages.DocRecommendationMessageService.DocumentRecommendation;
 import org.codeforamerica.shiba.pages.NextStepsContentService;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.NextStepsContentService.NextStepSection;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,12 +34,9 @@ public class EmailContentCreator {
 
   private static final ZoneId CENTRAL_TIMEZONE = ZoneId.of("America/Chicago");
   private final static String CLIENT_BODY = "email.client-body";
-  private final static String ADDITIONAL_SUPPORT = "email.you-may-be-able-to-receive-more-support";
   private final static String IF_YOU_WANT_AN_UPDATE = "email.if-you-want-an-update-call-your-county";
   private final static String CONFIRMATION_EMAIL_DOC_RECS = "email.confirmation-email-doc-recs";
   private final static String DOCUMENT_RECOMMENDATION_EMAIL = "email.document-recommendation-email";
-  private final static String DOWNLOAD_CAF_ALERT = "email.download-caf-alert";
-  private final static String NON_COUNTY_PARTNER_ALERT = "email.non-county-partner-alert";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_SUBJECT = "later-docs.confirmation-email-subject";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_BODY = "later-docs.confirmation-email-body";
   private final static String LATER_DOCS_CONFIRMATION_EMAIL_WE_RECEIVED = "later-docs.confirmation-email-we-received";
