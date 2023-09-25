@@ -167,7 +167,7 @@ dependencies {
     testImplementation("io.github.bonigarcia:webdrivermanager:5.5.3")
     testImplementation("org.springframework.ws:spring-ws-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("io.percy:percy-java-selenium:2.0.0")
+    testImplementation("io.percy:percy-java-selenium:2.0.1")
     testImplementation("com.deque.html.axe-core:selenium:4.7.0")
     testImplementation("org.jsoup:jsoup:1.16.1")
 }
