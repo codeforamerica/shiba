@@ -6,13 +6,22 @@ import static org.codeforamerica.shiba.application.FlowType.EXPEDITED;
 import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.codeforamerica.shiba.pages.Sentiment;
+import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 @Tag("minimumFlowJourney")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {
@@ -231,6 +240,67 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_MAILING_ZIPCODE", "03104");
   }
 
+
+  @Test
+  void outOfStateApplicantFlow() {
+    getToHomeAddress("Hennepin", List.of(PROGRAM_SNAP));
+    
+    // Page title: Home Address
+    assertTrue(testPage.getTitle().equals("Home Address"));
+    
+    // Input an out-of-state address
+    testPage.enter("zipCode", "12345");
+    testPage.enter("state",  "WI");
+    testPage.enter("city", "someCity");
+    testPage.enter("streetAddress", "someStreetAddress");
+    testPage.enter("apartmentNumber", "someApartmentNumber");
+    // mock a SmartyStreet "address found" response
+    when(smartyStreetClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "Cooltown", "WI", "03104", "1b", "someCounty"))
+    );
+    testPage.clickContinue();
+
+    // Page title: Mailing address
+    assertTrue(testPage.getTitle().equals("Mailing address"));
+    testPage.clickElementById("true");
+    testPage.clickContinue();
+    
+    // Page title: Address Validation
+    assertTrue(testPage.getTitle().equals("Address Validation"));
+    testPage.clickElementById("enriched-address");
+    testPage.clickContinue();
+    
+    // Page title: County Validation
+    assertTrue(testPage.getTitle().equals("County Validation"));
+    // The original county should not displayed on this page
+    assertNotNull(testPage.findElementById("original-county"));
+    // The enriched county should not be displayed on this page because the home address is out-of-state
+    assertTrue(testPage.elementDoesNotExistById("enriched-county"));
+    testPage.clickButton("Use this county");
+    
+    // Page title: Contact Info
+    assertTrue(testPage.getTitle().equals("Contact Info"));
+    testPage.enter("phoneNumber", "(651) 555-1234");
+    testPage.enter("email", "something@something.test");
+    testPage.clickContinue();
+    
+    // Page title: Do you need help immediately?
+    assertTrue(testPage.getTitle().equals("Review info"));
+    testPage.clickLink("Submit an incomplete application now with only the above information.");
+    
+    // Page title: Do you need help immediately?
+    assertTrue(testPage.getTitle().equals("Do you need help immediately?"));
+    testPage.clickLink("Yes, I want to see if I qualify");
+    
+    // Page title: Do you want to add household members?
+    assertTrue(testPage.getTitle().equals("Do you want to add household members?"));
+    testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+    
+    // Page title: Thirty Day Income, Household
+    assertTrue(testPage.getTitle().equals("Thirty Day Income, Household"));
+    
+    // Stop here, can be continued as needed.
+  }
 
   private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId,
       String countyInstructions) {
