@@ -39,6 +39,15 @@ mnit-filenet:
   username: someUsername
   password: somePassword
   router-url: some-router-url
+  
+comm-hub:
+  url: /some-url
+  enabled: true
+  max-attempts: 3
+  delay: 1000 # 1 second delay
+  multiplier: 1
+  max-delay: 1000 # 1 second max delay
+  timeout-seconds: 5
 
 mnit-clammit:
   url: 'https://clammit-clam-av.apps.gj1k10ie.centralus.aroapp.io/clammit/scan'

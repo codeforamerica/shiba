@@ -53,10 +53,15 @@ sentry:
 client:
   keystore: src/main/resources/keystore-non-prod.jks
   truststore: src/main/resources/truststore-non-prod.jks
-  
+
 comm-hub:
   url: https://surveys-mn-benefits-non-prod.apps.gj1k10ie.centralus.aroapp.io/mnb-confirmation
   enabled: false
+  max-attempts: 3
+  delay: 900000
+  multiplier: 3
+  max-delay: 43200000
+  timeout-seconds: 300
    
 
 mnit-filenet:
