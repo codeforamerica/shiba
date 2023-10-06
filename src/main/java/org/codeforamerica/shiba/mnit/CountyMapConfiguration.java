@@ -134,7 +134,7 @@ public class CountyMapConfiguration {
     updateCounty(Dakota, "EEARIGAppResearch@CO.DAKOTA.MN.US", "1427127620");
     updateCounty(Dodge, "OSS@MNPrairie.org", "A000020500");
     updateCounty(Douglas, "dcss@co.douglas.mn.us", "A000021300");
-    updateCounty(Faribault, "lea.silverthorn@fmchs.com ", "A000022100");
+    updateCounty(Faribault, "Lea.Silverthorn@FMCHS.com", "A000022100");
     updateCounty(Fillmore, "SS-FAX@co.fillmore.mn.us", "1437228236");
     updateCounty(Freeborn, "im.dhs@co.freeborn.mn.us", "A000024800");
     updateCounty(Goodhue, "hhs.imu@co.goodhue.mn.us", "A000025600");
@@ -150,7 +150,7 @@ public class CountyMapConfiguration {
     updateCounty(Kandiyohi, "hs-financial@kcmn.us", "A000034500");
     updateCounty(Kittson, "bseed@co.kittson.mn.us", "A000035300");
     updateCounty(Koochiching, "Kccs.intake@co.koochiching.mn.us", "A000036100");
-    updateCounty(LacQuiParle, "familyservices@co.lac-qui-parle.mn.us", "A000037000");
+    updateCounty(LacQuiParle, "familyservices@lqpco.com", "A000037000");
     updateCounty(Lake, "financial.assistance@co.lake.mn.us", "A000038800");
     updateCounty(LakeOfTheWoods, "mnbenefits@co.lotw.mn.us", "A000039600");
     updateCounty(LeSueur, "IMDocs@co.le-sueur.mn.us", "A000040000");
@@ -169,7 +169,7 @@ public class CountyMapConfiguration {
     updateCounty(Nobles, "CommunityServices@co.nobles.mn.us", "M000053100");
     updateCounty(Norman, "supportstaff@co.norman.mn.us", "A000054000");
     updateCounty(Olmsted, "PAQ@olmstedcounty.gov", "A000055800");
-    updateCounty(OtterTail, "imques@co.ottertail.mn.us", "A000056600");
+    updateCounty(OtterTail, "imques@ottertailcounty.gov", "A000056600");
     updateCounty(Pennington, "Afcasebank@co.pennington.mn.us", "A000057400");
     updateCounty(Pine, "income.proof@co.pine.mn.us", "A000058200");
     updateCounty(Pipestone, "pipestone.frontdesk@swmhhs.com", "A000059100");
