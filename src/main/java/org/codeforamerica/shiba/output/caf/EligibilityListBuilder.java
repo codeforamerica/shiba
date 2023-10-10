@@ -10,7 +10,7 @@ public class EligibilityListBuilder {
 	
 	public List<ExpeditedEligibility> buildEligibilityList(List<Eligibility> eligibilityList){
 		List<ExpeditedEligibility> expeditedEligibilityList = new ArrayList<ExpeditedEligibility>();
-		boolean allEmpty = eligibilityList.stream().allMatch(e -> e.getStatus() == "");
+		boolean allEmpty = eligibilityList.stream().allMatch(e -> e.getStatus().equals(""));
 		if(allEmpty) {
 			expeditedEligibilityList.add(ExpeditedEligibility.UNDETERMINED);
 			return expeditedEligibilityList;

@@ -237,6 +237,7 @@ public class PageController {
         Cookie submitCookie = new Cookie("application_id", "");
         submitCookie.setPath("/");
         submitCookie.setHttpOnly(true);
+        submitCookie.setSecure(true);
         httpResponse.addCookie(submitCookie);
     	return "errorUploadTimeout";
     }
@@ -804,6 +805,7 @@ public class PageController {
       Cookie submitCookie = new Cookie("application_id", application.getId());
       submitCookie.setPath("/");
       submitCookie.setHttpOnly(true);
+      submitCookie.setSecure(true);
       httpResponse.addCookie(submitCookie);
 
       applicationData.setSubmitted(true);
