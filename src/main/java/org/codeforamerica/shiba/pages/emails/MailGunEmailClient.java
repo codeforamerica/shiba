@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
 import org.codeforamerica.shiba.output.ApplicationFile;
@@ -119,7 +121,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
-    log.info("later docs confirmation email sent for confirmationId " + confirmationId);
+    log.info(StringEscapeUtils.escapeJava("later docs confirmation email sent for confirmationId " + confirmationId));
   }
   
   @Override
@@ -127,7 +129,7 @@ public class MailGunEmailClient implements EmailClient {
     String subject = emailContentCreator.createClientHealthcareRenewalConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientHealthcareRenewalConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
     sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
-    log.info("health care renewal confirmation email sent for confirmationId " + confirmationId);
+    log.info(StringEscapeUtils.escapeJava("health care renewal confirmation email sent for confirmationId " + confirmationId));
   }
 
   @Override

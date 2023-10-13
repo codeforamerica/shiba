@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.exception.controller;
 import java.io.IOException;
 
 import org.apache.catalina.connector.ClientAbortException;
+import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -29,15 +30,15 @@ public class ControllerAdvisor {
   public void handleClientAbortException(final ClientAbortException ex, final WebRequest request,
       final HttpServletRequest req) {
     MDC.put("applicationId", applicationData.getId());
-    log.info("Document Upload Cancelled by Client for application ID: " + applicationData.getId()
-        + " and last viewed page is " + applicationData.getLastPageViewed());
+    log.info(StringEscapeUtils.escapeJava("Document Upload Cancelled by Client for application ID: " + applicationData.getId()
+        + " and last viewed page is " + applicationData.getLastPageViewed()));
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public void handleLocaleException(final IllegalArgumentException ex, final WebRequest request,
       final HttpServletRequest req, HttpServletResponse response) throws IOException {
 	MDC.put("applicationId", applicationData.getId());
-    log.info("IllegalArgumentException Detected " + ex.getMessage());
+    log.info(StringEscapeUtils.escapeJava("IllegalArgumentException Detected " + ex.getMessage()));
     response.sendRedirect("/error");
   }
 

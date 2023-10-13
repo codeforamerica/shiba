@@ -19,6 +19,8 @@ import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationStatusRepository;
 import org.codeforamerica.shiba.application.FlowType;
@@ -185,10 +187,10 @@ public class FilenetWebServiceClient {
     // Now route a copy of the document from Filenet to SFTP (unless it is from HEALTHCARE_RENEWAL)
 	if (!application.getFlow().equals(FlowType.HEALTHCARE_RENEWAL)) {
 		String routerRequest = String.format("%s/%s", sftpUploadUrl, filenetId);
-		log.info(String.format("Upload to SFTP request: %s", routerRequest));
+		log.info(StringEscapeUtils.escapeJava(String.format("Upload to SFTP request: %s", routerRequest)));
 		String routerResponse = restTemplate.getForObject(routerRequest, String.class);
 
-		log.info(String.format("Upload to SFTP response: %s", routerResponse));
+		log.info(StringEscapeUtils.escapeJava(String.format("Upload to SFTP response: %s", routerResponse)));
 		JsonObject jsonObject = new Gson().fromJson(routerResponse, JsonObject.class);
 
 		// Throw exception if this isnt a successful response
@@ -325,7 +327,7 @@ public class FilenetWebServiceClient {
             .newInstance()
             .newXMLGregorianCalendar(gregorianCalendar);
     } catch(Exception e) {
-    	log.error(String.format("Failed to convert ZonedDateTime %s to XMLGregorianCalendar", value.toString()), e);
+    	log.error(StringEscapeUtils.escapeJava(String.format("Failed to convert ZonedDateTime %s to XMLGregorianCalendar", value.toString())), e);
     }
     datetime.add(xmlGregorianCalendar);
     return datetimeProperty;

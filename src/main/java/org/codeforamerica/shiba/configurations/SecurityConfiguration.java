@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.configurations;
 
 import java.io.IOException;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -99,7 +100,7 @@ public class SecurityConfiguration {
 		@Override
 		public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
 				throws IOException {
-			log.info("User session invalid on page: " + request.getRequestURL());
+			log.info(StringEscapeUtils.escapeJava("User session invalid on page: " + request.getRequestURL()));
 			errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
 		}
 

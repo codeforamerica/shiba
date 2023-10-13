@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.Overlay;
@@ -232,7 +233,7 @@ public class PdfGenerator implements FileGenerator {
             combinedPDF = addPageToPdf(combinedPDF, fileBytesWithDate);
 
           } catch (Exception er) {
-            log.error("File not able to combine to pdf " + uDoc.getFilename());
+            log.error(StringEscapeUtils.escapeJava("File not able to combine to pdf " + uDoc.getFilename()));
             combinedDocList.add(fileBytesWithDate);
           }
         }
@@ -243,7 +244,7 @@ public class PdfGenerator implements FileGenerator {
       overlayDoc.close();
       overlay.close();
     } catch (IOException e) {
-      log.error("Adding scanned date failed for application id = "+ application.getId());
+      log.error(StringEscapeUtils.escapeJava("Adding scanned date failed for application id = "+ application.getId()));
     }
     //This makes sure duplicate files are not added twice in case of merger issue
     if(!combinedPDF.equals(coverPage)) {
@@ -277,7 +278,7 @@ public class PdfGenerator implements FileGenerator {
       origDoc.close();
       fileBytes = outputStream.toByteArray();
     }catch(Exception e) {
-      log.error(e.getMessage()+". Could not add date to uploaded pdf = "+uDoc.getFilename());
+      log.error(StringEscapeUtils.escapeJava(e.getMessage()+". Could not add date to uploaded pdf = "+uDoc.getFilename()));
     }
     return fileBytes;
   }
@@ -297,7 +298,7 @@ public class PdfGenerator implements FileGenerator {
        contentStream.endText(); 
        contentStream.close();
     }catch(Exception er) {
-      log.error("Not able to create overlay pdf" + application.getId());
+      log.error(StringEscapeUtils.escapeJava("Not able to create overlay pdf" + application.getId()));
     }
      return overlayDoc;
   }

@@ -95,10 +95,10 @@ public class XmlGenerator implements FileGenerator {
     } catch (IOException ioe) {
       // TODO never, ever, ever convert a checked exception to a runtime exception (original comment)
     	// Lots of opinions, don't know why they did this, but no way to recover, so let it throw RTE?
-    	log.error("XML Generator IOException for ApplicationID " + applicationId, ioe);
+    	log.error(StringEscapeUtils.escapeJava("XML Generator IOException for ApplicationID " + applicationId), ioe);
       throw new RuntimeException(ioe);
     }catch (Exception e) {
-    	log.error("Xml Generator Exception for ApplicationID " + applicationId + "  regex " + regex, e);
+    	log.error(StringEscapeUtils.escapeJava("Xml Generator Exception for ApplicationID " + applicationId + "  regex " + regex), e);
     	throw new RuntimeException(e);
     }
   }
