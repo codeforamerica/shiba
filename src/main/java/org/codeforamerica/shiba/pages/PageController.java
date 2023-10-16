@@ -289,7 +289,7 @@ public class PageController {
       Locale locale
   ) {
 	  // Temporary cookie indicating user page
-      Cookie pageNameCookie = new Cookie("page_name", pageName);
+      Cookie pageNameCookie = new Cookie("page_name", StringEscapeUtils.escapeJava(pageName));
       pageNameCookie.setPath("/");
       pageNameCookie.setSecure(true);
       pageNameCookie.setHttpOnly(true);
@@ -803,7 +803,7 @@ public class PageController {
         );
       }
       // Temporary cookie indicating user submitted an application
-      Cookie submitCookie = new Cookie("application_id", application.getId());
+      Cookie submitCookie = new Cookie("application_id", StringEscapeUtils.escapeJava(application.getId()));
       submitCookie.setPath("/");
       submitCookie.setHttpOnly(true);
       submitCookie.setSecure(true);
