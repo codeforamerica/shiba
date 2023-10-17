@@ -43,6 +43,71 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: error-message-key
+  - &identifyCountyBeforeApplying
+    name: identifyCountyBeforeApplying
+    pageTitle: county-page-title
+    inputs:
+      - name: county
+        type: SELECT
+        validators:
+          - validation: COUNTY
+            errorMessageKey: error-message-key
+            condition: 
+             input: county
+             matcher: NOT_EMPTY
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: identify-county.select-your-county
+            - value: Aitkin
+              messageKey: identify-county-aitkin
+            - value: Anoka
+              messageKey: identify-county-anoka
+  - &identifyCountyOrTribalNation
+    name: identifyCountyOrTribalNation
+    pageTitle: county-or-tribal-nation-page-title
+    inputs:
+      - name: county
+        type: SELECT
+        validators:
+          - validation: COUNTY
+            errorMessageKey: error-message-key
+            condition: 
+             input: county
+             matcher: NOT_EMPTY
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: identify-county.select-your-county
+            - value: Aitkin
+              messageKey: identify-county-aitkin
+            - value: Anoka
+              messageKey: identify-county-anoka
+      - name: tribalNation
+        type: SELECT
+        promptMessage:
+          promptMessageKey: identify-county.select-a-tribal-nation
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-to-make-a-selection
+            condition: 
+              input: county
+              matcher: EMPTY
+          - validation: TRIBAL_NATION
+            errorMessageKey: general.validation.invalid.select.option.value
+            condition: 
+              input: tribalNation
+              matcher: NOT_EMPTY
+        options:
+          selectableOptions:
+            - value: ''
+              messageKey: select-the-tribe.select-the-tribe
+            - value: Mille Lacs Band of Ojibwe
+              messageKey: select-the-tribe.mille-lacs
+            - value: Red Lake Nation
+              messageKey: select-the-tribe.red-lake
+            - value: White Earth Nation
+              messageKey: select-the-tribe.white-earth
   - &shouldbeBlankPage
     name: shouldbeBlankPage
     pageTitle: should-be-blank-page-title
@@ -314,6 +379,14 @@ workflow:
       - pageName: lastPage
   pageWithEmail:
     pageConfiguration: *pageWithEmail
+    nextPages:
+      - pageName: lastPage
+  identifyCountyBeforeApplying:
+    pageConfiguration: *identifyCountyBeforeApplying
+    nextPages:
+      - pageName: lastPage
+  identifyCountyOrTribalNation:
+    pageConfiguration: *identifyCountyOrTribalNation
     nextPages:
       - pageName: lastPage
   lastPage:

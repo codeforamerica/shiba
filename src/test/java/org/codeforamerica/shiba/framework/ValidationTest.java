@@ -16,6 +16,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ *  This test is dependent on the configurations set up in test-validation.yaml
+ */
+
 @Tag("validation")
 @SpringBootTest(properties = {"pagesConfig=pages-config/test-validation.yaml"})
 public class ValidationTest extends AbstractFrameworkTest {
@@ -472,5 +476,26 @@ public class ValidationTest extends AbstractFrameworkTest {
     void shouldFailValidationForEMAIL_DOES_NOT_END_WITH_CONWhenEmailHasDotConTypo() throws Exception {
       postExpectingFailureAndAssertErrorDisplaysForThatInput("pageWithEmail", "emailInput", "test@email.con", emailErrorConKey);
     }
+    
+    @Test
+    void shouldPassValidationForCounty() throws Exception {
+      postExpectingNextPageTitle("identifyCountyBeforeApplying", "county", "Aitkin", lastPageTitle);
+    }
+    
+    @Test
+    void shouldFailValidationForInvalidCountyInput() throws Exception {
+    	postExpectingFailure("identifyCountyBeforeApplying", "county", "maliciousStringGiveMeYourPasswords");
+    }
+    
+    @Test
+    void shouldPassValidationForTribalNation() throws Exception {
+      postExpectingNextPageTitle("identifyCountyOrTribalNation", "tribalNation", "Mille Lacs Band of Ojibwe", lastPageTitle);
+    }
+    
+    @Test
+    void shouldFailValidationForInvalidTribalNationInput() throws Exception {
+    	postExpectingFailure("identifyCountyOrTribalNation", "tribalNation", "maliciousStringGiveMeYourPasswords");
+    }
+    
   }
 }

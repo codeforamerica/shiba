@@ -7,7 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.validator.GenericValidator;
+
+import org.codeforamerica.shiba.County;
+import org.codeforamerica.shiba.TribalNation;
 
 /* Validation on an input field */
 public enum Validation {
@@ -45,6 +50,8 @@ public enum Validation {
   ZIPCODE(strings -> String.join("", strings).matches("\\d{5}")),
   CASE_NUMBER(strings -> String.join("", strings).matches("\\d{4,7}")),
   CASE_NUMBER_HC(strings -> String.join("", strings).matches("\\d{4,8}")),
+  COUNTY(strings -> EnumUtils.isValidEnumIgnoreCase(County.class, strings.get(0).replaceAll(" ",""))),
+  TRIBAL_NATION(strings -> EnumUtils.isValidEnumIgnoreCase(TribalNation.class, strings.get(0).replaceAll(" ",""))),
   STATE(strings -> Set
       .of("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
           "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
@@ -69,7 +76,7 @@ public enum Validation {
     this.rule = rule;
   }
 
-  public Boolean apply(List<String> value) {
+public Boolean apply(List<String> value) {
     return this.rule.test(value);
   }
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,6 +80,7 @@ public abstract class AbstractBasePageTest {
   @BeforeEach
   protected void setUp() throws IOException {
     baseUrl = "http://localhost:%s".formatted(localServerPort);
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(1));
     driver.navigate().to(baseUrl);
     initTestPage();
   }

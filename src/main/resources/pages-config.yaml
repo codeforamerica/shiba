@@ -1596,6 +1596,11 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-to-select-a-county
+          - validation: COUNTY
+            errorMessageKey: general.validation.invalid.select.option.value
+            condition: 
+              input: county
+              matcher: NOT_EMPTY
         options:
           selectableOptions:
             - value: ''
@@ -1791,6 +1796,11 @@ pageDefinitions:
             condition: 
               input: tribalNation
               matcher: EMPTY
+          - validation: COUNTY
+            errorMessageKey: general.validation.invalid.select.option.value
+            condition: 
+              input: county
+              matcher: NOT_EMPTY
         validationIcon: false
         options:
           selectableOptions:
@@ -1980,6 +1990,11 @@ pageDefinitions:
             condition: 
               input: county
               matcher: EMPTY
+          - validation: TRIBAL_NATION
+            errorMessageKey: general.validation.invalid.select.option.value
+            condition: 
+              input: tribalNation
+              matcher: NOT_EMPTY
         options:
           selectableOptions:
             - value: ''
