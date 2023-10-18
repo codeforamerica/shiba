@@ -111,7 +111,7 @@ dependencies {
     implementation("org.springframework:spring-aspects")
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.ws:spring-ws-core")
-    implementation("org.springframework.session:spring-session-core:3.1.2")
+    implementation("org.springframework.session:spring-session-core:3.1.3")
     implementation("org.springframework.session:spring-session-jdbc:3.1.3")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.4")
