@@ -74,7 +74,7 @@ task genJaxbFilenet {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.session:spring-session-bom:2021.2.2")
+        mavenBom("org.springframework.session:spring-session-bom:2021.2.3")
     }
 }
 
