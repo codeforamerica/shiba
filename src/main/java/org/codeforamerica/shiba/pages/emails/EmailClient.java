@@ -51,10 +51,10 @@ public interface EmailClient {
   void resubmitFailedEmail(String recipientEmail, Document document,
       ApplicationFile applicationFile, Application application);
 
-  void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody);
+  void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody, String id);
 
   void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
-      List<ApplicationFile> attachments);
+      List<ApplicationFile> attachments, String id);
 
   void sendEmail(
       String subject,
@@ -63,5 +63,6 @@ public interface EmailClient {
       List<String> emailsToCC,
       String emailBody,
       List<ApplicationFile> attachments,
-      boolean requireTls);
+      boolean requireTls,
+      String id);
 }

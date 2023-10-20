@@ -74,7 +74,7 @@ public class MailGunEmailClient implements EmailClient {
         snapExpeditedEligibility,
         ccapExpeditedEligibility,
         locale);
-    sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles);
+    sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles, applicationId);
     log.info("Confirmation email sent for " + applicationId);
   }
 
@@ -90,7 +90,7 @@ public class MailGunEmailClient implements EmailClient {
     var lms = new LocaleSpecificMessageSource(locale, messageSource);
     var subject = getEmailSubject("email.subject", lms);
     var emailBody = emailContentCreator.createShortClientConfirmationEmail(applicationData, applicationId, locale);
-    sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles);
+    sendEmail(subject, senderEmail, recipientEmail, emailBody, applicationFiles, applicationId);
     log.info("Short confirmation email sent for " + applicationId);
   }
 
@@ -111,7 +111,7 @@ public class MailGunEmailClient implements EmailClient {
         ccapExpeditedEligibility,
         locale,
         applicationId);
-    sendEmail(subject, senderEmail, recipientEmail, emailContent, emptyList());
+    sendEmail(subject, senderEmail, recipientEmail, emailContent, emptyList(), applicationId);
     log.info("Next steps email sent for " + applicationId);
   }
 
@@ -120,7 +120,7 @@ public class MailGunEmailClient implements EmailClient {
   public void sendLaterDocsConfirmationEmail(Application application, String confirmationId, String recipientEmail, Locale locale) {
     String subject = emailContentCreator.createClientLaterDocsConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientLaterDocsConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
-    sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
+    sendEmail(subject, senderEmail, recipientEmail, body, emptyList(), application.getId());
     log.info(StringEscapeUtils.escapeJava("later docs confirmation email sent for confirmationId " + confirmationId));
   }
   
@@ -128,7 +128,7 @@ public class MailGunEmailClient implements EmailClient {
   public void sendHealthcareRenewalConfirmationEmail(Application application, String confirmationId, String recipientEmail, Locale locale) {
     String subject = emailContentCreator.createClientHealthcareRenewalConfirmationEmailSubject(locale);
     String body = emailContentCreator.createClientHealthcareRenewalConfirmationEmailBody(application.getApplicationData(), confirmationId, locale);
-    sendEmail(subject, senderEmail, recipientEmail, body, emptyList());
+    sendEmail(subject, senderEmail, recipientEmail, body, emptyList(), application.getId());
     log.info(StringEscapeUtils.escapeJava("health care renewal confirmation email sent for confirmationId " + confirmationId));
   }
 
@@ -139,20 +139,20 @@ public class MailGunEmailClient implements EmailClient {
     String subject = "MN Benefits Application %s Resubmission".formatted(application.getId());
     String body = emailContentCreator.createResubmitEmailContent(document, ENGLISH);
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), body, List.of(applicationFile),
-        false);
+        false, application.getId());
   }
 
   @Override
   public void sendEmail(String subject, String senderEmail, String recipientEmail,
-      String emailBody) {
-    sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody, emptyList(), false);
+      String emailBody, String id) {
+    sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody, emptyList(), false, id);
   }
 
   @Override
   public void sendEmail(String subject, String senderEmail, String recipientEmail, String emailBody,
-      List<ApplicationFile> attachments) {
+      List<ApplicationFile> attachments, String id) {
     sendEmail(subject, senderEmail, recipientEmail, emptyList(), emailBody,
-        attachments, false);
+        attachments, false, id);
   }
 
   @Override
@@ -163,7 +163,8 @@ public class MailGunEmailClient implements EmailClient {
       List<String> emailsToCC,
       String emailBody,
       List<ApplicationFile> attachments,
-      boolean requireTls) {
+      boolean requireTls,
+      String id) {
     MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
     form.put("from", List.of(senderEmail));
     form.put("to", List.of(recipientEmail));
@@ -179,6 +180,8 @@ public class MailGunEmailClient implements EmailClient {
       form.put("o:require-tls", List.of("true"));
     }
 
+    log.info(StringEscapeUtils.escapeJava("Sending request to Mailgun to send email with application id " + id));
+    
     webClient.post()
         .headers(httpHeaders -> httpHeaders.setBasicAuth("api", mailGunApiKey))
         .body(fromMultipartData(form))

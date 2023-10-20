@@ -4,14 +4,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.text.StringEscapeUtils;
+import org.codeforamerica.shiba.pages.emails.MailGunEmailClient;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.pages.enrichment.LocationClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class SmartyStreetClient implements LocationClient {
 
   private final String authId;
@@ -30,6 +36,7 @@ public class SmartyStreetClient implements LocationClient {
   @Override
   public Optional<Address> validateAddress(Address address) {
     WebClient webClient = WebClient.builder().baseUrl(smartyStreetUrl).build();
+    log.info("Sending request to Smarty Streets");
     Optional<SmartyStreetVerifyStreetResponse> response = webClient.get()
         .uri(uriBuilder -> uriBuilder
             .queryParam("auth-id", authId)
@@ -44,6 +51,7 @@ public class SmartyStreetClient implements LocationClient {
         .bodyToMono(SmartyStreetVerifyStreetResponse.class)
         .onErrorResume(error -> Mono.empty())
         .blockOptional();
+    log.info("Recieved response from Smarty Streets");
     return response
         .flatMap(verifyStreetResponse -> verifyStreetResponse.stream().findFirst())
         .map(addressCandidate -> {

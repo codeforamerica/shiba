@@ -97,6 +97,7 @@ import org.codeforamerica.shiba.pages.events.PageEventPublisher;
 import org.codeforamerica.shiba.pages.events.SubworkflowCompletedEvent;
 import org.codeforamerica.shiba.pages.events.SubworkflowIterationDeletedEvent;
 import org.codeforamerica.shiba.pages.events.UploadedDocumentsSubmittedEvent;
+import org.jboss.logging.MDC;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
@@ -748,10 +749,13 @@ public class PageController {
         applicationData.setLastPageViewed(pageName);
       }
       
+      String id = applicationData.getId();
+      MDC.put("applicationId", id);
       ofNullable(pageWorkflow.getEnrichment())
           .map(applicationEnrichment::getEnrichment)
           .map(enrichment -> enrichment.process(pagesData))
           .ifPresent(pageData::putAll);
+      MDC.clear();
 
       Application application = applicationFactory.newApplication(applicationData);
       applicationRepository.save(application);

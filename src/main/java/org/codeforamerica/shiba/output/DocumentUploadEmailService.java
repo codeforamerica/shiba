@@ -104,7 +104,7 @@ public class DocumentUploadEmailService {
             LocaleSpecificMessageSource lms = new LocaleSpecificMessageSource(locale, messageSource);
             String subject = lms.getMessage("email.document-recommendation-email-subject");
 
-            emailClient.sendEmail(subject, senderEmail, clientEmail, emailContent);
+            emailClient.sendEmail(subject, senderEmail, clientEmail, emailContent, id);
             applicationRepository.setDocUploadEmailStatus(id, Status.DELIVERED);
           } catch (Exception e) {
             log.error("Failed to send document upload email for application %s".formatted(id), e);
