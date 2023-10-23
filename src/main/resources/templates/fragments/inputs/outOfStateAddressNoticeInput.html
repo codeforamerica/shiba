@@ -1,0 +1,58 @@
+<!-- This is custom because it uses buttons for radio options rather than the standard radio or checkbox inputs -->
+<th:block th:fragment="outOfStateAddressNoticeInput (input, data)" th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
+                   options=${input.getOptions()},
+                   addressData=${applicationData.getPagesData().getPage('homeAddress')}">
+	<!-- display the page icon -->
+	<div class="text--centered">
+		<div th:replace="~{fragments/contextFragments :: mnLocationContextFragment}"></div>
+	</div>
+
+	<!-- display the page header(s) -->
+	<div class="grid__item spacing-above-35 spacing-below-35">
+		<h1 id="page-header" class="h2 text--centered" th:text="#{out-of-state-address-notice.header}"></h1>
+		<h1 id="page-header2" class="h2 text--centered"
+			th:utext="#{out-of-state-address-notice.would-you-still-like-to-apply}"></h1>
+	</div>
+
+	<!-- display the home address provided  -->
+	<div class="grid__item out-of-state-address spacing-below-35">
+		<div class="text-bold spacing-below-15" th:text="#{out-of-state-address-notice.address-you-entered}"></div>
+		<div id="given-address-street" th:text="${addressData.get('streetAddress').value[0]}"></div>
+		<div id="given-address-apt" th:if="${!addressData.get('apartmentNumber').value[0].isEmpty()}"
+			th:text="${addressData.get('apartmentNumber').value[0]}"></div>
+		<div id="given-address-city-state"
+			th:text="${T(org.codeforamerica.shiba.Utils).joinNonEmpty(addressData.get('city').value[0], addressData.get('state').value[0])}">
+		</div>
+		<div id="given-address-zip" th:text="${addressData.get('zipCode').value[0]}"></div>
+	</div>
+
+	<!-- options buttons -->
+	<div class="form-group vertical-button-group" role="group" aria-labelledby="page-header">
+		<p class="text--help" th:if="${input.helpMessageKey != null}" th:text="#{${input.helpMessageKey}}">
+		</p>
+		<div class="grid">
+			<div class="grid__item width-auto-left">
+				<button th:name="${formInputName}" th:inline="text" th:append type="submit"
+					th:value="${options.getSelectableOptions[0].value}"
+					class="button button--primary out-of-state-address-notice-button">
+					[[#{${options.getSelectableOptions[0].messageKey}}]]
+				</button>
+			</div>
+			<div class="grid__item width-auto-left">
+				<button th:name="${formInputName}" th:inline="text" th:append type="submit"
+					th:value="${options.getSelectableOptions[1].value}"
+					class="button out-of-state-address-notice-button">
+					[[#{${options.getSelectableOptions[1].messageKey}}]]
+				</button>
+			</div>
+		</div>
+		<div class="grid">
+			<div class="grid__item width-auto-left">
+				<button th:name="${formInputName}" class="button--link" th:inline="text" th:append type="submit"
+					th:value="${options.getSelectableOptions[2].value}">
+					[[#{${options.getSelectableOptions[2].messageKey}}]]
+				</button>
+			</div>
+		</div>
+	</div>
+</th:block>

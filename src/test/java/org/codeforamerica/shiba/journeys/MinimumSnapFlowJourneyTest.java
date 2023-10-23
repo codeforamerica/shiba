@@ -259,6 +259,15 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
         Optional.of(new Address("smarty street", "Cooltown", "WI", "03104", "1b", "someCounty"))
     );
     testPage.clickContinue();
+    
+    // Page title: Out of State Address Notice
+    assertTrue(testPage.getTitle().equals("Out of State Address Notice"));
+    // Verify that the given address is what was input on the homeAddress page
+    assertTrue(testPage.findElementById("given-address-street").getText().equals("someStreetAddress"));
+    assertTrue(testPage.findElementById("given-address-apt").getText().equals("someApartmentNumber"));
+    assertTrue(testPage.findElementById("given-address-city-state").getText().equals("someCity, WI"));
+    assertTrue(testPage.findElementById("given-address-zip").getText().equals("12345"));
+    testPage.clickButton("Yes, continue");
 
     // Page title: Mailing address
     assertTrue(testPage.getTitle().equals("Mailing address"));
@@ -270,14 +279,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickElementById("enriched-address");
     testPage.clickContinue();
     
-    // Page title: County Validation
-    assertTrue(testPage.getTitle().equals("County Validation"));
-    // The original county should not displayed on this page
-    assertNotNull(testPage.findElementById("original-county"));
-    // The enriched county should not be displayed on this page because the home address is out-of-state
-    assertTrue(testPage.elementDoesNotExistById("enriched-county"));
-    testPage.clickButton("Use this county");
-    
+    // County Validation is skipped for out of state address
     // Page title: Contact Info
     assertTrue(testPage.getTitle().equals("Contact Info"));
     testPage.enter("phoneNumber", "(651) 555-1234");
@@ -286,20 +288,72 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     
     // Page title: Do you need help immediately?
     assertTrue(testPage.getTitle().equals("Review info"));
-    testPage.clickLink("Submit an incomplete application now with only the above information.");
+    
+    // Now back up to the outOfStateAddressNotice page so that we can
+    // verify the "Edit my address" route
+    testPage.goBack(); // to the Contact Info page
+    testPage.goBack(); // to the Address validation page
+    testPage.goBack(); // to the Mailing address page
+    testPage.goBack(); // to the Out of State Address Notice page
+    testPage.clickButtonLink("Edit this address");
+    
+    // Page title: Home Address
+    assertTrue(testPage.getTitle().equals("Home Address"));
+    
+    // Change the state to MN
+    testPage.enter("state",  "MN");
+    // mock a SmartyStreet "address found" response
+    when(smartyStreetClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "Cooltown", "MN", "03104", "1b", "someCounty"))
+    );
+    testPage.clickContinue();
+    
+    // Page title: Mailing address
+    assertTrue(testPage.getTitle().equals("Mailing address"));
+    // testPage.clickElementById("true"); Don't click this, it would uncheck the checkbox.
+    testPage.clickContinue();
+    
+    // Page title: Address Validation
+    assertTrue(testPage.getTitle().equals("Address Validation"));
+    testPage.clickElementById("enriched-address");
+    testPage.clickContinue();
+    
+    // Page title: County Validation
+    assertTrue(testPage.getTitle().equals("County Validation"));
+    // The original county "Hennepin" should be displayed on this page
+    assertNotNull(testPage.findElementById("original-county"));
+    // The enriched county "someCounty" should be displayed on this page
+    assertNotNull(testPage.findElementById("enriched-county"));
+    testPage.clickContinue();
+    
+    // Page title: Contact Info
+    assertTrue(testPage.getTitle().equals("Contact Info"));
+    testPage.clickContinue();
     
     // Page title: Do you need help immediately?
-    assertTrue(testPage.getTitle().equals("Do you need help immediately?"));
-    testPage.clickLink("Yes, I want to see if I qualify");
+    assertTrue(testPage.getTitle().equals("Review info"));
     
-    // Page title: Do you want to add household members?
-    assertTrue(testPage.getTitle().equals("Do you want to add household members?"));
-    testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+    // Now back up to the outOfStateAddressNotice page so that we can
+    // verify the "No, quit application" route
+    testPage.goBack(); // to the Contact Info page
+    testPage.goBack(); // to the County validation page
+    testPage.goBack(); // to the Address validation page
+    testPage.goBack(); // to the Mailing address page
+    testPage.goBack(); // to the Home address page
     
-    // Page title: Thirty Day Income, Household
-    assertTrue(testPage.getTitle().equals("Thirty Day Income, Household"));
+    testPage.enter("state",  "WI");
+    // mock a SmartyStreet "address found" response
+    when(smartyStreetClient.validateAddress(any())).thenReturn(
+        Optional.of(new Address("smarty street", "Cooltown", "WI", "03104", "1b", "someCounty"))
+    );
+    testPage.clickContinue();
     
-    // Stop here, can be continued as needed.
+    // Page title: Out of State Address Notice
+    assertTrue(testPage.getTitle().equals("Out of State Address Notice"));
+    testPage.clickButton("No, quit application");
+    
+    // Page title: Landing
+    assertTrue(testPage.getTitle().equals("MNbenefits"));
   }
 
   private void assertCafContainsAllFieldsForMinimumSnapFlow(String applicationId,

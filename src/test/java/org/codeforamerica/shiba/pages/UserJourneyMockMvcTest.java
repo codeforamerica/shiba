@@ -150,6 +150,30 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     assertThat(lastName).isEqualTo("Sm\nith");
   }
 
+  /**
+   * This test verifies that we save the option that the user selected on the outOfStateAddressNotice page
+   * @throws Exception
+   */
+  @Test
+  void shouldSaveSelectedOutOfStateAddressOption() throws Exception {
+	getToOutOfStateAddressNotice("CASH");
+	
+    postExpectingSuccess("outOfStateAddressNotice", Map.of("selectedOutOfStateAddressOption", List.of("CONTINUE")));
+    String selectedOption = applicationData.getPagesData()
+        .safeGetPageInputValue("outOfStateAddressNotice", "selectedOutOfStateAddressOption").get(0);
+    assertThat(selectedOption).isEqualTo("CONTINUE");
+
+    postExpectingSuccess("outOfStateAddressNotice", Map.of("selectedOutOfStateAddressOption", List.of("EDIT")));
+    selectedOption = applicationData.getPagesData()
+        .safeGetPageInputValue("outOfStateAddressNotice", "selectedOutOfStateAddressOption").get(0);
+    assertThat(selectedOption).isEqualTo("EDIT");
+
+    postExpectingSuccess("outOfStateAddressNotice", Map.of("selectedOutOfStateAddressOption", List.of("QUIT")));
+    selectedOption = applicationData.getPagesData()
+        .safeGetPageInputValue("outOfStateAddressNotice", "selectedOutOfStateAddressOption").get(0);
+    assertThat(selectedOption).isEqualTo("QUIT");
+  }
+
 
   protected void completeFlowFromReviewInfoToDisability(String... applicantPrograms)
       throws Exception {

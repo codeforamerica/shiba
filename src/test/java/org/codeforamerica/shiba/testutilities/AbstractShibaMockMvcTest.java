@@ -824,6 +824,17 @@ public class AbstractShibaMockMvcTest {
     selectPrograms(programSelections);
   }
 
+  protected void getToOutOfStateAddressNotice(String... programSelections) throws Exception {
+    getToPersonalInfoScreen(programSelections);
+    postExpectingSuccess("homeAddress", Map.of(
+            "streetAddress", List.of("someStreetAddress"),
+            "apartmentNumber", List.of("someApartmentNumber"),
+            "city", List.of("someCity"),
+            "zipCode", List.of("12345"),
+            "state", List.of("WI")
+        ));
+  }
+
   protected void fillOutHomeAddress() throws Exception {
     postExpectingSuccess("homeAddress", Map.of(
         "streetAddress", List.of("someStreetAddress"),

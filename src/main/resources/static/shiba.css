@@ -915,6 +915,27 @@ input[type=number] {
   margin-left: 0;
 }
 
+.out-of-state-address {
+  border: 2px #008060 solid;
+  border-radius: 10px;
+  background-color: unset;
+  padding: 15px;
+}
+
+.width-auto-left {
+  float: left;
+  display: block;
+  margin-right: 2.3576520234%;
+  width: auto;
+}
+.width-auto-left:last-child {
+    margin-right: 0;
+}
+
+.out-of-state-address-notice-button {
+  margin-right: 0;
+}
+
 .reveal {
   border: 2px solid #741078;
 }

@@ -555,7 +555,6 @@ public class PageController {
         .getPageConfiguration()
         .isUsingPageTemplateFragment()) {
       model.put("data", pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources()));
-      model.put("applicationData", applicationData);
 
       if (applicationData.hasRequiredSubworkflows(pageWorkflow.getDatasources())) {
         model.put("subworkflows", pageWorkflow.getSubworkflows(applicationData));
@@ -576,6 +575,7 @@ public class PageController {
       model.put("data", pagesData
           .getPageDataOrDefault(pageTemplate.getName(), pageWorkflow.getPageConfiguration()));
     }
+    model.put("applicationData", applicationData);
 
     return model;
   }

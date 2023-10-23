@@ -3830,6 +3830,25 @@ pageDefinitions:
               messageKey: address-validation.address-you-entered
       - name: enrichedCountyDifferentFromSelected
         type: HIDDEN
+  - &outOfStateAddressNotice
+    name: outOfStateAddressNotice
+    pageTitle: out-of-state-address-notice.title
+    hasPrimaryButton: false
+    usingPageTemplateFragment: true
+    inputs:
+      - name: selectedOutOfStateAddressOption
+        type: CUSTOM
+        customInputFragment: outOfStateAddressNoticeInput
+        options:
+          selectableOptions:
+            - value: "CONTINUE"
+              messageKey: out-of-state-address-notice.yes-continue
+            - value: "QUIT"
+              messageKey: out-of-state-address-notice.no-quit-application
+            - value: "EDIT"
+              messageKey: out-of-state-address-notice.edit-this-address
+        datasources:
+          - pageName: homeAddress
   - &mailingAddressValidation
     name: mailingAddressValidation
     pageTitle: address-validation.title
@@ -4782,7 +4801,27 @@ workflow:
           pageName: homeAddress
           input: isHomeless
           value: "true"
+      - pageName: outOfStateAddressNotice
+        condition:
+          pageName: homeAddress
+          input: state
+          matcher: DOES_NOT_EQUAL
+          value: "MN"
       - pageName: mailingAddress
+  outOfStateAddressNotice:
+    pageConfiguration: *outOfStateAddressNotice
+    nextPages:
+      - pageName: mailingAddress
+        condition:
+          pageName: outOfStateAddressNotice
+          input: selectedOutOfStateAddressOption
+          value: "CONTINUE"
+      - pageName: homeAddress
+        condition:
+          pageName: outOfStateAddressNotice
+          input: selectedOutOfStateAddressOption
+          value: "EDIT"
+      - pageName: landing
   whereToSendMail:
     pageConfiguration: *whereToSendMail
     subtleLinkTargetPage: cityForGeneralDelivery
@@ -4838,7 +4877,13 @@ workflow:
       - pageName: identifyCounty
     nextPages:
       - pageName: verifyCounty
+        condition:
+          pageName: homeAddress
+          input: state
+          matcher: CONTAINS_ONLY
+          value: "MN"
       - pageName: contactInfo
+      - pageName: homeAddress
       - pageName: mailingAddress
   verifyCounty:
     pageConfiguration: *countyValidation
