@@ -295,7 +295,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.goBack(); // to the Address validation page
     testPage.goBack(); // to the Mailing address page
     testPage.goBack(); // to the Out of State Address Notice page
-    testPage.clickButtonLink("Edit this address");
+    testPage.clickButtonLink("Edit my address");
     
     // Page title: Home Address
     assertTrue(testPage.getTitle().equals("Home Address"));

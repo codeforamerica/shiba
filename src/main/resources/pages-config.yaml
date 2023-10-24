@@ -3846,7 +3846,7 @@ pageDefinitions:
             - value: "QUIT"
               messageKey: out-of-state-address-notice.no-quit-application
             - value: "EDIT"
-              messageKey: out-of-state-address-notice.edit-this-address
+              messageKey: out-of-state-address-notice.edit-my-address
         datasources:
           - pageName: homeAddress
   - &mailingAddressValidation

@@ -15,7 +15,7 @@
 	</div>
 
 	<!-- display the home address provided  -->
-	<div class="grid__item out-of-state-address spacing-below-35">
+	<div class="grid__item out-of-state-address spacing-below-60">
 		<div class="text-bold spacing-below-15" th:text="#{out-of-state-address-notice.address-you-entered}"></div>
 		<div id="given-address-street" th:text="${addressData.get('streetAddress').value[0]}"></div>
 		<div id="given-address-apt" th:if="${!addressData.get('apartmentNumber').value[0].isEmpty()}"
