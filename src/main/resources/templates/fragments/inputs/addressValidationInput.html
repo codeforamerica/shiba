@@ -2,6 +2,7 @@
 <th:block th:fragment="addressValidationInput (input, data)"
           th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                    addressData=${page.name.contains('home') ? pageDatasources.get('homeAddress') : pageDatasources.get('mailingAddress')},
+                   isMailingAddressPage=${page.name.contains('mailing') ? true : false},
                    foundEnrichedAddress=${addressData.containsKey('enrichedStreetAddress')},
                    selectedCounty=${pageDatasources.get('identifyCounty').get('county').value[0]},
                    countyData=${pageDatasources.get('homeAddress')},
@@ -10,10 +11,18 @@
                    enrichedCountyDifferentFromSelected=${selectedCounty.replaceAll('[^A-Za-z0-9]','').toLowerCase() ne enrichedCountyName.replaceAll('[^A-Za-z0-9]','').toLowerCase()}"
 >
   <div class="grid__item spacing-above-35 spacing-below-35">
-    <h1 class="h2" th:if="${foundEnrichedAddress}"
-        th:text="#{address-validation.check-your-address}"></h1>
-    <h1 class="h2" th:unless="${foundEnrichedAddress}"
-        th:text="#{address-validation.make-sure-your-address-is-correct}"></h1>
+    <div th:if="${foundEnrichedAddress}">
+	    <h1 class="h2" th:if="${isMailingAddressPage}"
+	        th:text="#{address-validation.check-your-mailing-address}"></h1>
+	    <h1 class="h2" th:unless="${isMailingAddressPage}"
+	        th:text="#{address-validation.check-your-address}"></h1>
+    </div>
+    <div th:unless="${foundEnrichedAddress}">  
+	    <h1 class="h2" th:if="${isMailingAddressPage}"
+	        th:text="#{address-validation.make-sure-your-mailing-address-is-correct}"></h1>
+	    <h1 class="h2" th:unless="${isMailingAddressPage}"
+	        th:text="#{address-validation.make-sure-your-address-is-correct}"></h1>
+    </div>   
     <p th:if="${foundEnrichedAddress}"
        th:text="#{address-validation.we-updated-the-address-you-entered}"
        class="notice--warning"></p>

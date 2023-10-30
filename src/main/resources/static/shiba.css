@@ -933,6 +933,9 @@ input[type=number] {
 }
 
 .out-of-state-address-notice-button {
+  margin-right: 1.25rem;
+}
+.out-of-state-address-notice-button-0 {
   margin-right: 0;
 }
 
