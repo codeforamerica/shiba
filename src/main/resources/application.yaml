@@ -93,6 +93,7 @@ mail-gun:
 feature-flag:
   clamav: on
   tribal-routing: on
+  WEN-lineal-descendant: on
   certain-pops: on
   submit-via-api: on
   show-delayed-processing-time-notice: on
