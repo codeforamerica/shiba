@@ -266,6 +266,18 @@ conditionDefinitions:
       - pageName: identifyCounty
         input: county
         value: "Polk"
+  - &WENCountySelected?
+    logicalOperator: OR
+    conditions:
+      - pageName: identifyCounty
+        input: county
+        value: "Becker"
+      - pageName: identifyCounty
+        input: county
+        value: "Mahnomen"
+      - pageName: identifyCounty
+        input: county
+        value: "Clearwater"
 pageDefinitions:
   - &landing
     name: landing
@@ -2211,6 +2223,14 @@ pageDefinitions:
               messageKey: select-the-tribe.white-earth
             - value: Federally recognized tribe outside of MN
               messageKey: select-the-tribe.other
+  - &linealDescendantWEN
+    name: linealDescendantWhiteEarthNation
+    pageTitle: lineal-descendant-WEN.title
+    headerKey: lineal-descendant-WEN.are-you-a-lineal-descendant
+    hasPrimaryButton: false
+    inputs:
+      - name: linealDescendantWEN
+        type: YES_NO
   - &nationsBoundary
     name: nationsBoundary
     pageTitle: nations-boundary.title
@@ -5235,6 +5255,14 @@ workflow:
             - *applicantChoseCERTAINPOPS?
             - *certainPopsPilot?
         flag: certain-pops
+      - pageName: linealDescendantWEN
+        condition:
+          conditions:
+            - *WENCountySelected?
+            - pageName: tribalNationMember
+              input: isTribalNationMember
+              value: "false"
+        flag: WEN-lineal-descendant
       - pageName: introIncome
     datasources:
       - pageName: choosePrograms
@@ -5247,6 +5275,10 @@ workflow:
     datasources:
       - pageName: choosePrograms
       - pageName: addHouseholdMembers
+  linealDescendantWEN:
+    pageConfiguration: *linealDescendantWEN
+    nextPages:
+      - pageName: introIncome
   nationsBoundary:
     pageConfiguration: *nationsBoundary
     nextPages:
