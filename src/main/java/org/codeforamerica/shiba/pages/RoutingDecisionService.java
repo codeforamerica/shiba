@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.TribalNation.*;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.APPLYING_FOR_TRIBAL_TANF;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LIVING_IN_TRIBAL_NATION_BOUNDARY;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LINEAL_DESCENDANT_WEN;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_TRIBAL_NATION_LATER_DOCS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.IDENTIFY_TRIBAL_NATION_HEALTHCARE_RENEWAL;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
@@ -73,6 +74,11 @@ public class RoutingDecisionService {
             county);
         default -> List.of(countyRoutingDestinations.get(county));
       };
+    }
+	var pagesData = applicationData.getPagesData();
+    boolean isLinealDescendantWEN = getBooleanValue(pagesData, LINEAL_DESCENDANT_WEN);
+    if(COUNTIES_SERVICED_BY_WHITE_EARTH.contains(county) && isLinealDescendantWEN){
+    	return List.of(tribalNations.get(WhiteEarthNation));
     }
 
     // By default, just send to county

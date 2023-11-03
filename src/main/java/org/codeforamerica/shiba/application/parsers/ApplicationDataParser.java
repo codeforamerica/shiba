@@ -106,6 +106,9 @@ public class ApplicationDataParser {
 
     coordinatesMap.put(Field.SELECTED_TRIBAL_NATION,
         new ParsingCoordinate("selectTheTribe", "selectedTribe"));
+    
+    coordinatesMap.put(Field.LINEAL_DESCENDANT_WEN,
+            new ParsingCoordinate("linealDescendantWhiteEarthNation", "linealDescendantWEN"));
 
     coordinatesMap.put(Field.LIVING_IN_TRIBAL_NATION_BOUNDARY,
         new ParsingCoordinate("nationsBoundary", "livingInNationBoundary"));
@@ -485,6 +488,7 @@ public class ApplicationDataParser {
     GENERAL_DELIVERY_ZIPCODE,
 
     SELECTED_TRIBAL_NATION,
+    LINEAL_DESCENDANT_WEN,
     LIVING_IN_TRIBAL_NATION_BOUNDARY,
     APPLYING_FOR_TRIBAL_TANF,
 
