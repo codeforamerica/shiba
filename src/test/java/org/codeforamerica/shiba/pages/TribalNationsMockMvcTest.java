@@ -27,10 +27,12 @@ import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
+import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
+import org.codeforamerica.shiba.testutilities.YesNoAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -191,6 +193,79 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
     assertThat(routingDestination.getEmail()).isEqualTo("mnbenefits@state.mn.us");
     assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
+  }
+
+  /**
+   * This test verifies that the routing destination will include White Earth Nation when
+   * the applicant is not a tribal member but rather a lineal descendant of White Earth Nation and
+   * resides in one of the counties serviced by WEN.
+   * @param county
+   * @throws Exception
+   */
+  @ParameterizedTest
+  @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
+  void shouldRouteWhiteEarthLinealDescendantApplicationsToWhiteEarth(String county) throws Exception {
+		when(featureFlagConfiguration.get("WEN-lineal-descendant")).thenReturn(FeatureFlag.ON); 
+	    postExpectingRedirect("identifyCountyBeforeApplying", "county", county, "prepareToApply");
+	    postExpectingRedirect("choosePrograms", "programs", "CCAP, SNAP", "introBasicInfo");
+	    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "linealDescendantWEN");
+	    postExpectingRedirect("linealDescendantWEN", "linealDescendantWEN", "true", "introIncome");
+
+	    assertRoutingDestinationIsCorrectForDocument(CAF, WhiteEarthNation.toString());
+	    assertRoutingDestinationIsCorrectForDocument(Document.CCAP, WhiteEarthNation.toString());
+
+	    var routingDestinations = routingDecisionService.getRoutingDestinations(applicationData, CAF);
+	    RoutingDestination routingDestination = routingDestinations.get(0);
+	    assertThat(routingDestination.getDhsProviderId()).isEqualTo("A086642300");
+	    assertThat(routingDestination.getEmail()).isEqualTo("mnbenefits@state.mn.us");
+	    assertThat(routingDestination.getPhoneNumber()).isEqualTo("218-935-2359");
+  }
+
+  /**
+   * This test verifies input requirements that allow the linealDescendantWhiteEarthNation page to be displayed,
+   * i.e., county of residence: Becker, Clearwater, Mahnomen
+   *       tribal member: No
+   * @param county
+   * @throws Exception
+   */
+  @ParameterizedTest
+  @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
+  void shouldShowLinealDescendantWENPageWhenNotTribalMember(String county) throws Exception {
+	when(featureFlagConfiguration.get("WEN-lineal-descendant")).thenReturn(FeatureFlag.ON); 
+	// The expected sequence of pages is illustrated below, the test will post data for the pages
+	// that contain data that affects navigation to the linealDescendantWEN page.
+
+    // identifyCountyBeforeApplying
+    postExpectingRedirect("identifyCountyBeforeApplying", "county", county, "prepareToApply");
+    // tribalNationMember
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "linealDescendantWEN");
+    // linealDescendantWEN
+    postExpectingRedirect("linealDescendantWEN", "linealDescendantWEN", "true", "introIncome");
+  }
+
+  /**
+   * This test verifies that the linealDescendantWEN page is not displayed when the county of residence
+   * is Becker, Clearwater or Mahnomen but tribal membership is Yes
+   * @param county
+   * @throws Exception
+   */
+  @ParameterizedTest
+  @CsvSource(value = {"Becker", "Mahnomen", "Clearwater"})
+  void shouldNotShowLinealDescendantWENPageWhenTribalMember(String county) throws Exception {
+	when(featureFlagConfiguration.get("WEN-lineal-descendant")).thenReturn(FeatureFlag.ON); 
+	// The expected sequence of pages illustrated below, this test will post data for the pages
+	// that contain data that affects navigation to the linealDescendantWEN page.
+
+    // identifyCountyBeforeApplying
+    postExpectingRedirect("identifyCountyBeforeApplying", "county", county, "prepareToApply");
+    // choosePrograms
+    postExpectingRedirect("choosePrograms", "programs", "CASH", "introBasicInfo");
+    // addHouseholdMembers
+    postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "introPersonalDetails");
+    // tribalNationMember
+    postExpectingRedirect("tribalNationMember", "isTribalNationMember", "true", "selectTheTribe");
+    // selectTheTribe
+    postExpectingRedirect("selectTheTribe","selectedTribe", "White Earth Nation", "introIncome");
   }
 
   @ParameterizedTest
