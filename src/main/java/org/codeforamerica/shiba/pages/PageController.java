@@ -224,6 +224,11 @@ public class PageController {
     return "faq";
   }
 
+  @GetMapping("/snapNDS")
+  String getSnapNDS() {
+    return "snapNDS";
+  }
+
   @GetMapping("/errorTimeout")
   String getErrorTimeout(@CookieValue(value = "application_id", defaultValue = "") String submittedAppId,
 		  @CookieValue(value = "flow_type", defaultValue = "") String flowType,

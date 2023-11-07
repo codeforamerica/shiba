@@ -48,6 +48,9 @@ public class FullFlowJourneyTest extends JourneyTest {
     // Assert that the EBT Scam Alert is displayed on the landing page.
     assertThat(driver.findElement(By.id("ebt-scam-alert"))).isNotNull();
 
+    // Assert presence and functionality of the SNAP non-discrimination link on the footer.
+    assertThat(driver.findElement(By.id("link-snap-nds"))).isNotNull();
+    
     goToPageBeforeSelectPrograms("Chisago");
      
     selectProgramsWithoutCertainPopsAndEnterPersonalInfo();

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="format-detection" content="telephone=no">
+  <title th:text="#{snap-nds.title}"></title>
+  <link href="/honeycrisp.min.css" rel="stylesheet"/>
+  <link href="/shiba.css" rel="stylesheet"/>
+  <script src="/honeycrisp.min.js"></script>
+</head>
+<body class="locale-en" id="snapNDS">
+<div class="page-wrapper slab--shiba">
+  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
+  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
+  <section class="slab spacing-above-35">
+    <div class="grid">
+      <div class="grid__item">
+        <h1 class="spacing-below-35" th:text="#{snap-nds.header}"></h1>
+      </div>
+    </div>
+  </section>
+  <main id="content" role="main" class="slab slab--white">
+    <div class="grid">
+      <div class="grid__item">
+        <p class="text-bold" th:text="#{snap-nds.do-not-send-applications-here}"></p>
+        <p th:utext="#{snap-nds.p1}"></p>
+        <p th:utext="#{snap-nds.p2}"></p>
+        <p th:utext="#{snap-nds.p3}"></p>
+        <ul class="list--bulleted">
+          <li th:utext="#{snap-nds.mail}"></li>
+          <li th:utext="#{snap-nds.fax}"></li>
+          <li th:utext="#{snap-nds.email}"></li>
+        </ul>
+        <p th:text="#{snap-nds.eop}"></p>
+        <p class="text-bold" th:text="#{snap-nds.do-not-send-applications-here}"></p>
+      </div>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
