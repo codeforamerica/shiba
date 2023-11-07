@@ -16,6 +16,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
+import org.codeforamerica.shiba.ServicingAgencyMap;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
@@ -46,6 +48,8 @@ class CoverPagePreparerTest {
   private RoutingDecisionService routingDecisionService;
   @MockBean
   private RoutingDestinationMessageService routingDestinationMessageService;
+  @MockBean
+  private ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
 
   @BeforeEach
   public void setUp() {
@@ -59,7 +63,7 @@ class CoverPagePreparerTest {
     );
     applicationData = new ApplicationData();
     preparer = new CoverPagePreparer(staticMessageSource, routingDecisionService,
-        routingDestinationMessageService);
+        routingDestinationMessageService, tribalNations);
     CountyRoutingDestination countyRoutingDestination = new CountyRoutingDestination(
         Hennepin, "someDhsProviderId", "someEmail", "555-123-4567");
     when(routingDecisionService.getRoutingDestinations(any(ApplicationData.class),
