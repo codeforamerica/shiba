@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.County.Hennepin;
 import static org.codeforamerica.shiba.County.Olmsted;
 import static org.codeforamerica.shiba.County.Other;
+import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.caf.CoverPagePreparer.CHILDCARE_WAITING_LIST_UTM_SOURCE;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
@@ -111,6 +114,60 @@ class CoverPagePreparerTest {
             "coverPage",
             "tribal",
             List.of("Mille Lacs Band of Ojibwe"),
+            DocumentFieldType.SINGLE_VALUE
+        ));
+  }
+
+  /**
+   * This test verifies that the DocumentField generated for field "tribal" in the "coverPage" group
+   * will contain "White Earth Nation" when the applicant makes selections to indicate that they are
+   * a Tribal Member of White Earth Nation and they reside within the boundaries of the WEN tribal land. 
+   */
+  @Test
+  void shouldIncludeWhiteEarthNationAffiliationWhenEnrolledTribalMember() {
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("selectTheTribe", "selectedTribe", "White Earth Nation");
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .county(County.Becker)
+        .build();
+
+    List<DocumentField> documentFields = preparer
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
+
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "tribal",
+            List.of("White Earth Nation"),
+            DocumentFieldType.SINGLE_VALUE
+        ));
+  }
+
+  /**
+   * This test verifies that the DocumentField generated for field "tribal" in the "coverPage" group
+   * will contain "White Earth Nation" when the applicant makes selections to indicate that they are
+   * a lineal descendant of a Tribal Member of White Earth Nation and they reside within the boundaries
+   * of the WEN tribal land. 
+   */
+  @Test
+  void shouldIncludeWhiteEarthNationAffiliationWhenLinealDescendant() {
+    new TestApplicationDataBuilder(applicationData)
+        .withPageData("linealDescendantWhiteEarthNation", "linealDescendantWEN", "true");
+    Application application = Application.builder()
+        .applicationData(applicationData)
+        .county(County.Becker)
+        .build();
+
+    when(tribalNations.get(WhiteEarthNation)).thenReturn(new TribalNationRoutingDestination(WhiteEarthNation));
+    List<DocumentField> documentFields = preparer
+        .prepareDocumentFields(application, CAF, Recipient.CLIENT);
+
+    assertThat(documentFields).contains(
+        new DocumentField(
+            "coverPage",
+            "tribal",
+            List.of("White Earth Nation"),
             DocumentFieldType.SINGLE_VALUE
         ));
   }
