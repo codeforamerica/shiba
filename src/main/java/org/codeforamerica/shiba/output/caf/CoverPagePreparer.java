@@ -5,7 +5,10 @@ import static java.util.Optional.ofNullable;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_FIRST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_INFO_LAST_NAME;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LINEAL_DESCENDANT_WEN;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
+import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getGroup;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getValues;
@@ -20,6 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.codeforamerica.shiba.RoutingDestinationMessageService;
+import org.codeforamerica.shiba.ServicingAgencyMap;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Group;
 import org.codeforamerica.shiba.internationalization.LocaleSpecificMessageSource;
@@ -50,13 +55,15 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   private final MessageSource messageSource;
   private final RoutingDecisionService routingDecisionService;
   private final RoutingDestinationMessageService routingDestinationMessageService;
+  private final ServicingAgencyMap<TribalNationRoutingDestination> tribalNations;
 
   public CoverPagePreparer(MessageSource messageSource,
       RoutingDecisionService routingDecisionService,
-      RoutingDestinationMessageService routingDestinationMessageService) {
+      RoutingDestinationMessageService routingDestinationMessageService, ServicingAgencyMap<TribalNationRoutingDestination> tribalNations) {
     this.messageSource = messageSource;
     this.routingDecisionService = routingDecisionService;
     this.routingDestinationMessageService = routingDestinationMessageService;
+    this.tribalNations = tribalNations;
   }
 
   @Override
@@ -121,6 +128,9 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
   private DocumentField getTribalAffiliation(Application application) {
     var value =
         getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
+    if (getBooleanValue(application.getApplicationData().getPagesData(), LINEAL_DESCENDANT_WEN)) {
+    	value = tribalNations.get(WhiteEarthNation).getName();
+    }
     return new DocumentField("coverPage", "tribal", value, SINGLE_VALUE);
   }
 
