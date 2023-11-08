@@ -35,5 +35,6 @@ public class AbstractStaticMessageSourcePageTest extends AbstractBasePageTest {
     staticMessageSource.addMessage("language-preferences.english", Locale.ENGLISH, "english");
     staticMessageSource.addMessage("language-preferences.spanish", Locale.ENGLISH, "spanish");
     staticMessageSource.addMessage("success.standard-suggested-action", Locale.ENGLISH, "success");
+    staticMessageSource.addMessage("snap-nds.header", Locale.ENGLISH, "SNAP NDS");
   }
 }
