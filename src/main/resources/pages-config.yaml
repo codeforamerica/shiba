@@ -2226,7 +2226,11 @@ pageDefinitions:
   - &linealDescendantWEN
     name: linealDescendantWhiteEarthNation
     pageTitle: lineal-descendant-WEN.title
-    headerKey: lineal-descendant-WEN.are-you-a-lineal-descendant
+    headerKey:
+      defaultValue: lineal-descendant-WEN.is-anyone-a-lineal-descendant
+      conditionalValues:
+        - value: lineal-descendant-WEN.are-you-a-lineal-descendant
+          condition: *livesAlone?
     hasPrimaryButton: false
     inputs:
       - name: linealDescendantWEN
@@ -5277,6 +5281,8 @@ workflow:
       - pageName: addHouseholdMembers
   linealDescendantWEN:
     pageConfiguration: *linealDescendantWEN
+    datasources:
+      - pageName: addHouseholdMembers
     nextPages:
       - pageName: introIncome
   nationsBoundary:
