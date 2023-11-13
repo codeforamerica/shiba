@@ -244,6 +244,26 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
   }
 
   /**
+   * This test is a variation of test shouldShowLinealDescendantWENPageWhenNotTribalMember, whose
+   * purpose is to verify that the alternative "household version" of the linealDescendantWEN page
+   * header is displayed when the application has a household member.
+   * @throws Exception
+   */
+  @Test
+  void shouldShowHouseholdVersionOfLinealDescendantWENPage() throws Exception {
+	when(featureFlagConfiguration.get("WEN-lineal-descendant")).thenReturn(FeatureFlag.ON); 
+	// This test posts data for the pages that contain data that affects navigation
+	// to the linealDescendantWEN page and the text displayed on the page.
+
+    // identifyCountyBeforeApplying
+    postExpectingRedirect("identifyCountyBeforeApplying", "county", "Becker", "prepareToApply");
+    // add a household
+    this.addHouseholdMembersWithProgram(SNAP);
+    // tribalNationMember
+    postExpectingNextPageElementText("tribalNationMember", "isTribalNationMember", "false", "page-header", "Is anyone in your household a lineal descendant of the White Earth Nation?");
+  }
+
+  /**
    * This test verifies that the linealDescendantWEN page is not displayed when the county of residence
    * is Becker, Clearwater or Mahnomen but tribal membership is Yes
    * @param county
