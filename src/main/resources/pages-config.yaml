@@ -2234,6 +2234,8 @@ pageDefinitions:
     hasPrimaryButton: false
     inputs:
       - name: linealDescendantWEN
+        promptMessage:
+          promptMessageFragmentName: linealDescendantWENPrompt
         type: YES_NO
   - &nationsBoundary
     name: nationsBoundary
