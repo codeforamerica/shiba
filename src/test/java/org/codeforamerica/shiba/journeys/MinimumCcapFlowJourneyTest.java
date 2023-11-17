@@ -28,7 +28,6 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
         LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
         LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant());
     when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     List<String> programSelections = List.of(PROGRAM_CCAP);
     getToHomeAddress("Hennepin", programSelections);

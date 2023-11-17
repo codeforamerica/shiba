@@ -6,7 +6,7 @@
     <!-- some pages may not have a pageTitle property -->
     <div th:if="${page.pageTitle} != '' and #{${page.pageTitle}} == ${#messages.msg('next-steps.title')}">
       <div class="reduce-spacing-above-35 spacing-below-15"
-        th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
+        th:if="${@environment.getProperty('show-delayed-processing-time-notice')}">
         <div th:replace="~{fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice}"></div>
       </div>
     </div>

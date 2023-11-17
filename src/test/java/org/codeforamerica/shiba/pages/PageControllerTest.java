@@ -213,7 +213,6 @@ class PageControllerTest {
         .flow(FlowType.FULL)
         .build();
     when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-    when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     String sessionId = "someSessionId";
     MockHttpSession session = new MockHttpSession(null, sessionId);
@@ -249,7 +248,6 @@ class PageControllerTest {
     applicationData.setFlow(LATER_DOCS);
 
     when(applicationRepository.find(eq(applicationId))).thenReturn(application);
-    when(featureFlags.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     String sessionId = "someSessionId";
 

@@ -65,6 +65,7 @@ comm-hub:
    
 
 mnit-filenet:
+  enabled: true
   username: ${MNIT-FILENET_USERNAME}
   password: ${MNIT-FILENET_PASSWORD}
   upload-url: https://extsvcs-stst.dhs.state.mn.us/WebServices/FileNet/ObjectService/SOAP
@@ -81,8 +82,11 @@ mnit-filenet:
 
 mnit-clammit:
   url: https://clammit-clam-av.apps.gj1k10ie.centralus.aroapp.io/clammit/scan
+  enabled: true
 
 sender-email: help@mnbenefits.org
+
+show-delayed-processing-time-notice: true
 
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.mn.gov/messages"
@@ -91,12 +95,8 @@ mail-gun:
   max-attachment-size: 20000000 #20MB
 
 feature-flag:
-  clamav: on
-  tribal-routing: on
   WEN-lineal-descendant: on
   certain-pops: on
-  submit-via-api: on
-  show-delayed-processing-time-notice: on
   enhanced-next-steps: on
   
 document-upload:

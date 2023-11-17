@@ -78,10 +78,6 @@ public class AccessibilityJourneyTest extends JourneyTest {
 
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("clamav")).thenReturn(FeatureFlag.ON);
-
     testPage.clickButton("Upload documents");
 
     // Enter nothing to throw error on select to check aria-properties on error
@@ -149,8 +145,6 @@ public class AccessibilityJourneyTest extends JourneyTest {
   
   @Test
   void healthcareRenewalFlow() {
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
     navigateTo("healthcareRenewalUpload");
     assertThat(driver.getTitle()).isEqualTo("Health Care Renewal Document Upload");
 

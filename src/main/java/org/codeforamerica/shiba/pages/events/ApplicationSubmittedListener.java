@@ -28,6 +28,8 @@ import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.rest.CommunicationClient;
 import org.slf4j.MDC;
 import com.google.gson.JsonObject;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -42,9 +44,9 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   private final SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider;
   private final CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider;
   private final PdfGenerator pdfGenerator;
-  private final FeatureFlagConfiguration featureFlags;
   private final RoutingDecisionService routingDecisionService;
   private final CommunicationClient communicationClient;
+  private final String filenetEnabled;
 
 
   public ApplicationSubmittedListener(MnitDocumentConsumer mnitDocumentConsumer,
@@ -53,19 +55,19 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
       SnapExpeditedEligibilityDecider snapExpeditedEligibilityDecider,
       CcapExpeditedEligibilityDecider ccapExpeditedEligibilityDecider,
       PdfGenerator pdfGenerator,
-      FeatureFlagConfiguration featureFlagConfiguration,
       MonitoringService monitoringService,
       RoutingDecisionService routingDecisionService,
-      CommunicationClient communicationClient) {
+      CommunicationClient communicationClient,
+      @Value ("${mnit-filenet.enabled}") String filenetEnabled) {
     super(applicationRepository, monitoringService);
     this.mnitDocumentConsumer = mnitDocumentConsumer;
     this.emailClient = emailClient;
     this.snapExpeditedEligibilityDecider = snapExpeditedEligibilityDecider;
     this.ccapExpeditedEligibilityDecider = ccapExpeditedEligibilityDecider;
     this.pdfGenerator = pdfGenerator;
-    this.featureFlags = featureFlagConfiguration;
     this.routingDecisionService = routingDecisionService;
     this.communicationClient = communicationClient;
+    this.filenetEnabled = filenetEnabled;
   }
 
   @Async
@@ -73,7 +75,7 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
   public void sendViaApi(ApplicationSubmittedEvent event) {
     log.info("sendViaApi received ApplicationSubmittedEvent with application ID: "
         + event.getApplicationId());
-    if (featureFlags.get("submit-via-api").isOn()) {
+    if(Boolean.parseBoolean(filenetEnabled)) {
       Application application = getApplicationFromEvent(event);
       logTimeSinceCompleted(application);
       mnitDocumentConsumer.processCafAndCcap(application);

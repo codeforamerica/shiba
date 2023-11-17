@@ -17,8 +17,6 @@ public class LaterDocsJourneyTest extends JourneyTest {
   
   @Test
   void laterDocsFlow() {
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
      testPage.clickButton("Upload documents");
 
     assertThat(driver.getTitle()).isEqualTo("Identify county or Tribal Nation");

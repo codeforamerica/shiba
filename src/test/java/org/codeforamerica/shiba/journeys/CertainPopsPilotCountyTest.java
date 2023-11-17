@@ -26,7 +26,6 @@ public class CertainPopsPilotCountyTest extends JourneyTest {
         LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
     );
     when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     // Assert intercom button is present on landing page
     await().atMost(5, SECONDS).until(() -> !driver.findElements(By.id("intercom-frame")).isEmpty());
@@ -66,7 +65,6 @@ public class CertainPopsPilotCountyTest extends JourneyTest {
         LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
     );
     when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
 
     // Assert intercom button is present on landing page
     await().atMost(5, SECONDS).until(() -> !driver.findElements(By.id("intercom-frame")).isEmpty());

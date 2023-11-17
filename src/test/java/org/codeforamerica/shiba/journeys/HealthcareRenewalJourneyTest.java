@@ -23,8 +23,6 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
   
   @Test
   void healthcareRenewalFlow() {
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
-    when(featureFlagConfiguration.get("tribal-routing")).thenReturn(FeatureFlag.ON);
     navigateTo("healthcareRenewalUpload");
     assertThat(driver.getTitle()).isEqualTo("Health Care Renewal Document Upload");
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));

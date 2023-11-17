@@ -26,11 +26,11 @@ mail-gun:
   max-attachment-size: 1000000 # 1MB
 
 feature-flag:
-  clamav: on
-  county-ottertail: on
+#  clamav: on
   show-delayed-processing-time-notice: on
  
 mnit-filenet:
+  enabled: true
   max-attempts: 4
   delay: 1
   multiplier: 1
@@ -51,6 +51,7 @@ comm-hub:
 
 mnit-clammit:
   url: 'https://clammit-clam-av.apps.gj1k10ie.centralus.aroapp.io/clammit/scan'
+  enabled: true
 
 documentUploadEmails:
   cronExpression: "-" # disable process to send document upload emails

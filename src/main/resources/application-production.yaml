@@ -13,7 +13,9 @@ client:
 
 mail-gun:
   shouldCC: true
+  
+mnit-filenet:
+  enabled: true
 
 feature-flag:
-  submit-via-api: on
   certain-pops: off

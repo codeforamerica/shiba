@@ -74,10 +74,10 @@ class ApplicationSubmittedListenerTest {
         snapExpeditedEligibilityDecider,
         ccapExpeditedEligibilityDecider,
         pdfGenerator,
-        featureFlagConfiguration,
         monitoringService, 
         routingDecisionService, 
-        communicationClient
+        communicationClient,
+        "true"
         );
   }
   
@@ -152,8 +152,7 @@ class ApplicationSubmittedListenerTest {
   class sendApplicationToMNIT {
 
     @Test
-    void shouldSendSubmittedApplicationToMNITWhenFlagIsOn() {
-      when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.ON);
+    void shouldSendSubmittedApplicationToMNITWhenFilenetIsEnabled() {
       String applicationId = "someId";
       Application application = Application.builder().id(applicationId).build();
       ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("someSessionId",
@@ -168,8 +167,19 @@ class ApplicationSubmittedListenerTest {
     }
 
     @Test
-    void shouldNotSendViaApiIfSendViaApiIsFalse() {
-      when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
+    void shouldNotSendViaApiWhenFilenetIsDisabled() {
+        applicationSubmittedListener = new ApplicationSubmittedListener(
+                mnitDocumentConsumer,
+                applicationRepository,
+                emailClient,
+                snapExpeditedEligibilityDecider,
+                ccapExpeditedEligibilityDecider,
+                pdfGenerator,
+                monitoringService, 
+                routingDecisionService, 
+                communicationClient,
+                "false"
+                );
 
       ApplicationSubmittedEvent event = new ApplicationSubmittedEvent("", "", null, Locale.ENGLISH);
 

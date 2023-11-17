@@ -157,6 +157,8 @@ public class PageController {
   private final ApplicationStatusRepository applicationStatusRepository;
   private final EligibilityListBuilder listBuilder;
   private final String clammitUrl;
+  private final String clammitEnabled;
+  private final String filenetEnabled;
   private static final List<String> IMAGE_TYPES_TO_COMPRESS = List
 	      .of("jpg", "jpeg");
   private static float imageQuality;
@@ -183,7 +185,9 @@ public class PageController {
       RoutingDestinationMessageService routingDestinationMessageService,
       ApplicationStatusRepository applicationStatusRepository,
       EligibilityListBuilder listBuilder, 
-      @Value("${mnit-clammit.url}") String clammitUrl) {
+      @Value("${mnit-clammit.url}") String clammitUrl,
+      @Value("${mnit-clammit.enabled}") String clammitEnabled,
+      @Value("${mnit-filenet.enabled}") String filenetEnabled) {
     this.applicationData = applicationData;
     this.applicationConfiguration = applicationConfiguration;
     this.clock = clock;
@@ -205,6 +209,8 @@ public class PageController {
     this.applicationStatusRepository = applicationStatusRepository;
     this.listBuilder = listBuilder;
     this.clammitUrl = clammitUrl;
+    this.clammitEnabled = clammitEnabled;
+    this.filenetEnabled = filenetEnabled;
   }
 
   @GetMapping("/")
@@ -1013,7 +1019,8 @@ public class PageController {
           lms.getMessage("upload-documents.MS-word-files-not-accepted"),
           HttpStatus.UNPROCESSABLE_ENTITY);
     }
-	if (featureFlags.get("clamav").isOn()) {
+    
+	if (Boolean.parseBoolean(clammitEnabled)) {
 		try {
 			var client = HttpClient.newHttpClient();
 			var request = HttpRequest.newBuilder(URI.create(clammitUrl))
@@ -1083,7 +1090,7 @@ public class PageController {
     }
     applicationStatusRepository.getAndSetFileNames(application, UPLOADED_DOC);
     applicationRepository.save(application);
-    if (featureFlags.get("submit-via-api").isOn()) {
+    if (Boolean.parseBoolean(filenetEnabled)) {
       log.info("Invoking pageEventPublisher for UPLOADED_DOC submission: " + application.getId());
       applicationStatusRepository.createOrUpdateAllForDocumentType(application, SENDING,
           UPLOADED_DOC);

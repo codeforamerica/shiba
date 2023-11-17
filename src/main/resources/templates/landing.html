@@ -10,7 +10,7 @@
     <section class="slab slab--white padding-top-1rem padding-bottom-3rem">
       <div class="grid">
         <div class="grid__item width-one-whole spacing-above-15"
-            th:if="${@environment.getProperty('feature-flag.show-delayed-processing-time-notice')}">
+            th:if="${@environment.getProperty('show-delayed-processing-time-notice')}">
             <div th:replace="~{fragments/delayedProcessingTimeNotice :: delayedProcessingTimeNotice}"></div>
         </div>
         <div class="grid__item width-one-half">

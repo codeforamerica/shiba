@@ -7,9 +7,11 @@ spring:
       cache:
         cachecontrol:
           max-age: 10m
+          
+mnit-filenet:
+  enabled: false
+          
 feature-flag:
-  submit-via-api: off
   certain-pops: off
-  submit-docs-via-email-for-hennepin: off
 
 demo: true

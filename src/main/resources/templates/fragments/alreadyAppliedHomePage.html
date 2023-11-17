@@ -17,17 +17,10 @@
 					th:utext="#{landing.upload-documents-caps}"></h1>
 				<p class="form-card__body-text spacing-below-35"
 					th:text="#{landing.send-documents-to-your-county-tribal-nation}"></p>
-				<div
-					th:if="${@environment.getProperty('feature-flag.tribal-routing')}">
+				<div>
 					<a class="button spacing-below-0"
 						th:href="'/pages/identifyCountyOrTribalNation'"> <span
 						th:text="#{landing.upload-documents}"></span>
-					</a>
-				</div>
-				<div
-					th:if="!${@environment.getProperty('feature-flag.tribal-routing')}">
-					<a class="button spacing-below-0" th:href="'/pages/identifyCounty'">
-						<span th:text="#{landing.upload-documents}"></span>
 					</a>
 				</div>
 			</div>

@@ -81,9 +81,6 @@ abstract class JourneyTest extends AbstractBasePageTest {
     when(clock.instant()).thenReturn(Instant.now());
     when(clock.getZone()).thenReturn(ZoneOffset.UTC);
     when(smartyStreetClient.validateAddress(any())).thenReturn(Optional.empty());
-
-    when(featureFlagConfiguration.get("submit-via-api")).thenReturn(FeatureFlag.OFF);
-    when(featureFlagConfiguration.get("clamav")).thenReturn(FeatureFlag.ON);
     caf = null;
     ccap = null;
     certainPops = null;
