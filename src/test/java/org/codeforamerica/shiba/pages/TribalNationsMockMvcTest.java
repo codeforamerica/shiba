@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNation;
@@ -32,7 +34,6 @@ import org.codeforamerica.shiba.pages.enrichment.Address;
 import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.codeforamerica.shiba.testutilities.TestApplicationDataBuilder;
-import org.codeforamerica.shiba.testutilities.YesNoAnswer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -260,7 +261,11 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     // add a household
     this.addHouseholdMembersWithProgram(SNAP);
     // tribalNationMember
-    postExpectingNextPageElementText("tribalNationMember", "isTribalNationMember", "false", "page-header", "Is anyone in your household a lineal descendant of the White Earth Nation?");
+    var nextPage = postAndFollowRedirect("tribalNationMember", "isTribalNationMember", "false");
+    // verify the page header text is present
+    assertThat(nextPage.getElementTextById("page-header")).isEqualTo("Is anyone in your household a lineal descendant of the White Earth Nation?");
+    // verify that the help text (in the reveal) is present
+    assertThat(nextPage.getElementTextById("reveal-content")).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
   }
 
   /**
