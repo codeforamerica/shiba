@@ -265,7 +265,7 @@ public class TribalNationsMockMvcTest extends AbstractShibaMockMvcTest {
     // verify the page header text is present
     assertThat(nextPage.getElementTextById("page-header")).isEqualTo("Is anyone in your household a lineal descendant of the White Earth Nation?");
     // verify that the help text (in the reveal) is present
-    assertThat(nextPage.getElementTextById("reveal-content")).isEqualTo("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+    assertThat(nextPage.getElementTextById("reveal-content")).isEqualTo("A lineal descendant is anyone who can trace their ancestry directly to a White Earth Nation tribal member.");
   }
 
   /**
