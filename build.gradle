@@ -141,7 +141,7 @@ dependencies {
     implementation("com.google.crypto.tink:tink:1.11.0")
     implementation("com.azure:azure-storage-blob:12.25.0")
     implementation("org.postgresql:postgresql")
-    implementation("org.jetbrains:annotations:24.0.1")
+    implementation("org.jetbrains:annotations:24.1.0")
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.flywaydb:flyway-core:9.22.3")
     implementation("com.mixpanel:mixpanel-java:1.5.2")
