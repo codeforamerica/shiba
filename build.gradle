@@ -114,7 +114,7 @@ dependencies {
     implementation("org.springframework.session:spring-session-core:3.2.0")
     implementation("org.springframework.session:spring-session-jdbc:3.2.0")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.1.5")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.2.0")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
