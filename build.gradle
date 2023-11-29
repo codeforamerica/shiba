@@ -118,7 +118,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.5")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.2.0")
     //webflux is needed even though it is reactive, not servlet. Used by MailGun and SmartyStreet
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
