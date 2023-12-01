@@ -4,6 +4,9 @@ on:
   push:
     branches-ignore:
       - staging
+      
+env:
+  mnbenefits_env_url: any_string_works_for_github_tests
 
 jobs:
   unit-test:
@@ -14,7 +17,7 @@ jobs:
     - name: Set up ChromeDriver
       uses: nanasess/setup-chromedriver@v2.2.1
     - name: Set up JDK
-      uses: actions/setup-java@v3.13.0
+      uses: actions/setup-java@v4.0.0
       with:
         distribution: 'adopt'
         java-version: '17'
@@ -44,7 +47,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -74,7 +77,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -104,7 +107,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -134,7 +137,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -164,7 +167,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -194,7 +197,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -224,7 +227,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -254,7 +257,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -284,7 +287,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -314,7 +317,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'
@@ -344,7 +347,7 @@ jobs:
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2.2.1
       - name: Set up JDK
-        uses: actions/setup-java@v3.13.0
+        uses: actions/setup-java@v4.0.0
         with:
           distribution: 'adopt'
           java-version: '17'

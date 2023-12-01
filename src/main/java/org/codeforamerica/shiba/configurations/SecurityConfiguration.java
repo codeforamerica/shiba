@@ -21,6 +21,8 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class SecurityConfiguration {
+	
+	private static int environmentUrlLength;
+	
+	public SecurityConfiguration(@Value("${mnbenefits_env_url}") String environmentUrl) {
+		environmentUrlLength = environmentUrl.length();
+	}
 
 	@Autowired
 	private ShibaInvalidSessionStrategy shibaInvalidSessionStrategy;
@@ -97,11 +105,76 @@ public class SecurityConfiguration {
 			errorRedirectInvalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(timeoutUrl);
 		}
 
+		/**
+		 * Ignore session expiration on the landing page.
+		 */
 		@Override
 		public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
 				throws IOException {
-			log.info(StringEscapeUtils.escapeJava("User session invalid on page: " + request.getRequestURL()));
-			errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
+			String pageNameFromRequest = request.getRequestURL().toString();
+			String pageName = pageNameFromRequest.substring(environmentUrlLength);
+			log.info(StringEscapeUtils.escapeJava("User session invalid on page: " + pageName));
+			if (pageName.equalsIgnoreCase("/pages/landing/navigation")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/identifyCountyBeforeApplying");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.equalsIgnoreCase("/pages/landing")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/identifyCountyBeforeApplying");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.equalsIgnoreCase("/")) {
+				// language was changed on landing page so stay there
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/landing");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.contains("identifyCountyOrTribalNation")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/identifyCountyOrTribalNation");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.contains("faq")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/faq");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.contains("snapNDS")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/snapNDS");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else if (pageName.contains("privacy")) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/privacy");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException | IOException e) {
+					log.error("Invalid Session Redirect for " + pageName, e);
+				}
+
+			} else {
+				//normal redirect to session expired page
+				errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(request, response);
+			}
 		}
 
 		@Override
@@ -110,5 +183,5 @@ public class SecurityConfiguration {
 			errorRedirectInvalidSessionStrategy.onInvalidSessionDetected(event.getRequest(), event.getResponse());
 		}
 	}
-
+	
 }
