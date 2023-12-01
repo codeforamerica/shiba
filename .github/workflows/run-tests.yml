@@ -6,7 +6,7 @@ on:
       - staging
       
 env:
-  mnbenefits_env_url: test
+  mnbenefits_env_url: any_string_works_for_github_tests
 
 jobs:
   unit-test:

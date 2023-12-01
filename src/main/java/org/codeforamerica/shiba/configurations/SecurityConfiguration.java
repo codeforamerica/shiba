@@ -34,8 +34,7 @@ public class SecurityConfiguration {
 	private static int environmentUrlLength;
 	
 	public SecurityConfiguration(@Value("${mnbenefits_env_url}") String environmentUrl) {
-		System.out.println("==== SecurityConfiguration environmentUrl: |" + environmentUrl + "|");//TODO emj delete
-		environmentUrlLength =environmentUrl.length();
+		environmentUrlLength = environmentUrl.length();
 	}
 
 	@Autowired
