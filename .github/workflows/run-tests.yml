@@ -4,6 +4,9 @@ on:
   push:
     branches-ignore:
       - staging
+      
+env:
+  mnbenefits_env_url: test
 
 jobs:
   unit-test:
