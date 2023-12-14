@@ -6836,11 +6836,6 @@ workflow:
     pageConfiguration: *healthcareRenewalDocumentSubmitConfirmation
     nextPages:
       - pageName: healthcareRenewalUploadDocuments
-      
-  healthcareRenewalSuccess:
-    pageConfiguration: *success
-    nextPages:
-      - pageName: feedback
  
   healthcareRenewalDocumentsSent:
     pageConfiguration: *healthcareRenewalDocumentsSent     
@@ -6920,7 +6915,6 @@ landmarkPages:
     - healthcareRenewalDocumentOffboarding
     - healthcareRenewalDocumentSubmitConfirmation
     - healthcareRenewalSubmissionConfirmation
-    - healthcareRenewalSuccess
     - healthcareRenewalMatchInfo
     - healthcareRenewalDocumentsSent
   nextStepsPage: nextSteps
