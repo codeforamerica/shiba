@@ -139,14 +139,6 @@ public class SecurityConfiguration {
 					log.error("Invalid Session Redirect for " + pageName, e);
 				}
 
-			} else if (pageName.contains("identifyCountyOrTribalNation")) {
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/identifyCountyOrTribalNation");
-				try {
-					dispatcher.forward(request, response);
-				} catch (ServletException | IOException e) {
-					log.error("Invalid Session Redirect for " + pageName, e);
-				}
-
 			} else if (pageName.contains("faq")) {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/faq");
 				try {
