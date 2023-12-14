@@ -119,7 +119,7 @@ public class CountyMapConfiguration {
     updateCounty(Beltrami, "BeltramiCoPubAssntOffice-DO-NOT-REPLY@co.beltrami.mn.us", "A000004300");
     updateCounty(Benton, "financial@co.benton.mn.us", "1174697148");
     updateCounty(BigStone, "familyservicecenter@bigstonecounty.gov", "A000006000");
-    updateCounty(BlueEarth, "DeAnn.Boney@blueearthcountymn.gov", "A000007800");
+    updateCounty(BlueEarth, "holly.kaduce@blueearthcountymn.gov", "A000007800");
     updateCounty(Brown, "help123@co.brown.mn.us", "A000008600");
     updateCounty(Carlton, "IMOSS@co.carlton.mn.us", "1003921875");
     updateCounty(Carver, "cssfinancial@co.carver.mn.us", "A000010800");
