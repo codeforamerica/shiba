@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
+
 import org.codeforamerica.shiba.testutilities.PercyTestPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -20,6 +19,16 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
   protected void initTestPage() {
 	    testPage = new PercyTestPage(driver);
 	  }
+  
+  @Test
+  void healthcareRenewalPageCheckDhsLink() {
+    navigateTo("healthcareRenewalUpload");
+    assertThat(driver.getTitle()).isEqualTo("Health Care Renewal Document Upload");
+    assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
+    assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
+    testPage.clickLink("Renew my MN health care coverage");
+    assertThat(driver.getTitle()).isEqualTo("Renew my coverage / Minnesota Department of Human Services");
+  }
   
   @Test
   void healthcareRenewalFlow() {
@@ -47,10 +56,6 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
     // verify that the chat feature does not exist on the health care renewal header
     assertTrue(testPage.elementDoesNotExistById("intercom_custom_launcher"));
-
-    testPage.clickLink("Renew my MN health care coverage");
-    assertThat(driver.getTitle()).isEqualTo("Renew my coverage / Minnesota Department of Human Services");
-    driver.navigate().back();
     
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
