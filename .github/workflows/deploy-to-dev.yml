@@ -33,35 +33,35 @@ jobs:
     name: deploy to MNbenefits DEV
     runs-on: ubuntu-latest
     steps:
-    - name: Authenticate and set context for non-prod
-      uses: redhat-actions/oc-login@v1
-      with:
-        openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_NON_PROD }}
-        openshift_token: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
-        namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
-    - name: update and run build
-      run: |
-        oc start-build mn-benefits --follow
-    - name: Announce success on Teams
-      if: ${{ job.status == 'success' }}
-      uses: jdcargile/ms-teams-notification@v1.3
-      with:
-        github-token: ${{ github.token }} # this will use the runner's token.
-        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        notification-summary: Deploy to MNbenefits DEV succeeded, status - ${{ job.status }}
-        # color is green
-        notification-color: 008000
-        timezone: America/Chicago          
-    - name: Announce fail on Teams
-      if: ${{ job.status != 'success' }}
-      uses: jdcargile/ms-teams-notification@v1.3
-      with:
-        github-token: ${{ github.token }} # this will use the runner's token.
-        ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-        notification-summary: Deploy to MNbenefits DEV failed, status - ${{ job.status }}
-        # color is red
-        notification-color: ff0000
-        timezone: America/Chicago          
+      - name: Authenticate and set context for non-prod
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_NON_PROD }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN_NON_PROD }}
+          namespace: ${{ secrets.OPENSHIFT_NAMESPACE_NON_PROD }}
+      - name: update and run build
+        run: |
+          oc start-build mn-benefits --follow
+      - name: Announce success on Teams
+        if: ${{ job.status == 'success' }}
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: Deploy to MNbenefits DEV succeeded, status - ${{ job.status }}
+          # color is green
+          notification-color: 008000
+          timezone: America/Chicago          
+      - name: Announce fail on Teams
+        if: ${{ job.status != 'success' }}
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }} # this will use the runner's token.
+          ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          notification-summary: Deploy to MNbenefits DEV failed, status - ${{ job.status }}
+          # color is red
+          notification-color: ff0000
+          timezone: America/Chicago          
   merge_to_staging:
     needs: mnitdeploy
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
