@@ -79,3 +79,18 @@ jobs:
           branch: staging
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  evaluate_workflow:
+    needs: [mnitdeploy, merge_to_staging]  
+    name: evaluate workflow
+    runs-on: ubuntu-latest
+    if: |
+      always() &&
+      (needs.mnitdeploy.result == 'skipped' || needs.merge_to_staging == 'skipped')
+    steps:
+      - name: force workflow failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setFailed('One or more required workflow jobs were skipped')
+         
+
