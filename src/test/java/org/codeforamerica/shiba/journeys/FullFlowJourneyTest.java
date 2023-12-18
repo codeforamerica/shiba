@@ -10,13 +10,13 @@ import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.testutilities.PercyTestPage;
 import org.codeforamerica.shiba.testutilities.SuccessPage;
-import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -46,7 +46,15 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertThat(driver.findElement(By.id("delayed-processing-time-notice"))).isNotNull();
     // Assert that the EBT Scam Alert is displayed on the landing page.
     assertThat(driver.findElement(By.id("ebt-scam-alert"))).isNotNull();
-
+   
+    // Verify that the "Learn more here." link works 
+    String landingPageWindowHandle = driver.getWindowHandle();
+    testPage.clickLink("Learn more here.");
+    ArrayList<String> windowHandles = new ArrayList<String>(driver.getWindowHandles());
+    driver.switchTo().window(windowHandles.get(1));
+    assertThat(driver.getTitle().equals("Recent reports of card skimming affecting EBT card users"));
+    driver.switchTo().window(landingPageWindowHandle);
+    
     // Assert presence and functionality of the SNAP non-discrimination link on the footer.
     assertThat(driver.findElement(By.id("link-snap-nds"))).isNotNull();
     
