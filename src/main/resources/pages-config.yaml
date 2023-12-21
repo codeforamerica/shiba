@@ -1549,6 +1549,18 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
+  - &signThisApplicationOtherAdult
+    name: signThisApplicationOtherAdult
+    pageTitle: sign-this-application.title
+    headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+    headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
+    primaryButtonTextKey: sign-this-application.submit
+    inputs:
+      - name: otherAdultSignature
+        type: TEXT
+        validators:
+          - validation: NOT_BLANK
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
   - &submissionConfirmation
     name: submissionConfirmation
     pageTitle: submission-confirmation.title
@@ -6688,6 +6700,10 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
+      - pageName: signThisApplicationOtherAdult
+  signThisApplicationOtherAdult:
+    pageConfiguration: *signThisApplicationOtherAdult
+    nextPages:
       - pageName: submissionConfirmation
   submissionConfirmation:
     pageConfiguration: *submissionConfirmation
@@ -6922,7 +6938,7 @@ landmarkPages:
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   healthcareRenewalTerminalPage: healthcareRenewalDocumentsSent # the final page of the healthcare renewal flow
   healthcareRenewalLandingPage: healthcareRenewalUpload
-  submitPage: signThisApplication
+  submitPage: signThisApplicationOtherAdult
   uploadDocumentsPage: 
     - uploadDocuments # the page where applicants upload documents
     - healthcareRenewalUploadDocuments # the page where applicants upload documents
