@@ -103,6 +103,7 @@ mappings:
     applicantSignature: APPLICANT_SIGNATURE
   signThisApplicationOtherAdult:
     otherAdultSignature: OTHER_ADULT_SIGNATURE
+    createdDateSignature: CREATED_DATE_SIGNATURE
   goingToSchool:
     goingToSchool: GOING_TO_SCHOOL
   ccapHasCostsForChildCare:

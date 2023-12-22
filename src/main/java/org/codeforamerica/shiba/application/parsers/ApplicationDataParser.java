@@ -391,6 +391,9 @@ public class ApplicationDataParser {
     
     coordinatesMap.put(Field.DOCUMENT_DESTINATIONS,
             new ParsingCoordinate("coverPage", "documentDestinations"));
+    
+    coordinatesMap.put(Field.OTHER_ADULT_SIGNATURE, 
+    		new ParsingCoordinate("signThisApplicationOtherAdult", "otherAdultSignature"));
   }
 
   public static List<String> getValues(PagesData pagesData, Field field) {
@@ -601,6 +604,8 @@ public class ApplicationDataParser {
     PERSONAL_INFO_NO_SSN,
     PERSONAL_INFO_FIRST_NAME(""),
     PERSONAL_INFO_LAST_NAME(""),
+    
+    OTHER_ADULT_SIGNATURE,
 
     HOUSEHOLD_INFO_DOB,
     HOUSEHOLD_INFO_DOB_AS_DATE,
