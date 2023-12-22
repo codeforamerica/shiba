@@ -95,6 +95,7 @@ feature-flag:
   WEN-lineal-descendant: on
   certain-pops: on
   enhanced-next-steps: on
+  second-signature: on
   
 document-upload:
   max-files-uploaded: 50
