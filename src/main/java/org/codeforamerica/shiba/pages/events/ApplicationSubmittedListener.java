@@ -5,6 +5,7 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
 import org.codeforamerica.shiba.application.Application;
@@ -22,17 +23,17 @@ import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibility;
 import org.codeforamerica.shiba.output.caf.SnapExpeditedEligibilityDecider;
 import org.codeforamerica.shiba.output.pdf.PdfGenerator;
 import org.codeforamerica.shiba.pages.RoutingDecisionService;
-import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.emails.EmailClient;
 import org.codeforamerica.shiba.pages.rest.CommunicationClient;
 import org.slf4j.MDC;
-import com.google.gson.JsonObject;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import com.google.gson.JsonObject;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

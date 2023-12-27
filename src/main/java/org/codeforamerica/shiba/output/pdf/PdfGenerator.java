@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
 import org.apache.pdfbox.multipdf.Overlay;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;

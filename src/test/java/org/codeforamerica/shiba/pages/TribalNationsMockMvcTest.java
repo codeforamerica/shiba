@@ -10,7 +10,6 @@ import static org.codeforamerica.shiba.Program.SNAP;
 import static org.codeforamerica.shiba.TribalNation.OtherFederallyRecognizedTribe;
 import static org.codeforamerica.shiba.TribalNation.RedLakeNation;
 import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
-
 import static org.codeforamerica.shiba.output.Document.CAF;
 import static org.codeforamerica.shiba.output.Document.UPLOADED_DOC;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +21,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNation;
