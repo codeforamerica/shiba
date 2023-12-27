@@ -96,7 +96,7 @@ dependencies {
     implementation("jakarta.activation:jakarta.activation-api:2.1.2")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.1")
     implementation("jakarta.mail:jakarta.mail-api:2.1.2")
-    implementation("org.apache.commons:commons-email:1.5")
+    implementation("org.apache.commons:commons-email:1.6.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-api:1.1.0")
     implementation("org.apache.chemistry.opencmis:chemistry-opencmis-client-impl:1.1.0")
     // end of jaxb WS libraries
