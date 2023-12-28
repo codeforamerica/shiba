@@ -1,5 +1,10 @@
 # see @ApplicationConfiguration for how to maintain this file
 conditionDefinitions:
+# TODO need a conditional when MINIMUM or EXPEDITED flow, so we know if the signThisApplication button text is Submit or Continue
+  - &minimumFlow?
+    pageName: householdMemberInfo
+    input: firstName
+    matcher: EMPTY
   - &onlyApplyingForOthers?
     pageName: choosePrograms
     input: programs
@@ -1542,7 +1547,17 @@ pageDefinitions:
     pageTitle: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    primaryButtonTextKey: sign-this-application.submit
+    primaryButtonTextKey: 
+      defaultValue: general.continue
+      conditionalValues:
+# TODO show the submit text on button if there are no other applicants
+        - value: sign-this-application.submit
+          condition: *livesAlone?
+# minimum flow will be in another story
+#            logicalOperator: OR
+#            conditions:
+#              - *livesAlone?
+#              - *minimumFlow?
     inputs:
       - name: applicantSignature
         type: TEXT
@@ -1550,6 +1565,25 @@ pageDefinitions:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
     contextFragment: applicantName
+  - &legalStuffOtherAdult
+    name: legalStuffOtherAdult
+    pageTitle: legal-stuff.title
+    headerKey: legal-stuff.the-legal-stuff
+    headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+    inputs:
+      - name: agreeToTerms
+        type: CHECKBOX
+        promptMessage:
+          promptMessageFragmentName: legal-terms-prompt
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: legal-stuff.i-agree
+        helpMessageKeyBelow: legal-stuff.copies-of-the-full-agreements
+        condition: *applicantDidNotChooseCCAPOnly?
   - &signThisApplicationOtherAdult
     name: signThisApplicationOtherAdult
     pageTitle: sign-this-application.title
@@ -6701,13 +6735,31 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
-      - pageName: signThisApplicationOtherAdult
+      - pageName: legalStuffOtherAdult
         flag: second-signature
       - pageName: submissionConfirmation
+    datasources:
+      - pageName: addHouseholdMembers
+      - pageName: householdMemberInfo
+        groupName: household
+  legalStuffOtherAdult:
+    pageConfiguration: *legalStuffOtherAdult
+    skipCondition: *livesAlone?
+#      logicalOperator: OR
+#      conditions: 
+#        - *livesAlone?
+#        - *noOneChoseCASH?
+    nextPages:
+      - pageName: signThisApplicationOtherAdult
+    datasources:
+      - pageName: addHouseholdMembers
   signThisApplicationOtherAdult:
     pageConfiguration: *signThisApplicationOtherAdult
+    skipCondition: *livesAlone?
     nextPages:
       - pageName: submissionConfirmation
+    datasources:
+      - pageName: addHouseholdMembers
   submissionConfirmation:
     pageConfiguration: *submissionConfirmation
     nextPages:

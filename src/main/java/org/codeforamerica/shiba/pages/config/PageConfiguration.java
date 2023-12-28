@@ -55,7 +55,7 @@ public class PageConfiguration {
    *
    * @see #hasPrimaryButton
    */
-  private String primaryButtonTextKey = "general.continue";
+  private Value primaryButtonTextKey = new Value("general.continue");
 
   /**
    * boolean on whether to show the button (true) or not (false).
