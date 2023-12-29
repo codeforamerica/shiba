@@ -44,7 +44,6 @@ import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.documents.DocumentRepository;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.output.caf.EligibilityListBuilder;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.data.ApplicationData;
 import org.codeforamerica.shiba.pages.data.PageData;
@@ -67,7 +66,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
-import mobi.openddr.classifier.model.Device;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -80,6 +78,8 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.test.client.MockWebServiceServer;
 import org.springframework.ws.test.client.ResponseCreators;
 import org.springframework.xml.transform.StringSource;
+
+import mobi.openddr.classifier.model.Device;
 
 @ActiveProfiles("test")
 @SpringBootTest(

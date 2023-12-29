@@ -476,11 +476,11 @@ form .drag-and-drop-box-compact {
 .reveal__link__header-adjacent {
   text-align: left;
   display: inline-block;
-  padding: .3em .5em .3em .7em;
+  padding: .3em 1.5em .3em .7em;
 }
 
 .reveal__link-adjacent {
-  width: 93%;
+  width: 100%;
   border: unset;
 }
 

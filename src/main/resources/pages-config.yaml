@@ -4862,7 +4862,7 @@ workflow:
         condition:
           pageName: homeAddress
           input: state
-          matcher: DOES_NOT_EQUAL
+          matcher: DOES_NOT_EQUAL_IGNORE_CASE
           value: "MN"
       - pageName: mailingAddress
   outOfStateAddressNotice:

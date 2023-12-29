@@ -7,7 +7,6 @@ import static org.codeforamerica.shiba.application.FlowType.MINIMUM;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.NO;
 import static org.codeforamerica.shiba.testutilities.YesNoAnswer.YES;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -21,7 +20,6 @@ import org.codeforamerica.shiba.testutilities.SuccessPage;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 @Tag("minimumFlowJourney")
 public class MinimumSnapFlowJourneyTest extends JourneyTest {

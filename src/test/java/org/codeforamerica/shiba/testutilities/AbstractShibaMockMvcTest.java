@@ -41,12 +41,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.assertj.core.api.Assertions;
 import org.codeforamerica.shiba.output.Document;
-import org.codeforamerica.shiba.pages.config.FeatureFlag;
 import org.codeforamerica.shiba.pages.config.FeatureFlagConfiguration;
 import org.codeforamerica.shiba.pages.config.PageTemplate;
 import org.codeforamerica.shiba.pages.config.ReferenceOptionsTemplate;

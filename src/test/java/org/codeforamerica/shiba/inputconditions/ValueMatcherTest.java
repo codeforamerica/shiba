@@ -17,6 +17,19 @@ class ValueMatcherTest {
   }
   
   @Test
+  void doesNotEqualIgnoreCaseReturnsTrueWhenNoElementMatchesIgnoreCase() {
+	  ValueMatcher doesNotEqualIgnoreCase = ValueMatcher.DOES_NOT_EQUAL_IGNORE_CASE;
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("MN"), "mn")).isFalse();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("Mn"), "MN")).isFalse();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("mN"), "mn")).isFalse();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("mn"), "MN")).isFalse();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("IA"), "mn")).isTrue();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("Information"), "mn")).isTrue();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of ("Information", "Iowa"), "mn")).isTrue();
+	  assertThat(doesNotEqualIgnoreCase.matches(List.of (), "mn")).isTrue();
+  }
+  
+  @Test
   void testMilleLacsRuralCounties() {
 	  ValueMatcher valueMatcher = ValueMatcher.IS_MILLE_LACS_RURAL_COUNTY;
 	  assertThat(valueMatcher.matches(List.of("Aitkin"), null)).isTrue();
