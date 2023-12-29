@@ -1547,12 +1547,12 @@ pageDefinitions:
     pageTitle: sign-this-application.title
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    primaryButtonTextKey: 
-      defaultValue: general.continue
-      conditionalValues:
+    primaryButtonTextKey: general.continue
+ #     defaultValue: general.continue
+#      conditionalValues:
 # TODO show the submit text on button if there are no other applicants
-        - value: sign-this-application.submit
-          condition: *livesAlone?
+ #       - value: sign-this-application.submit
+ #         condition: *livesAlone?
 # minimum flow will be in another story
 #            logicalOperator: OR
 #            conditions:
@@ -1568,7 +1568,6 @@ pageDefinitions:
     name: secondSignatureNotification
     pageTitle: second-signature-notification.title
     headerKey: second-signature-notification.next-we-will-ask
-#    contextFragment: raceAndEthnicityFragment
     hasPrimaryButton: false
   - &signThisApplicationOtherAdult
     name: signThisApplicationOtherAdult
@@ -1580,6 +1579,16 @@ pageDefinitions:
       - name: otherAdultSignature
         type: TEXT
         helpMessageKeyBelow: second-signature.if-second-adult-not-available
+  - &submit
+    name: submit
+    pageTitle: submit.submit
+ #   contextFragment: icon-documents-sent
+    headerKey: submit.header-text
+#    headerHelpMessageKey: submit.small-text
+#    primaryButtonTextKey: submit.submit
+    usingPageTemplateFragment: false
+#    hasPrimaryButton: true
+#    excludeGoBack: true
   - &submissionConfirmation
     name: submissionConfirmation
     pageTitle: submission-confirmation.title
@@ -6742,9 +6751,13 @@ workflow:
     pageConfiguration: *signThisApplicationOtherAdult
     skipCondition: *livesAlone?
     nextPages:
-      - pageName: submissionConfirmation
+      - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
+  submit:
+    pageConfiguration: *submit
+    nextPages:
+      - pageName: submissionConfirmation
   submissionConfirmation:
     pageConfiguration: *submissionConfirmation
     nextPages:
@@ -6978,7 +6991,7 @@ landmarkPages:
   laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
   healthcareRenewalTerminalPage: healthcareRenewalDocumentsSent # the final page of the healthcare renewal flow
   healthcareRenewalLandingPage: healthcareRenewalUpload
-  submitPage: signThisApplicationOtherAdult
+  submitPage: submit
   uploadDocumentsPage: 
     - uploadDocuments # the page where applicants upload documents
     - healthcareRenewalUploadDocuments # the page where applicants upload documents

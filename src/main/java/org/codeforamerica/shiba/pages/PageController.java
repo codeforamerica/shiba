@@ -578,6 +578,16 @@ public class PageController {
         }
       }
     } else {
+    	//TODO emj put the flow type into pages data so next page logic on signThisApplication page can be set 
+    	
+ //       var flow = applicationData.getFlow();
+ //       log.info("========== FLOW IS " + flow);
+//        PageData pageData = new PageData();
+//        List<String> flowList = List.of(flow.toString());
+//        InputData inputData = new InputData(flowList);
+//        pageData.put("flow", inputData);
+//        pagesData.put("flow", pageData);
+//    	
       model.put("pageDatasources",
           pagesData.getDatasourcePagesBy(pageWorkflow.getDatasources())
               .mergeDatasourcePages(
