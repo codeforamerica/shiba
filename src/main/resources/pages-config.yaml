@@ -1574,7 +1574,7 @@ pageDefinitions:
     pageTitle: second-signature.title
     headerKey: second-signature.great
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    primaryButtonTextKey: sign-this-application.submit
+    primaryButtonTextKey: sign-this-application.continue
     inputs:
       - name: otherAdultSignature
         type: TEXT
@@ -6730,7 +6730,7 @@ workflow:
     nextPages:
       - pageName: secondSignatureNotification
         flag: second-signature
-      - pageName: submissionConfirmation
+      - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
@@ -6744,7 +6744,7 @@ workflow:
 #        - *noOneChoseCASH?
     nextPages:
       - pageName: signThisApplicationOtherAdult
-      - pageName: submissionConfirmation
+      - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
   signThisApplicationOtherAdult:
