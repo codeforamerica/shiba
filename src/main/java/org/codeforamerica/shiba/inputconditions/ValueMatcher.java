@@ -20,6 +20,8 @@ public enum ValueMatcher {
 
   DOES_NOT_EQUAL(
       (testValue, targetValue) -> testValue.size() != 1 || !testValue.get(0).equals(targetValue)),
+  
+  DOES_NOT_EQUAL_IGNORE_CASE((testValue, targetValue) -> testValue.stream().noneMatch(s -> s.equalsIgnoreCase(targetValue))),
 
   NOT_EMPTY((testValue, ignore) -> !String.join("", testValue).isBlank()),
 
