@@ -1564,38 +1564,22 @@ pageDefinitions:
         validators:
           - validation: NOT_BLANK
             errorMessageKey: general.validation.make-sure-you-answer-this-question
-    contextFragment: applicantName
-  - &legalStuffOtherAdult
-    name: legalStuffOtherAdult
-    pageTitle: legal-stuff.title
-    headerKey: legal-stuff.the-legal-stuff
-    headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
-    inputs:
-      - name: agreeToTerms
-        type: CHECKBOX
-        promptMessage:
-          promptMessageFragmentName: legal-terms-prompt
-        validators:
-          - validation: SELECT_AT_LEAST_ONE
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
-        options:
-          selectableOptions:
-            - value: "true"
-              messageKey: legal-stuff.i-agree
-        helpMessageKeyBelow: legal-stuff.copies-of-the-full-agreements
-        condition: *applicantDidNotChooseCCAPOnly?
+  - &secondSignatureNotification
+    name: secondSignatureNotification
+    pageTitle: second-signature-notification.title
+    headerKey: second-signature-notification.next-we-will-ask
+#    contextFragment: raceAndEthnicityFragment
+    hasPrimaryButton: false
   - &signThisApplicationOtherAdult
     name: signThisApplicationOtherAdult
-    pageTitle: sign-this-application.title
-    headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
+    pageTitle: second-signature.title
+    headerKey: second-signature.great
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     primaryButtonTextKey: sign-this-application.submit
     inputs:
       - name: otherAdultSignature
         type: TEXT
-        validators:
-          - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
+        helpMessageKeyBelow: second-signature.if-second-adult-not-available
   - &submissionConfirmation
     name: submissionConfirmation
     pageTitle: submission-confirmation.title
@@ -6735,15 +6719,15 @@ workflow:
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
-      - pageName: legalStuffOtherAdult
+      - pageName: secondSignatureNotification
         flag: second-signature
       - pageName: submissionConfirmation
     datasources:
       - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
         groupName: household
-  legalStuffOtherAdult:
-    pageConfiguration: *legalStuffOtherAdult
+  secondSignatureNotification:
+    pageConfiguration: *secondSignatureNotification
     skipCondition: *livesAlone?
 #      logicalOperator: OR
 #      conditions: 
@@ -6751,6 +6735,7 @@ workflow:
 #        - *noOneChoseCASH?
     nextPages:
       - pageName: signThisApplicationOtherAdult
+      - pageName: submissionConfirmation
     datasources:
       - pageName: addHouseholdMembers
   signThisApplicationOtherAdult:

@@ -1,0 +1,16 @@
+<div th:fragment="secondSignatureNotification">
+	<!--/* TODO emj what is id="general-delivery" ??? */-->
+  <div class="grid__item address-validation spacing-below-60" id="general-delivery">
+    <div class="notice left-aligned">
+      <p th:text="#{second-signature-notification.if-you-are-only-adult}"></p>
+    </div>
+
+    <div class="spacing-above-60">
+      <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+         th:text="#{second-signature-notification.yes-add-another-signaure}"></a>
+    </div>
+    <div>
+      <a class="button button--secondary" th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+         th:text="#{second-signature-notification.submit-application-now}"></a>
+    </div>
+</div>
