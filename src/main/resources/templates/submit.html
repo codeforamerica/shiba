@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{fragments/head :: head(#{${page.pageTitle}})}"></div>
+
 <body>
-<div class="page-wrapper">
-  <div th:replace="~{fragments/toolbar :: toolbar}"></div>
-  <div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
-  <section class="slab slab--shiba">
-    <div class="grid">
-      <main id="content" role="main" class="card spacing-above-35 text--centered">
-		<div class="grid__item spacing-above-35 spacing-below-35">
+	<div class="page-wrapper">
+		<div th:replace="~{fragments/toolbar :: toolbar}"></div>
+		<div th:replace="~{fragments/demoBanner :: demoBanner}"></div>
+		<section class="slab slab--shiba">
+			<div class="grid">
+				<div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
+				<main id="content" role="main" class="card spacing-above-35 text--centered">
+					<div class="grid__item spacing-above-35 spacing-below-35">
 
-	        <h1 class="h2" th:text="#{submit.header-text}"></h1>
+						<h1 class="h2" th:text="#{submit.header-text}"></h1>
 
-		</div>
-	  <form id="page-form" th:action="@{/submit}" method="post">
-	    <button type="submit" class="button button--primary spacing-above-35" id="form-submit-button"
-	            th:text="#{submit.submit}"></button>
-	  </form>
-      </main>
-    </div>
-  </section>
-</div>
-<div th:replace="~{fragments/footer :: footer}"></div>
+					</div>
+					<form id="page-form" th:action="@{/submit}" method="post">
+						<button type="submit" class="button button--primary spacing-above-35" id="form-submit-button"
+							th:text="#{submit.submit}"></button>
+					</form>
+				</main>
+			</div>
+		</section>
+	</div>
+	<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
+
 </html>

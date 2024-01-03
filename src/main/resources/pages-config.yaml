@@ -1548,16 +1548,6 @@ pageDefinitions:
     headerKey: sign-this-application.type-your-full-legal-name-here-to-sign-this-application
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
     primaryButtonTextKey: general.continue
- #     defaultValue: general.continue
-#      conditionalValues:
-# TODO show the submit text on button if there are no other applicants
- #       - value: sign-this-application.submit
- #         condition: *livesAlone?
-# minimum flow will be in another story
-#            logicalOperator: OR
-#            conditions:
-#              - *livesAlone?
-#              - *minimumFlow?
     inputs:
       - name: applicantSignature
         type: TEXT
@@ -1582,13 +1572,8 @@ pageDefinitions:
   - &submit
     name: submit
     pageTitle: submit.submit
- #   contextFragment: icon-documents-sent
     headerKey: submit.header-text
-#    headerHelpMessageKey: submit.small-text
-#    primaryButtonTextKey: submit.submit
     usingPageTemplateFragment: false
-#    hasPrimaryButton: true
-#    excludeGoBack: true
   - &submissionConfirmation
     name: submissionConfirmation
     pageTitle: submission-confirmation.title
@@ -6738,10 +6723,6 @@ workflow:
   secondSignatureNotification:
     pageConfiguration: *secondSignatureNotification
     skipCondition: *livesAlone?
-#      logicalOperator: OR
-#      conditions: 
-#        - *livesAlone?
-#        - *noOneChoseCASH?
     nextPages:
       - pageName: signThisApplicationOtherAdult
       - pageName: submit
