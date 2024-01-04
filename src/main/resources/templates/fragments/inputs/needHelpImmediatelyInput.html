@@ -1,0 +1,13 @@
+<th:block th:fragment="needHelpImmediatelyInput (input, data)"
+          th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)}"
+>
+  <div class="form-group vertical-button-group" role="group" aria-labelledby="page-header">
+    <p class="text--help"
+       th:if="${input.helpMessageKey != null}"
+       th:text="#{${input.helpMessageKey}}"></p>
+    <button th:name="${formInputName}" th:each="option: ${input.options.selectableOptions}"
+            th:inline="text" th:append type="submit" th:value="${option.value}" th:class="${option.cssClass}">
+            [[#{${option.messageKey}}]]
+    </button>
+  </div>
+</th:block>

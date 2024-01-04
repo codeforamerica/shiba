@@ -28,5 +28,6 @@ public class FormInput{
   private String inputPostfix; // for text behind the input, name is from honeycrisp css class
   private String helpMessageKeyBelow;// help message appear below inputs
   private String noticeMessage;//for NOTICE input type
+  private String cssClass;
   private Boolean validationIcon = true;
 }

@@ -11,6 +11,7 @@ public class Option {
   private Boolean isNone;
   private String helpMessageKey;
   private String helpIcon;
+  private String cssClass;
   private boolean limitSelection = false;
   private String flag;
   private Condition condition;

@@ -1,10 +1,9 @@
 # see @ApplicationConfiguration for how to maintain this file
 conditionDefinitions:
-# TODO need a conditional when MINIMUM or EXPEDITED flow, so we know if the signThisApplication button text is Submit or Continue
   - &minimumFlow?
-    pageName: householdMemberInfo
-    input: firstName
-    matcher: EMPTY
+    pageName: doYouNeedHelpImmediately
+    input: needHelpImmediately
+    value: "false"
   - &onlyApplyingForOthers?
     pageName: choosePrograms
     input: programs
@@ -1209,7 +1208,21 @@ pageDefinitions:
   - &doYouNeedHelpImmediately
     name: doYouNeedHelpImmediately
     pageTitle: do-you-need-help-immediately.title
+    headerKey: do-you-need-help-immediately.header
+    headerHelpMessageKey: do-you-need-help-immediately.we-encourage-you-to-answer-a-few-more-questions-that-will-help-us-figure-out-if-you-qualify-for-faster-service
     hasPrimaryButton: false
+    inputs:
+      - name: needHelpImmediately
+        type: CUSTOM
+        customInputFragment: needHelpImmediatelyInput
+        options:
+          selectableOptions:
+            - value: true
+              messageKey: do-you-need-help-immediately.yes-I-want-to-see-if-I-qualify
+              cssClass: "button button--primary"
+            - value: false
+              messageKey: do-you-need-help-immediately.finish-application-now
+              cssClass: "button button--secondary"
   - &thirtyDayIncome
     headerKey:
       defaultValue: thirty-day-income.how-much-money-has-your-household-made-in-the-last-30-days
@@ -6624,8 +6637,18 @@ workflow:
     nextPages:
       - pageName: addHouseholdMembersExpedited
         flow: EXPEDITED
+        condition:
+          pageName: doYouNeedHelpImmediately
+          input: needHelpImmediately
+          value: "true"
       - pageName: additionalInfo
         flow: MINIMUM
+        condition:
+          pageName: doYouNeedHelpImmediately
+          input: needHelpImmediately
+          value: "false"
+    datasources:
+      - pageName: doYouNeedHelpImmediately
   addHouseholdMembersExpedited:
     pageConfiguration: *addHouseholdMembers
     nextPages:
@@ -6722,19 +6745,29 @@ workflow:
         groupName: household
   secondSignatureNotification:
     pageConfiguration: *secondSignatureNotification
-    skipCondition: *livesAlone?
+    skipCondition:
+      logicalOperator: OR
+      conditions: 
+        - *livesAlone?
+        - *minimumFlow?
     nextPages:
       - pageName: signThisApplicationOtherAdult
       - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: doYouNeedHelpImmediately
   signThisApplicationOtherAdult:
     pageConfiguration: *signThisApplicationOtherAdult
-    skipCondition: *livesAlone?
+    skipCondition:
+      logicalOperator: OR
+      conditions: 
+        - *livesAlone?
+        - *minimumFlow?
     nextPages:
       - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: doYouNeedHelpImmediately
   submit:
     pageConfiguration: *submit
     nextPages:
