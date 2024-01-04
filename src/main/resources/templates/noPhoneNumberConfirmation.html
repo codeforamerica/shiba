@@ -1,6 +1,7 @@
 <div th:fragment="noPhoneNumberConfirmation">
   <div class="grid__item address-validation spacing-below-60" id="general-delivery">
     <p th:text="#{no-phone.a-caseworker-will-need-to-contact-you-by-phone}"></p>
+    <p th:text="#{no-phone.if-you-don't-have-a-phone-number}"></p>
     <div>
       <a class="button button--primary"
          th:href="'/pages/'+${pageName}+'/navigation?option=0'"
