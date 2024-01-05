@@ -183,6 +183,7 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
 
     // Upload documents
     testPage.enter("applicantSignature", "this is my signature");
+    testPage.clickContinue();
     testPage.clickButton("Submit");
     testPage.clickContinue();// submissionConfirmation
     testPage.clickContinue();// addingDocuments
