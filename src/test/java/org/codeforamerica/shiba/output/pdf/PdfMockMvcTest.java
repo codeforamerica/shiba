@@ -69,9 +69,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 	@Test
 	void shouldSupportCyrillicCharacters() throws Exception {
 		selectPrograms("CASH");
-
-		postToUrlExpectingSuccess("/submit", "/pages/signThisApplication/navigation",
-				Map.of("applicantSignature", List.of("aЕкатерина")));
+		postExpectingSuccess("signThisApplication", "applicantSignature", List.of("aЕкатерина"));
+		postToUrlExpectingSuccess("/submit", "/pages/submit/navigation", Map.of("", List.of("")));
 		var caf = downloadCafClientPDF();
 
 		assertPdfFieldEquals("APPLICANT_SIGNATURE", "aЕкатерина", caf);

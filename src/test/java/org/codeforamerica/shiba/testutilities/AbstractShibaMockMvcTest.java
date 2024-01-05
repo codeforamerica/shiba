@@ -432,9 +432,11 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void submitApplication() throws Exception {
-    postToUrlExpectingSuccess("/submit",
-        "/pages/signThisApplication/navigation",
-        Map.of("applicantSignature", List.of("Human McPerson")));
+//    postToUrlExpectingSuccess("/submit",
+//        "/pages/submit/navigation",
+//        Map.of("applicantSignature", List.of("Human McPerson")));
+	postExpectingSuccess("signThisApplication", "applicantSignature", List.of("Human McPerson"));
+	postToUrlExpectingSuccess("/submit", "/pages/submit/navigation", Map.of("", List.of("")));
   }
 
   protected void selectPrograms(String... programs) throws Exception {
@@ -461,13 +463,34 @@ public class AbstractShibaMockMvcTest {
     return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", params);
   }
 
-  // Post to a page with a single input that accepts multiple values
+  /**
+   * Original comment: Post to a page with a single input that accepts multiple values
+   * </br>
+   * Converts pageName to URLs used by the framework by adding "/pages/" to the the beginning for the postUrl parameter
+   * and "/navigation" to the end for the redirectUrl then calls 
+   *  postToUrlExpectingSuccess(String postUrl, String redirectUrl, Map<String, List<String>> params)
+   * @param pageName matches pageDefinition name in pages-config.yaml
+   * @param inputName matches input name in pages-config.yaml
+   * @param values list of String values
+   * @return
+   * @throws Exception
+   */
   protected ResultActions postExpectingSuccess(String pageName, String inputName,
       List<String> values) throws Exception {
     String postUrl = getUrlForPageName(pageName);
     return postToUrlExpectingSuccess(postUrl, postUrl + "/navigation", Map.of(inputName, values));
   }
 
+  /**
+   * The shiba workFlow framework as defined in pages-config.yaml</br>
+   * posts to a page URL and then redirects to a</br>
+   * URL with "/navigation" appended to the page URL. 
+   * @param postUrl example: "/pages/somePage"
+   * @param redirectUrl example: "pages/somePage/navigation"
+   * @param params
+   * @return
+   * @throws Exception
+   */
   protected ResultActions postToUrlExpectingSuccess(String postUrl, String redirectUrl,
       Map<String, List<String>> params) throws
       Exception {
@@ -645,6 +668,11 @@ public class AbstractShibaMockMvcTest {
     );
   }
 
+  /**
+   * Adds String "/pages/" before pageName. 
+   * @param pageName
+   * @return
+   */
   protected String getUrlForPageName(String pageName) {
     return "/pages/" + pageName;
   }

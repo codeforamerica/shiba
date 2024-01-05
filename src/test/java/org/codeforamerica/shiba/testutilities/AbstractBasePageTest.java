@@ -526,7 +526,8 @@ public abstract class AbstractBasePageTest {
     testPage.clickContinue();
     navigateTo("signThisApplication");
     testPage.enter("applicantSignature", "some name");
-    testPage.clickButton("Submit");
+    testPage.clickButton("Continue");
+    testPage.clickButton("Submit application");
     testPage.clickContinue();
     testPage.clickContinue();
     testPage.clickButton("Add documents now");
