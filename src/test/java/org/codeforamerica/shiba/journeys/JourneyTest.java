@@ -108,6 +108,7 @@ abstract class JourneyTest extends AbstractBasePageTest {
 
   protected String signApplicationAndDownloadApplicationZipFiles(String signature,List<String> expectedMessages) {
     testPage.enter("applicantSignature", signature);
+    testPage.clickContinue();
     testPage.clickButton("Submit");
     testPage.clickContinue();
     testPage.clickContinue();

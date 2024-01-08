@@ -52,9 +52,9 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
         .assertLinkWithTextHasCorrectUrl("Submit an incomplete application now with only the above information.",
             "/pages/doYouNeedHelpImmediately");
 
-    getNavigationPageWithQueryParamAndExpectRedirect("doYouNeedHelpImmediately",
-        "option",
-        "0",
+    postExpectingRedirect("doYouNeedHelpImmediately",
+        "needHelpImmediately",
+        "true",
         "addHouseholdMembersExpedited");
     postExpectingRedirect("addHouseholdMembersExpedited", "addHouseholdMembers", "false",
         "expeditedIncome");

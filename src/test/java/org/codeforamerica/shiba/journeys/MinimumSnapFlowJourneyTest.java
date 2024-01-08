@@ -82,7 +82,8 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickLink("Submit an incomplete application now with only the above information.");
 
     // Opt not to answer expedited questions
-    testPage.clickLink("Finish application now");
+    takeSnapShot("signaturePage3.png");
+    testPage.clickButton("Finish application now");
 
     // Additional Info
     assertThat(testPage.getTitle()).isEqualTo("Additional Info");
@@ -145,7 +146,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickLink("Submit an incomplete application now with only the above information.");
 
     // Answer expedited questions such that we will be expedited
-    testPage.clickLink("Yes, I want to see if I qualify");
+    testPage.clickButton("Yes, I want to see if I qualify");
 
     // Add Household Members
     testPage.enter("addHouseholdMembers", YES.getDisplayValue());
