@@ -914,6 +914,9 @@ input[type=number] {
   margin-right: 2.5rem;
   margin-left: 0;
 }
+.yes-no-button:last-child {
+  margin-right: 0;
+}
 
 .out-of-state-address {
   border: 2px #008060 solid;
