@@ -457,6 +457,8 @@ public class AccessibilityJourneyTest extends JourneyTest {
     testPage.enter("drugFelony", NO.getDisplayValue());
     testPage.clickContinue();
     testPage.enter("applicantSignature", "some name");
+    testPage.clickButton("Continue");
     testPage.clickButton("Submit");
+    
   }
 }
