@@ -127,7 +127,7 @@ dependencies {
     }
     
      //logging -->
-    implementation("org.slf4j:slf4j-api:2.0.9")
+    implementation("org.slf4j:slf4j-api:2.0.11")
     implementation("io.sentry:sentry-spring-boot-starter:7.1.0")
     implementation("io.sentry:sentry-logback:7.1.0")
     implementation("net.logstash.logback:logstash-logback-encoder:7.4")
@@ -164,12 +164,12 @@ dependencies {
     testImplementation("org.awaitility:awaitility")
     testImplementation("com.github.tomakehurst:wiremock-standalone:3.0.1")
     testImplementation("org.mockito:mockito-inline:5.2.0")
-    testImplementation("io.github.bonigarcia:webdrivermanager:5.6.2")
+    testImplementation("io.github.bonigarcia:webdrivermanager:5.6.3")
     testImplementation("org.springframework.ws:spring-ws-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.percy:percy-java-selenium:2.0.2")
     testImplementation("com.deque.html.axe-core:selenium:4.8.0")
-    testImplementation("org.jsoup:jsoup:1.17.1")
+    testImplementation("org.jsoup:jsoup:1.17.2")
 }
 
 compileJava {
