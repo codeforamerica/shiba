@@ -82,7 +82,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     testPage.clickLink("Submit an incomplete application now with only the above information.");
 
     // Opt not to answer expedited questions
-    takeSnapShot("signaturePage3.png");
     testPage.clickButton("Finish application now");
 
     // Additional Info

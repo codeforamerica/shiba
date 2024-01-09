@@ -1545,11 +1545,8 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Anoka"));
 			selectPrograms("CERTAIN_POPS", "SNAP");
 			postExpectingRedirect("basicCriteria", "basicCriteria", List.of("NONE"), "certainPopsOffboarding");
-
-			submitApplication();
-			var zippedFiles = downloadAllClientPDFs();
 			var caf = submitAndDownloadCaf();
-
+			var zippedFiles = downloadAllClientPDFs();
 			assertThat(zippedFiles.stream().noneMatch(file -> getDocumentType(file).equals(CERTAIN_POPS)))
 					.isEqualTo(true);
 			assertPdfFieldEquals("PROGRAMS", "SNAP", caf);

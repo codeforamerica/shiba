@@ -432,9 +432,6 @@ public class AbstractShibaMockMvcTest {
   }
 
   protected void submitApplication() throws Exception {
-//    postToUrlExpectingSuccess("/submit",
-//        "/pages/submit/navigation",
-//        Map.of("applicantSignature", List.of("Human McPerson")));
 	postExpectingSuccess("signThisApplication", "applicantSignature", List.of("Human McPerson"));
 	postToUrlExpectingSuccess("/submit", "/pages/submit/navigation", Map.of("", List.of("")));
   }

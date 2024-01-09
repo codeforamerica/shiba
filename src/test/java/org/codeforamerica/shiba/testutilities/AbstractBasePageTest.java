@@ -172,6 +172,13 @@ public abstract class AbstractBasePageTest {
     .until(() -> driver.findElements(By.linkText("cancel")).isEmpty());
   }
 
+  /**
+   * Creates an image of the browser page.
+   * It should be a PNG file, example: "webPage.png".
+   * If no path is used, the file will be located in the project root.
+   * (delete the file afterwards so it isn't committed to GitHub)
+   * @param fileWithPath
+   */
   @SuppressWarnings("unused")
   public void takeSnapShot(String fileWithPath) {
     TakesScreenshot screenshot = driver;
