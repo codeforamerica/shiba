@@ -2,11 +2,10 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.output.Document;
 import org.codeforamerica.shiba.output.DocumentField;
