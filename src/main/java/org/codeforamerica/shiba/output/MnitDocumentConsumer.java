@@ -105,7 +105,7 @@ public class MnitDocumentConsumer {
 
     // Create threads for sending the xml to each recipient who also received a PDF
     allRoutingDestinations.forEach(rd -> {
-      ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER);
+      ApplicationFile xml = xmlGenerator.generate(id, CAF, CASEWORKER, rd);
       Thread thread = executor.createThread(() -> sendOrSetToFailed(application, rd, xml, XML));
       thread.start();
       threads.add(thread);
@@ -138,7 +138,7 @@ public class MnitDocumentConsumer {
 	          && (flowType == FlowType.LATER_DOCS || flowType == FlowType.HEALTHCARE_RENEWAL);
 
 	      if (sendXMLToDakota) {
-	        ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER);
+	        ApplicationFile xml = xmlGenerator.generate(application.getId(), XML, CASEWORKER, routingDestination);
 	        sendOrSetToFailed(application, routingDestination, xml, XML);
 	      }
 	      log.info("Uploaded docs to submit %s".formatted(combinedUploadedFiles.size()));

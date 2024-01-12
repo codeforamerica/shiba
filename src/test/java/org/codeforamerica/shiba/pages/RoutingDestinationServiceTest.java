@@ -148,7 +148,7 @@ public class RoutingDestinationServiceTest {
 		    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
 		    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
 		    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-		    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+		    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
 		    application.setApplicationData(new TestApplicationDataBuilder()
 		        .withApplicantPrograms(List.of("EA"))
@@ -161,7 +161,7 @@ public class RoutingDestinationServiceTest {
 
 		    TribalNationRoutingDestination routingDestination = tribalNationsMap.get(expectedDestination);
 		    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
 		    verify(mnitClient, times(2)).send(any(), any(), any(), any());
 		    verify(mnitClient).send(application, pdfApplicationFile, tribalNationsMap.get(expectedDestination), CAF);
 		    verify(mnitClient).send(application, xmlApplicationFile, tribalNationsMap.get(expectedDestination), XML);
@@ -177,7 +177,7 @@ public class RoutingDestinationServiceTest {
 		    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
 		    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
 		    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-		    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+		    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
 		    application.setApplicationData(new TestApplicationDataBuilder()
 		        .withApplicantPrograms(List.of("EA"))
@@ -190,7 +190,7 @@ public class RoutingDestinationServiceTest {
 		    documentConsumer.processCafAndCcap(application);
 		    CountyRoutingDestination routingDestination = countyMap.get(expectedDestination);
 		    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
 		    verify(mnitClient, times(2)).send(any(), any(), any(), any());
 		    verify(mnitClient).send(application, pdfApplicationFile, countyMap.get(expectedDestination), CAF);
 		    verify(mnitClient).send(application, xmlApplicationFile, countyMap.get(expectedDestination), XML);
@@ -209,7 +209,7 @@ public class RoutingDestinationServiceTest {
 		    ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
 		    doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
 		    ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-		    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+		    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
 		    application.setApplicationData(new TestApplicationDataBuilder()
 		        .withApplicantPrograms(List.of("EA"))
@@ -223,7 +223,7 @@ public class RoutingDestinationServiceTest {
 
 		    CountyRoutingDestination routingDestination = countyMap.get(expectedCounty);
 		    verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+		    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
 		    verify(mnitClient, times(2)).send(any(), any(), any(), any());
 		    verify(mnitClient).send(application, pdfApplicationFile, countyMap.get(expectedCounty), CAF);
 		    verify(mnitClient).send(application, xmlApplicationFile, countyMap.get(expectedCounty), XML);

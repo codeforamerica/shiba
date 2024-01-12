@@ -80,17 +80,20 @@ public class FilenameGenerator {
     return "%sdoc%dof%d.%s".formatted(prefix, index, size, extension);
   }
 
-  public String generateXmlFilename(Application application) {
-    String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
-    String prefix = getSharedApplicationPrefix(application, CAF,
-            dhsProviderId);
-    String programs = getProgramCodes(application);
-    String eligible = "";
-    if(decider.decide(application.getApplicationData()) == SnapExpeditedEligibility.ELIGIBLE) {
-      eligible = "_CAF_EXPEDITED";
-    }
-    return "%s%s%s.xml".formatted(prefix, programs, eligible);
-  }
+	public String generateXmlFilename(Application application, RoutingDestination routingDestination) {
+		String dhsProviderId = countyMap.get(application.getCounty()).getDhsProviderId();
+		if (routingDestination != null) {
+			dhsProviderId = routingDestination.getDhsProviderId();
+		}
+
+		String prefix = getSharedApplicationPrefix(application, CAF, dhsProviderId);
+		String programs = getProgramCodes(application);
+		String eligible = "";
+		if (decider.decide(application.getApplicationData()) == SnapExpeditedEligibility.ELIGIBLE) {
+			eligible = "_CAF_EXPEDITED";
+		}
+		return "%s%s%s.xml".formatted(prefix, programs, eligible);
+	}
 
   @NotNull
   private String getSharedApplicationPrefix(Application application, Document document,

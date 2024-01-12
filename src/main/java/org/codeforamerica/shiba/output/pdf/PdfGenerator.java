@@ -92,7 +92,8 @@ public class PdfGenerator implements FileGenerator {
     Application application = applicationRepository.find(applicationId);
     return generate(application, document, recipient);
   }
-
+  
+  @Override
   // Generates a pdf and gives it a filename corresponding to a specific routing destination
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient,
       RoutingDestination routingDestination) {

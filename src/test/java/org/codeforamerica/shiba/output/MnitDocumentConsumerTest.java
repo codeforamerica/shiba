@@ -162,13 +162,13 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     documentConsumer.processCafAndCcap(application);
 
     CountyRoutingDestination routingDestination = countyMap.get(Olmsted);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(mnitClient, times(2)).send(any(), any(), any(), any());
     verify(mnitClient).send(application, pdfApplicationFile, routingDestination, CAF);
     verify(mnitClient).send(application, xmlApplicationFile, routingDestination, XML);
@@ -185,7 +185,7 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
@@ -198,7 +198,7 @@ class MnitDocumentConsumerTest {
 
     CountyRoutingDestination routingDestination = countyMap.get(expectedCounty);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(mnitClient, times(2)).send(any(), any(), any(), any());
     verify(mnitClient).send(application, pdfApplicationFile, countyMap.get(expectedCounty), CAF);
     verify(mnitClient).send(application, xmlApplicationFile, countyMap.get(expectedCounty), XML);
@@ -209,7 +209,7 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
@@ -222,7 +222,7 @@ class MnitDocumentConsumerTest {
     TribalNationRoutingDestination routingDestination = tribalNations.get(
         MilleLacsBandOfOjibwe);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, routingDestination);
     verify(mnitClient, times(2)).send(any(), any(), any(), any());
     verify(mnitClient).send(application, pdfApplicationFile, routingDestination, CAF);
     verify(mnitClient).send(application, xmlApplicationFile, routingDestination, XML);
@@ -233,7 +233,7 @@ class MnitDocumentConsumerTest {
     ApplicationFile pdfApplicationFile = new ApplicationFile("my pdf".getBytes(), "someFile.pdf");
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), any(), any(), any());
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
@@ -248,7 +248,7 @@ class MnitDocumentConsumerTest {
 
     CountyRoutingDestination olmstedRoutingDestination = countyMap.get(Olmsted);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, olmstedRoutingDestination);
-    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator).generate(application.getId(), CAF, CASEWORKER, olmstedRoutingDestination);
     verify(mnitClient, times(2)).send(any(), any(), any(), any());
     verify(mnitClient).send(application, pdfApplicationFile, olmstedRoutingDestination, CAF);
     verify(mnitClient).send(application, xmlApplicationFile, olmstedRoutingDestination,  XML);
@@ -274,7 +274,7 @@ class MnitDocumentConsumerTest {
     doReturn(ccap).when(pdfGenerator).generate(anyString(), eq(CCAP), any(), eq(countyDestination));
 
     ApplicationFile xmlFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
@@ -290,7 +290,8 @@ class MnitDocumentConsumerTest {
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, countyDestination);
     verify(pdfGenerator).generate(application.getId(), CAF, CASEWORKER, nationDestination);
     verify(pdfGenerator).generate(application.getId(), CCAP, CASEWORKER, countyDestination);
-    verify(xmlGenerator, times(2)).generate(application.getId(), CAF, CASEWORKER);
+    verify(xmlGenerator, times(1)).generate(application.getId(), CAF, CASEWORKER, countyDestination);
+    verify(xmlGenerator, times(1)).generate(application.getId(), CAF, CASEWORKER, nationDestination);
     verify(mnitClient, times(5)).send(any(), any(), any(), any());
     verify(mnitClient).send(application, nationCaf, nationDestination, CAF);
     verify(mnitClient).send(application, xmlFile, nationDestination, XML);
@@ -306,7 +307,7 @@ class MnitDocumentConsumerTest {
     doReturn(pdfApplicationFile).when(pdfGenerator).generate(anyString(), eq(CCAP), any(), any());
 
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("CCAP"))
@@ -449,7 +450,7 @@ class MnitDocumentConsumerTest {
     when(fileNameGenerator.generateUploadedDocumentName(eq(application), eq(0), eq("pdf"), any(), eq(1)))
         .thenReturn("pdf1of1.pdf");
     ApplicationFile xmlApplicationFile = new ApplicationFile("my xml".getBytes(), "someFile.xml");
-    when(xmlGenerator.generate(any(), any(), any())).thenReturn(xmlApplicationFile);
+    when(xmlGenerator.generate(any(), any(), any(), any())).thenReturn(xmlApplicationFile);
 
     documentConsumer.processUploadedDocuments(application);
 

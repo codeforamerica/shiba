@@ -211,7 +211,8 @@ class FilenameGeneratorTest {
         .applicationData(applicationData)
         .build();
 
-    String fileName = filenameGenerator.generateXmlFilename(application);
+    String fileName = filenameGenerator.generateXmlFilename(application, null);
+
 
     assertThat(fileName).isEqualTo(String.format("%s_MNB_%s_%s_%s_%s.xml",
         countyNPI, "20070909", "235959", applicationId, "F"));

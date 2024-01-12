@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.DocumentField;
 import org.codeforamerica.shiba.output.Document;
@@ -51,9 +52,18 @@ public class XmlGenerator implements FileGenerator {
     this.preparers = preparers;
     this.fileNameGenerator = fileNameGenerator;
   }
-
+  
+  /**
+   * This version of method generate is used by tests 
+   */
   @Override
   public ApplicationFile generate(String applicationId, Document document, Recipient recipient) {
+	
+    return generate(applicationId, document, recipient, null);
+  }
+
+  @Override
+  public ApplicationFile generate(String applicationId, Document document, Recipient recipient, RoutingDestination routingDestination) {
     Application application = applicationRepository.find(applicationId);
     List<DocumentField> documentFields = preparers.prepareDocumentFields(application, null,
         recipient);
@@ -90,7 +100,7 @@ public class XmlGenerator implements FileGenerator {
       String finishedXML = contentsAfterReplacement.replaceAll(
           "\\s*<\\w+:\\w+>\\{\\{\\w+}}</\\w+:\\w+>", "");
       byte[] fileContent = finishedXML.getBytes();
-      String filename = fileNameGenerator.generateXmlFilename(application);
+      String filename = fileNameGenerator.generateXmlFilename(application, routingDestination );
       return new ApplicationFile(fileContent, filename);
     } catch (IOException ioe) {
       // TODO never, ever, ever convert a checked exception to a runtime exception (original comment)
