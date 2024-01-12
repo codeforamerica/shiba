@@ -2,6 +2,10 @@
 <th:block th:fragment="outOfStateAddressNoticeInput (input, data)" th:with="formInputName=${T(org.codeforamerica.shiba.pages.PageUtils).getFormInputName(input.name)},
                    options=${input.getOptions()},
                    addressData=${applicationData.getPagesData().getPage('homeAddress')}">
+    <!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PZQSDKBT"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
 	<!-- display the page icon -->
 	<div class="text--centered">
 		<div th:replace="~{fragments/contextFragments :: mnLocationContextFragment}"></div>
@@ -34,14 +38,16 @@
 			<div class="grid__item width-auto-left">
 				<button th:name="${formInputName}" th:inline="text" th:append type="submit"
 					th:value="${options.getSelectableOptions[0].value}"
-					class="button button--primary out-of-state-address-notice-button">
+					class="button button--primary out-of-state-address-notice-button"
+					id="OutofStateAddress_Continue">
 					[[#{${options.getSelectableOptions[0].messageKey}}]]
 				</button>
 			</div>
 			<div class="grid__item width-auto-left">
 				<button th:name="${formInputName}" th:inline="text" th:append type="submit"
 					th:value="${options.getSelectableOptions[1].value}"
-					class="button out-of-state-address-notice-button-0">
+					class="button out-of-state-address-notice-button-0"
+					id="OutofStateAddress_Quit">
 					[[#{${options.getSelectableOptions[1].messageKey}}]]
 				</button>
 			</div>
@@ -49,7 +55,8 @@
 		<div class="grid">
 			<div class="grid__item width-auto-left">
 				<button th:name="${formInputName}" class="button--link" th:inline="text" th:append type="submit"
-					th:value="${options.getSelectableOptions[2].value}">
+					th:value="${options.getSelectableOptions[2].value}"
+					id="OutofStateAddress_Edit">
 					[[#{${options.getSelectableOptions[2].messageKey}}]]
 				</button>
 			</div>
