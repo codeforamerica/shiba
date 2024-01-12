@@ -4,15 +4,20 @@ import static org.codeforamerica.shiba.output.Recipient.CLIENT;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.MonitoringService;
+import org.codeforamerica.shiba.TribalNationRoutingDestination;
 import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.ApplicationRepository;
+import org.codeforamerica.shiba.application.ApplicationStatus;
 import org.codeforamerica.shiba.application.parsers.ContactInfoParser;
 import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.application.parsers.EmailParser;
+import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.ApplicationFile;
 import org.codeforamerica.shiba.output.Document;
@@ -124,17 +129,16 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 	 * @param event
 	 */
 	public void notifyApplicationSubmission(ApplicationSubmittedEvent event) {
-
 		Application application = getApplicationFromEvent(event);
 		ApplicationData applicationData = application.getApplicationData();
-		
+	
 		MDC.put("applicationId", application.getId());
 
         Timestamp completedAt = Timestamp.valueOf(application.getCompletedAt().toLocalDateTime());
 
 		County county = application.getCounty();
-		RoutingDestination countyRoutingDestination = routingDecisionService.getRoutingDestinationByName(county.name());
-
+		RoutingDestination routingDestination = routingDecisionService.getRoutingDestinationByName(county.name());
+		Set<RoutingDestination> destinations = routingDecisionService.findRoutingDestinations(application);
 		JsonObject appJsonObject = new JsonObject();
 		appJsonObject.addProperty("appId", applicationData.getId());
 		appJsonObject.addProperty("expedited", applicationData.getExpeditedEligibility().toString());
@@ -147,13 +151,24 @@ public class ApplicationSubmittedListener extends ApplicationEventListener {
 		appJsonObject.addProperty("writtenLangPref", ContactInfoParser.writtenLanguagePref(applicationData));
         appJsonObject.addProperty("spokenLangPref", ContactInfoParser.spokenLanguagePref(applicationData));
 		appJsonObject.addProperty("completed-dt", completedAt.toString());
-		appJsonObject.addProperty("county", countyRoutingDestination.getName());
-		appJsonObject.addProperty("countyPhoneNumber", countyRoutingDestination.getPhoneNumber());
-		
+		appJsonObject.addProperty("county", routingDestination.getName());
+		appJsonObject.addProperty("countyPhoneNumber", routingDestination.getPhoneNumber());
+		destinations.forEach(destination -> {
+			if (destination instanceof CountyRoutingDestination){
+				appJsonObject.addProperty("countyRoutingDestination", destination.getName());
+				appJsonObject.addProperty("countyRoutingPhoneNumber",  destination.getPhoneNumber());
+			}else if(destination instanceof TribalNationRoutingDestination){
+				appJsonObject.addProperty("tribalNationRoutingDestination", destination.getName());
+				appJsonObject.addProperty("tribalNationRoutingPhoneNumber",  destination.getPhoneNumber());
+			}
+		});
+			
 		communicationClient.send(appJsonObject);
 		
 		MDC.clear();
 		
 	}
+	
+
   
 }

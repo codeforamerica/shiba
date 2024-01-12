@@ -493,13 +493,14 @@ public class PageController {
     model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
 
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
+    	//TODO emj is this even needed?
 		// Get all routing destinations for this application
-	    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
-	    DocumentListParser.parse(applicationData).forEach(doc -> {
-	      List<RoutingDestination> routingDestinationsForThisDoc =
-	          routingDecisionService.getRoutingDestinations(applicationData, doc);
-	      routingDestinations.addAll(routingDestinationsForThisDoc);
-	    });
+//	    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
+//	    DocumentListParser.parse(applicationData).forEach(doc -> {
+//	      List<RoutingDestination> routingDestinationsForThisDoc =
+//	          routingDecisionService.getRoutingDestinations(applicationData, doc);
+//	      routingDestinations.addAll(routingDestinationsForThisDoc);
+//	    });
     	
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale));

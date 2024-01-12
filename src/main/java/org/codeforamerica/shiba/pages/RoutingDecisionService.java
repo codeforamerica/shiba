@@ -12,6 +12,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -19,8 +20,10 @@ import org.codeforamerica.shiba.County;
 import org.codeforamerica.shiba.ServicingAgencyMap;
 import org.codeforamerica.shiba.TribalNation;
 import org.codeforamerica.shiba.TribalNationRoutingDestination;
+import org.codeforamerica.shiba.application.Application;
 import org.codeforamerica.shiba.application.FlowType;
 import org.codeforamerica.shiba.application.parsers.CountyParser;
+import org.codeforamerica.shiba.application.parsers.DocumentListParser;
 import org.codeforamerica.shiba.mnit.CountyRoutingDestination;
 import org.codeforamerica.shiba.mnit.RoutingDestination;
 import org.codeforamerica.shiba.output.Document;
@@ -115,6 +118,21 @@ public class RoutingDecisionService {
     }
     return result;
   }
+  
+	/**
+	 * Find the routing destinations for the application.
+	 * @param application
+	 * @return HashSet of RoutingDestination objects
+	 */
+	public Set<RoutingDestination> findRoutingDestinations(Application application) {
+		Set<RoutingDestination> allRoutingDestinations = new HashSet<>();
+		ApplicationData applicationData = application.getApplicationData();
+		DocumentListParser.parse(applicationData).forEach(doc -> {
+			List<RoutingDestination> routingDestinations = getRoutingDestinations(applicationData, doc);
+			allRoutingDestinations.addAll(routingDestinations);
+		});
+		return allRoutingDestinations;
+	}
 
   private List<RoutingDestination> routeClientsInOtherFederallyRecognizedTribe(
       County county) {
