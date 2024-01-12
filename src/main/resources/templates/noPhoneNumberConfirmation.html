@@ -2,12 +2,12 @@
   <div class="grid__item address-validation spacing-below-60" id="general-delivery">
     <p th:text="#{no-phone.a-caseworker-will-need-to-contact-you-by-phone}"></p>
     <p th:text="#{no-phone.if-you-don't-have-a-phone-number}"></p>
-    <div>
+    <div class="spacing-above-60">
       <a class="button button--primary"
          th:href="'/pages/'+${pageName}+'/navigation?option=0'"
          th:text="#{no-phone.add-a-phone-number}"></a>
     </div>
-    <div>
+    <div >
       <a class="button button--secondary"
          th:href="'/pages/'+${pageName}+'/navigation?option=1'"
          th:text="#{no-phone.continue-without-it}"></a>
