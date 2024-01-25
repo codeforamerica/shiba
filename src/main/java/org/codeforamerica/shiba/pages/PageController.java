@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -493,15 +494,6 @@ public class PageController {
     model.put("totalMilestones", programs.contains(Program.CERTAIN_POPS) ? "7" : "6");
 
     if (landmarkPagesConfiguration.isPostSubmitPage(pageName)) {
-    	//TODO emj is this even needed?
-		// Get all routing destinations for this application
-//	    Set<RoutingDestination> routingDestinations = new LinkedHashSet<>();
-//	    DocumentListParser.parse(applicationData).forEach(doc -> {
-//	      List<RoutingDestination> routingDestinationsForThisDoc =
-//	          routingDecisionService.getRoutingDestinations(applicationData, doc);
-//	      routingDestinations.addAll(routingDestinationsForThisDoc);
-//	    });
-    	
       model.put("docRecommendations", docRecommendationMessageService
           .getPageSpecificRecommendationsMessage(applicationData, locale));
       model.put("nextStepSections", nextStepsContentService
@@ -521,8 +513,13 @@ public class PageController {
       Application application = applicationRepository.find(applicationData.getId());
       model.put("documents", DocumentListParser.parse(application.getApplicationData()));
       model.put("hasUploadDocuments", !applicationData.getUploadedDocs().isEmpty());
-      model.put("submissionTime",
-          application.getCompletedAt().withZoneSameInstant(CENTRAL_TIMEZONE));
+      ZonedDateTime zonedDateTime = application.getCompletedAt();
+      if(zonedDateTime == null) {
+    	  zonedDateTime = ZonedDateTime.now(CENTRAL_TIMEZONE);
+      }else {
+    	  zonedDateTime = zonedDateTime.withZoneSameInstant(CENTRAL_TIMEZONE);
+      }
+      model.put("submissionTime", zonedDateTime);
       model.put("sentiment", application.getSentiment());
       model.put("feedbackText", application.getFeedback());
       model.put("combinedFormText", applicationData.combinedApplicationProgramsList());
