@@ -349,7 +349,21 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     // Page title: Out of State Address Notice
     assertTrue(testPage.getTitle().equals("Out of State Address Notice"));
     testPage.clickButton("No, quit application");
+
+    //Page title: Are you sure you want to quit
+    assertTrue(testPage.getTitle().equals("Quit confirmation"));
     
+    // Page Verify that clicking  'No, take me back' returns the user to the previous page
+    testPage.clickButton("Go back");
+    assertTrue(testPage.getTitle().equals("Out of State Address Notice"));
+     
+    //user returns to Out of State Address Notice page
+    testPage.clickButton("No, quit application");
+    
+    // Verify that clicking 'Yes,Quit application' ends the application process&routes user back to landing page
+    testPage.clickButton("Quit application");
+    assertTrue(testPage.getTitle().equals("MNbenefits"));
+   
     // Page title: Landing
     assertTrue(testPage.getTitle().equals("MNbenefits"));
   }

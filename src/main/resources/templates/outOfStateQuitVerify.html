@@ -1,0 +1,17 @@
+<div th:fragment="outOfStateQuitVerify">
+  <div class="grid__item address-validation spacing-below-60 spacing-above-35" id="general-delivery">
+    <h2 th:text="#{out-of-state-quit-verify.quitting-means-that}"></h2>
+    <h2 th:text="#{out-of-state-quit-verify.what-next}"></h2>
+    <div class="spacing-above-60">
+      <a class="button button--primary"
+         th:href="'/pages/'+${pageName}+'/navigation?option=0'"
+         th:text="#{out-of-state-quit-verify.yes-quit-application}"></a>
+    </div>
+    <div  class="spacing-below-35">
+      <a class="button button--secondary"
+         th:href="'/pages/'+${pageName}+'/navigation?option=1'"
+         th:text="#{out-of-state-quit-verify.no-take-me-back}"></a>
+    </div>
+  </div>
+ </div>
+</div>

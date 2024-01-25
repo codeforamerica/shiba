@@ -3912,7 +3912,12 @@ pageDefinitions:
             - value: "EDIT"
               messageKey: out-of-state-address-notice.edit-my-address
         datasources:
-          - pageName: homeAddress
+          - pageName: homeAddress  
+  - &outOfStateQuitVerify
+    name: outOfStateQuitVerify
+    pageTitle: out-of-state-quit-verify.title
+    contextFragment: StateQuitFragment
+    hasPrimaryButton: false
   - &mailingAddressValidation
     name: mailingAddressValidation
     pageTitle: address-validation.title
@@ -4885,7 +4890,16 @@ workflow:
           pageName: outOfStateAddressNotice
           input: selectedOutOfStateAddressOption
           value: "EDIT"
+      - pageName: outOfStateQuitVerify
+        condition:
+          pageName: outOfStateAddressNotice
+          input: selectedOutOfStateAddressOption
+          value: "QUIT"     
+  outOfStateQuitVerify:
+    pageConfiguration: *outOfStateQuitVerify
+    nextPages:
       - pageName: landing
+      - pageName: outOfStateAddressNotice     
   whereToSendMail:
     pageConfiguration: *whereToSendMail
     subtleLinkTargetPage: cityForGeneralDelivery
