@@ -8,7 +8,7 @@
               hasError=${!data.isValid() && !inputData.valid(data)},
               hasHelpMessage=${input.helpMessageKey != null},
               needsAriaLabel=${input.needsAriaLabel()}">
-    <fieldset class="date-input">
+	 <fieldset class="date-input">
         <div th:replace="~{fragments/form-question-prompt :: formQuestionPrompt(${input})}"></div>
         <p class="text--help">
             <label th:for="${input.name}+'-month'"
@@ -25,7 +25,7 @@
         </p>
         <input type="text" inputmode="numeric" maxlength="2" class="text-input form-width--2-character dob-input"
                th:id="${input.name}+'-month'" th:name="${formInputName}"
-               th:value="${!inputData.value.isEmpty() ? inputData.value[0]: ''}"
+               th:value="${(!inputData.value.isEmpty() and #lists.size(inputData.value) > 0) ? inputData.value[0]: ''}"
                th:placeholder="mm"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
@@ -33,7 +33,7 @@
         &nbsp;/&nbsp;
         <input type="text" inputmode="numeric" maxlength="2" class="text-input form-width--2-character dob-input"
                th:id="${input.name}+'-day'"
-               th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[1]: ''}"
+               th:name="${formInputName}" th:value="${(!inputData.value.isEmpty() and #lists.size(inputData.value) > 1) ? inputData.value[1]: ''}"
                th:placeholder="dd"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
@@ -41,7 +41,7 @@
         &nbsp;/&nbsp;
         <input type="text" inputmode="numeric" maxlength="4" class="text-input form-width--4-character dob-input"
                th:id="${input.name}+'-year'"
-               th:name="${formInputName}" th:value="${!inputData.value.isEmpty() ? inputData.value[2]: ''}"
+               th:name="${formInputName}" th:value="${(!inputData.value.isEmpty() and #lists.size(inputData.value) > 2) ? inputData.value[2]: ''}"
                th:placeholder="yyyy"
                th:attr="aria-describedby=${hasHelpMessage ? input.name + '-help-message' : ''},
                         aria-labelledby=${needsAriaLabel ? '' : input.name + '-label'},
