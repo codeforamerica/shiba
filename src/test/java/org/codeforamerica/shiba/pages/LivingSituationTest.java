@@ -26,7 +26,7 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
     fillOutHousemateInfo("EA");
     finishAddingHouseholdMembers("childrenInNeedOfCare");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    postExpectingNextPageTitle("childrenInNeedOfCare", "Housing subsidy");
   }
 
   @Test
@@ -34,7 +34,7 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
     completeFlowFromLandingPageThroughReviewInfo("GRH");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
     fillOutHousemateInfo("EA");
-    finishAddingHouseholdMembers("livingSituation");
+    finishAddingHouseholdMembers("housingSubsidy");
   }
 
   @Test
@@ -42,7 +42,7 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
     completeFlowFromLandingPageThroughReviewInfo("GRH");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
         "introPersonalDetails");
-    assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+    assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "housingSubsidy");
   }
 
   @Test
@@ -51,7 +51,7 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
     fillOutHousemateInfo("CCAP");
     finishAddingHouseholdMembers("childrenInNeedOfCare");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    postExpectingNextPageTitle("childrenInNeedOfCare", "Housing subsidy");
   }
 
   @Test
@@ -59,6 +59,6 @@ public class LivingSituationTest extends AbstractShibaMockMvcTest {
     completeFlowFromLandingPageThroughReviewInfo("EA");
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
     fillOutHousemateInfo("EA");
-    finishAddingHouseholdMembers("goingToSchool");
+    finishAddingHouseholdMembers("housingSubsidy");
   }
 }

@@ -30,7 +30,9 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     fillOutHousemateInfo("EA");
     finishAddingHouseholdMembers("preparingMealsTogether");
     postExpectingNextPageTitle("preparingMealsTogether", "isPreparingMealsTogether", "false",
-        "Going to school");
+        "Housing subsidy");
+    postExpectingNextPageTitle("housingSubsidy", "hasHousingSubsidy", "false",
+            "Going to school");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Pregnant");
     completeFlowFromIsPregnantThroughTribalNations(true, "SNAP");
     assertNavigationRedirectsToCorrectNextPage("introIncome", "employmentStatus");
@@ -94,7 +96,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
         "addChildrenConfirmation");
     assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
-    postExpectingRedirect("introPersonalDetails", "livingSituation");
+    postExpectingRedirect("introPersonalDetails", "housingSubsidy");
+    postExpectingRedirect("housingSubsidy", "livingSituation");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingRedirect("goingToSchool", "goingToSchool", "true", "pregnant");
     postExpectingRedirect("pregnant", "isPregnant", "true", "migrantFarmWorker");
@@ -117,7 +120,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     fillOutHousemateInfo("EA");
     finishAddingHouseholdMembers("childrenInNeedOfCare");
     assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
-    postExpectingRedirect("childrenInNeedOfCare", "livingSituation");
+    postExpectingRedirect("childrenInNeedOfCare", "housingSubsidy");
+    postExpectingRedirect("housingSubsidy", "livingSituation");
     postExpectingRedirect("livingSituation", "goingToSchool");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
     completeFlowFromIsPregnantThroughTribalNations(true, "CCAP", "EA");
@@ -141,7 +145,8 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
 
     // Don't select any children in need of care, should get redirected to preparing meals together
     assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
+    postExpectingNextPageTitle("childrenInNeedOfCare", "Housing subsidy");
+    postExpectingNextPageTitle("housingSubsidy", "Living situation");
 
     // Go back to childrenInNeedOfCare and select someone this time, but don't select anyone having a parent not at home
     String householdMemberId = getFirstHouseholdMemberId();
@@ -154,7 +159,11 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
     postExpectingNextPageTitle("whoHasParentNotAtHome",
         "whoHasAParentNotLivingAtHome",
         List.of("NONE_OF_THE_ABOVE"),
-        "Living situation");
+        "Housing subsidy");
+    postExpectingNextPageTitle("housingSubsidy",
+            "hasHousingSubsidy",
+            "false",
+            "Living situation");
 
     // Go back and select someone having a parent not at home
     postExpectingNextPageTitle("whoHasParentNotAtHome",
@@ -165,10 +174,11 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
         Map.of("whatAreTheParentsNames", List.of("My Parent", "Default's Parent"),
             "childIdMap", List.of("applicant", householdMemberId)
         ),
-        "Living situation");
+        "Housing subsidy");
 
     postExpectingRedirect("preparingMealsTogether", "isPreparingMealsTogether", "false",
-        "livingSituation");
+        "housingSubsidy");
+    postExpectingRedirect("housingSubsidy", "hasHousingSubsidy", "true", "livingSituation");
     postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
     postExpectingNextPageTitle("goingToSchool", "goingToSchool", "true", "Who is going to school?");
     postExpectingRedirect("whoIsGoingToSchool", "pregnant"); // no one is going to school

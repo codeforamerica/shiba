@@ -1115,6 +1115,19 @@ pageDefinitions:
           datasources:
             - pageName: personalInfo
             - groupName: household
+  - &housingSubsidy
+    name: housingSubsidy
+    pageTitle: housing-subsidy.title
+    headerKey:
+      defaultValue: housing-subsidy.header-household
+      conditionalValues:
+        - value: housing-subsidy.header-applicant-only
+          condition: *livesAlone?
+    hasPrimaryButton: false
+    contextFragment: housingSubsidyContextFragment
+    inputs:
+      - name: hasHousingSubsidy
+        type: YES_NO
   - &pregnant
     name: pregnant
     pageTitle: pregnant.title
@@ -5058,6 +5071,12 @@ workflow:
     pageConfiguration: *householdList
     dataMissingRedirect: reviewInfo
     nextPages:
+#      - pageName: housingSubsidy
+#        conditions:
+#          logicalOperator: AND
+#          conditions:
+#            - *noOneChoseSNAP?
+#            - *noOneChoseCCAP?
       - pageName: noProgramsSelected
       - pageName: householdMemberInfo
     datasources:
@@ -5104,6 +5123,8 @@ workflow:
   parentNotAtHomeNames:
     pageConfiguration: *parentNotAtHomeNames
     nextPages:
+      - pageName: housingSubsidy
+        condition: *noOneChoseSNAP?
       - pageName: preparingMealsTogether
     datasources:
       - pageName: choosePrograms
@@ -5132,16 +5153,22 @@ workflow:
   introPersonalDetails:
     pageConfiguration: *introPersonalDetails
     nextPages:
-      - pageName: livingSituation
+      - pageName: housingSubsidy
   preparingMealsTogether:
     pageConfiguration: *preparingMealsTogether
     skipCondition: *noOneChoseSNAP?
     nextPages:
-      - pageName: livingSituation
+      - pageName: housingSubsidy 
     datasources:
       - pageName: choosePrograms
       - groupName: household
         pageName: householdMemberInfo
+  housingSubsidy:
+    pageConfiguration: *housingSubsidy
+    datasources:
+      - pageName: addHouseholdMembers
+    nextPages:
+      - pageName: livingSituation
   livingSituation:
     pageConfiguration: *livingSituation
     nextPages:

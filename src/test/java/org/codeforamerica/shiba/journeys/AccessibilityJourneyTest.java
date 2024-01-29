@@ -318,6 +318,7 @@ public class AccessibilityJourneyTest extends JourneyTest {
         "None of the children have parents living outside the home");
     testPage.clickContinue();
     testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
+    testPage.enter("hasHousingSubsidy", NO.getDisplayValue());
     testPage.enter("livingSituation", "None of these");
     testPage.clickContinue();
     testPage.enter("goingToSchool", NO.getDisplayValue());

@@ -83,6 +83,9 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     driver.findElement(By.name("whatAreTheParentsNames[]")).sendKeys(parentNotAtHomeName);
     testPage.clickContinue();
 
+    // Do you receive housing subsidy
+    testPage.enter("hasHousingSubsidy", NO.getDisplayValue());
+    
     // What is your current living situation?
     testPage.enter("livingSituation", "Staying in a hotel or motel");
     testPage.clickContinue();

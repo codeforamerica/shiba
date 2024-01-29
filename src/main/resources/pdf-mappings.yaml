@@ -76,6 +76,8 @@ mappings:
     selectedApartmentNumber: APPLICANT_HOME_APT_NUMBER
     streetAddressWithPermanentAddress: APPLICANT_HOME_STREET_ADDRESS
     selectedCounty: APPLICANT_HOME_COUNTY
+  housingSubsidy:
+    hasHousingSubsidy: HOUSING_SUBSIDY
   mailingAddress:
     selectedZipCode: APPLICANT_MAILING_ZIPCODE
     selectedCity: APPLICANT_MAILING_CITY

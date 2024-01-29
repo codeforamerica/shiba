@@ -101,6 +101,9 @@ public class FullFlowJourneyTest extends JourneyTest {
 
     // Does everyone in your household buy and prepare food with you?
     testPage.enter("isPreparingMealsTogether", YES.getDisplayValue());
+    
+    // Are you getting a housing subsidy?
+    testPage.enter("hasHousingSubsidy", YES.getDisplayValue());
 
     // What is your current living situation?
     testPage.enter("livingSituation", "Staying in a hotel or motel");

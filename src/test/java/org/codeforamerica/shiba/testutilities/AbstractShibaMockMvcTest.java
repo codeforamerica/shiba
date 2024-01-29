@@ -906,8 +906,9 @@ public class AbstractShibaMockMvcTest {
       postExpectingRedirect("whoHasParentNotAtHome",
           "whoHasAParentNotLivingAtHome",
           "NONE_OF_THE_ABOVE",
-          "livingSituation");
+          "housingSubsidy");
 
+      postExpectingRedirect("housingSubsidy", "hasHousingSubsidy", "false", "livingSituation");
       postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
       postExpectingRedirect("pregnant", "isPregnant", "true", "whoIsPregnant");
@@ -917,7 +918,8 @@ public class AbstractShibaMockMvcTest {
       postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false",
           "addChildrenConfirmation");
       assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation","false","introPersonalDetails");
-      assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+      assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "housingSubsidy");
+      assertNavigationRedirectsToCorrectNextPage("housingSubsidy", "livingSituation");
       postExpectingRedirect("livingSituation", "livingSituation", "UNKNOWN", "goingToSchool");
       postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
       postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
