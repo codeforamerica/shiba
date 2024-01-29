@@ -523,6 +523,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCcapFieldEquals("APPLICANT_HOME_CITY", "someCity");
     assertCcapFieldEquals("APPLICANT_HOME_STATE", "MN");
     assertCcapFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
+    assertCcapFieldEquals("HOUSING_SUBSIDY", "Yes");
     assertCcapFieldEquals("LIVING_SITUATION", "HOTEL_OR_MOTEL");
     assertCcapFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
     assertCcapFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
@@ -665,6 +666,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("APPLICANT_HOME_CITY", "someCity");
     assertCafFieldEquals("APPLICANT_HOME_STATE", "MN");
     assertCafFieldEquals("APPLICANT_HOME_ZIPCODE", "12345");
+    assertCafFieldEquals("HOUSING_SUBSIDY", "Yes");
     assertCafFieldEquals("LIVING_SITUATION", "HOTEL_OR_MOTEL");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "ONE_SELECTED");
     assertCafFieldEquals("EMPLOYEE_FULL_NAME_0", householdMemberFullName);
