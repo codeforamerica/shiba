@@ -28,4 +28,13 @@ public class SessionErrorPageTest extends AbstractBasePageTest {
         testPage.clickButton("Continue");
         assertThat(driver.getTitle()).isEqualTo("Timeout");
     }
+    
+    @Test
+    void shouldDisplayErrorUploadTimeoutPage() throws InterruptedException {
+        testPage.clickButton("Upload documents");
+        TimeUnit time = TimeUnit.SECONDS;
+        time.sleep(70); // Sleep for a minute + a margin
+        testPage.clickButton("Continue");
+        assertThat(driver.getTitle()).isEqualTo("Doc Upload Timeout");
+    }
 }
