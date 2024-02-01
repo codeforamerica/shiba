@@ -11,14 +11,17 @@
             <div class="grid">
                 <div th:replace="~{fragments/cardHeader :: cardHeader}"></div>
                 <main id="content" role="main" class="card spacing-above-35">
-                    <h1 class="h2"
+                    <h1 class="h2 class= spacing-above-35"
                         th:text="#{${qualified} ? 'snap-expedited-determination.qualified-header':'snap-expedited-determination.denied-header'}"></h1>
                     <p th:if="${qualified}" th:text="#{snap-expedited-determination.your-county-should-reach-out}"></p>
                     <p class="spacing-below-60" th:if="${qualified}" th:utext="#{snap-expedited-determination.if-you-do-not-hear}"></p>
                     <p class="spacing-below-60" th:if="${!qualified}" th:text="#{snap-expedited-determination.denied-detail}"></p>
+                    <div  class="spacing-below-35">
                     <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation'" th:text="#{general.finish-application}"></a>
                 </main>
+                   </div>
             </div>
+          
         </section>
     </div>
     <div th:replace="~{fragments/footer :: footer}"></div>
