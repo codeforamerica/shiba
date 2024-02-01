@@ -1055,7 +1055,6 @@ public class PageController {
       try (var pdfFile = Loader.loadPDF(file.getBytes())) {
         var acroForm = pdfFile.getDocumentCatalog().getAcroForm();
         if (acroForm != null && acroForm.xfaIsDynamic()) {
-          log.info("User has attempted to upload a dynamic XFA.");
           return new ResponseEntity<>(
               lms.getMessage("upload-documents.this-pdf-is-in-an-old-format"),
               HttpStatus.UNPROCESSABLE_ENTITY);
