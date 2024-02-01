@@ -25,7 +25,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     uploadXfaFormatPdf();
     waitForErrorMessage();
     assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
-        "This PDF is incompatible with MNbenefits. Try converting it to an image or uploading a screenshot instead. If the PDF has a flatten button then save the flattened version and upload that PDF instead.");
+        "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
         "0 files added");
     testPage.clickLink("remove");
@@ -111,7 +111,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     uploadXfaFormatPdf();
     waitForErrorMessage();
     assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
-        "This PDF is incompatible with MNbenefits. Try converting it to an image or uploading a screenshot instead. If the PDF has a flatten button then save the flattened version and upload that PDF instead.");
+        "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
         "0 files added");
     testPage.clickLink("remove");
@@ -197,7 +197,7 @@ public class DocumentUploadJourneyTest extends JourneyTest {
     uploadXfaFormatPdf();
     waitForErrorMessage();
     assertThat(driver.findElements(By.className("text--error")).get(0).getText()).contains(
-        "This PDF is incompatible with MNbenefits. Try converting it to an image or uploading a screenshot instead. If the PDF has a flatten button then save the flattened version and upload that PDF instead.");
+        "This PDF is in an old format. Try converting it to an image or uploading a screenshot instead.");
     assertThat(driver.findElement(By.id("number-of-uploaded-files")).getText()).contains(
         "0 files added");
     testPage.clickLink("remove");
