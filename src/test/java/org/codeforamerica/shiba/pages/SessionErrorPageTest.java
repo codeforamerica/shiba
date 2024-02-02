@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.TestPropertySource;
 
-@TestPropertySource(properties = { "server.servlet.session.timeout = 1m" }) // 1 minute session timeout for the test
+@TestPropertySource(properties = { "server.servlet.session.timeout = 5s" }) // 5 second session timeout for the test
 public class SessionErrorPageTest extends AbstractBasePageTest {
 
     @Override
@@ -24,7 +24,7 @@ public class SessionErrorPageTest extends AbstractBasePageTest {
     void shouldDisplaySessionTimeoutPage() throws InterruptedException {
         testPage.clickButton("Apply now");
         TimeUnit time = TimeUnit.SECONDS;
-        time.sleep(70); // Sleep for a minute + a margin
+        time.sleep(6); // Sleep for 5 seconds + a margin
         testPage.clickButton("Continue");
         assertThat(driver.getTitle()).isEqualTo("Timeout");
     }
@@ -33,7 +33,7 @@ public class SessionErrorPageTest extends AbstractBasePageTest {
     void shouldDisplayErrorUploadTimeoutPage() throws InterruptedException {
         testPage.clickButton("Upload documents");
         TimeUnit time = TimeUnit.SECONDS;
-        time.sleep(70); // Sleep for a minute + a margin
+        time.sleep(6); // Sleep for 5 seconds + a margin
         testPage.clickButton("Continue");
         assertThat(driver.getTitle()).isEqualTo("Doc Upload Timeout");
     }
