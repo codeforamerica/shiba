@@ -127,6 +127,11 @@ conditionDefinitions:
     value: CCAP
     input: programs
     matcher: CONTAINS_ONLY
+  - &applicantOnlyChoseCERTAINPOPS?
+    pageName: choosePrograms
+    value: CERTAIN_POPS
+    input: programs
+    matcher: CONTAINS_ONLY
   - &householdOnlyChoseCCAP?
     pageName: householdMemberInfo
     input: programs
@@ -5167,8 +5172,12 @@ workflow:
     pageConfiguration: *housingSubsidy
     datasources:
       - pageName: addHouseholdMembers
+      - pageName: choosePrograms
     nextPages:
       - pageName: livingSituation
+    skipCondition:
+      conditions:
+            - *applicantOnlyChoseCERTAINPOPS?
   livingSituation:
     pageConfiguration: *livingSituation
     nextPages:
