@@ -145,7 +145,7 @@ public class CCAPMockMvcTest extends AbstractShibaMockMvcTest {
 
     // Don't select any children in need of care, should get redirected to preparing meals together
     assertCorrectPageTitle("childrenInNeedOfCare", "Who are the children in need of care?");
-    postExpectingNextPageTitle("childrenInNeedOfCare", "Housing subsidy");
+    postExpectingNextPageTitle("childrenInNeedOfCare", "Living situation");
     postExpectingNextPageTitle("housingSubsidy", "Living situation");
 
     // Go back to childrenInNeedOfCare and select someone this time, but don't select anyone having a parent not at home
