@@ -279,7 +279,7 @@ public class CountyMapConfiguration {
     addCountyDefaults(Scott, "A000070100", "952-445-7751");
     addCountyDefaults(Sherburne, "1447381660", "800-433-5239");
     addCountyDefaults(Sibley, "A000072800", "507-237-4000");
-    addCountyDefaults(Stearns, "A000073600", "800-450-3663");
+    addCountyDefaults(Stearns, "A000073600", "320-656-6000");
     addCountyDefaults(Steele, "A000074400", "507-431-5600");
     addCountyDefaults(Stevens, "A000075200", "800-950-4429");
     addCountyDefaults(StLouis, "A000069800", "800-450-9777");
