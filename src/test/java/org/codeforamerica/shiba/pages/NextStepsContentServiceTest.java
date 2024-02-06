@@ -304,7 +304,7 @@ public class NextStepsContentServiceTest extends AbstractPageControllerTest {
 	applicationData.setUploadedDocs(Collections.emptyList());
     List<String> expectedMessages = List.of(
     		"Program(s) on your application may require you to talk with a worker about your application.",
-    		"A worker from your county or TN will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
+    		"A worker from your county or Tribal Nation will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
     var snapExpeditedEligibility = SnapExpeditedEligibility.UNDETERMINED;
     var ccapExpeditedEligibility = CcapExpeditedEligibility.UNDETERMINED;
     assertCorrectMessage(snapExpeditedEligibility, ccapExpeditedEligibility, expectedMessages);

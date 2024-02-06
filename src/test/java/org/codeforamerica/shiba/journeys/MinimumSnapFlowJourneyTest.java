@@ -104,7 +104,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     		"Expect an eligibility worker to contact you by phone or mail with information about your next steps.\n\n"
     		+ "The time it takes to review applications can vary.",
 	 		"Program(s) on your application may require you to talk with a worker about your application.",
-	 		"A worker from your county or TN will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
+	 		"A worker from your county or Tribal Nation will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
 
     // Finish Application
     applicationId = signApplicationAndDownloadApplicationZipFiles(signature,expectedMessages);
@@ -194,7 +194,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     		"Within the next 5 days, expect a phone call from an eligibility worker with information about your next steps.",
 	 		"Program(s) on your application may require you to talk with a worker about your application.",
-	 		"A worker from your county or TN will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
+	 		"A worker from your county or Tribal Nation will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
 
     applicationId = signApplicationAndDownloadApplicationZipFiles(signature, expectedMessages);
     SuccessPage successPage = new SuccessPage(driver);

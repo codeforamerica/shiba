@@ -206,7 +206,7 @@ public class MinimumCcapFlowJourneyTest extends JourneyTest {
     	    		"To upload documents later, you can return to our homepage and click on ‘Upload documents’ to get started.",
     	    		"Within the next 5 days, expect a phone call or letter in the mail from an eligibility worker with information about your next steps.",
 			 		"Program(s) on your application may require you to talk with a worker about your application.",
-			 		"A worker from your county or TN will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
+			 		"A worker from your county or Tribal Nation will contact you to schedule an interview. Your interview can be held over the phone or face-to-face.");
     	 List<String> nextStepSections = driver.findElements(By.className("next-step-section")).stream().map(WebElement::getText).collect(Collectors.toList());
      	 assertThat(nextStepSections).containsExactly(expectedMessages.toArray(new String[0]));
     }
