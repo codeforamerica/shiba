@@ -7,6 +7,7 @@ import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.HOUSEHOLD_PROGRAMS;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.LINEAL_DESCENDANT_WEN;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.SELECTED_TRIBAL_NATION;
+import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.Field.TRIBAL_NATION;
 import static org.codeforamerica.shiba.TribalNation.WhiteEarthNation;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getBooleanValue;
 import static org.codeforamerica.shiba.application.parsers.ApplicationDataParser.getFirstValue;
@@ -125,14 +126,20 @@ public class CoverPagePreparer implements DocumentFieldPreparer {
     return new DocumentField("coverPage", "fullName", value, SINGLE_VALUE);
   }
 
-  private DocumentField getTribalAffiliation(Application application) {
-    var value =
-        getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
-    if (getBooleanValue(application.getApplicationData().getPagesData(), LINEAL_DESCENDANT_WEN)) {
-    	value = tribalNations.get(WhiteEarthNation).getName();
-    }
-    return new DocumentField("coverPage", "tribal", value, SINGLE_VALUE);
-  }
+	private DocumentField getTribalAffiliation(Application application) {
+		String value = null;
+		Boolean isTribalNationMember = getBooleanValue(application.getApplicationData().getPagesData(), TRIBAL_NATION);
+
+		if (Boolean.TRUE.equals(isTribalNationMember)) {
+			value = getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
+		}
+			if (getBooleanValue(application.getApplicationData().getPagesData(), LINEAL_DESCENDANT_WEN)) {
+				value = tribalNations.get(WhiteEarthNation).getName();
+			}
+
+		//}
+		return new DocumentField("coverPage", "tribal", value, SINGLE_VALUE);
+	}
 
   private List<DocumentField> getHouseholdMembers(Application application) {
     var householdSubworkflow =
