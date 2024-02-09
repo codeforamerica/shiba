@@ -144,7 +144,7 @@ dependencies {
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("commons-validator:commons-validator:1.8.0")
     implementation("org.flywaydb:flyway-core:10.7.2")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.7.1")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.7.2")
     implementation("com.mixpanel:mixpanel-java:1.5.2")
     implementation("net.javacrumbs.shedlock:shedlock-spring:5.10.2")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.2")
