@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import org.codeforamerica.shiba.testutilities.AbstractShibaMockMvcTest;
 import org.codeforamerica.shiba.testutilities.FormPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
 
@@ -174,6 +177,142 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     assertThat(selectedOption).isEqualTo("QUIT");
   }
 
+  /**
+   * These test cases verify the page navigation within the Personal Details
+   * section of MNbenefits. Test cases are limited to applications with a single
+   * program selection.
+   * 
+   * @param program  - a single program
+   * @param addChild - when "false" the test runs as an applicant-only
+   *                 application, when "true" the test run with one child added to
+   *                 the household but with "None" selected for the child's
+   *                 program selection
+   * @throws Exception
+   */
+  @ParameterizedTest
+  @CsvSource(value = { "SNAP, false", "SNAP, true", "CASH, false", "CASH, true", "EA, false", "EA, true",
+		  "GRH, false", "GRH, true", "CCAP, false", "CCAP, true", "CERTAIN_POPS, false", "CERTAIN_POPS, true" })
+  void shouldNavigatePersonalDetailsFlow(String program, String addChild) throws Exception {
+	  String[] programs = { program };
+
+	  // Use Chisago County to enable Certain Pops.
+	  postExpectingSuccess("identifyCountyBeforeApplying", "county", List.of("Chisago"));
+
+	  // navigation from choosePrograms to introBasicInfo
+	  switch (program) {
+		  case "SNAP": {
+			  postExpectingRedirect("choosePrograms", "programs", Arrays.stream(programs).toList(), "expeditedNotice");
+			  assertNavigationRedirectsToCorrectNextPage("expeditedNotice", "introBasicInfo");
+			  break;
+		  }
+		  case "CERTAIN_POPS": {
+			  postExpectingRedirect("choosePrograms", "programs", Arrays.stream(programs).toList(), "basicCriteria");
+			  postExpectingRedirect("basicCriteria", "basicCriteria", "SIXTY_FIVE_OR_OLDER", "certainPopsConfirm");
+			  assertNavigationRedirectsToCorrectNextPage("certainPopsConfirm", "introBasicInfo");
+			  break;
+		  }
+		  default: {
+			  postExpectingRedirect("choosePrograms", "programs", Arrays.stream(programs).toList(), "introBasicInfo");
+		  }
+	  }
+
+	  fillInPersonalInfoAndContactInfoAndAddress();
+
+	  // navigation from addHouseholdMembers to housingSubsidy
+	  switch (addChild) {
+		  case "false": { // applicant-only case
+			  switch (program) {
+				  case "CCAP": {
+					  postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "addChildrenConfirmation");
+					  assertNavigationRedirectsToCorrectNextPageWithOption("addChildrenConfirmation", "false",
+							  "introPersonalDetails");
+					  break;
+				  }
+				  default: {
+					  postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "false", "introPersonalDetails");
+					  break;
+				  }
+			  }
+			  switch (program) {
+				  case "CERTAIN_POPS": {
+					  // will not navigate to housingSubsidy when only progam is Certain Pops
+					  assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "livingSituation");
+					  break;
+				  }
+				  default: {
+					  assertNavigationRedirectsToCorrectNextPage("introPersonalDetails", "housingSubsidy");
+				  }
+			  }
+		  }
+		  default: { // applicant with one child in household case
+			  postExpectingRedirect("addHouseholdMembers", "addHouseholdMembers", "true", "startHousehold");
+			  assertNavigationRedirectsToCorrectNextPage("startHousehold", "householdMemberInfo");
+			  Map<String, List<String>> householdMemberInfo = new HashMap<>();
+			  householdMemberInfo.put("firstName", List.of("childFirstName"));
+			  householdMemberInfo.put("lastName", List.of("childLastName"));
+			  householdMemberInfo.put("programs", List.of("None"));
+			  householdMemberInfo.put("relationship", List.of("child"));
+			  householdMemberInfo.put("dateOfBirth", List.of("09", "14", "2000"));
+			  householdMemberInfo.put("ssn", List.of("987654321"));
+			  householdMemberInfo.put("maritalStatus", List.of("Never married"));
+			  householdMemberInfo.put("sex", List.of("Male"));
+			  householdMemberInfo.put("livedInMnWholeLife", List.of("Yes"));
+			  postExpectingRedirect("householdMemberInfo", householdMemberInfo, "householdList");
+	
+			  // The flow to the introPersonalDetails page varies based on program selection
+			  switch (program) {
+				  case "CCAP": {
+					  assertNavigationRedirectsToCorrectNextPage("householdList", "childrenInNeedOfCare");
+					  postExpectingRedirect("childrenInNeedOfCare", "whoNeedsChildCare", "childFirstName childLastName",
+							  "whoHasParentNotAtHome");
+					  postExpectingRedirect("whoHasParentNotAtHome", "whoHasAParentNotLivingAtHome", "NONE_OF_THE_ABOVE",
+							  "housingSubsidy");
+					  break;
+				  }
+				  case "SNAP": {
+					  assertNavigationRedirectsToCorrectNextPage("householdList", "preparingMealsTogether");
+					  postExpectingRedirect("preparingMealsTogether", "preparingMealsTogether", "true", "housingSubsidy");
+					  break;
+				  }
+				  case "CERTAIN_POPS": {
+					  assertNavigationRedirectsToCorrectNextPage("householdList", "livingSituation");
+					  break;
+				  }
+				  default: {
+					  assertNavigationRedirectsToCorrectNextPage("householdList", "housingSubsidy");
+					  break;
+				  }
+			  }
+		  }
+	  }
+
+	  // navigation from housingSubsidy to goingToSchool
+	  switch (program) {
+		  case "GRH", "CCAP": {
+			  postExpectingRedirect("housingSubsidy", "hasHousingSubsidy", "false", "livingSituation");
+			  postExpectingRedirect("livingSituation", "livingSituation",
+					  "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE", "goingToSchool");
+			  break;
+		  }
+		  case "CERTAIN_POPS": {
+			  postExpectingRedirect("livingSituation", "livingSituation",
+					  "PAYING_FOR_HOUSING_WITH_RENT_LEASE_OR_MORTGAGE", "goingToSchool");
+			  break;
+		  }
+		  default: {
+			  postExpectingRedirect("housingSubsidy", "hasHousingSubsidy", "false", "goingToSchool");
+		  }
+	  }
+
+	  // navigation from goingToSchool to introIncome
+	  postExpectingRedirect("goingToSchool", "goingToSchool", "false", "pregnant");
+	  postExpectingRedirect("pregnant", "isPregnant", "false", "migrantFarmWorker");
+	  postExpectingRedirect("migrantFarmWorker", "migrantOrSeasonalFarmWorker", "false", "usCitizen");
+	  postExpectingRedirect("usCitizen", "isUsCitizen", "true", "disability");
+	  postExpectingRedirect("disability", "hasDisability", "false", "workSituation");
+	  postExpectingRedirect("workSituation", "hasWorkSituation", "false", "tribalNationMember");
+	  postExpectingRedirect("tribalNationMember", "isTribalNationMember", "false", "introIncome");
+  }
 
   protected void completeFlowFromReviewInfoToDisability(String... applicantPrograms)
       throws Exception {
