@@ -100,6 +100,7 @@ class CoverPagePreparerTest {
   @Test
   void shouldIncludeTribalAffiliation() {
     new TestApplicationDataBuilder(applicationData)
+        .withPageData("tribalNationMember", "isTribalNationMember", "true")
         .withPageData("selectTheTribe", "selectedTribe", "Mille Lacs Band of Ojibwe");
     Application application = Application.builder()
         .applicationData(applicationData)
@@ -126,6 +127,7 @@ class CoverPagePreparerTest {
   @Test
   void shouldIncludeWhiteEarthNationAffiliationWhenEnrolledTribalMember() {
     new TestApplicationDataBuilder(applicationData)
+        .withPageData("tribalNationMember", "isTribalNationMember", "true")
         .withPageData("selectTheTribe", "selectedTribe", "White Earth Nation");
     Application application = Application.builder()
         .applicationData(applicationData)
