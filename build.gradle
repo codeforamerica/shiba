@@ -146,7 +146,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.7.2")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:10.7.2")
     implementation("com.mixpanel:mixpanel-java:1.5.2")
-    implementation("net.javacrumbs.shedlock:shedlock-spring:5.10.2")
+    implementation("net.javacrumbs.shedlock:shedlock-spring:5.11.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.2")
     implementation("net.coobird:thumbnailator:0.4.20")
     implementation("mobi.openddr.client:openddr-classifier-client:1.4.1")
