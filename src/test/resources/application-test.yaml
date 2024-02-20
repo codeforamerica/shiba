@@ -56,6 +56,8 @@ mnit-clammit:
 documentUploadEmails:
   cronExpression: "-" # disable process to send document upload emails
 
+show-healthcare-renewal-chat: true
+
 failed-resubmission:
   initialDelay:
     milliseconds: 2629800000 # Wait a month after the app starts to run the method, i.e don't run it at all

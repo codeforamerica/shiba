@@ -84,6 +84,7 @@ mnit-clammit:
 sender-email: help@mnbenefits.org
 
 show-delayed-processing-time-notice: true
+show-healthcare-renewal-chat: true
 
 mail-gun:
   url: "https://api.mailgun.net/v3/mail.mnbenefits.mn.gov/messages"

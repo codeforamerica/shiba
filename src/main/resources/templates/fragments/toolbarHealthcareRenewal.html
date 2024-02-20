@@ -11,14 +11,13 @@
                      alt="MN State Healthcare Renewal Icon">
                 <span class="sr-only-on-mobile healthcare-renewal-toolbar-text" th:text="#{toolbar.healthcare-renewal-icon-description}"></span>
             </a>
-            <!--/* Remove chat from the healthcare renewals toolbar.  We expect to add it back at some point
-            <div>
+<!--             Remove chat from the healthcare renewals toolbar.  We expect to add it back at some point-->
+            <div th:if="${@environment.getProperty('show-healthcare-renewal-chat')}">
                 <a href="#" id="intercom_custom_launcher"
                    class="button button--small button--intercom"><i
                         class="button__icon--left icon-insert_comment"></i>Chat
                 </a>
             </div>
-            */-->
             <select th:replace="~{fragments/localeSelect :: localeSelect}"></select>
             <script th:inline="javascript" th:with="lang=${#locale.toString()}">
                 window.intercomSettings = {

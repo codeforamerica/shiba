@@ -54,8 +54,8 @@ public class HealthcareRenewalJourneyTest extends JourneyTest {
     // verify that the header & footer are the health care renewal header & footer
     assertNotNull(testPage.findElementById("headerHealthcareRenewal"));
     assertNotNull(testPage.findElementById("footerHealthcareRenewal"));
-    // verify that the chat feature does not exist on the health care renewal header
-    assertTrue(testPage.elementDoesNotExistById("intercom_custom_launcher"));
+    // verify that the chat feature does exist on the health care renewal header
+    assertNotNull(testPage.findElementById("intercom_custom_launcher"));
     
     testPage.enter("firstName", "defaultFirstName");
     testPage.enter("lastName", "defaultLastName");
