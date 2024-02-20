@@ -7071,7 +7071,9 @@ landmarkPages:
     - healthcareRenewalDocumentsSent
   nextStepsPage: nextSteps
   terminalPage: success # the final page of the main flow ("Done! Your application has been submitted.")
-  laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow
+  submissionConfirmationPage: submissionConfirmation
+  feedbackPage: feedback
+  laterDocsTerminalPage: documentsSent # the final page of the laterdocs flow  healthcareRenewalUpload
   healthcareRenewalTerminalPage: healthcareRenewalDocumentsSent # the final page of the healthcare renewal flow
   healthcareRenewalLandingPage: healthcareRenewalUpload
   submitPage: submit

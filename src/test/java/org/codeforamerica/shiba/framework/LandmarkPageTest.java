@@ -40,11 +40,11 @@ public class LandmarkPageTest extends AbstractStaticMessageSourceFrameworkTest {
   }
 
   @Test
-  void shouldRedirectToTerminalPageWhenUserBacksFromTerminalPage() throws Exception {
+  void shouldRedirectToTerminalPageWhenUserBacksFromSubmissionConfirmationPage() throws Exception {
     getPage("secondPage").andExpect(status().isOk()); // start timer page
     submitThirdPage();
     // "Go back"
-    getPageAndExpectRedirect("thirdPage", "fourthPage");
+    getPageAndExpectRedirect("thirdPage", "submissionConfirmation");
   }
 
   @Test

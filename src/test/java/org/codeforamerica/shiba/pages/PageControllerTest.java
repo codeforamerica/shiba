@@ -551,12 +551,15 @@ class PageControllerTest {
     applicationData.setStartTimeOnce(Instant.now());
     String applicationId = "someId";
     applicationData.setId(applicationId);
+    applicationData.setSubmitted(false);
     Application application = Application.builder()
         .id(applicationId)
         .applicationData(applicationData)
         .build();
     when(applicationRepository.getNextId()).thenReturn(applicationId);
     when(applicationFactory.newApplication(applicationData)).thenReturn(application);
+    when(applicationRepository.find(applicationId)).thenReturn(application);
+
 
     mockMvc.perform(get("/pages/doesNotExist")).andExpect(redirectedUrl("/error"));
 

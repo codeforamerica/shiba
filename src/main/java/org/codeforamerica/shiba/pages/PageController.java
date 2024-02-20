@@ -321,6 +321,8 @@ public class PageController {
     var landmarkPagesConfiguration = applicationConfiguration.getLandmarkPages();
 
     if (landmarkPagesConfiguration.isLandingPage(pageName)) {
+      // in case we have already submitted and completed an application
+      landmarkPagesConfiguration.removeCompleted();
       httpSession.invalidate();
     }
    
@@ -338,11 +340,19 @@ public class PageController {
       return new ModelAndView(
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getCorrectUploadDocumentPage(pageName)));
     }
-
+    
+    if (isDocsUploadedandCompleted(pageName)) {
+      landmarkPagesConfiguration.addCompleted(pageName);    
+    }
     if (shouldRedirectToTerminalPage(pageName)) {
       return new ModelAndView(
           String.format("redirect:/pages/%s", landmarkPagesConfiguration.getTerminalPage()));
     }
+    
+    if (shouldRedirectToSubmissionConfirmation(pageName)) {   	
+      return new ModelAndView(
+          String.format("redirect:/pages/%s", landmarkPagesConfiguration.getSubmissionConfirmationPage()));
+      }
 
     if (shouldRedirectToNextStepsPage(pageName)) {
       return new ModelAndView(
@@ -621,21 +631,43 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // Application is already submitted and not at the beginning of the application process
-    return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
-        !landmarkPagesConfiguration.isLandingPage(pageName) &&
-        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
-        applicationData.isSubmitted();
-  }
+    return  !landmarkPagesConfiguration.isFeedbackPage(pageName) &&
+    		landmarkPagesConfiguration.isCompleted() &&
+            !landmarkPagesConfiguration.isTerminalPage(pageName) &&
+	        !landmarkPagesConfiguration.isLandingPage(pageName) &&
+	        !landmarkPagesConfiguration.isStartTimerPage(pageName) &&
+	        applicationData.isSubmitted();  
+    }
+  
+  private boolean isDocsUploadedandCompleted(@PathVariable String pageName) {
+	LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+	        .getLandmarkPages();
+	return  applicationData.getUploadedDocs().size() >0 &&
+		    landmarkPagesConfiguration.isTerminalPage(pageName) &&
+	        applicationData.isSubmitted();
+	  }
+  
+  private boolean shouldRedirectToSubmissionConfirmation(@PathVariable String pageName) {
+	LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
+	        .getLandmarkPages();
+	    
+	return !landmarkPagesConfiguration.isPostSubmitPage(pageName) &&
+	       !landmarkPagesConfiguration.isLandingPage(pageName) &&
+	       !landmarkPagesConfiguration.isStartTimerPage(pageName) &&           
+	       applicationData.isSubmitted();        
+	  }
 
   private boolean shouldRedirectToNextStepsPage(String pageName) {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // Documents have been submitted in non-later docs flow and applicant is attempting to navigate back to upload/submit docs pages
     return !landmarkPagesConfiguration.isNextStepsPage(pageName) &&
-        (landmarkPagesConfiguration.isUploadDocumentsPage(pageName) ||
-            landmarkPagesConfiguration.isSubmitUploadedDocumentsPage(pageName))
-        && applicationData.getFlow() != LATER_DOCS
-        && hasSubmittedDocuments();
+    	   !landmarkPagesConfiguration.isTerminalPage(pageName) &&
+    	   !landmarkPagesConfiguration.isFeedbackPage(pageName) &&
+    	   !landmarkPagesConfiguration.isHealthcareRenewalLandingPage(pageName) &&
+    	   !landmarkPagesConfiguration.isHealthcareRenewalTerminalPage(pageName) &&
+           applicationData.getFlow() != LATER_DOCS
+           && hasSubmittedDocuments();
   }
 
   private boolean shouldRedirectToLaterDocsTerminalPage(String pageName) {

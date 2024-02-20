@@ -2,6 +2,7 @@ package org.codeforamerica.shiba.pages.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import lombok.Data;
 
@@ -11,9 +12,12 @@ public class LandmarkPagesConfiguration {
   private List<String> startTimerPages = new ArrayList<>();
   private List<String> landingPages = new ArrayList<>();
   private List<String> postSubmitPages = new ArrayList<>();
+  private HashSet<String> completed = new HashSet<>();
   private String nextStepsPage;
   private String terminalPage;
   private String submitPage;
+  private String submissionConfirmationPage;
+  private String feedbackPage;
   private List<String> uploadDocumentsPage = new ArrayList<>();
   private List<String> submitUploadedDocumentsPage = new ArrayList<>();
   private String laterDocsTerminalPage;
@@ -25,15 +29,30 @@ public class LandmarkPagesConfiguration {
   }
   
   public boolean isHealthcareRenewalLandingPage(String pageName) {
-	    return healthcareRenewalLandingPage.contains(pageName);
+	return healthcareRenewalLandingPage.contains(pageName);
 	  }
 
   public boolean isTerminalPage(String pageName) {
     return pageName.equals(terminalPage);
   }
+  public boolean isSubmissionConfirmationPage(String pageName) {
+	return pageName.equals(submissionConfirmationPage);
+  }
+  public boolean isFeedbackPage(String pageName) {
+	return pageName.equals(feedbackPage);
+  }
 
   public boolean isPostSubmitPage(String pageName) {
     return postSubmitPages.contains(pageName);
+  }
+  public void addCompleted(String pageName) {
+	completed.add(pageName);	    	
+  }
+  public void removeCompleted() {
+  	completed.clear();	    	
+  }
+  public boolean isCompleted() {
+	return	!completed.isEmpty();
   }
 
   public boolean isStartTimerPage(String pageName) {
