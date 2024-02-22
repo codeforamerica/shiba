@@ -60,7 +60,7 @@ jobs:
         oc rollout latest dc/mn-benefits-atst
     - name: Announce success on Teams
       if: ${{ job.status == 'success' }}
-      uses: jdcargile/ms-teams-notification@v1.3
+      uses: jdcargile/ms-teams-notification@v1.4
       with:
         github-token: ${{ github.token }} # this will use the runner's token.
         ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
@@ -70,7 +70,7 @@ jobs:
         timezone: America/Chicago          
     - name: Announce fail on Teams
       if: ${{ job.status != 'success' }}
-      uses: jdcargile/ms-teams-notification@v1.3
+      uses: jdcargile/ms-teams-notification@v1.4
       with:
         github-token: ${{ github.token }} # this will use the runner's token.
         ms-teams-webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
