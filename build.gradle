@@ -122,7 +122,7 @@ dependencies {
     //webflux is needed even though it is reactive, not servlet. Used by MailGun and SmartyStreet
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web-services:3.2.2") {
+    implementation("org.springframework.boot:spring-boot-starter-web-services:3.2.3") {
     	exclude(group: "org.springframework.boot", module: "spring-boot-starter-tomcat")
     }
     
