@@ -128,6 +128,26 @@ class DocumentFieldPreparersTest {
     verify(preparer).prepareDocumentFields(eq(application), eq(Document.CAF), eq(CASEWORKER)
     );
   }
+  
+  @Test
+  void shouldUseDefaultZonedDateTimeIfCompletedAtIsNull() {
+    String applicationId = "someId";
+    
+    Application application = Application.builder()
+        .id(applicationId)
+        .completedAt(null)
+        .applicationData(new ApplicationData())
+        .county(null)
+        .timeToComplete(null)
+        .build();
+
+    List<DocumentField> documentFields = preparers.prepareDocumentFields(application, null,
+        CASEWORKER);
+
+    assertThat(documentFields).contains(
+        new DocumentField("nonPagesData", "submissionDateTime",
+            List.of("01/01/0001 at 01:01 AM"), SINGLE_VALUE));
+  }
 
   @Test
   void shouldStillSuccessfullyMapEvenWithExceptionsInIndividualPreparers() {
