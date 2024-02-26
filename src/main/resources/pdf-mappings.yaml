@@ -103,8 +103,8 @@ mappings:
     migrantOrSeasonalFarmWorker: MIGRANT_SEASONAL_FARM_WORKER
   signThisApplication:
     applicantSignature: APPLICANT_SIGNATURE
-  signThisApplicationOtherAdult:
-    otherAdultSignature: OTHER_ADULT_SIGNATURE
+  secondSignature:
+    secondSignature: OTHER_ADULT_SIGNATURE
     createdDateSignature: CREATED_DATE_SIGNATURE
   goingToSchool:
     goingToSchool: GOING_TO_SCHOOL

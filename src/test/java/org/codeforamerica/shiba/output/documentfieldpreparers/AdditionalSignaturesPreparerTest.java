@@ -28,13 +28,13 @@ class AdditionalSignaturesPreparerTest {
     @Test
     void shouldShowDateWhenSecondSignatureExists() {
       application.setApplicationData(testApplicationDataBuilder
-          .withPageData("signThisApplicationOtherAdult", "otherAdultSignature", "Test Signature 2")
+          .withPageData("secondSignature", "secondSignature", "Test Signature 2")
           .build());
       
       application.setCompletedAt(ZonedDateTime.parse("2024-01-05T09:20:16.044874300-06:00[America/Chicago]"));
       
       assertThat(preparer.prepareDocumentFields(application, Document.CAF, Recipient.CLIENT)).isEqualTo(
-          List.of(new DocumentField("signThisApplicationOtherAdult", "createdDateSignature", "2024-01-05", SINGLE_VALUE))
+          List.of(new DocumentField("secondSignature", "createdDateSignature", "2024-01-05", SINGLE_VALUE))
       );
     }
     

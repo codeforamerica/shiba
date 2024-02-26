@@ -1,8 +1,16 @@
 <div th:fragment="secondSignatureNotification">
   <div class="grid__item address-validation spacing-below-60">
-    <div class="notice left-aligned">
-      <p th:text="#{second-signature-notification.if-you-are-only-adult}"></p>
-    </div>
+
+	<div class="reveal reveal-adjacent spacing-below-60">
+	  <button th:text="#{second-signature-notification.who-should-sign}"
+	          type="button" class="reveal__link reveal__link-adjacent reveal__link__header-adjacent"
+	          aria-expanded="false" aria-controls="reveal-content">
+	  </button>
+	  <div class="reveal__content reveal__content-adjacent" id="reveal-content">
+	    <div class="h4 spacing-above-15"
+	         th:utext="#{second-signature-notification.reveal-content}"></div>
+	  </div>
+	</div>
 
     <div class="spacing-above-60">
       <a class="button button--primary" th:href="'/pages/'+${pageName}+'/navigation?option=0'"

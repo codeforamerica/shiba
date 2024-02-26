@@ -28,6 +28,11 @@ conditionDefinitions:
     input: isHomeless
     matcher: DOES_NOT_CONTAIN
     value: "true"
+  - &continueWithoutSecondSignature?
+    pageName: secondSignatureLegalStuff
+    input: secondSignatureOption
+    matcher: CONTAINS
+    value: CONTINUE_WITHOUT_SECOND_SIGNATURE
   - &selectedCountyDoesNotMatchEnrichedCountyHome?
     pageName: homeAddressValidation
     input: enrichedCountyDifferentFromSelected
@@ -1552,6 +1557,7 @@ pageDefinitions:
     name: legalStuff
     pageTitle: legal-stuff.title
     headerKey: legal-stuff.the-legal-stuff
+    contextFragment: legalReview1ContextFragment
     headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
     inputs:
       - name: agreeToTerms
@@ -1560,7 +1566,7 @@ pageDefinitions:
           promptMessageFragmentName: legal-terms-prompt
         validators:
           - validation: SELECT_AT_LEAST_ONE
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
+            errorMessageKey: general.validation.make-sure-to-agree-to-the-terms
         options:
           selectableOptions:
             - value: "true"
@@ -1578,6 +1584,35 @@ pageDefinitions:
             - value: "false"
               messageKey: general.inputs.no
         condition: *applicantDidNotChooseCCAPOnly?
+  - &secondSignatureLegalStuff
+    name: secondSignatureLegalStuff
+    pageTitle: legal-stuff-second-signature.title
+    headerKey: legal-stuff-second-signature.header-text
+    headerHelpMessageKey: legal-stuff.scroll-down-to-agree-to-the-terms
+    hasPrimaryButton: false
+    usingPageTemplateFragment: true
+    inputs:
+      - name: agreeToTerms
+        type: CHECKBOX
+        promptMessage:
+          promptMessageFragmentName: legal-terms-prompt
+        validators:
+          - validation: SELECT_AT_LEAST_ONE
+            errorMessageKey: general.validation.make-sure-to-agree-to-the-terms
+        options:
+          selectableOptions:
+            - value: "true"
+              messageKey: legal-stuff.i-agree
+        helpMessageKeyBelow: legal-stuff-second-signature.copies-of-the-full-agreements
+      - name: secondSignatureOption
+        type: CUSTOM
+        customInputFragment: secondSignatureOption
+        options:
+          selectableOptions:
+            - value: "CONTINUE_TO_SECOND_SIGNATURE"
+              messageKey: general.continue
+            - value: "CONTINUE_WITHOUT_SECOND_SIGNATURE"
+              messageKey: legal-stuff-second-signature.continue-without-another-signature
   - &signThisApplication
     name: signThisApplication
     pageTitle: sign-this-application.title
@@ -1589,22 +1624,33 @@ pageDefinitions:
         type: TEXT
         validators:
           - validation: NOT_BLANK
-            errorMessageKey: general.validation.make-sure-you-answer-this-question
+            errorMessageKey: sign-this-application.make-sure-to-sign-the-application
   - &secondSignatureNotification
     name: secondSignatureNotification
     pageTitle: second-signature-notification.title
     headerKey: second-signature-notification.next-we-will-ask
+    headerHelpMessageKey: second-signature-notification.header-help-message
+    contextFragment: legalReview2ContextFragment
     hasPrimaryButton: false
-  - &signThisApplicationOtherAdult
-    name: signThisApplicationOtherAdult
+  - &secondSignature
+    name: secondSignature
     pageTitle: second-signature.title
     headerKey: second-signature.great
     headerHelpMessageKey: sign-this-application.by-signing-this-application-you-agree-that-you-want-to
-    primaryButtonTextKey: sign-this-application.continue
+    hasPrimaryButton: false
+    usingPageTemplateFragment: true
     inputs:
-      - name: otherAdultSignature
+      - name: secondSignature
         type: TEXT
-        helpMessageKeyBelow: second-signature.if-second-adult-not-available
+      - name: secondSignatureOption
+        type: CUSTOM
+        customInputFragment: secondSignatureOption
+        options:
+          selectableOptions:
+            - value: "CONTINUE_TO_SECOND_SIGNATURE"
+              messageKey: general.continue
+            - value: "CONTINUE_WITHOUT_SECOND_SIGNATURE"
+              messageKey: legal-stuff-second-signature.continue-without-another-signature
   - &submit
     name: submit
     pageTitle: submit.submit
@@ -1615,6 +1661,7 @@ pageDefinitions:
     pageTitle: submission-confirmation.title
     contextFragment: icon-documents-sent
     hasPrimaryButton: true
+    excludeGoBack: true
   - &addingDocuments
     name: addingDocuments
     pageTitle: adding-documents.title
@@ -6802,13 +6849,27 @@ workflow:
       - pageName: choosePrograms
       - pageName: householdMemberInfo
         groupName: household
+  secondSignatureLegalStuff:
+    pageConfiguration: *secondSignatureLegalStuff
+    nextPages:
+      - pageName: secondSignature
+    datasources:
+      - pageName: choosePrograms
+      - pageName: householdMemberInfo
+        groupName: household
   signThisApplication:
     pageConfiguration: *signThisApplication
     nextPages:
       - pageName: secondSignatureNotification
         flag: second-signature
+        condition:
+          logicalOperator: AND
+          conditions:
+            - *doesNotLiveAlone?
+            - *someoneChoseCASH?
       - pageName: submit
     datasources:
+      - pageName: choosePrograms
       - pageName: addHouseholdMembers
       - pageName: householdMemberInfo
         groupName: household
@@ -6820,21 +6881,23 @@ workflow:
         - *livesAlone?
         - *minimumFlow?
     nextPages:
-      - pageName: signThisApplicationOtherAdult
+      - pageName: secondSignatureLegalStuff
       - pageName: submit
     datasources:
       - pageName: addHouseholdMembers
       - pageName: doYouNeedHelpImmediately
-  signThisApplicationOtherAdult:
-    pageConfiguration: *signThisApplicationOtherAdult
+  secondSignature:
+    pageConfiguration: *secondSignature
     skipCondition:
       logicalOperator: OR
       conditions: 
+        - *continueWithoutSecondSignature?
         - *livesAlone?
         - *minimumFlow?
     nextPages:
       - pageName: submit
     datasources:
+      - pageName: secondSignatureLegalStuff
       - pageName: addHouseholdMembers
       - pageName: doYouNeedHelpImmediately
   submit:

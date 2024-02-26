@@ -119,6 +119,10 @@
   border-bottom: 1px solid #AAAAAA;
 }
 
+.dark-grey-text {
+  color: #AAAAAA;
+}
+
 .icon-check_circle.large {
   color: #CFC5BF;
   font-size: 100px;
@@ -526,8 +530,6 @@ form .drag-and-drop-box-compact {
   padding-bottom: 0.5rem;
   font-style: normal;
 }
-
-
 
 .illustration--mn-logo {
   background-image: url(/images/minnesota-logo.svg);
@@ -1709,6 +1711,10 @@ legend.form-question {
 .spacing-above-minus-25 {
   margin-top: -25px;
 
+}
+
+.spacing-above-minus-10 {
+  margin-top: -10px;
 }
 
 #skip-to-content {

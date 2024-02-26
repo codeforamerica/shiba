@@ -25,7 +25,7 @@ public class AdditionalSignaturesPreparer implements DocumentFieldPreparer {
 	  List<String> hasOtherAdultSignature = getValues(application.getApplicationData().getPagesData(), OTHER_ADULT_SIGNATURE);
 	  
 	  if (!hasOtherAdultSignature.isEmpty()) {
-		  result.add(new DocumentField("signThisApplicationOtherAdult", "createdDateSignature", List.of(
+		  result.add(new DocumentField("secondSignature", "createdDateSignature", List.of(
 		            DateTimeFormatter.ISO_LOCAL_DATE.format(application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
 		                SINGLE_VALUE));
 	  }

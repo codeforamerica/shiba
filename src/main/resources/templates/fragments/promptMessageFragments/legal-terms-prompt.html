@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="legal-terms-prompt" class="spacing-below-60">
-<div class="accordion legal-stuff-accordion" id="prepare-to-apply-accordion">
+<div th:fragment="legal-terms-prompt" class="spacing-below-60"
+     th:with="firstAccordionId = ${pageName == 'legalStuff' ? 'prepare-to-apply-accordion' : 'prepare-to-apply-accordion-second-signature'}"
+     >
+
+<div class="accordion legal-stuff-accordion" th:id="${firstAccordionId}">
         <button href="#" class="accordion__button" aria-expanded="true" aria-controls="a1" >
             <span th:text="#{legal-stuff.application-terms}"></span>
         </button>

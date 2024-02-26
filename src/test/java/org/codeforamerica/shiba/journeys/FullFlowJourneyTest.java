@@ -861,10 +861,227 @@ public class FullFlowJourneyTest extends JourneyTest {
     
     assertApplicationSubmittedEventWasPublished(applicationId, FULL, 8);
   }
-  
+
+  /**
+   * Light(er) weight version of the full flow journey test which verifies the full flow
+   * when CASH is the only program selected.
+   */
+  @Test
+  void fullCashApplication() {
+    when(clock.instant()).thenReturn(
+        LocalDateTime.of(2020, 1, 1, 10, 10).atOffset(ZoneOffset.UTC).toInstant(),
+        LocalDateTime.of(2020, 1, 1, 10, 15, 30).atOffset(ZoneOffset.UTC).toInstant()
+    );
+    when(featureFlagConfiguration.get("certain-pops")).thenReturn(FeatureFlag.ON);
+    when(featureFlagConfiguration.get("second-signature")).thenReturn(FeatureFlag.ON);
+    
+    // Assert intercom button is present on landing page
+    await().atMost(5, SECONDS).until(() -> !driver.findElements(By.id("intercom-frame")).isEmpty());
+   
+    goToPageBeforeSelectPrograms("Chisago");
+     
+    selectProgramsWithoutCertainPopsAndEnterPersonalInfo(List.of(PROGRAM_CASH));
+    fillOutHomeAndMailingAddressWithoutEnrich("12345", "someCity", "someStreetAddress", "someApartmentNumber");
+    
+    fillOutHomeAndMailingAddress("12345", "someCity", "someStreetAddress", "someApartmentNumber");
+    fillOutContactAndReview(true, "Chisago");
+    
+    testPage.clickLink("This looks correct");
+ 
+    // add a spouse
+	testPage.enter("addHouseholdMembers", YES.getDisplayValue());
+	testPage.clickContinue();
+    testPage.enter("firstName", "Celia");
+    testPage.enter("lastName", "St. George");
+    testPage.enter("dateOfBirth", "10/15/1950");
+    testPage.enter("maritalStatus", "Married, living with spouse");
+    testPage.enter("sex", "Female");
+    testPage.enter("livedInMnWholeLife", "No");
+    testPage.enter("relationship", "My spouse (e.g. wife, husband)");
+    testPage.enter("programs", PROGRAM_CASH);
+    // This javascript scrolls the page to the bottom.  Shouldn't be necessary but without
+    // the scroll clickContinue doesn't seem to advance to the next page.
+    JavascriptExecutor js = ((JavascriptExecutor) driver);
+    js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+    testPage.clickContinue();
+   
+    testPage.clickButton("Yes, that's everyone");
+    
+    // Are you getting a housing subsidy?
+    testPage.enter("hasHousingSubsidy", NO.getDisplayValue());
+
+    // Is anyone in your household going to school right now, either full or part-time?
+    testPage.enter("goingToSchool", NO.getDisplayValue());
+
+    // Is anyone in your household pregnant?
+    testPage.enter("isPregnant", NO.getDisplayValue());
+
+    // Is anyone in your household a migrant or seasonal farm worker?
+    testPage.enter("migrantOrSeasonalFarmWorker", NO.getDisplayValue());
+
+    // Is everyone in your household a U.S. Citizen?
+    testPage.enter("isUsCitizen", YES.getDisplayValue());
+
+    // Does anyone in your household have a physical or mental disability that prevents them from working?
+    testPage.enter("hasDisability", NO.getDisplayValue());
+    
+    // In the last 2 months, did anyone in your household do any of these things?
+    testPage.enter("hasWorkSituation", NO.getDisplayValue());
+
+    // Is anyone in your household a member of a tribal nation?
+    testPage.enter("isTribalNationMember", NO.getDisplayValue());
+
+    // Income & Employment
+    testPage.clickContinue();
+    
+    // Is anyone in your household making money from a job?
+    testPage.enter("areYouWorking", NO.getDisplayValue());
+
+    // Got it! unearned income is next.
+    testPage.clickContinue();
+
+    // Income and Employment
+    testPage.clickContinue();
+    
+    // Unearned income
+    testPage.enter("unearnedIncome", "None");
+    testPage.clickContinue();
+
+    // Do you think the household will earn less money this month than last month?
+    testPage.enter("earnLessMoneyThisMonth", "No");
+    testPage.clickContinue();
+    
+    // Expenses & Deductions
+    testPage.clickContinue();
+
+    // Does anyone in your household pay for room and board?
+    testPage.enter("homeExpenses", "None");
+    testPage.clickContinue();
+
+    // Does anyone in your household pay for utilities?
+    testPage.enter("payForUtilities", "None");
+    testPage.clickContinue();
+
+    // Has your household received money for energy assistance (LIHEAP) in the last 12 months?
+    testPage.enter("energyAssistance", NO.getDisplayValue());
+
+    // Does anyone in the household pay for court-ordered child support, spousal support, child care support or medical care?
+    testPage.enter("supportAndCare", NO.getDisplayValue());
+
+    // Does anyone in your household have any of these?
+    testPage.enter("assets", "None");
+    testPage.clickContinue();
+    
+    // Does anyone in the household have money in a bank account or debit card?
+    testPage.enter("haveSavings", NO.getDisplayValue());
+    
+    // In the last 12 months, has anyone in the household given away or sold any assets?
+    testPage.enter("haveSoldAssets", NO.getDisplayValue());
+
+    // Submitting your Application
+    testPage.clickContinue();
+    
+    // Register to vote
+    testPage.clickButton("Yes, send me more info");
+
+    // Do you currently have healthcare coverage?
+    testPage.enter("healthcareCoverage", YES.getDisplayValue());
+    testPage.clickContinue();
+
+    // Do you want to assign someone to help with your benefits?
+    testPage.enter("helpWithBenefits", NO.getDisplayValue());
+
+    // Is there anything else you want to share?
+    driver.findElement(By.id("additionalInfo"))
+        .sendKeys("I have nothing else to share");
+    testPage.clickContinue();
+
+    // Can we ask about your race and ethnicity?
+    testPage.clickLink("Yes, continue");
+
+    // What races or ethnicities do you identify with?
+    testPage.enter("raceAndEthnicity", List.of("Black or African American"));
+    testPage.clickContinue();
+
+    // The legal stuff.
+    testPage.enter("agreeToTerms", "I agree");
+    testPage.enter("drugFelony", NO.getDisplayValue());
+    testPage.clickContinue();
+
+    // Sign this application (applicant)
+    testPage.enter("applicantSignature", "this is my signature");
+    testPage.clickContinue();
+    
+    // Second signature notification
+    testPage.clickButton("Continue without signature");
+    // Ready to submit, but just go back
+    testPage.goBack();
+    // Back to second signature notification page
+    testPage.clickButton("Add another signature");
+
+    // The legal stuff (for second signature)
+    testPage.enter("agreeToTerms", "I agree");
+    testPage.clickButtonLink("Continue without another signature");
+
+    // Ready to submit
+    testPage.goBack();
+    // Back on the legal stuff (for second signature)
+    testPage.clickContinue();
+    
+    // Sign this application (second signature)
+    testPage.clickButtonLink("Continue without another signature");
+    testPage.goBack();
+    testPage.enter("secondSignature", "second person signature");
+    testPage.clickContinue();
+    
+    // Submit
+    testPage.clickButton("Submit application");
+    
+    // Submission confirmation, your application has been submitted
+    testPage.clickContinue();
+    
+    // Adding documents
+    testPage.clickContinue();
+    
+    // Document recommendation
+    testPage.clickButton("I'll do this later");
+    
+    // document off boarding
+    testPage.clickButton("Finish application");
+    
+    // next steps
+    testPage.clickContinue();
+
+    // success page
+    applicationId = downloadPdfs();
+    assertThat(testPage.findElementById("confirmation-number").getText()).contains("Confirmation # " + applicationId);
+
+    // CAF
+    assertCafFieldEquals("APPLICATION_ID", applicationId);
+    assertCafFieldEquals("SUBMISSION_DATETIME", "01/01/2020 at 04:15 AM");
+    // Applicant fields
+    assertCafFieldEquals("FOOD", "Off");
+    assertCafFieldEquals("CASH", "Yes");
+    assertCafFieldEquals("CCAP", "Off");
+    assertCafFieldEquals("EMERGENCY", "Off");
+    assertCafFieldEquals("GRH", "Off");
+    assertCafFieldEquals("TANF", "Off");
+    assertCafFieldEquals("APPLICANT_SIGNATURE", "this is my signature");
+    assertCafFieldEquals("CREATED_DATE", "2020-01-01");
+    // Household member fields
+    assertCafFieldEquals("PROGRAMS_0", "CASH");
+    assertCafFieldEquals("OTHER_ADULT_SIGNATURE", "second person signature");
+    assertCafFieldEquals("CREATED_DATE_SIGNATURE", "2020-01-01");
+    
+    // Expecting 2 events: 1.) SubworkflowCompletedEvent, 2.) ApplicationSubmittedEvent
+    assertApplicationSubmittedEventWasPublished(applicationId, FULL, 2);
+  }
 
 	private void selectProgramsWithoutCertainPopsAndEnterPersonalInfo() {
-		List<String> programSelections = List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH);
+		selectProgramsWithoutCertainPopsAndEnterPersonalInfo(List.of(PROGRAM_SNAP, PROGRAM_CCAP, PROGRAM_EA, PROGRAM_GRH));
+	}
+
+	private void selectProgramsWithoutCertainPopsAndEnterPersonalInfo(List<String> programSelections) {
 		// Program Selection
 		programSelections.forEach(program -> testPage.enter("programs", program));
 		testPage.clickContinue();
