@@ -3,6 +3,7 @@ package org.codeforamerica.shiba.output.documentfieldpreparers;
 import static org.codeforamerica.shiba.output.DocumentFieldType.SINGLE_VALUE;
 
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,20 +46,37 @@ public class DocumentFieldPreparers {
 
   @NotNull
   private List<DocumentField> getDefaultFields(Application application) {
-    return List.of(
-        new DocumentField("nonPagesData", "applicationId", List.of(application.getId()),
-            SINGLE_VALUE),
-        new DocumentField("nonPagesData", "completedDate", List.of(
-            DateTimeFormatter.ISO_LOCAL_DATE.format(
-                application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
-            SINGLE_VALUE),
-        new DocumentField("nonPagesData", "completedDateTime",
-            List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())),
-            SINGLE_VALUE),
-        new DocumentField("nonPagesData", "submissionDateTime", List.of(
-            DateTimeFormatter.ofPattern("MM/dd/yyyy' at 'hh:mm a").format(
-                application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
-            SINGLE_VALUE)
-    );
+	List<DocumentField> returnDefaultFields = new ArrayList<DocumentField>();
+	  
+	try {
+		String foo = DateTimeFormatter.ISO_LOCAL_DATE.format(
+                application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")));
+	}
+	catch (NullPointerException e) {
+		log.info("Application has generated a null completed date with ID of " + application.getId() 
+		+ ". An erroneous completed date has been set.");
+		application.setCompletedAt(ZonedDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneId.of("America/Chicago")));
+	}
+	finally {
+		returnDefaultFields.add(
+	        new DocumentField("nonPagesData", "applicationId", List.of(application.getId()),
+	            SINGLE_VALUE));
+		returnDefaultFields.add(
+	        new DocumentField("nonPagesData", "completedDate", List.of(
+	            DateTimeFormatter.ISO_LOCAL_DATE.format(
+	                application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
+	            SINGLE_VALUE));
+		returnDefaultFields.add(
+	        new DocumentField("nonPagesData", "completedDateTime",
+	            List.of(DateTimeFormatter.ISO_DATE_TIME.format(application.getCompletedAt())),
+	            SINGLE_VALUE));
+		returnDefaultFields.add(
+	        new DocumentField("nonPagesData", "submissionDateTime", List.of(
+	            DateTimeFormatter.ofPattern("MM/dd/yyyy' at 'hh:mm a").format(
+	                application.getCompletedAt().withZoneSameInstant(ZoneId.of("America/Chicago")))),
+	            SINGLE_VALUE));
+	}
+	
+	return returnDefaultFields;
   }
 }
