@@ -667,7 +667,7 @@ public class PageController {
     	   !landmarkPagesConfiguration.isHealthcareRenewalLandingPage(pageName) &&
     	   !landmarkPagesConfiguration.isHealthcareRenewalTerminalPage(pageName) &&
            applicationData.getFlow() != LATER_DOCS
-           && hasSubmittedDocuments();
+           && hasSubmittedDocuments(pageName, "shouldRedirectToNextStepsPage");
   }
 
   private boolean shouldRedirectToLaterDocsTerminalPage(String pageName) {
@@ -677,7 +677,7 @@ public class PageController {
     return !landmarkPagesConfiguration.isLaterDocsTerminalPage(pageName)
         && landmarkPagesConfiguration.isPostSubmitPage(pageName)
         && applicationData.getFlow() == LATER_DOCS
-        && hasSubmittedDocuments();
+        && hasSubmittedDocuments(pageName, "shouldRedirectToLaterDocsTerminalPage");
   }
   
   private boolean shouldRedirectToHealthcareRenewalTerminalPage(String pageName) {
@@ -687,7 +687,7 @@ public class PageController {
     return !landmarkPagesConfiguration.isHealthcareRenewalTerminalPage(pageName)
         && landmarkPagesConfiguration.isPostSubmitPage(pageName)
         && applicationData.getFlow() == HEALTHCARE_RENEWAL
-        && hasSubmittedDocuments();
+        && hasSubmittedDocuments(pageName, "shouldRedirectToHealthcareRenewalTerminalPage");
   }
   
   private boolean shouldRedirectToHealthcareRenewalLandingPage(String pageName) {
@@ -695,7 +695,7 @@ public class PageController {
 	        .getLandmarkPages();
 	    return landmarkPagesConfiguration.isHealthcareRenewalLandingPage(pageName)
 	        && applicationData.getFlow() == HEALTHCARE_RENEWAL
-	        && hasSubmittedDocuments();
+	        && hasSubmittedDocuments(pageName, "shouldRedirectToHealthcareRenewalLandingPage");
 	  }
 
   @PostMapping("/groups/{groupName}/delete")
@@ -1015,13 +1015,13 @@ public class PageController {
 	    return writer;
 	}
 
-  private boolean hasSubmittedDocuments() {
+  private boolean hasSubmittedDocuments(String pageName, String invokedBy) {
     Application application;
     String id = applicationData.getId();
 
     if (id == null) {
       // TODO: session timeout perhaps?
-      log.info("Attempt to get application data with null id");
+      log.info("Attempt to get application data with null id when navigating to page: " + pageName + ", invoked by: " + invokedBy);
       return false;
     }
 
