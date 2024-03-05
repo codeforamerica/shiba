@@ -661,7 +661,8 @@ public class PageController {
     LandmarkPagesConfiguration landmarkPagesConfiguration = applicationConfiguration
         .getLandmarkPages();
     // Documents have been submitted in non-later docs flow and applicant is attempting to navigate back to upload/submit docs pages
-    return !landmarkPagesConfiguration.isNextStepsPage(pageName) &&
+    return !landmarkPagesConfiguration.isLandingPage(pageName) &&
+     	   !landmarkPagesConfiguration.isNextStepsPage(pageName) &&
     	   !landmarkPagesConfiguration.isTerminalPage(pageName) &&
     	   !landmarkPagesConfiguration.isFeedbackPage(pageName) &&
     	   !landmarkPagesConfiguration.isHealthcareRenewalLandingPage(pageName) &&
