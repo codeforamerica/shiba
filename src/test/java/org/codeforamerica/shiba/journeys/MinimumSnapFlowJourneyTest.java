@@ -210,6 +210,7 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
             This application was submitted to Hennepin County with the information that you provided. Some parts of this application will be blank. A caseworker will follow up with you if additional information is needed.
 
             For more support, you can call Hennepin County (612-596-1300).""");
+    assertCafFieldEquals("APPLICANT_IS_US_CITIZEN", "Off");
     assertCafFieldEquals("MEDICAL_EXPENSES_SELECTION", "Off");
     assertCafFieldEquals("SNAP_EXPEDITED_ELIGIBILITY", "SNAP");
     assertCafFieldEquals("DRUG_FELONY", "Yes");
@@ -395,7 +396,6 @@ public class MinimumSnapFlowJourneyTest extends JourneyTest {
     assertCafFieldEquals("NEED_INTERPRETER", needsInterpreter);
     assertCafFieldEquals("APPLICANT_SPOKEN_LANGUAGE_PREFERENCE", "ENGLISH");
     assertCafFieldEquals("APPLICANT_WRITTEN_LANGUAGE_PREFERENCE", "ENGLISH");
-    assertCafFieldEquals("IS_US_CITIZEN", "Yes");
     String moveDate = "10/20/1993";
     assertCafFieldEquals("DATE_OF_MOVING_TO_MN", moveDate);
     String previousCity = "Chicago";

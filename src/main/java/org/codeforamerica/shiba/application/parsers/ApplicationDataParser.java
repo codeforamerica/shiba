@@ -363,6 +363,8 @@ public class ApplicationDataParser {
         .put(Field.MATCH_INFO_FIRST_NAME, new ParsingCoordinate("healthcareRenewalMatchInfo", "firstName"));
     coordinatesMap.put(Field.MATCH_INFO_LAST_NAME, new ParsingCoordinate("healthcareRenewalMatchInfo", "lastName"));
 
+    coordinatesMap.put(Field.IS_US_CITIZEN,
+            new ParsingCoordinate("usCitizen", "isUsCitizen")); 
     coordinatesMap.put(Field.EVERYONE_US_CITIZENS,
         new ParsingCoordinate("usCitizen", "isUsCitizen"));
     coordinatesMap.put(Field.WHO_ARE_NON_US_CITIZENS,
@@ -518,6 +520,7 @@ public class ApplicationDataParser {
     IS_GOING_TO_SCHOOL,
     WHO_IS_GOING_TO_SCHOOL,
     IS_PREGNANT,
+    IS_US_CITIZEN,
     WHO_IS_PREGNANT,
     IS_LOOKING_FOR_JOB,
     WHO_IS_LOOKING_FOR_A_JOB,
