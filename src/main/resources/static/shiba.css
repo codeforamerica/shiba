@@ -861,6 +861,7 @@ input[type=number] {
   url(/fonts/MaterialIcons-Regular.svg?ia7soh#MaterialIcons-Regular) format("svg");
   font-weight: normal;
   font-style: normal;
+  
 }
 
 .select:after,
@@ -875,6 +876,11 @@ input[type=number] {
 
 .emoji--checkmark {
   background-image: url(images/checkmark.png);
+}
+
+.material-icons{
+    display: inline-flex;
+    vertical-align: middle;
 }
 
 .emoji--crossmark {
