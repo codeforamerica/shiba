@@ -434,17 +434,31 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 		}
 
 		@Test
-		void shouldMapTribalNationMemberYesOrNoAndWhichTribalNation() throws Exception {
+		void shouldMapTribalNationMemberYesOrNoAndWhichTribalNationBoundary() throws Exception {
 			fillInRequiredPages();
-			postExpectingSuccess("nationsBoundary", "livingInNationBoundary", "Yes");
-			postExpectingSuccess("selectTheTribe", "selectedTribe", "Leech Lake");
+			postExpectingSuccess("tribalNationMember", "isTribalNationMember", "true");
+			postExpectingSuccess("selectTheTribe", "selectedTribe", "Prairie Island");
+			postExpectingSuccess("nationsBoundary", "livingInNationBoundary", "true");
 
 			var caf = submitAndDownloadCaf();
 
-			assertPdfFieldEquals("IS_TRIBAL_NATION_MEMBER", "Yes", caf);
-			assertPdfFieldEquals("WHICH_TRIBAL_NATION", "Leech Lake", caf);
+			assertPdfFieldEquals("BOUNDARY_MEMBER", "Yes", caf);
+			assertPdfFieldEquals("TRIBAL_NATION_BOUNDARY", "Prairie Island", caf);
 		}
+		
+		 @Test
+		  void shouldMapTribalNationMemberYesOrNoAndWhichTribalNation() throws Exception {
+			 fillInRequiredPages();
+				postExpectingSuccess("tribalNationMember", "isTribalNationMember", "true");
+				postExpectingSuccess("selectTheTribe", "selectedTribe", "Leech Lake");
+				postExpectingSuccess("nationsBoundary", "livingInNationBoundary", "false");
 
+				var caf = submitAndDownloadCaf();
+
+				assertPdfFieldEquals("BOUNDARY_MEMBER","Off", caf);
+				assertPdfFieldIsEmpty("TRIBAL_NATION_BOUNDARY", caf);
+			}
+		
 		@Test
 		void shouldMapTribalTANF() throws Exception {
 			fillInRequiredPages();

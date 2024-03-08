@@ -123,7 +123,8 @@ mappings:
   workSituation:
     hasWorkSituation: HAS_WORK_SITUATION
   nationsBoundary:
-    livingInNationBoundary: IS_TRIBAL_NATION_MEMBER
+    selectedNationBoundaryTribe: TRIBAL_NATION_BOUNDARY
+    boundaryMember: BOUNDARY_MEMBER
   selectTheTribe:
     selectedTribe: WHICH_TRIBAL_NATION
   snapExpeditedEligibility:
