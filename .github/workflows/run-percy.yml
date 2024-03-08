@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
     inputs: { }
 
+env:
+  mnbenefits_env_url: any_string_works_for_github_tests
+
 jobs:
   percy:
     name: Run Percy
