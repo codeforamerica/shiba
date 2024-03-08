@@ -53,13 +53,13 @@ jobs:
         run: percy exec -- ./gradlew clean test --tests org.codeforamerica.shiba.journeys.HealthcareRenewalJourneyTest.healthcareRenewalFlow
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-      - name: Announce on Slack
-        if: ${{ always() }}
-        uses: innocarpe/actions-slack@v1
-        with:
-          status: ${{ job.status }}
-          success_text: ':eyes: Check out new the Percy build: https://percy.io/8a855b2e/mnbenefits'
-          failure_text: ':frowning: Percy build failed '
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+#      - name: Announce on Slack
+#        if: ${{ always() }}
+#        uses: innocarpe/actions-slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          success_text: ':eyes: Check out new the Percy build: https://percy.io/8a855b2e/mnbenefits'
+#          failure_text: ':frowning: Percy build failed '
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
