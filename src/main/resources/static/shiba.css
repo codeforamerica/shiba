@@ -523,6 +523,15 @@ form .drag-and-drop-box-compact {
   font-style: normal;
   font-weight: bold;
 }
+.text-with-line {
+  line-height: 2.5rem;   
+  font-size: 1.9rem;
+  color: #5F5854;
+  border-bottom: 2px solid #AAAAAA;
+  padding-bottom: 0.5rem;
+  font-style: normal;
+  font-weight: bold;
+}
 
 #upload-doc-text {
   color: #5F5854;
