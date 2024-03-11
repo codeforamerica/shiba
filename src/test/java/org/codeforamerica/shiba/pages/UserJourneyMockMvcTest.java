@@ -136,9 +136,31 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     getToPersonalInfoScreen("CCAP");
     postExpectingSuccess("personalInfo", Map.of(
         // unicode null
-        "firstName", List.of("Amanda" + "\u0000"),
+        "firstName", List.of("Amanda" + "\u0000" + "🙏"),
         // \n is another unicode ctrl character, but that one we want to keep
         "lastName", List.of("Sm\nith"),
+        "dateOfBirth", List.of("01", "12", "1928")
+    ));
+
+    // remove the null character
+    String firstName = applicationData.getPagesData()
+        .safeGetPageInputValue("personalInfo", "firstName").get(0);
+    assertThat(firstName).isEqualTo("Amanda");
+
+    // We should remove the \n character
+    String lastName = applicationData.getPagesData()
+        .safeGetPageInputValue("personalInfo", "lastName").get(0);
+    assertThat(lastName).isEqualTo("Smith");
+  }
+  
+  @Test
+  void shouldNotAllowEmojis() throws Exception {
+    getToPersonalInfoScreen("CCAP");
+    postExpectingSuccess("personalInfo", Map.of(
+        // unicode null
+        "firstName", List.of("Am♛an⭐da🙏"),
+        // \n is another unicode ctrl character, but that one we want to keep
+        "lastName", List.of("Sm🔥it✅h"),
         "dateOfBirth", List.of("01", "12", "1928")
     ));
 
@@ -150,7 +172,7 @@ public class UserJourneyMockMvcTest extends AbstractShibaMockMvcTest {
     // We should keep the \n character
     String lastName = applicationData.getPagesData()
         .safeGetPageInputValue("personalInfo", "lastName").get(0);
-    assertThat(lastName).isEqualTo("Sm\nith");
+    assertThat(lastName).isEqualTo("Smith");
   }
 
   /**
