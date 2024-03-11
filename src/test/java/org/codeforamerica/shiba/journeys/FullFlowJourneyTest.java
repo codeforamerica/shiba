@@ -1013,7 +1013,7 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
     
     // Second signature notification
-    testPage.clickButton("Continue without signature");
+    testPage.clickButton("Continue without it");
     // Ready to submit, but just go back
     testPage.goBack();
     // Back to second signature notification page
