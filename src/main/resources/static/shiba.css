@@ -881,6 +881,7 @@ input[type=number] {
 .material-icons{
     display: inline-flex;
     vertical-align: middle;
+    font-size: 19px;
 }
 
 .emoji--crossmark {
