@@ -26,9 +26,12 @@ public class TribalNationPreparer implements DocumentFieldPreparer {
     public List<DocumentField> prepareDocumentFields(Application application, Document document, Recipient recipient) {
         List<DocumentField> result = new ArrayList<>();
         Boolean isTribalNationMember = getBooleanValue(application.getApplicationData().getPagesData(), TRIBAL_NATION);
-        String selectedTribe = getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION);
-        Boolean livesInNationBoundary = getBooleanValue(application.getApplicationData().getPagesData(), LIVING_IN_TRIBAL_NATION_BOUNDARY);
-        boolean tribeRequiresBoundaryAnswer = TRIBES_REQUIRING_BOUNDARY_ANSWER.contains(selectedTribe);
+        String selectedTribe = isTribalNationMember? getFirstValue(application.getApplicationData().getPagesData(), SELECTED_TRIBAL_NATION) : null;
+        Boolean livesInNationBoundary = isTribalNationMember ? getBooleanValue(application.getApplicationData().getPagesData(), LIVING_IN_TRIBAL_NATION_BOUNDARY) : null;
+        if (Boolean.FALSE.equals(isTribalNationMember)) {
+        	return result;
+        }
+        boolean tribeRequiresBoundaryAnswer = selectedTribe !=null && TRIBES_REQUIRING_BOUNDARY_ANSWER.contains(selectedTribe);
        
         if (Boolean.TRUE.equals(isTribalNationMember) && tribeRequiresBoundaryAnswer) {
         	 result.add(new DocumentField("nationsBoundary", "boundaryMember",livesInNationBoundary ? "Yes" : "No",
