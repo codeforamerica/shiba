@@ -106,7 +106,7 @@ dependencies {
     implementation("org.apache.httpcomponents.core5:httpcore5:5.2.4")
     implementation("org.apache.httpcomponents.client5:httpclient5:5.3.1")
     implementation("org.apache.httpcomponents.client5:httpclient5-fluent:5.3.1")
-    implementation("org.apache.pdfbox:pdfbox:3.0.1")
+    implementation("org.apache.pdfbox:pdfbox:3.0.2")
 
     implementation("org.springframework:spring-aspects")
     implementation("org.springframework.retry:spring-retry")
@@ -142,20 +142,20 @@ dependencies {
     implementation("org.postgresql:postgresql")
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("commons-validator:commons-validator:1.8.0")
-    implementation("org.flywaydb:flyway-core:10.9.1")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.9.1")
+    implementation("org.flywaydb:flyway-core:10.10.0")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.10.0")
     implementation("com.mixpanel:mixpanel-java:1.5.2")
     implementation("net.javacrumbs.shedlock:shedlock-spring:5.12.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.12.0")
     implementation("net.coobird:thumbnailator:0.4.20")
     implementation("mobi.openddr.client:openddr-classifier-client:1.4.1")
     implementation("mobi.openddr:openddr-data:1.34")
-    implementation("com.google.guava:guava:33.0.0-jre")
+    implementation("com.google.guava:guava:33.1.0-jre")
 
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
     testImplementation("org.seleniumhq.selenium:selenium-java")
-    testImplementation("de.redsix:pdfcompare:1.2.0")
+    testImplementation("de.redsix:pdfcompare:1.2.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: "org.junit.vintage", module: "junit-vintage-engine"
         exclude group: "com.vaadin.external.google", module: "android-json"
