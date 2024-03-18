@@ -31,6 +31,9 @@
             </ns4:State>
             <ns4:Zip5>{{CONTACTINFO_MAILING_ZIPCODE}}</ns4:Zip5>
         </ns4:MailingAddress>
+        <ns4:CountyResidence>
+            <ns4:COR>{{IDENTIFY_COUNTY}}</ns4:COR>
+        </ns4:CountyResidence>
         <ns4:Phone>
             <ns4:PhoneNumber>{{CONTACTINFO_PHONE}}</ns4:PhoneNumber>
         </ns4:Phone>
@@ -38,6 +41,10 @@
     <ns4:HouseholdInfo>
         <ns4:HouseholdMember>
             <ns4:PersonalInfo>
+                <ns4:Person>
+                    <ns4:FirstName>{{PERSONALINFO_FIRSTNAME}}</ns4:FirstName>
+                    <ns4:LastName>{{PERSONALINFO_LASTNAME}}</ns4:LastName>
+                </ns4:Person>
                 <ns4:OtherName>
                     <ns4:FirstName>{{PERSONALINFO_OTHERNAME}}</ns4:FirstName>
                 </ns4:OtherName>

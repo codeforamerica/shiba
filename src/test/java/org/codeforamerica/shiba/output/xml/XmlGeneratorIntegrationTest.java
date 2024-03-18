@@ -151,12 +151,16 @@ public class XmlGeneratorIntegrationTest {
 
     String xmlFile = new String(applicationFile.getFileBytes());
     assertThat(xmlFile).containsIgnoringWhitespaces("""
-        <ns4:Person>
+                <ns4:Person>
                     <ns4:FirstName>Jane</ns4:FirstName>
                     <ns4:LastName>Doe</ns4:LastName>
                 </ns4:Person>""");
     assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:PersonalInfo>
+                        <ns4:Person>
+                            <ns4:FirstName>Jane</ns4:FirstName>
+                            <ns4:LastName>Doe</ns4:LastName>
+                        </ns4:Person>
                         <ns4:OtherName>
                             <ns4:FirstName></ns4:FirstName>
                         </ns4:OtherName>
@@ -200,6 +204,10 @@ public class XmlGeneratorIntegrationTest {
                 </ns4:Person>""");
     assertThat(xmlFile).containsIgnoringWhitespaces("""
         <ns4:PersonalInfo>
+    		            <ns4:Person>
+    		                <ns4:FirstName>Judy</ns4:FirstName>
+    		                <ns4:LastName>Garland</ns4:LastName>
+    		            </ns4:Person>
                         <ns4:OtherName>
                         </ns4:OtherName>
                         <ns4:FirstName>Judy</ns4:FirstName>

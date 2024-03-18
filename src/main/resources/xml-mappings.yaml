@@ -67,6 +67,8 @@ xml:
       selectedStreetAddress: CONTACTINFO_MAILING_STREET_ADDRESS
       selectedState: CONTACTINFO_MAILING_STATE
       selectedApartmentNumber: CONTACTINFO_MAILING_APARTMENT_NUMBER
+    identifyCounty:
+      county: IDENTIFY_COUNTY
     thirtyDayIncome:
       moneyMadeLast30Days: MONEY_MADE_LAST_MONTH
     liquidAssetsSingle:

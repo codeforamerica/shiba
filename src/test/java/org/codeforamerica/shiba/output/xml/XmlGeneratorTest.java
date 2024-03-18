@@ -425,8 +425,17 @@ class XmlGeneratorTest {
         hasXPath("/ns:Root/ns:Child/text()", namespaceContext, Matchers.equalTo(xmlEnumName)));
   }
 
+  /**
+   * It turns out that there is no ENUM value for some ENUMERATED_SINGLE_VALUE inputs,
+   * for example, relationship, county, etc.).  Rather than not produce the XML node, in
+   * those cases we use the input value in place of an enumerated value.
+   * See method XmlGenerator.checkForEnumValue()
+   * @throws IOException
+   * @throws SAXException
+   * @throws ParserConfigurationException
+   */
   @Test
-  void shouldExcludeNodeForEnumeratedSingleValueInputWhereEnumMappingDoesNotExist()
+  void shouldPopulateNodeValueFromEnumeratedSingleValueInputWhenEnumDoesNotExist()
       throws IOException, SAXException, ParserConfigurationException {
     String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
                  "<ns:Root xmlns:ns='some-url'>\n" +
@@ -434,8 +443,9 @@ class XmlGeneratorTest {
                  "</ns:Root>";
 
     String pageName = "some-screen";
-    String formInputValue = "some-value";
     String formInputName = "some-form-input";
+    String formInputValue = "some-value";
+
     DocumentField documentField = new DocumentField(pageName, formInputName,
         List.of(formInputValue), DocumentFieldType.ENUMERATED_SINGLE_VALUE);
     List<DocumentField> documentFields = List.of(documentField);
@@ -445,7 +455,10 @@ class XmlGeneratorTest {
         "SOME_TOKEN"
     );
 
-    Map<String, String> xmlEnum = Map.of();
+    // Create an ENUM map that does not include our test ENUM value.
+    // This object is need to construct the XmlGenerator.
+    String xmlEnumName = "NOT_MY_VALUE";
+    Map<String, String> xmlEnum = Map.of("not my value", xmlEnumName);
 
     XmlGenerator subject = new XmlGenerator(new ByteArrayResource(xml.getBytes()),
         xmlConfigMap,
@@ -461,9 +474,7 @@ class XmlGeneratorTest {
     SimpleNamespaceContext namespaceContext = new SimpleNamespaceContext();
     namespaceContext.setBindings(Map.of("ns", "some-url"));
     MatcherAssert.assertThat(document,
-        hasXPath("count(/ns:Root/ns:Child)",
-            namespaceContext,
-            Matchers.equalTo("0")));
+        hasXPath("/ns:Root/ns:Child/text()", namespaceContext, Matchers.equalTo(formInputValue)));
   }
 
   @Test
