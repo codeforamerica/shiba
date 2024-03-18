@@ -4,7 +4,7 @@
     options=${input.getOptions()},
     addressData=${applicationData.getPagesData().getPage('homeAddress')}">
 	<!-- options buttons -->
-	<div class="form-group vertical-button-group" role="group" aria-labelledby="page-header">
+	<div class="vertical-button-group" role="group" aria-labelledby="page-header">
 		<div class="grid">
 			<div class="grid__item width-auto-left">
 				<button th:name="${formInputName}" th:inline="text" th:append type="submit"
@@ -12,15 +12,6 @@
 					class="button button--primary"
 					id="continue_to_signature">
 					[[#{${options.getSelectableOptions[0].messageKey}}]]
-				</button>
-			</div>
-		</div>
-		<div class="grid">
-			<div class="grid__item width-auto-left">
-				<button th:name="${formInputName}" class="button--link" th:inline="text" th:append type="submit"
-					th:value="${options.getSelectableOptions[1].value}"
-					id="continue_without_signature">
-					[[#{${options.getSelectableOptions[1].messageKey}}]]
 				</button>
 			</div>
 		</div>

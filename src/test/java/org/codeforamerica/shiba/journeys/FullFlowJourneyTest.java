@@ -1020,17 +1020,15 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickButton("Add another signature");
 
     // The legal stuff (for second signature)
-    testPage.enter("agreeToTerms", "I agree");
-    testPage.clickButtonLink("Continue without another signature");
+    testPage.clickLink("Continue without another signature");
 
     // Ready to submit
     testPage.goBack();
     // Back on the legal stuff (for second signature)
+    testPage.enter("agreeToTerms", "I agree");
     testPage.clickContinue();
     
     // Sign this application (second signature)
-    testPage.clickButtonLink("Continue without another signature");
-    testPage.goBack();
     testPage.enter("secondSignature", "second person signature");
     testPage.clickContinue();
     
