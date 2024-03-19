@@ -1648,8 +1648,7 @@ pageDefinitions:
           selectableOptions:
             - value: "CONTINUE_TO_SECOND_SIGNATURE"
               messageKey: general.continue
-            - value: "CONTINUE_WITHOUT_SECOND_SIGNATURE"
-              messageKey: legal-stuff-second-signature.continue-without-another-signature
+    subtleLinkTextKey: legal-stuff-second-signature.continue-without-another-signature
   - &submit
     name: submit
     pageTitle: submit.submit
@@ -6888,6 +6887,7 @@ workflow:
       - pageName: doYouNeedHelpImmediately
   secondSignature:
     pageConfiguration: *secondSignature
+    subtleLinkTargetPage: submit
     skipCondition:
       logicalOperator: OR
       conditions: 

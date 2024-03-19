@@ -1029,6 +1029,10 @@ public class FullFlowJourneyTest extends JourneyTest {
     testPage.clickContinue();
     
     // Sign this application (second signature)
+    testPage.clickLink("Continue without another signature");
+    // Submit
+    testPage.goBack();
+    // Sign this application (second signature)
     testPage.enter("secondSignature", "second person signature");
     testPage.clickContinue();
     
