@@ -635,6 +635,7 @@ public class PdfMockMvcTest extends AbstractShibaMockMvcTest {
 			// setup() selects SNAP, CASH and CCAP 
 			addHouseholdMembersWithProgram("None"); // Tribal TANF requires a household
 
+	        postExpectingSuccess("tribalNationMember", "isTribalNationMember", "true");
 			postExpectingSuccess("selectTheTribe", "selectedTribe", "Mille Lacs Band of Ojibwe");
 			postExpectingSuccess("applyForTribalTANF", "applyForTribalTANF", "true");
 

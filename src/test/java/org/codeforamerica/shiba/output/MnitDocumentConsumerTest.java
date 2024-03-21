@@ -213,6 +213,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA"))
+        .withPageData("tribalNationMember", "isTribalNationMember", "true")
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .withPageData("homeAddress", "county", List.of("Olmsted"))
         .build());
@@ -278,6 +279,7 @@ class MnitDocumentConsumerTest {
 
     application.setApplicationData(new TestApplicationDataBuilder()
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
+        .withPageData("tribalNationMember", "isTribalNationMember", "true")
         .withPageData("selectTheTribe", "selectedTribe", List.of("Bois Forte"))
         .withPageData("identifyCounty", "county", "Olmsted")
         .withPageData("homeAddress", "county", List.of("Olmsted"))
@@ -489,6 +491,7 @@ class MnitDocumentConsumerTest {
     new TestApplicationDataBuilder(application.getApplicationData())
         .withApplicantPrograms(List.of("EA", "SNAP", "CCAP"))
         .withPageData("identifyCounty", "county", Hennepin.name())
+        .withPageData("tribalNationMember", "isTribalNationMember", "true")
         .withPageData("selectTheTribe", "selectedTribe", "Bois Forte")
         .withPageData("homeAddress", "enrichedCounty", "Hennepin")
         .withPageData("homeAddress", "county", "Hennepin");
