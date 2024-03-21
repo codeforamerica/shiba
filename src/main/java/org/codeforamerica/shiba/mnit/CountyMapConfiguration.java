@@ -121,7 +121,7 @@ public class CountyMapConfiguration {
     updateCounty(BigStone, "familyservicecenter@bigstonecounty.gov", "A000006000");
     updateCounty(BlueEarth, "holly.kaduce@blueearthcountymn.gov", "A000007800");
     updateCounty(Brown, "help123@co.brown.mn.us", "A000008600");
-    updateCounty(Carlton, "IMOSS@co.carlton.mn.us", "1003921875");
+    updateCounty(Carlton, "IMOSS@carltoncountymn.gov", "1003921875");
     updateCounty(Carver, "cssfinancial@co.carver.mn.us", "A000010800");
     updateCounty(Cass, "cass.socserv@casscountymn.gov", "1760489769");
     updateCounty(Chippewa, "Tracy.kittelson@chippewa.mn", "A000012400");
@@ -134,13 +134,13 @@ public class CountyMapConfiguration {
     updateCounty(Dakota, "EEARIGAppResearch@CO.DAKOTA.MN.US", "1427127620");
     updateCounty(Dodge, "OSS@MNPrairie.org", "A000020500");
     updateCounty(Douglas, "dcss@co.douglas.mn.us", "A000021300");
-    updateCounty(Faribault, "Lea.Silverthorn@FMCHS.com", "A000022100");
+    updateCounty(Faribault, "emily.hanson@fmchs.com", "A000022100");
     updateCounty(Fillmore, "SS-FAX@co.fillmore.mn.us", "1437228236");
     updateCounty(Freeborn, "im.dhs@co.freeborn.mn.us", "A000024800");
     updateCounty(Goodhue, "hhs.imu@co.goodhue.mn.us", "A000025600");
     // Grant and Pope merged into Western Prairie, using Pope NPI and Western Prairie email
     updateCounty(Grant, "front@westernprairiemn.us", "A000061200");
-    updateCounty(Hennepin, "hhsews@hennepin.us", "A000027200");
+    updateCounty(Hennepin, "hhs.imagingoperations@hennepin.us", "A000027200");
     updateCounty(Houston, "dhsinfo@co.houston.mn.us", "A000028100");
     updateCounty(Hubbard, "beth.vredenburg@co.hubbard.mn.us", "A000029900");
     updateCounty(Isanti, "Kelly.Borchardt@co.isanti.mn.us", "A000030200");
@@ -159,7 +159,7 @@ public class CountyMapConfiguration {
     updateCounty(McLeod, "mcleod.fw@co.mcleod.mn.us", "A000043400");
     updateCounty(Mahnomen, "info@co.mahnomen.mn.us", "A000044200");
     updateCounty(Marshall, "sarah.noble@co.marshall.mn.us", "A000045100");
-    updateCounty(Martin, "emily.hanson@fmchs.com", "A000046900");
+    updateCounty(Martin, "lea.silverthorn@fmchs.com", "A000046900");
     updateCounty(Meeker, "socserv.info@co.meeker.mn.us", "A000047700");
     updateCounty(MilleLacs, "Beth.Sumner@millelacs.mn.gov", "A000048500");
     updateCounty(Morrison, "callcenter@co.morrison.mn.us", "1255406286");
@@ -168,7 +168,7 @@ public class CountyMapConfiguration {
     updateCounty(Nicollet, "hhsinfo@co.nicollet.mn.us", "1083845127");
     updateCounty(Nobles, "CommunityServices@co.nobles.mn.us", "M000053100");
     updateCounty(Norman, "supportstaff@co.norman.mn.us", "A000054000");
-    updateCounty(Olmsted, "PAQ@olmstedcounty.gov", "A000055800");
+    updateCounty(Olmsted, "laura.lopez@olmstedcounty.gov", "A000055800");
     updateCounty(OtterTail, "imques@ottertailcounty.gov", "A000056600");
     updateCounty(Pennington, "Afcasebank@co.pennington.mn.us", "A000057400");
     updateCounty(Pine, "income.proof@co.pine.mn.us", "A000058200");
@@ -183,14 +183,14 @@ public class CountyMapConfiguration {
     updateCounty(Rice, "Fin.Asst@ricecountymn.gov", "M000066300");
     updateCounty(Rock, "ssintake@swmhhs.com", "M000067100");
     updateCounty(Roseau, "case.bank@co.roseau.mn.us", "A000068000");
-    updateCounty(Scott, "scottcountyincomemaintenance@co.scott.mn.us", "A000070100");
+    updateCounty(Scott, "scottcountyim@co.scott.mn.us", "A000070100");
     updateCounty(Sherburne, "PADocs@co.sherburne.mn.us", "1447381660");
     updateCounty(Sibley, "ContactPHHS@co.sibley.mn.us", "A000072800");
     updateCounty(Stearns, "HSGatewayOSIII@co.stearns.mn.us", "A000073600");
     updateCounty(Steele, "OSS@MNPrairie.org", "A000074400");
     updateCounty(Stevens, "imdocs@co.stevens.mn.us", "A000075200");
     updateCounty(StLouis, "ESS@stlouiscountymn.gov", "A000069800");
-    updateCounty(Swift, "julie.jahn@co.swift.mn.us", "A000076100");
+    updateCounty(Swift, "julie.jahn@swiftmn.us", "A000076100");
     updateCounty(Todd, "Ricoh@co.todd.mn.us", "1336372465");
     updateCounty(Traverse, "stacey.hennen@co.traverse.mn.us", "A000078700");
     updateCounty(Wabasha, "imuinterview@co.wabasha.mn.us", "A000079500");
