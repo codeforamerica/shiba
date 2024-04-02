@@ -39,7 +39,7 @@ jobs:
      #   repository: ''
         
     - name: build with gradle
-    - run: ./gradlew assemble
+      run: ./gradlew assemble
 
     - run: zip -r veracode-scan-target.zip ./
 
